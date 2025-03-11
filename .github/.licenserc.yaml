@@ -14,5 +14,6 @@ header:
     - 'NOTICE'
     - '.asf.yaml'
     - '.nojekyll'
+    - 'Package.swift'
 
   comment: on-failure
