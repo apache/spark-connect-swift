@@ -15,10 +15,15 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-//
 
-/// A enum for ``SparkConnect`` package errors
-enum SparkConnectError: Error {
-  case UnsupportedOperationException
-  case InvalidSessionIDException
-}
+typealias AnalyzePlanRequest = Spark_Connect_AnalyzePlanRequest
+typealias AnalyzePlanResponse = Spark_Connect_AnalyzePlanResponse
+typealias ConfigRequest = Spark_Connect_ConfigRequest
+typealias DataType = Spark_Connect_DataType
+typealias ExecutePlanRequest = Spark_Connect_ExecutePlanRequest
+typealias Plan = Spark_Connect_Plan
+typealias KeyValue = Spark_Connect_KeyValue
+typealias Range = Spark_Connect_Range
+typealias Relation = Spark_Connect_Relation
+typealias SparkConnectService = Spark_Connect_SparkConnectService
+typealias UserContext = Spark_Connect_UserContext

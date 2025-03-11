@@ -17,8 +17,33 @@
 // under the License.
 //
 
-/// A enum for ``SparkConnect`` package errors
-enum SparkConnectError: Error {
-  case UnsupportedOperationException
-  case InvalidSessionIDException
+import Foundation
+import Testing
+
+@testable import SparkConnect
+
+/// A test suite for `Client`
+@Suite(.serialized)
+struct ClientTests {
+  @Test
+  func createAndStop() async throws {
+    let client = Client(remote: "sc://localhost", user: "test")
+    await client.stop()
+  }
+
+  @Test
+  func connectWithInvalidUUID() async throws {
+    let client = Client(remote: "sc://localhost", user: "test")
+    try await #require(throws: SparkConnectError.InvalidSessionIDException) {
+      let _ = try await client.connect("not-a-uuid-format")
+    }
+    await client.stop()
+  }
+
+  @Test
+  func connect() async throws {
+    let client = Client(remote: "sc://localhost", user: "test")
+    let _ = try await client.connect(UUID().uuidString)
+    await client.stop()
+  }
 }
