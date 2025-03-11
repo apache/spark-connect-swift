@@ -24,16 +24,16 @@ import Testing
 
 /// A test suite for `Client`
 @Suite(.serialized)
-struct ClientTests {
+struct SparkConnectClientTests {
   @Test
   func createAndStop() async throws {
-    let client = Client(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
     await client.stop()
   }
 
   @Test
   func connectWithInvalidUUID() async throws {
-    let client = Client(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
     try await #require(throws: SparkConnectError.InvalidSessionIDException) {
       let _ = try await client.connect("not-a-uuid-format")
     }
@@ -42,7 +42,7 @@ struct ClientTests {
 
   @Test
   func connect() async throws {
-    let client = Client(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
     let _ = try await client.connect(UUID().uuidString)
     await client.stop()
   }

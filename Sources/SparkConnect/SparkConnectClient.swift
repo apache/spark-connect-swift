@@ -23,7 +23,7 @@ import GRPCProtobuf
 import Synchronization
 
 /// Conceptually the remote spark session that communicates with the server
-public actor Client {
+public actor SparkConnectClient {
   let clientType: String = "swift"
   let url: URL
   let host: String
