@@ -311,7 +311,9 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
     versions = [
         x
         for x in versions
-        if not x.raw["released"] and not x.raw["archived"] and re.match(r"\d+\.\d+\.\d+", x.name)
+        if not x.raw["released"]
+        and not x.raw["archived"]
+        and re.match(r"connect-swift-\d+\.\d+\.\d+", x.name)
     ]
     versions = sorted(versions, key=lambda x: x.name, reverse=True)
 
