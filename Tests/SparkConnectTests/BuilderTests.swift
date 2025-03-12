@@ -26,13 +26,25 @@ import Testing
 struct BuilderTests {
   @Test
   func builderDefault() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(await spark.client.clientType == "swift")
+    #expect(await spark.client.url.host() == "localhost")
+    #expect(await spark.client.url.port == 15002)
+    await spark.stop()
   }
 
   @Test
   func remote() async throws {
+    // Don't try to connect
+    let builder = await SparkSession.builder.remote("sc://spark:1234")
+    #expect(await builder.sparkConf["spark.remote"] == "sc://spark:1234")
+    _ = await builder.clear()
   }
 
   @Test
   func appName() async throws {
+    let builder = await SparkSession.builder.appName("TestApp")
+    #expect(await builder.sparkConf["spark.app.name"] == "TestApp")
+    try await builder.getOrCreate().stop()
   }
 }
