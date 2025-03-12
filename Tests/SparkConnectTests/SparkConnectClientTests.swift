@@ -22,7 +22,7 @@ import Testing
 
 @testable import SparkConnect
 
-/// A test suite for `Client`
+/// A test suite for `SparkConnectClient`
 @Suite(.serialized)
 struct SparkConnectClientTests {
   @Test

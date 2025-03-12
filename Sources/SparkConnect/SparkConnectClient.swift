@@ -68,7 +68,7 @@ public actor SparkConnectClient {
       var request = AnalyzePlanRequest()
       request.clientType = clientType
       request.userContext = userContext
-      request.sessionID = sessionID
+      request.sessionID = self.sessionID!
       request.analyze = .sparkVersion(version)
       let response = try await service.analyzePlan(request)
       return response
@@ -190,10 +190,9 @@ public actor SparkConnectClient {
     return plan
   }
 
-  /// Create a ``ExecutePlanRequest`` instance with the given session ID and plan.
+  /// Create a ``ExecutePlanRequest`` instance with the given plan.
   /// The operation ID is created by UUID.
   /// - Parameters:
-  ///   - sessionID: A string for the existing session ID.
   ///   - plan: A plan to execute.
   /// - Returns: An ``ExecutePlanRequest`` instance.
   func getExecutePlanRequest(_ sessionID: String, _ plan: Plan) async
@@ -202,15 +201,14 @@ public actor SparkConnectClient {
     var request = ExecutePlanRequest()
     request.clientType = clientType
     request.userContext = userContext
-    request.sessionID = sessionID
+    request.sessionID = self.sessionID!
     request.operationID = UUID().uuidString
     request.plan = plan
     return request
   }
 
-  /// Create a ``AnalyzePlanRequest`` instance with the given session ID and plan.
+  /// Create a ``AnalyzePlanRequest`` instance with the given plan.
   /// - Parameters:
-  ///   - sessionID: A string for the existing session ID.
   ///   - plan: A plan to analyze.
   /// - Returns: An ``AnalyzePlanRequest`` instance
   func getAnalyzePlanRequest(_ sessionID: String, _ plan: Plan) async
@@ -219,7 +217,7 @@ public actor SparkConnectClient {
     var request = AnalyzePlanRequest()
     request.clientType = clientType
     request.userContext = userContext
-    request.sessionID = sessionID
+    request.sessionID = self.sessionID!
     var schema = AnalyzePlanRequest.Schema()
     schema.plan = plan
     request.analyze = .schema(schema)
