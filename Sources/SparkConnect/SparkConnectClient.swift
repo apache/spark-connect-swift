@@ -177,7 +177,7 @@ public actor SparkConnectClient {
   ///   - start: A start of the range.
   ///   - end: A end (exclusive) of the range.
   ///   - step: A step value for the range from `start` to `end`.
-  /// - Returns: <#description#>
+  /// - Returns:  A `Plan` instance.
   func getPlanRange(_ start: Int64, _ end: Int64, _ step: Int64) -> Plan {
     var range = Range()
     range.start = start
