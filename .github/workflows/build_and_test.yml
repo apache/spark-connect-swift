@@ -54,3 +54,21 @@ jobs:
         swift-version: "6"
     - name: Build
       run: swift build -v
+
+  integration-test:
+    runs-on: ubuntu-latest
+    services:
+      spark:
+        image: apache/spark:4.0.0-preview2
+        env:
+          SPARK_NO_DAEMONIZE: 1
+        ports:
+          - 15002:15002
+        options: --entrypoint /opt/spark/sbin/start-connect-server.sh
+    steps:
+    - uses: actions/checkout@v4
+    - uses: swift-actions/setup-swift@v2.2.0
+      with:
+        swift-version: "6"
+    - name: Test
+      run: swift test --no-parallel

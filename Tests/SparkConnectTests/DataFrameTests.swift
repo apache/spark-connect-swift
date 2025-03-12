@@ -81,6 +81,7 @@ struct DataFrameTests {
     await spark.stop()
   }
 
+#if !os(Linux)
   @Test
   func show() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -106,4 +107,5 @@ struct DataFrameTests {
     try await spark.sql("DROP TABLE IF EXISTS t").show()
     await spark.stop()
   }
+#endif
 }

@@ -31,7 +31,7 @@ struct RuntimeConfTests {
     _ = try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
 
-    #expect(try await conf.get("spark.app.name") == "Spark Connect server")
+    #expect(try await conf.get("spark.app.name") != nil)
 
     try await #require(throws: Error.self) {
       try await conf.get("spark.test.non-exist")

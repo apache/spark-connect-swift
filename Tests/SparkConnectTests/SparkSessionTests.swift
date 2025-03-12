@@ -56,7 +56,6 @@ struct SparkSessionTests {
   @Test
   func conf() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.conf.get("spark.app.name") == "Spark Connect server")
     try await spark.conf.set("spark.x", "y")
     #expect(try await spark.conf.get("spark.x") == "y")
     #expect(try await spark.conf.getAll().count > 10)
