@@ -56,7 +56,7 @@ public actor DataFrame: Sendable {
     self.schema = schema
   }
 
-  /// Add `Apache Arrow`'s `RecordBatch`s to the intenal array.
+  /// Add `Apache Arrow`'s `RecordBatch`s to the internal array.
   /// - Parameter batches: A ``RecordBatch`` instance.
   private func addBathes(_ batches: [RecordBatch]) {
     self.batches.append(contentsOf: batches)
