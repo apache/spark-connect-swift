@@ -140,7 +140,7 @@ public actor SparkConnectClient {
   }
 
   /// Create a ``ConfigRequest`` for `GetAll` operation.
-  /// - Returns: <#description#>
+  /// - Returns: A `ConfigRequest` instance.
   func getConfigRequestGetAll() -> ConfigRequest {
     var request = ConfigRequest()
     request.operation = ConfigRequest.Operation()
