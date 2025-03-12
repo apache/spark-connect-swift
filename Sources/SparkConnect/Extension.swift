@@ -48,7 +48,7 @@ extension String {
 }
 
 extension [String: String] {
-  /// Get an array of`KeyValue`from `[String: String]`.
+  /// Get an array of `KeyValue` from `[String: String]`.
   var toSparkConnectKeyValue: [KeyValue] {
     var array = [KeyValue]()
     for keyValue in self {
