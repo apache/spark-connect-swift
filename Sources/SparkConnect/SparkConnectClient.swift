@@ -107,6 +107,35 @@ public actor SparkConnectClient {
     }
   }
 
+  /// Create a ``ConfigRequest`` instance for `Unset` operation.
+  /// - Parameter key: A string for key to unset.
+  /// - Returns: A ``ConfigRequest`` instance.
+  func getConfigRequestUnset(keys: [String]) -> ConfigRequest {
+    var request = ConfigRequest()
+    request.operation = ConfigRequest.Operation()
+    var unset = ConfigRequest.Unset()
+    unset.keys = keys
+    request.operation.opType = .unset(unset)
+    return request
+  }
+
+  func unsetConf(keys: [String]) async throws -> Bool {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: self.host, port: self.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      var request = getConfigRequestUnset(keys: keys)
+      request.clientType = clientType
+      request.userContext = userContext
+      request.sessionID = self.sessionID!
+      let _ = try await service.config(request)
+      return true
+    }
+  }
+
   /// Create a ``ConfigRequest`` instance for `Get` operation.
   /// - Parameter keys: An array of keys to get.
   /// - Returns: A `ConfigRequest` instance.
