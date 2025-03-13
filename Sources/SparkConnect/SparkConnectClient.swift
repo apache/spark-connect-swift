@@ -269,6 +269,22 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
+    var sort = Sort()
+    sort.input = child
+    let expressions: [Spark_Connect_Expression.SortOrder] = cols.map {
+      var expression = Spark_Connect_Expression.SortOrder()
+      expression.child.exprType = .unresolvedAttribute($0.toUnresolvedAttribute)
+      return expression
+    }
+    sort.order = expressions
+    var relation = Relation()
+    relation.sort = sort
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getLimit(_ child: Relation, _ n: Int32) -> Plan {
     var limit = Limit()
     limit.input = child

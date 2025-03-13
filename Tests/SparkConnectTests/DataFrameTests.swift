@@ -117,6 +117,20 @@ struct DataFrameTests {
   }
 
   @Test
+  func sort() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(10).sort("id").count() == 10)
+    await spark.stop()
+  }
+
+  @Test
+  func orderBy() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(10).orderBy("id").count() == 10)
+    await spark.stop()
+  }
+
+  @Test
   func table() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("DROP TABLE IF EXISTS t").count() == 0)

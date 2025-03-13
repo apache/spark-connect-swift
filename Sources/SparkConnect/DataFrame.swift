@@ -194,12 +194,18 @@ public actor DataFrame: Sendable {
   }
 
   public func select(_ cols: String...) -> DataFrame {
-    let plan = SparkConnectClient.getProject(self.plan.root, cols)
-    return DataFrame(spark: self.spark, plan: plan)
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
+  }
+
+  public func sort(_ cols: String...) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
+  }
+
+  public func orderBy(_ cols: String...) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
   }
 
   public func limit(_ n: Int32) -> DataFrame {
-    let plan = SparkConnectClient.getLimit(self.plan.root, n)
-    return DataFrame(spark: self.spark, plan: plan)
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getLimit(self.plan.root, n))
   }
 }
