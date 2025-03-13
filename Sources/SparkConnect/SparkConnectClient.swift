@@ -268,4 +268,15 @@ public actor SparkConnectClient {
     plan.opType = .root(relation)
     return plan
   }
+
+  static func getLimit(_ child: Relation, _ n: Int32) -> Plan {
+    var limit = Limit()
+    limit.input = child
+    limit.limit = n
+    var relation = Relation()
+    relation.limit = limit
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
 }

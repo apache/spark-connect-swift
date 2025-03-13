@@ -24,6 +24,7 @@ typealias ExecutePlanRequest = Spark_Connect_ExecutePlanRequest
 typealias Plan = Spark_Connect_Plan
 typealias Project = Spark_Connect_Project
 typealias KeyValue = Spark_Connect_KeyValue
+typealias Limit = Spark_Connect_Limit
 typealias Range = Spark_Connect_Range
 typealias Relation = Spark_Connect_Relation
 typealias SparkConnectService = Spark_Connect_SparkConnectService

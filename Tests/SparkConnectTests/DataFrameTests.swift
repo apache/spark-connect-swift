@@ -108,6 +108,15 @@ struct DataFrameTests {
   }
 
   @Test
+  func limit() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(10).limit(0).count() == 0)
+    #expect(try await spark.range(10).limit(1).count() == 1)
+    #expect(try await spark.range(10).limit(2).count() == 2)
+    await spark.stop()
+  }
+
+  @Test
   func table() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("DROP TABLE IF EXISTS t").count() == 0)

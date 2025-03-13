@@ -197,4 +197,9 @@ public actor DataFrame: Sendable {
     let plan = SparkConnectClient.getProject(self.plan.root, cols)
     return DataFrame(spark: self.spark, plan: plan)
   }
+
+  public func limit(_ n: Int32) -> DataFrame {
+    let plan = SparkConnectClient.getLimit(self.plan.root, n)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
 }
