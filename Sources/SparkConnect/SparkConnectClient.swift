@@ -252,4 +252,20 @@ public actor SparkConnectClient {
     request.analyze = .schema(schema)
     return request
   }
+
+  static func getProject(_ child: Relation, _ cols: [String]) -> Plan {
+    var project = Project()
+    project.input = child
+    let expressions: [Spark_Connect_Expression] = cols.map {
+      var expression = Spark_Connect_Expression()
+      expression.exprType = .unresolvedAttribute($0.toUnresolvedAttribute)
+      return expression
+    }
+    project.expressions = expressions
+    var relation = Relation()
+    relation.project = project
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
 }

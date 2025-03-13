@@ -45,6 +45,12 @@ extension String {
     keyValue.key = self
     return keyValue
   }
+
+  var toUnresolvedAttribute: UnresolvedAttribute {
+    var attribute = UnresolvedAttribute()
+    attribute.unparsedIdentifier = self
+    return attribute
+  }
 }
 
 extension [String: String] {

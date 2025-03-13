@@ -36,7 +36,7 @@ public actor DataFrame: Sendable {
   /// - Parameters:
   ///   - spark: A ``SparkSession`` instance to use.
   ///   - plan: A plan to execute.
-  init(spark: SparkSession, plan: Plan) async throws {
+  init(spark: SparkSession, plan: Plan) {
     self.spark = spark
     self.plan = plan
   }
@@ -191,5 +191,10 @@ public actor DataFrame: Sendable {
       }
       print(table.render())
     }
+  }
+
+  public func select(_ cols: String...) -> DataFrame {
+    let plan = SparkConnectClient.getProject(self.plan.root, cols)
+    return DataFrame(spark: self.spark, plan: plan)
   }
 }
