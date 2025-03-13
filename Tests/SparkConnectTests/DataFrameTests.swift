@@ -113,6 +113,7 @@ struct DataFrameTests {
     #expect(try await spark.range(10).limit(0).count() == 0)
     #expect(try await spark.range(10).limit(1).count() == 1)
     #expect(try await spark.range(10).limit(2).count() == 2)
+    #expect(try await spark.range(10).limit(15).count() == 10)
     await spark.stop()
   }
 
