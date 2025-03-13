@@ -221,7 +221,7 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getLimit(self.plan.root, n))
   }
 
-  /// Chec if the ``DataFrame`` is empty and returns a boolean value.
+  /// Checks if the ``DataFrame`` is empty and returns a boolean value.
   /// - Returns: `true` if the ``DataFrame`` is empty, `false` otherwise.
   public func isEmpty() async throws -> Bool {
     return try await select().limit(1).count() == 0
