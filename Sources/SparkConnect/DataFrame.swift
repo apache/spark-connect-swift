@@ -207,9 +207,9 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
   }
 
-  /// <#Description#>
-  /// - Parameter cols: <#cols description#>
-  /// - Returns: <#description#>
+  /// Return a new ``DataFrame`` sorted by the specified column(s).
+  /// - Parameter cols: Column names.
+  /// - Returns: A sorted ``DataFrame``
   public func orderBy(_ cols: String...) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
   }
