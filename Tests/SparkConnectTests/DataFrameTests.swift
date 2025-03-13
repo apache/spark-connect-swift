@@ -117,6 +117,14 @@ struct DataFrameTests {
   }
 
   @Test
+  func isEmpty() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(0).isEmpty())
+    #expect(!(try await spark.range(1).isEmpty()))
+    await spark.stop()
+  }
+
+  @Test
   func sort() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(10).sort("id").count() == 10)

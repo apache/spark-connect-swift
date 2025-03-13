@@ -193,19 +193,37 @@ public actor DataFrame: Sendable {
     }
   }
 
+  /// Projects a set of expressions and returns a new ``DataFrame``.
+  /// - Parameter cols: Column names
+  /// - Returns: A ``DataFrame`` with subset of columns.
   public func select(_ cols: String...) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
   }
 
+  /// Return a new ``DataFrame`` sorted by the specified column(s).
+  /// - Parameter cols: Column names.
+  /// - Returns: A sorted ``DataFrame``
   public func sort(_ cols: String...) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
   }
 
+  /// <#Description#>
+  /// - Parameter cols: <#cols description#>
+  /// - Returns: <#description#>
   public func orderBy(_ cols: String...) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
   }
 
+  /// Limits the result count to the number specified.
+  /// - Parameter n: Number of records to return. Will return this number of records or all records if the ``DataFrame`` contains less than this number of records.
+  /// - Returns: A subset of the records
   public func limit(_ n: Int32) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getLimit(self.plan.root, n))
+  }
+
+  /// Chec if the ``DataFrame`` is empty and returns a boolean value.
+  /// - Returns: `true` if the ``DataFrame`` is empty, `false` otherwise.
+  public func isEmpty() async throws -> Bool {
+    return try await select().limit(1).count() == 0
   }
 }
