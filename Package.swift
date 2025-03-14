@@ -53,7 +53,10 @@ let package = Package(
     ),
     .testTarget(
       name: "SparkConnectTests",
-      dependencies: ["SparkConnect"]
+      dependencies: ["SparkConnect"],
+      resources: [
+        .copy("Resources/queries")
+      ]
     ),
   ]
 )

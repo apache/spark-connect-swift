@@ -16,5 +16,6 @@ header:
     - '.nojekyll'
     - 'Package.swift'
     - '**/*pb.swift'
+    - 'Tests/SparkConnectTests/Resources/queries/**'
 
   comment: on-failure
