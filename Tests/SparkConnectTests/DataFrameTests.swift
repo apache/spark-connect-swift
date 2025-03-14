@@ -138,8 +138,6 @@ struct DataFrameTests {
   func orderBy() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let expected = (1...10).map{ [String($0)] }
-    print(expected)
-    print(try await spark.range(10, 0, -1).orderBy("id").collect())
     #expect(try await spark.range(10, 0, -1).orderBy("id").collect() == expected)
     await spark.stop()
   }
