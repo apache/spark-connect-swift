@@ -45,12 +45,10 @@ public actor SparkSession {
   ///   - userID: an optional user ID. If absent, `SPARK_USER` environment or ``ProcessInfo.processInfo.userName`` is used.
   init(_ connection: String, _ userID: String? = nil) {
     let processInfo = ProcessInfo.processInfo
-#if os(iOS) || os(watchOS) || os(tvOS)
-    let userName = processInfo.environment["SPARK_USER"] ?? ""
-#elseif os(macOS) || os(Linux)
+#if os(macOS) || os(Linux)
     let userName = processInfo.environment["SPARK_USER"] ?? processInfo.userName
 #else
-    assert(false, "Unsupported platform")
+    let userName = processInfo.environment["SPARK_USER"] ?? ""
 #endif
     self.client = SparkConnectClient(remote: connection, user: userID ?? userName)
     self.conf = RuntimeConf(self.client)

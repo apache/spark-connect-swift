@@ -275,9 +275,11 @@ public actor SparkConnectClient {
     let expressions: [Spark_Connect_Expression.SortOrder] = cols.map {
       var expression = Spark_Connect_Expression.SortOrder()
       expression.child.exprType = .unresolvedAttribute($0.toUnresolvedAttribute)
+      expression.direction = .ascending
       return expression
     }
     sort.order = expressions
+    sort.isGlobal = true
     var relation = Relation()
     relation.sort = sort
     var plan = Plan()

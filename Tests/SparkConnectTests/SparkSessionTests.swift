@@ -41,7 +41,11 @@ struct SparkSessionTests {
 
   @Test func userContext() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
+#if os(macOS) || os(Linux)
     let defaultUserContext = ProcessInfo.processInfo.userName.toUserContext
+#else
+    let defaultUserContext = "".toUserContext
+#endif
     #expect(await spark.client.userContext == defaultUserContext)
     await spark.stop()
   }

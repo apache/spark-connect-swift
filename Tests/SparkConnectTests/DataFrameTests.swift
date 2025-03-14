@@ -125,19 +125,25 @@ struct DataFrameTests {
     await spark.stop()
   }
 
+#if !os(Linux)
   @Test
   func sort() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.range(10).sort("id").count() == 10)
+    let expected = (1...10).map{ [String($0)] }
+    #expect(try await spark.range(10, 0, -1).sort("id").collect() == expected)
     await spark.stop()
   }
 
   @Test
   func orderBy() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.range(10).orderBy("id").count() == 10)
+    let expected = (1...10).map{ [String($0)] }
+    print(expected)
+    print(try await spark.range(10, 0, -1).orderBy("id").collect())
+    #expect(try await spark.range(10, 0, -1).orderBy("id").collect() == expected)
     await spark.stop()
   }
+#endif
 
   @Test
   func table() async throws {
@@ -153,6 +159,17 @@ struct DataFrameTests {
   }
 
 #if !os(Linux)
+  @Test
+  func collect() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(0).collect().isEmpty)
+    #expect(
+      try await spark.sql(
+        "SELECT * FROM VALUES (1, true, 'abc'), (null, null, null), (3, false, 'def')"
+      ).collect() == [["1", "true", "abc"], [nil, nil, nil], ["3", "false", "def"]])
+    await spark.stop()
+  }
+
   @Test
   func show() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
