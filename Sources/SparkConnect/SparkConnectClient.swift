@@ -64,12 +64,9 @@ public actor SparkConnectClient {
 
       self.sessionID = sessionID
       let service = SparkConnectService.Client(wrapping: client)
-      let version = AnalyzePlanRequest.SparkVersion()
-      var request = AnalyzePlanRequest()
-      request.clientType = clientType
-      request.userContext = userContext
-      request.sessionID = self.sessionID!
-      request.analyze = .sparkVersion(version)
+      let request = analyze(self.sessionID!, {
+        return OneOf_Analyze.sparkVersion(AnalyzePlanRequest.SparkVersion())
+      })
       let response = try await service.analyzePlan(request)
       return response
     }
@@ -243,13 +240,19 @@ public actor SparkConnectClient {
   func getAnalyzePlanRequest(_ sessionID: String, _ plan: Plan) async
     -> AnalyzePlanRequest
   {
+    return analyze(sessionID, {
+      var schema = AnalyzePlanRequest.Schema()
+      schema.plan = plan
+      return OneOf_Analyze.schema(schema)
+    })
+  }
+
+  private func analyze(_ sessionID: String, _ f: () -> OneOf_Analyze) -> AnalyzePlanRequest {
     var request = AnalyzePlanRequest()
     request.clientType = clientType
     request.userContext = userContext
     request.sessionID = self.sessionID!
-    var schema = AnalyzePlanRequest.Schema()
-    schema.plan = plan
-    request.analyze = .schema(schema)
+    request.analyze = f()
     return request
   }
 
