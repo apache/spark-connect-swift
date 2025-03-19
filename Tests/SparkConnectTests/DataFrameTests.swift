@@ -193,7 +193,6 @@ struct DataFrameTests {
     try await spark.sql("DROP TABLE IF EXISTS t").show()
     await spark.stop()
   }
-#endif
 
   @Test
   func cache() async throws {
@@ -227,4 +226,5 @@ struct DataFrameTests {
     #expect(try await df.unpersist().count() == 30)
     await spark.stop()
   }
+#endif
 }
