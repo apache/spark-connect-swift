@@ -256,6 +256,41 @@ public actor SparkConnectClient {
     return request
   }
 
+  func getPersist(
+    _ sessionID: String, _ plan: Plan, _ useDisk: Bool = true, _ useMemory: Bool = true,
+    _ useOffHeap: Bool = false, _ deserialized: Bool = true, _ replication: Int32 = 1
+  ) async
+    -> AnalyzePlanRequest
+  {
+    return analyze(
+      sessionID,
+      {
+        var persist = AnalyzePlanRequest.Persist()
+        var level = StorageLevel()
+        level.useDisk = useDisk
+        level.useMemory = useMemory
+        level.useOffHeap = useOffHeap
+        level.deserialized = deserialized
+        level.replication = replication
+        persist.storageLevel = level
+        persist.relation = plan.root
+        return OneOf_Analyze.persist(persist)
+      })
+  }
+
+  func getUnpersist(_ sessionID: String, _ plan: Plan, _ blocking: Bool = false) async
+    -> AnalyzePlanRequest
+  {
+    return analyze(
+      sessionID,
+      {
+        var unpersist = AnalyzePlanRequest.Unpersist()
+        unpersist.relation = plan.root
+        unpersist.blocking = blocking
+        return OneOf_Analyze.unpersist(unpersist)
+      })
+  }
+
   static func getProject(_ child: Relation, _ cols: [String]) -> Plan {
     var project = Project()
     project.input = child

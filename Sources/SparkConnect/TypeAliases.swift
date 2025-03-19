@@ -30,5 +30,6 @@ typealias Range = Spark_Connect_Range
 typealias Relation = Spark_Connect_Relation
 typealias SparkConnectService = Spark_Connect_SparkConnectService
 typealias Sort = Spark_Connect_Sort
+typealias StorageLevel = Spark_Connect_StorageLevel
 typealias UserContext = Spark_Connect_UserContext
 typealias UnresolvedAttribute = Spark_Connect_Expression.UnresolvedAttribute

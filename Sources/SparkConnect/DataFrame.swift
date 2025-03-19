@@ -245,4 +245,43 @@ public actor DataFrame: Sendable {
   public func isEmpty() async throws -> Bool {
     return try await select().limit(1).count() == 0
   }
+
+  public func cache() async throws -> DataFrame {
+    return try await persist()
+  }
+
+  public func persist(
+    useDisk: Bool = true, useMemory: Bool = true, useOffHeap: Bool = false,
+    deserialized: Bool = true, replication: Int32 = 1
+  )
+    async throws -> DataFrame
+  {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: spark.client.host, port: spark.client.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      _ = try await service.analyzePlan(
+        spark.client.getPersist(
+          spark.sessionID, plan, useDisk, useMemory, useOffHeap, deserialized, replication))
+    }
+
+    return self
+  }
+
+  public func unpersist(blocking: Bool = false) async throws -> DataFrame {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: spark.client.host, port: spark.client.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      _ = try await service.analyzePlan(spark.client.getUnpersist(spark.sessionID, plan, blocking))
+    }
+
+    return self
+  }
 }

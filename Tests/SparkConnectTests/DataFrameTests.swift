@@ -194,4 +194,37 @@ struct DataFrameTests {
     await spark.stop()
   }
 #endif
+
+  @Test
+  func cache() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(10).cache().count() == 10)
+    await spark.stop()
+  }
+
+  @Test
+  func persist() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(20).persist().count() == 20)
+    #expect(try await spark.range(21).persist(useDisk: false).count() == 21)
+    await spark.stop()
+  }
+
+  @Test
+  func persistInvalidStorageLevel() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    try await #require(throws: Error.self) {
+      let _ = try await spark.range(9999).persist(replication: 0).count()
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func unpersist() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(30)
+    #expect(try await df.persist().count() == 30)
+    #expect(try await df.unpersist().count() == 30)
+    await spark.stop()
+  }
 }
