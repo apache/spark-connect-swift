@@ -106,7 +106,7 @@ public actor SparkSession {
   ///   - step: A value for the step.
   /// - Returns: A ``DataFrame`` instance.
   public func range(_ start: Int64, _ end: Int64, _ step: Int64 = 1) async throws -> DataFrame {
-    return try await DataFrame(spark: self, plan: client.getPlanRange(start, end, step))
+    return await DataFrame(spark: self, plan: client.getPlanRange(start, end, step))
   }
 
   /// Create a ``DataFrame`` for the given SQL statement.
