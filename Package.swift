@@ -34,9 +34,9 @@ let package = Package(
       targets: ["SparkConnect"])
   ],
   dependencies: [
-    .package(url: "https://github.com/grpc/grpc-swift.git", from: "2.1.0"),
+    .package(url: "https://github.com/grpc/grpc-swift.git", from: "2.1.2"),
     .package(url: "https://github.com/grpc/grpc-swift-protobuf.git", from: "1.1.0"),
-    .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", from: "1.0.1"),
+    .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", from: "1.0.2"),
     .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
     .package(url: "https://github.com/google/flatbuffers.git", branch: "v24.3.7"),
   ],
