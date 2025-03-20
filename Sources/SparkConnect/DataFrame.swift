@@ -173,6 +173,9 @@ public actor DataFrame: Sendable {
           let str = column.array as! AsString
           if column.data.isNull(i) {
             values.append(nil)
+          } else if column.data.type.info == ArrowType.ArrowBinary {
+            let binary = str.asString(i).utf8.map { String(format: "%02x", $0) }.joined(separator: " ")
+            values.append("[\(binary)]")
           } else {
             values.append(str.asString(i))
           }
@@ -201,6 +204,9 @@ public actor DataFrame: Sendable {
             let str = column.array as! AsString
             if column.data.isNull(i) {
               values.append("NULL")
+            } else if column.data.type.info == ArrowType.ArrowBinary {
+              let binary = str.asString(i).utf8.map { String(format: "%02x", $0) }.joined(separator: " ")
+              values.append("[\(binary)]")
             } else {
               values.append(str.asString(i))
             }
