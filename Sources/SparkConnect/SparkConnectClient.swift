@@ -307,6 +307,17 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getFilter(_ child: Relation, _ conditionExpr: String) -> Plan {
+    var filter = Filter()
+    filter.input = child
+    filter.condition.expressionString = conditionExpr.toExpressionString
+    var relation = Relation()
+    relation.filter = filter
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
     var sort = Sort()
     sort.input = child

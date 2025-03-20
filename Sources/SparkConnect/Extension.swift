@@ -51,6 +51,12 @@ extension String {
     attribute.unparsedIdentifier = self
     return attribute
   }
+
+  var toExpressionString: ExpressionString {
+    var expression = ExpressionString()
+    expression.expression = self
+    return expression
+  }
 }
 
 extension [String: String] {
