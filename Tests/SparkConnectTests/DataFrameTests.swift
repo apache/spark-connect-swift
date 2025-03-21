@@ -108,6 +108,20 @@ struct DataFrameTests {
   }
 
   @Test
+  func filter() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(2025).filter("id % 2 == 0").count() == 1013)
+    await spark.stop()
+  }
+
+  @Test
+  func `where`() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(2025).where("id % 2 == 1").count() == 1012)
+    await spark.stop()
+  }
+
+  @Test
   func limit() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(10).limit(0).count() == 0)

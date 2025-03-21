@@ -225,6 +225,20 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
   }
 
+  /// Return a new ``DataFrame`` with filtered rows using the given expression.
+  /// - Parameter conditionExpr: A string to filter.
+  /// - Returns: A ``DataFrame`` with subset of rows.
+  public func filter(_ conditionExpr: String) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getFilter(self.plan.root, conditionExpr))
+  }
+
+  /// Return a new ``DataFrame`` with filtered rows using the given expression.
+  /// - Parameter conditionExpr: A string to filter.
+  /// - Returns: A ``DataFrame`` with subset of rows.
+  public func `where`(_ conditionExpr: String) -> DataFrame {
+    return filter(conditionExpr)
+  }
+
   /// Return a new ``DataFrame`` sorted by the specified column(s).
   /// - Parameter cols: Column names.
   /// - Returns: A sorted ``DataFrame``
