@@ -69,6 +69,17 @@ extension String {
     }
     return mode
   }
+
+  var toSaveMode: SaveMode {
+    return switch self.lowercased() {
+    case "append": SaveMode.append
+    case "overwrite": SaveMode.overwrite
+    case "error": SaveMode.errorIfExists
+    case "errorIfExists": SaveMode.errorIfExists
+    case "ignore": SaveMode.ignore
+    default: SaveMode.errorIfExists
+    }
+  }
 }
 
 extension [String: String] {

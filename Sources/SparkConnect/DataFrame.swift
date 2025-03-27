@@ -50,6 +50,10 @@ public actor DataFrame: Sendable {
     self.plan = sqlText.toSparkConnectPlan
   }
 
+  public func getPlan() -> Sendable {
+    return self.plan
+  }
+
   /// Set the schema. This is used to store the analized schema response from `Spark Connect` server.
   /// - Parameter schema: <#schema description#>
   private func setSchema(_ schema: DataType) {
@@ -380,6 +384,13 @@ public actor DataFrame: Sendable {
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
       let response = try await service.analyzePlan(spark.client.getTreeString(spark.sessionID, plan, level))
       print(response.treeString.treeString)
+    }
+  }
+
+  /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.
+  var write: DataFrameWriter {
+    get {
+      return DataFrameWriter(df: self)
     }
   }
 }

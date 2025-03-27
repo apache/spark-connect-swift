@@ -361,4 +361,30 @@ public actor SparkConnectClient {
     plan.opType = .root(relation)
     return plan
   }
+
+  var result: [ExecutePlanResponse] = []
+  private func addResponse(_ response: ExecutePlanResponse) {
+    self.result.append(response)
+  }
+
+  func execute(_ sessionID: String, _ command: Command) async throws -> [ExecutePlanResponse] {
+    self.result.removeAll()
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: self.host, port: self.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      var plan = Plan()
+      plan.opType = .command(command)
+      try await service.executePlan(getExecutePlanRequest(sessionID, plan)) {
+        response in
+        for try await m in response.messages {
+          await self.addResponse(m)
+        }
+      }
+    }
+    return result
+  }
 }

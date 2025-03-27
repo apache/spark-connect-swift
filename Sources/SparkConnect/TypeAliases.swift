@@ -18,11 +18,13 @@
 
 typealias AnalyzePlanRequest = Spark_Connect_AnalyzePlanRequest
 typealias AnalyzePlanResponse = Spark_Connect_AnalyzePlanResponse
+typealias Command = Spark_Connect_Command
 typealias ConfigRequest = Spark_Connect_ConfigRequest
 typealias DataSource = Spark_Connect_Read.DataSource
 typealias DataType = Spark_Connect_DataType
 typealias DayTimeInterval = Spark_Connect_DataType.DayTimeInterval
 typealias ExecutePlanRequest = Spark_Connect_ExecutePlanRequest
+typealias ExecutePlanResponse = Spark_Connect_ExecutePlanResponse
 typealias ExplainMode = AnalyzePlanRequest.Explain.ExplainMode
 typealias ExpressionString = Spark_Connect_Expression.ExpressionString
 typealias Filter = Spark_Connect_Filter
@@ -35,9 +37,11 @@ typealias Project = Spark_Connect_Project
 typealias Range = Spark_Connect_Range
 typealias Read = Spark_Connect_Read
 typealias Relation = Spark_Connect_Relation
+typealias SaveMode = Spark_Connect_WriteOperation.SaveMode
 typealias SparkConnectService = Spark_Connect_SparkConnectService
 typealias Sort = Spark_Connect_Sort
 typealias StructType = Spark_Connect_DataType.Struct
 typealias UserContext = Spark_Connect_UserContext
 typealias UnresolvedAttribute = Spark_Connect_Expression.UnresolvedAttribute
+typealias WriteOperation = Spark_Connect_WriteOperation
 typealias YearMonthInterval = Spark_Connect_DataType.YearMonthInterval
