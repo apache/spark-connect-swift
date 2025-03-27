@@ -98,22 +98,6 @@ public actor DataFrameReader: Sendable {
     return DataFrame(spark: sparkSession, plan: plan)
   }
 
-  /// Loads an Avro file and returns the result as a `DataFrame`.
-  /// - Parameter path: A path string
-  /// - Returns: A `DataFrame`.
-  public func avro(_ path: String) -> DataFrame {
-    self.source = "avro"
-    return load(path)
-  }
-
-  /// Loads Avro files and returns the result as a `DataFrame`.
-  /// - Parameter paths: Path strings
-  /// - Returns: A `DataFrame`.
-  public func avro(_ paths: String...) -> DataFrame {
-    self.source = "avro"
-    return load(paths)
-  }
-
   /// Loads a CSV file and returns the result as a `DataFrame`. See the documentation on the other
   /// overloaded `csv()` method for more details.
   /// - Parameter path: A path string

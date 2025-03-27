@@ -26,16 +26,6 @@ import Testing
 struct DataFrameReaderTests {
 
   @Test
-  func avro() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let path = "../examples/src/main/resources/users.avro"
-    #expect(try await spark.read.format("avro").load(path).count() == 2)
-    #expect(try await spark.read.avro(path).count() == 2)
-    #expect(try await spark.read.avro(path, path).count() == 4)
-    await spark.stop()
-  }
-
-  @Test
   func csv() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let path = "../examples/src/main/resources/people.csv"
