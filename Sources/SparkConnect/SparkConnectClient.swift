@@ -256,23 +256,14 @@ public actor SparkConnectClient {
     return request
   }
 
-  func getPersist(
-    _ sessionID: String, _ plan: Plan, _ useDisk: Bool = true, _ useMemory: Bool = true,
-    _ useOffHeap: Bool = false, _ deserialized: Bool = true, _ replication: Int32 = 1
-  ) async
+  func getPersist(_ sessionID: String, _ plan: Plan, _ storageLevel: StorageLevel) async
     -> AnalyzePlanRequest
   {
     return analyze(
       sessionID,
       {
         var persist = AnalyzePlanRequest.Persist()
-        var level = StorageLevel()
-        level.useDisk = useDisk
-        level.useMemory = useMemory
-        level.useOffHeap = useOffHeap
-        level.deserialized = deserialized
-        level.replication = replication
-        persist.storageLevel = level
+        persist.storageLevel = storageLevel.toSparkConnectStorageLevel
         persist.relation = plan.root
         return OneOf_Analyze.persist(persist)
       })

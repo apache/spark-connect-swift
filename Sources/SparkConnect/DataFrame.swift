@@ -294,11 +294,10 @@ public actor DataFrame: Sendable {
     return try await persist()
   }
 
-  public func persist(
-    useDisk: Bool = true, useMemory: Bool = true, useOffHeap: Bool = false,
-    deserialized: Bool = true, replication: Int32 = 1
-  )
-    async throws -> DataFrame
+  /// Persist this `DataFrame` with the given storage level.
+  /// - Parameter storageLevel: A storage level to apply.
+  public func persist(storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK) async throws
+    -> DataFrame
   {
     try await withGRPCClient(
       transport: .http2NIOPosix(
@@ -308,8 +307,7 @@ public actor DataFrame: Sendable {
     ) { client in
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
       _ = try await service.analyzePlan(
-        spark.client.getPersist(
-          spark.sessionID, plan, useDisk, useMemory, useOffHeap, deserialized, replication))
+        spark.client.getPersist(spark.sessionID, plan, storageLevel))
     }
 
     return self

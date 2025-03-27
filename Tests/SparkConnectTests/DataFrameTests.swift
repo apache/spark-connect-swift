@@ -236,7 +236,7 @@ struct DataFrameTests {
   func persist() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(20).persist().count() == 20)
-    #expect(try await spark.range(21).persist(useDisk: false).count() == 21)
+    #expect(try await spark.range(21).persist(storageLevel: StorageLevel.MEMORY_ONLY).count() == 21)
     await spark.stop()
   }
 
@@ -244,7 +244,9 @@ struct DataFrameTests {
   func persistInvalidStorageLevel() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await #require(throws: Error.self) {
-      let _ = try await spark.range(9999).persist(replication: 0).count()
+      var invalidLevel = StorageLevel.DISK_ONLY
+      invalidLevel.replication = 0
+      let _ = try await spark.range(9999).persist(storageLevel: invalidLevel).count()
     }
     await spark.stop()
   }
