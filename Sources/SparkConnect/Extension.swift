@@ -77,3 +77,9 @@ extension Data {
   /// Get an `Int32` value from unsafe 4 bytes.
   var int32: Int32 { withUnsafeBytes({ $0.load(as: Int32.self) }) }
 }
+
+extension SparkSession: Equatable {
+  public static func == (lhs: SparkSession, rhs: SparkSession) -> Bool {
+    return lhs.sessionID == rhs.sessionID
+  }
+}

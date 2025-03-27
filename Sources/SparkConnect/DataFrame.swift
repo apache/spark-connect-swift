@@ -62,6 +62,12 @@ public actor DataFrame: Sendable {
     self.batches.append(contentsOf: batches)
   }
 
+  /// Return the `SparkSession` of this `DataFrame`.
+  /// - Returns: A `SparkSession`
+  public func sparkSession() -> SparkSession {
+    return self.spark
+  }
+
   /// A method to access the underlying Spark's `RDD`.
   /// In `Spark Connect`, this feature is not allowed by design.
   public func rdd() throws {

@@ -62,7 +62,7 @@ public actor SparkSession {
   }
 
   /// A unique session ID for this session from client.
-  var sessionID: String = UUID().uuidString
+  nonisolated let sessionID: String = UUID().uuidString
 
   /// Get the current session ID
   /// - Returns: the current session ID

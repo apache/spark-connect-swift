@@ -24,6 +24,13 @@ import Testing
 /// A test suite for `DataFrame`
 struct DataFrameTests {
   @Test
+  func sparkSession() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(1).sparkSession() == spark)
+    await spark.stop()
+  }
+
+  @Test
   func rdd() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     await #expect(throws: SparkConnectError.UnsupportedOperationException) {
