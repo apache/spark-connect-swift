@@ -19,6 +19,7 @@
 typealias AnalyzePlanRequest = Spark_Connect_AnalyzePlanRequest
 typealias AnalyzePlanResponse = Spark_Connect_AnalyzePlanResponse
 typealias ConfigRequest = Spark_Connect_ConfigRequest
+typealias DataSource = Spark_Connect_Read.DataSource
 typealias DataType = Spark_Connect_DataType
 typealias ExecutePlanRequest = Spark_Connect_ExecutePlanRequest
 typealias ExpressionString = Spark_Connect_Expression.ExpressionString
@@ -29,6 +30,7 @@ typealias OneOf_Analyze = AnalyzePlanRequest.OneOf_Analyze
 typealias Plan = Spark_Connect_Plan
 typealias Project = Spark_Connect_Project
 typealias Range = Spark_Connect_Range
+typealias Read = Spark_Connect_Read
 typealias Relation = Spark_Connect_Relation
 typealias SparkConnectService = Spark_Connect_SparkConnectService
 typealias Sort = Spark_Connect_Sort

@@ -116,6 +116,12 @@ public actor SparkSession {
     return try await DataFrame(spark: self, sqlText: sqlText)
   }
 
+  var read: DataFrameReader {
+    get {
+      return DataFrameReader(sparkSession: self)
+    }
+  }
+
   /// This is defined as the return type of `SparkSession.sparkContext` method.
   /// This is an empty `Struct` type because `sparkContext` method is designed to throw
   /// `UNSUPPORTED_CONNECT_FEATURE.SESSION_SPARK_CONTEXT`.
