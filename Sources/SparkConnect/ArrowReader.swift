@@ -298,10 +298,8 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
             messageEndOffset: messageEndOffset
           ).get()
           result.batches.append(recordBatch)
-        } catch let error as ArrowError {
+        } catch let error {
           return .failure(error)
-        } catch {
-          return .failure(.unknownError("Unexpected error: \(error)"))
         }
       default:
         return .failure(.unknownError("Unhandled header type: \(message.headerType)"))
@@ -361,10 +359,8 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
         ).get()
         result.batches.append(recordBatch)
         return .success(())
-      } catch let error as ArrowError {
+      } catch let error {
         return .failure(error)
-      } catch {
-        return .failure(.unknownError("Unexpected error: \(error)"))
       }
 
     default:
