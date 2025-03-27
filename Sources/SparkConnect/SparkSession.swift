@@ -17,6 +17,7 @@
 // under the License.
 //
 
+import Dispatch
 import Foundation
 import GRPCCore
 import GRPCNIOTransportHTTP2
@@ -116,10 +117,24 @@ public actor SparkSession {
     return try await DataFrame(spark: self, sqlText: sqlText)
   }
 
+  /// Returns a ``DataFrameReader`` that can be used to read non-streaming data in as a
+  /// `DataFrame`
   var read: DataFrameReader {
     get {
       return DataFrameReader(sparkSession: self)
     }
+  }
+
+  /// Executes some code block and prints to stdout the time taken to execute the block.
+  /// - Parameter f: A function to execute.
+  /// - Returns: The result of the executed code.
+  public func time<T: Sendable>(_ f: () async throws -> T) async throws -> T {
+    let start = DispatchTime.now()
+    let ret = try await f()
+    let end = DispatchTime.now()
+    let elapsed = (end.uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000
+    print("Time taken: \(elapsed) ms")
+    return ret
   }
 
   /// This is defined as the return type of `SparkSession.sparkContext` method.

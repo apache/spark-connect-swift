@@ -74,4 +74,15 @@ struct SparkSessionTests {
     #expect(try await spark.range(0, 100, 2).count() == 50)
     await spark.stop()
   }
+
+  @Test
+  func time() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.time(spark.range(1000).count) == 1000)
+#if !os(Linux)
+    #expect(try await spark.time(spark.range(1).collect) == [["0"]])
+    try await spark.time(spark.range(10).show)
+#endif
+    await spark.stop()
+  }
 }
