@@ -330,4 +330,29 @@ public actor DataFrame: Sendable {
 
     return self
   }
+
+  public func explain() async throws {
+    try await explain("simple")
+  }
+
+  public func explain(_ extended: Bool) async throws {
+    if (extended) {
+      try await explain("extended")
+    } else {
+      try await explain("simple")
+    }
+  }
+
+  public func explain(_ mode: String) async throws {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: spark.client.host, port: spark.client.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.analyzePlan(spark.client.getExplain(spark.sessionID, plan, mode))
+      print(response.explain.explainString)
+    }
+  }
 }

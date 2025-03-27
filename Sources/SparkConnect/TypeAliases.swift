@@ -22,6 +22,7 @@ typealias ConfigRequest = Spark_Connect_ConfigRequest
 typealias DataSource = Spark_Connect_Read.DataSource
 typealias DataType = Spark_Connect_DataType
 typealias ExecutePlanRequest = Spark_Connect_ExecutePlanRequest
+typealias ExplainMode = AnalyzePlanRequest.Explain.ExplainMode
 typealias ExpressionString = Spark_Connect_Expression.ExpressionString
 typealias Filter = Spark_Connect_Filter
 typealias KeyValue = Spark_Connect_KeyValue

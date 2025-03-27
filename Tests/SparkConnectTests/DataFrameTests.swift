@@ -71,6 +71,15 @@ struct DataFrameTests {
   }
 
   @Test
+  func explain() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    try await spark.range(1).explain()
+    try await spark.range(1).explain(true)
+    try await spark.range(1).explain("formatted")
+    await spark.stop()
+  }
+
+  @Test
   func count() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("SELECT 'spark' as swift").count() == 1)

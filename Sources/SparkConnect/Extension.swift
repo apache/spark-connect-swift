@@ -57,6 +57,18 @@ extension String {
     expression.expression = self
     return expression
   }
+
+  var toExplainMode: ExplainMode {
+    let mode = switch self {
+    case "codegen": ExplainMode.codegen
+    case "cost": ExplainMode.cost
+    case "extended": ExplainMode.extended
+    case "formatted": ExplainMode.formatted
+    case "simple": ExplainMode.simple
+    default: ExplainMode.simple
+    }
+    return mode
+  }
 }
 
 extension [String: String] {

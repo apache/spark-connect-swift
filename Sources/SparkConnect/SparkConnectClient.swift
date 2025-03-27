@@ -282,6 +282,18 @@ public actor SparkConnectClient {
       })
   }
 
+  func getExplain(_ sessionID: String, _ plan: Plan, _ mode: String) async -> AnalyzePlanRequest
+  {
+    return analyze(
+      sessionID,
+      {
+        var explain = AnalyzePlanRequest.Explain()
+        explain.plan = plan
+        explain.explainMode = mode.toExplainMode
+        return OneOf_Analyze.explain(explain)
+      })
+  }
+
   static func getProject(_ child: Relation, _ cols: [String]) -> Plan {
     var project = Project()
     project.input = child
