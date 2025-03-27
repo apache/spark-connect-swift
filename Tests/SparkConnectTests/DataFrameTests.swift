@@ -33,6 +33,16 @@ struct DataFrameTests {
   }
 
   @Test
+  func columns() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.sql("SELECT 1 as col1").columns() == ["col1"])
+    #expect(try await spark.sql("SELECT 1 as col1, 2 as col2").columns() == ["col1", "col2"])
+    #expect(try await spark.sql("SELECT CAST(null as STRING) col1").columns() == ["col1"])
+    #expect(try await spark.sql("DROP TABLE IF EXISTS nonexistent").columns() == [])
+    await spark.stop()
+  }
+
+  @Test
   func schema() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
 
