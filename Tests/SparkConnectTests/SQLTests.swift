@@ -28,6 +28,22 @@ struct SQLTests {
   let path = Bundle.module.path(forResource: "queries", ofType: "")!
   let encoder = JSONEncoder()
 
+  let regexID = /#\d+L?/
+  let regexPlanId = /plan_id=\d+/
+
+  private func removeID(_ str: String) -> String {
+    return str.replacing(regexPlanId, with: "plan_id=").replacing(regexID, with: "#")
+  }
+
+  @Test
+  func testRemoveID() {
+    #expect(removeID("123") == "123")
+    #expect(removeID("123L") == "123L")
+    #expect(removeID("#123") == "#")
+    #expect(removeID("#123L") == "#")
+    #expect(removeID("plan_id=123") == "plan_id=")
+  }
+
 #if !os(Linux)
   @Test
   func runAll() async throws {
@@ -38,8 +54,8 @@ struct SQLTests {
 
       let sql = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name)"), encoding: .utf8)
       let jsonData = try encoder.encode(try await spark.sql(sql).collect())
-      let answer = String(data: jsonData, encoding: .utf8)!
-      let expected = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).json"), encoding: .utf8)
+      let answer = removeID(String(data: jsonData, encoding: .utf8)!)
+      let expected = removeID(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).json"), encoding: .utf8))
       #expect(answer == expected.trimmingCharacters(in: .whitespacesAndNewlines))
     }
     await spark.stop()
