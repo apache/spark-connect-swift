@@ -79,6 +79,37 @@ struct DataFrameTests {
   }
 
   @Test
+  func dtypes() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = [
+      ("null", "void"),
+      ("127Y", "tinyint"),
+      ("32767S", "smallint"),
+      ("2147483647", "int"),
+      ("9223372036854775807L", "bigint"),
+      ("1.0F", "float"),
+      ("1.0D", "double"),
+      ("1.23", "decimal(3,2)"),
+      ("binary('abc')", "binary"),
+      ("true", "boolean"),
+      ("'abc'", "string"),
+      ("INTERVAL 1 YEAR", "interval year"),
+      ("INTERVAL 1 MONTH", "interval month"),
+      ("INTERVAL 1 DAY", "interval day"),
+      ("INTERVAL 1 HOUR", "interval hour"),
+      ("INTERVAL 1 MINUTE", "interval minute"),
+      ("INTERVAL 1 SECOND", "interval second"),
+      ("array(1, 2, 3)", "array<int>"),
+      ("struct(1, 'a')", "struct<col1:int,col2:string>"),
+      ("map('language', 'Swift')", "map<string,string>"),
+    ]
+    for pair in expected {
+      #expect(try await spark.sql("SELECT \(pair.0)").dtypes[0].1 == pair.1)
+    }
+    await spark.stop()
+  }
+
+  @Test
   func explain() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.range(1).explain()

@@ -95,6 +95,13 @@ public actor DataFrame: Sendable {
     return try self.schema!.jsonString()
   }
 
+  var dtypes: [(String, String)] {
+    get async throws {
+      try await analyzePlanIfNeeded()
+      return try self.schema!.struct.fields.map { ($0.name, try $0.dataType.simpleString) }
+    }
+  }
+
   private func analyzePlanIfNeeded() async throws {
     if self.schema != nil {
       return

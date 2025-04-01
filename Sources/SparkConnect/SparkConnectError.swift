@@ -21,4 +21,5 @@
 enum SparkConnectError: Error {
   case UnsupportedOperationException
   case InvalidSessionIDException
+  case InvalidTypeException
 }
