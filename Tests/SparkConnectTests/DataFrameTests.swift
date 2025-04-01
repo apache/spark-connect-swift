@@ -71,6 +71,14 @@ struct DataFrameTests {
   }
 
   @Test
+  func printSchema() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    try await spark.sql("SELECT struct(1, 2)").printSchema()
+    try await spark.sql("SELECT struct(1, 2)").printSchema(1)
+    await spark.stop()
+  }
+
+  @Test
   func explain() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.range(1).explain()

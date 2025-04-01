@@ -294,6 +294,18 @@ public actor SparkConnectClient {
       })
   }
 
+  func getTreeString(_ sessionID: String, _ plan: Plan, _ level: Int32) async -> AnalyzePlanRequest
+  {
+    return analyze(
+      sessionID,
+      {
+        var treeString = AnalyzePlanRequest.TreeString()
+        treeString.plan = plan
+        treeString.level = level
+        return OneOf_Analyze.treeString(treeString)
+      })
+  }
+
   static func getProject(_ child: Relation, _ cols: [String]) -> Plan {
     var project = Project()
     project.input = child

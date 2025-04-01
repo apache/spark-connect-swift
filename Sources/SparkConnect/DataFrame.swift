@@ -355,4 +355,24 @@ public actor DataFrame: Sendable {
       print(response.explain.explainString)
     }
   }
+
+  /// Prints the schema to the console in a nice tree format.
+  public func printSchema() async throws {
+    try await printSchema(Int32.max)
+  }
+
+  /// Prints the schema up to the given level to the console in a nice tree format.
+  /// - Parameter level: A level to be printed.
+  public func printSchema(_ level: Int32) async throws {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: spark.client.host, port: spark.client.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.analyzePlan(spark.client.getTreeString(spark.sessionID, plan, level))
+      print(response.treeString.treeString)
+    }
+  }
 }
