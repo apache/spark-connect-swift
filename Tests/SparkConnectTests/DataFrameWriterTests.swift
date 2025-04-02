@@ -112,6 +112,9 @@ struct DataFrameWriterTests {
     try await #require(throws: Error.self) {
       try await df.write.sortBy("col2").bucketBy(numBuckets: 3, "col2").csv(tmpDir)
     }
+    try await #require(throws: Error.self) {
+      try await df.write.bucketBy(numBuckets: 3, "col2").csv(tmpDir)
+    }
     await spark.stop()
   }
 }
