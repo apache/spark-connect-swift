@@ -282,6 +282,17 @@ public actor SparkConnectClient {
       })
   }
 
+  func getStorageLevel(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest
+  {
+    return analyze(
+      sessionID,
+      {
+        var level = AnalyzePlanRequest.GetStorageLevel()
+        level.relation = plan.root
+        return OneOf_Analyze.getStorageLevel(level)
+      })
+  }
+
   func getExplain(_ sessionID: String, _ plan: Plan, _ mode: String) async -> AnalyzePlanRequest
   {
     return analyze(

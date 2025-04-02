@@ -78,11 +78,29 @@ extension StorageLevel {
     level.replication = self.replication
     return level
   }
+
+  public static func == (lhs: StorageLevel, rhs: StorageLevel) -> Bool {
+    return lhs.useDisk == rhs.useDisk && lhs.useMemory == rhs.useMemory
+      && lhs.useOffHeap == rhs.useOffHeap && lhs.deserialized == rhs.deserialized
+      && lhs.replication == rhs.replication
+  }
 }
 
 extension StorageLevel: CustomStringConvertible {
   public var description: String {
     return
       "StorageLevel(useDisk: \(useDisk), useMemory: \(useMemory), useOffHeap: \(useOffHeap), deserialized: \(deserialized), replication: \(replication))"
+  }
+}
+
+extension Spark_Connect_StorageLevel {
+  var toStorageLevel: StorageLevel {
+    return StorageLevel(
+      useDisk: self.useDisk,
+      useMemory: self.useMemory,
+      useOffHeap: self.useOffHeap,
+      deserialized: self.deserialized,
+      replication: self.replication
+    )
   }
 }

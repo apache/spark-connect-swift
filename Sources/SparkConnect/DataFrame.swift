@@ -342,6 +342,21 @@ public actor DataFrame: Sendable {
     return self
   }
 
+  var storageLevel: StorageLevel {
+    get async throws {
+      try await withGRPCClient(
+        transport: .http2NIOPosix(
+          target: .dns(host: spark.client.host, port: spark.client.port),
+          transportSecurity: .plaintext
+        )
+      ) { client in
+        let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+        return try await service
+          .analyzePlan(spark.client.getStorageLevel(spark.sessionID, plan)).getStorageLevel.storageLevel.toStorageLevel
+      }
+    }
+  }
+
   public func explain() async throws {
     try await explain("simple")
   }

@@ -308,4 +308,22 @@ struct DataFrameTests {
     await spark.stop()
   }
 #endif
+
+  @Test
+  func storageLevel() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1)
+
+    _ = try await df.unpersist()
+    #expect(try await df.storageLevel == StorageLevel.NONE)
+    _ = try await df.persist()
+    #expect(try await df.storageLevel == StorageLevel.MEMORY_AND_DISK)
+
+    _ = try await df.unpersist()
+    #expect(try await df.storageLevel == StorageLevel.NONE)
+    _ = try await df.persist(storageLevel: StorageLevel.MEMORY_ONLY)
+    #expect(try await df.storageLevel == StorageLevel.MEMORY_ONLY)
+
+    await spark.stop()
+  }
 }
