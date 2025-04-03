@@ -29,7 +29,7 @@ import Synchronization
 public actor DataFrame: Sendable {
   var spark: SparkSession
   var plan: Plan
-  var schema: DataType? = nil
+  private var _schema: DataType? = nil
   private var batches: [RecordBatch] = [RecordBatch]()
 
   /// Create a new `DataFrame`instance with the given Spark session and plan.
@@ -57,7 +57,7 @@ public actor DataFrame: Sendable {
   /// Set the schema. This is used to store the analized schema response from `Spark Connect` server.
   /// - Parameter schema: <#schema description#>
   private func setSchema(_ schema: DataType) {
-    self.schema = schema
+    self._schema = schema
   }
 
   /// Add `Apache Arrow`'s `RecordBatch`s to the internal array.
@@ -67,9 +67,10 @@ public actor DataFrame: Sendable {
   }
 
   /// Return the `SparkSession` of this `DataFrame`.
-  /// - Returns: A `SparkSession`
-  public func sparkSession() -> SparkSession {
-    return self.spark
+  public var sparkSession: SparkSession {
+    get async throws {
+      return self.spark
+    }
   }
 
   /// A method to access the underlying Spark's `RDD`.
@@ -82,32 +83,35 @@ public actor DataFrame: Sendable {
   }
 
   /// Return an array of column name strings
-  /// - Returns: a string array
-  public func columns() async throws -> [String] {
-    var columns: [String] = []
-    try await analyzePlanIfNeeded()
-    for field in self.schema!.struct.fields {
-      columns.append(field.name)
+  public var columns: [String] {
+    get async throws {
+      var columns: [String] = []
+      try await analyzePlanIfNeeded()
+      for field in self._schema!.struct.fields {
+        columns.append(field.name)
+      }
+      return columns
     }
-    return columns
   }
 
   /// Return a `JSON` string of data type because we cannot expose the internal type ``DataType``.
-  /// - Returns: a `JSON` string.
-  public func schema() async throws -> String {
-    try await analyzePlanIfNeeded()
-    return try self.schema!.jsonString()
-  }
-
-  var dtypes: [(String, String)] {
+  public var schema: String {
     get async throws {
       try await analyzePlanIfNeeded()
-      return try self.schema!.struct.fields.map { ($0.name, try $0.dataType.simpleString) }
+      return try self._schema!.jsonString()
+    }
+  }
+
+  /// Returns all column names and their data types as an array.
+  public var dtypes: [(String, String)] {
+    get async throws {
+      try await analyzePlanIfNeeded()
+      return try self._schema!.struct.fields.map { ($0.name, try $0.dataType.simpleString) }
     }
   }
 
   private func analyzePlanIfNeeded() async throws {
-    if self.schema != nil {
+    if self._schema != nil {
       return
     }
     try await withGRPCClient(
@@ -224,7 +228,7 @@ public actor DataFrame: Sendable {
   public func show() async throws {
     try await execute()
 
-    if let schema = self.schema {
+    if let schema = self._schema {
       var columns: [TextTableColumn] = []
       for f in schema.struct.fields {
         columns.append(TextTableColumn(header: f.name))
@@ -342,7 +346,7 @@ public actor DataFrame: Sendable {
     return self
   }
 
-  var storageLevel: StorageLevel {
+  public var storageLevel: StorageLevel {
     get async throws {
       try await withGRPCClient(
         transport: .http2NIOPosix(
@@ -403,7 +407,7 @@ public actor DataFrame: Sendable {
   }
 
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.
-  var write: DataFrameWriter {
+  public var write: DataFrameWriter {
     get {
       return DataFrameWriter(df: self)
     }

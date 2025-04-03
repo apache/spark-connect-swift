@@ -75,7 +75,7 @@ public actor SparkSession {
   var serverSideSessionID: String = ""
 
   /// A variable for ``SparkContext``. This is designed to throw exceptions by Apache Spark.
-  var sparkContext: SparkContext {
+  public var sparkContext: SparkContext {
     get throws {
       // SQLSTATE: 0A000
       // [UNSUPPORTED_CONNECT_FEATURE.SESSION_SPARK_CONTEXT]
@@ -119,7 +119,7 @@ public actor SparkSession {
 
   /// Returns a ``DataFrameReader`` that can be used to read non-streaming data in as a
   /// `DataFrame`
-  var read: DataFrameReader {
+  public var read: DataFrameReader {
     get {
       return DataFrameReader(sparkSession: self)
     }
@@ -140,7 +140,7 @@ public actor SparkSession {
   /// This is defined as the return type of `SparkSession.sparkContext` method.
   /// This is an empty `Struct` type because `sparkContext` method is designed to throw
   /// `UNSUPPORTED_CONNECT_FEATURE.SESSION_SPARK_CONTEXT`.
-  struct SparkContext {
+  public struct SparkContext: Sendable {
   }
 
   /// A builder to create ``SparkSession``

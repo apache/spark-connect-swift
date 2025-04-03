@@ -26,7 +26,7 @@ struct DataFrameTests {
   @Test
   func sparkSession() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.range(1).sparkSession() == spark)
+    #expect(try await spark.range(1).sparkSession == spark)
     await spark.stop()
   }
 
@@ -42,10 +42,10 @@ struct DataFrameTests {
   @Test
   func columns() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.sql("SELECT 1 as col1").columns() == ["col1"])
-    #expect(try await spark.sql("SELECT 1 as col1, 2 as col2").columns() == ["col1", "col2"])
-    #expect(try await spark.sql("SELECT CAST(null as STRING) col1").columns() == ["col1"])
-    #expect(try await spark.sql("DROP TABLE IF EXISTS nonexistent").columns() == [])
+    #expect(try await spark.sql("SELECT 1 as col1").columns == ["col1"])
+    #expect(try await spark.sql("SELECT 1 as col1, 2 as col2").columns == ["col1", "col2"])
+    #expect(try await spark.sql("SELECT CAST(null as STRING) col1").columns == ["col1"])
+    #expect(try await spark.sql("DROP TABLE IF EXISTS nonexistent").columns == [])
     await spark.stop()
   }
 
@@ -53,19 +53,19 @@ struct DataFrameTests {
   func schema() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
 
-    let schema1 = try await spark.sql("SELECT 'a' as col1").schema()
+    let schema1 = try await spark.sql("SELECT 'a' as col1").schema
     #expect(
       schema1
         == #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
     )
 
-    let schema2 = try await spark.sql("SELECT 'a' as col1, 'b' as col2").schema()
+    let schema2 = try await spark.sql("SELECT 'a' as col1, 'b' as col2").schema
     #expect(
       schema2
         == #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}},{"name":"col2","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
     )
 
-    let emptySchema = try await spark.sql("DROP TABLE IF EXISTS nonexistent").schema()
+    let emptySchema = try await spark.sql("DROP TABLE IF EXISTS nonexistent").schema
     #expect(emptySchema == #"{"struct":{}}"#)
     await spark.stop()
   }
@@ -136,7 +136,7 @@ struct DataFrameTests {
   @Test
   func selectNone() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let emptySchema = try await spark.range(1).select().schema()
+    let emptySchema = try await spark.range(1).select().schema
     #expect(emptySchema == #"{"struct":{}}"#)
     await spark.stop()
   }
@@ -144,7 +144,7 @@ struct DataFrameTests {
   @Test
   func select() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let schema = try await spark.range(1).select("id").schema()
+    let schema = try await spark.range(1).select("id").schema
     #expect(
       schema
         == #"{"struct":{"fields":[{"name":"id","dataType":{"long":{}}}]}}"#
@@ -155,7 +155,7 @@ struct DataFrameTests {
   @Test
   func selectMultipleColumns() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let schema = try await spark.sql("SELECT * FROM VALUES (1, 2)").select("col2", "col1").schema()
+    let schema = try await spark.sql("SELECT * FROM VALUES (1, 2)").select("col2", "col1").schema
     #expect(
       schema
         == #"{"struct":{"fields":[{"name":"col2","dataType":{"integer":{}}},{"name":"col1","dataType":{"integer":{}}}]}}"#
@@ -167,7 +167,7 @@ struct DataFrameTests {
   func selectInvalidColumn() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await #require(throws: Error.self) {
-      let _ = try await spark.range(1).select("invalid").schema()
+      let _ = try await spark.range(1).select("invalid").schema
     }
     await spark.stop()
   }
