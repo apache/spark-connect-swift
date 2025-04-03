@@ -32,8 +32,7 @@ public actor DataFrameWriter: Sendable {
 
   var saveMode: String = "default"
 
-  // TODO: Case-insensitive Map
-  var extraOptions: [String: String] = [:]
+  var extraOptions: CaseInsensitiveDictionary = CaseInsensitiveDictionary()
 
   var partitioningColumns: [String]? = nil
 
@@ -146,7 +145,7 @@ public actor DataFrameWriter: Sendable {
       write.bucketBy = bucketBy
     }
 
-    for option in self.extraOptions {
+    for option in self.extraOptions.toStringDictionary() {
       write.options[option.key] = option.value
     }
 

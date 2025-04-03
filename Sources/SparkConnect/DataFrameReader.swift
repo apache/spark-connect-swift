@@ -32,8 +32,7 @@ public actor DataFrameReader: Sendable {
 
   var paths: [String] = []
 
-  // TODO: Case-insensitive Map
-  var extraOptions: [String: String] = [:]
+  var extraOptions: CaseInsensitiveDictionary = CaseInsensitiveDictionary([:])
 
   let sparkSession: SparkSession
 
@@ -84,7 +83,7 @@ public actor DataFrameReader: Sendable {
     var dataSource = DataSource()
     dataSource.format = self.source
     dataSource.paths = self.paths
-    dataSource.options = self.extraOptions
+    dataSource.options = self.extraOptions.toStringDictionary()
 
     var read = Read()
     read.dataSource = dataSource
