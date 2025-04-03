@@ -36,10 +36,16 @@ public struct CaseInsensitiveDictionary: Sendable {
       return keyLowerCasedDictionary[key.lowercased()]
     }
     set {
-      var newMap = originalDictionary.filter { $0.key.caseInsensitiveCompare(key) != .orderedSame }
-      newMap[key] = newValue
-      self.originalDictionary = newMap
-      self.keyLowerCasedDictionary[key.lowercased()] = newValue
+      let lowerKey = key.lowercased()
+      if let newValue = newValue {
+        keyLowerCasedDictionary[lowerKey] = newValue
+      } else {
+        keyLowerCasedDictionary.removeValue(forKey: lowerKey)
+      }
+      originalDictionary = originalDictionary.filter { $0.key.lowercased() != lowerKey }
+      if let newValue = newValue {
+        originalDictionary[key] = newValue
+      }
     }
   }
 
@@ -48,11 +54,7 @@ public struct CaseInsensitiveDictionary: Sendable {
   }
 
   public func toStringDictionary() -> [String: String] {
-    var dict = [String: String]()
-    for (key, value) in originalDictionary {
-      dict[key] = String(describing: value)
-    }
-    return dict
+    return originalDictionary.mapValues { String(describing: $0) }
   }
 
   public var count: Int {
