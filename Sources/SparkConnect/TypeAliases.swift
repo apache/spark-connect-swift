@@ -31,6 +31,7 @@ typealias Filter = Spark_Connect_Filter
 typealias KeyValue = Spark_Connect_KeyValue
 typealias Limit = Spark_Connect_Limit
 typealias MapType = Spark_Connect_DataType.Map
+typealias NamedTable = Spark_Connect_Read.NamedTable
 typealias OneOf_Analyze = AnalyzePlanRequest.OneOf_Analyze
 typealias Plan = Spark_Connect_Plan
 typealias Project = Spark_Connect_Project
