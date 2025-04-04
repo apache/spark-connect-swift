@@ -40,6 +40,33 @@ public actor DataFrameReader: Sendable {
     self.sparkSession = sparkSession
   }
 
+  /// Returns the specified table/view as a ``DataFrame``. If it's a table, it must support batch
+  /// reading and the returned ``DataFrame`` is the batch scan query plan of this table. If it's a
+  /// view, the returned ``DataFrame`` is simply the query plan of the view, which can either be a
+  /// batch or streaming query plan.
+  ///
+  /// - Parameter tableName: a qualified or unqualified name that designates a table or view. If a database is
+  /// specified, it identifies the table/view from the database. Otherwise, it first attempts to
+  /// find a temporary view with the given name and then match the table/view from the current
+  /// database. Note that, the global temporary view database is also valid here.
+  /// - Returns: A ``DataFrame`` instance.
+  public func table(_ tableName: String) -> DataFrame {
+    var namedTable = NamedTable()
+    namedTable.unparsedIdentifier = tableName
+    namedTable.options = self.extraOptions.toStringDictionary()
+
+    var read = Read()
+    read.namedTable = namedTable
+
+    var relation = Relation()
+    relation.read = read
+
+    var plan = Plan()
+    plan.opType = .root(relation)
+
+    return DataFrame(spark: sparkSession, plan: plan)
+  }
+
   /// Specifies the input data source format.
   /// - Parameter source: A string.
   /// - Returns: A `DataFrameReader`.
