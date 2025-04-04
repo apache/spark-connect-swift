@@ -6,10 +6,10 @@
 
 This is an experimental Swift library to show how to connect to a remote Apache Spark Connect Server and run SQL statements to manipulate remote data.
 
-So far, this library project is tracking the upstream changes like the [Apache Spark](https://spark.apache.org) 4.0.0 RC2 release and [Apache Arrow](https://arrow.apache.org) project's Swift-support.
+So far, this library project is tracking the upstream changes like the [Apache Spark](https://spark.apache.org) 4.0.0 RC3 release and [Apache Arrow](https://arrow.apache.org) project's Swift-support.
 
 ## Requirement
-- [Apache Spark 4.0.0 RC2 (March 2025)](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc2-bin/)
+- [Apache Spark 4.0.0 RC3 (March 2025)](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc3-bin/)
 - [Swift 6.0 (2024)](https://swift.org)
 - [gRPC Swift 2.1 (March 2025)](https://github.com/grpc/grpc-swift/releases/tag/2.1.2)
 - [gRPC Swift Protobuf 1.1 (March 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/1.1.0)
@@ -59,7 +59,7 @@ print("Connected to Apache Spark \(await spark.version) Server")
 
 let statements = [
   "DROP TABLE IF EXISTS t",
-  "CREATE TABLE IF NOT EXISTS t(a INT)",
+  "CREATE TABLE IF NOT EXISTS t(a INT) USING ORC",
   "INSERT INTO t VALUES (1), (2), (3)",
 ]
 
@@ -68,7 +68,10 @@ for s in statements {
   _ = try await spark.sql(s).count()
 }
 print("SELECT * FROM t")
-try await spark.sql("SELECT * FROM t").show()
+try await spark.sql("SELECT * FROM t").cache().show()
+
+try await spark.range(10).filter("id % 2 == 0").write.mode("overwrite").orc("/tmp/orc")
+try await spark.read.orc("/tmp/orc").show()
 
 await spark.stop()
 ```
@@ -90,6 +93,15 @@ SELECT * FROM t
 | 1 |
 | 3 |
 +---+
++----+
+| id |
++----+
+| 2  |
+| 6  |
+| 0  |
+| 8  |
+| 4  |
++----+
 ```
 
 You can find this example in the following repository.
