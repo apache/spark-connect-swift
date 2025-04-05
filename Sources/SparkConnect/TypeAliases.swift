@@ -41,6 +41,7 @@ typealias SaveMode = Spark_Connect_WriteOperation.SaveMode
 typealias SparkConnectService = Spark_Connect_SparkConnectService
 typealias Sort = Spark_Connect_Sort
 typealias StructType = Spark_Connect_DataType.Struct
+typealias Tail = Spark_Connect_Tail
 typealias UserContext = Spark_Connect_UserContext
 typealias UnresolvedAttribute = Spark_Connect_Expression.UnresolvedAttribute
 typealias WriteOperation = Spark_Connect_WriteOperation

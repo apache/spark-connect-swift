@@ -373,6 +373,17 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getTail(_ child: Relation, _ n: Int32) -> Plan {
+    var tail = Tail()
+    tail.input = child
+    tail.limit = n
+    var relation = Relation()
+    relation.tail = tail
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   var result: [ExecutePlanResponse] = []
   private func addResponse(_ response: ExecutePlanResponse) {
     self.result.append(response)

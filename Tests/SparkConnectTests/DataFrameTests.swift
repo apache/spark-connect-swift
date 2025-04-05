@@ -248,6 +248,27 @@ struct DataFrameTests {
   }
 
   @Test
+  func head() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(0).head().isEmpty)
+    #expect(try await spark.range(2).sort("id").head() == [["0"]])
+    #expect(try await spark.range(2).sort("id").head(1) == [["0"]])
+    #expect(try await spark.range(2).sort("id").head(2) == [["0"], ["1"]])
+    #expect(try await spark.range(2).sort("id").head(3) == [["0"], ["1"]])
+    await spark.stop()
+  }
+
+  @Test
+  func tail() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(0).tail(1).isEmpty)
+    #expect(try await spark.range(2).sort("id").tail(1) == [["1"]])
+    #expect(try await spark.range(2).sort("id").tail(2) == [["0"], ["1"]])
+    #expect(try await spark.range(2).sort("id").tail(3) == [["0"], ["1"]])
+    await spark.stop()
+  }
+
+  @Test
   func show() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.sql("SHOW TABLES").show()

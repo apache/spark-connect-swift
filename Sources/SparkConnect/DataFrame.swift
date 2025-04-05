@@ -297,6 +297,21 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getLimit(self.plan.root, n))
   }
 
+  /// Returns the first `n` rows.
+  /// - Parameter n: The number of rows. (default: 1)
+  /// - Returns: ``[[String?]]``
+  public func head(_ n: Int32 = 1) async throws -> [[String?]] {
+    return try await limit(n).collect()
+  }
+
+  /// Returns the last `n` rows.
+  /// - Parameter n: The number of rows.
+  /// - Returns: ``[[String?]]``
+  public func tail(_ n: Int32) async throws -> [[String?]] {
+    let lastN = DataFrame(spark:spark, plan: SparkConnectClient.getTail(self.plan.root, n))
+    return try await lastN.collect()
+  }
+
   /// Checks if the ``DataFrame`` is empty and returns a boolean value.
   /// - Returns: `true` if the ``DataFrame`` is empty, `false` otherwise.
   public func isEmpty() async throws -> Bool {
