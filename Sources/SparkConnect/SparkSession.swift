@@ -84,6 +84,13 @@ public actor SparkSession {
     }
   }
 
+  /// Interface through which the user may create, drop, alter or query underlying databases, tables, functions etc.
+  public var catalog: Catalog {
+    get {
+      return Catalog(spark: self)
+    }
+  }
+
   /// Stop the current client.
   public func stop() async {
     await client.stop()
