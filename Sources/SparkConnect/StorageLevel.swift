@@ -23,19 +23,19 @@
 /// to replicate the `RDD` partitions on multiple nodes.
 public struct StorageLevel: Sendable {
   /// Whether the cache should use disk or not.
-  var useDisk: Bool
+  public var useDisk: Bool
 
   /// Whether the cache should use memory or not.
-  var useMemory: Bool
+  public var useMemory: Bool
 
   /// Whether the cache should use off-heap or not.
-  var useOffHeap: Bool
+  public var useOffHeap: Bool
 
   /// Whether the cached data is deserialized or not.
-  var deserialized: Bool
+  public var deserialized: Bool
 
   /// The number of replicas.
-  var replication: Int32
+  public var replication: Int32
 
   init(useDisk: Bool, useMemory: Bool, useOffHeap: Bool, deserialized: Bool, replication: Int32 = 1)
   {

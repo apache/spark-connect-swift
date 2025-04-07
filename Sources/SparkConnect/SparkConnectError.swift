@@ -18,7 +18,7 @@
 //
 
 /// A enum for ``SparkConnect`` package errors
-enum SparkConnectError: Error {
+public enum SparkConnectError: Error {
   case UnsupportedOperationException
   case InvalidSessionIDException
   case InvalidTypeException

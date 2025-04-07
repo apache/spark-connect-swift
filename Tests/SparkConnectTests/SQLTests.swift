@@ -20,7 +20,7 @@
 import Foundation
 import Testing
 
-@testable import SparkConnect
+import SparkConnect
 
 /// A test suite for various SQL statements.
 struct SQLTests {

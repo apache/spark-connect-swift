@@ -19,7 +19,7 @@
 
 import Testing
 
-@testable import SparkConnect
+import SparkConnect
 
 /// A test suite for `DataFrame`
 struct DataFrameTests {
