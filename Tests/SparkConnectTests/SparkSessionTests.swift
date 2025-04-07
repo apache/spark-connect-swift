@@ -77,11 +77,12 @@ struct SparkSessionTests {
 
   @Test
   func table() async throws {
-    let tableName = UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.sql("CREATE TABLE \(tableName) AS VALUES (1), (2)").count() == 0)
-    #expect(try await spark.table(tableName).count() == 2)
-    #expect(try await spark.sql("DROP TABLE \(tableName)").count() == 0)
+    try await SQLHelper.withTable(spark, tableName)({
+      _ = try await spark.sql("CREATE TABLE \(tableName) AS VALUES (1), (2)").count()
+      #expect(try await spark.table(tableName).count() == 2)
+    })
     await spark.stop()
   }
 

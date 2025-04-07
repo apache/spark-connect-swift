@@ -100,7 +100,14 @@ struct CatalogTests {
   func databaseExists() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.catalog.databaseExists("default"))
-    #expect(try await spark.catalog.databaseExists("not_exist_database") == false)
+
+    let dbName = "DB_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    #expect(try await spark.catalog.databaseExists(dbName) == false)
+    try await SQLHelper.withDatabase(spark, dbName) ({
+      _ = try await spark.sql("CREATE DATABASE \(dbName)").count()
+      #expect(try await spark.catalog.databaseExists(dbName))
+    })
+    #expect(try await spark.catalog.databaseExists(dbName) == false)
     await spark.stop()
   }
 #endif
