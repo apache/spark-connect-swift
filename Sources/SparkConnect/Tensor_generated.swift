@@ -170,7 +170,7 @@ public struct org_apache_arrow_flatbuf_Tensor: FlatBufferObject, Verifiable {
   }
   public var mutableData: org_apache_arrow_flatbuf_Buffer_Mutable! {
     let o = _accessor.offset(VTOFFSET.data.v)
-    return org_apache_arrow_flatbuf_Buffer_Mutable(_accessor.bb, o: o + _accessor.postion)
+    return org_apache_arrow_flatbuf_Buffer_Mutable(_accessor.bb, o: o + _accessor.position)
   }
   public static func startTensor(_ fbb: inout FlatBufferBuilder) -> UOffset {
     fbb.startTable(with: 5)

@@ -326,7 +326,7 @@ public struct org_apache_arrow_flatbuf_RecordBatch: FlatBufferObject, Verifiable
     return o == 0
       ? nil
       : org_apache_arrow_flatbuf_BodyCompression(
-        _accessor.bb, o: _accessor.indirect(o + _accessor.postion))
+        _accessor.bb, o: _accessor.indirect(o + _accessor.position))
   }
   public static func startRecordBatch(_ fbb: inout FlatBufferBuilder) -> UOffset {
     fbb.startTable(with: 4)
@@ -433,7 +433,7 @@ public struct org_apache_arrow_flatbuf_DictionaryBatch: FlatBufferObject, Verifi
     return o == 0
       ? nil
       : org_apache_arrow_flatbuf_RecordBatch(
-        _accessor.bb, o: _accessor.indirect(o + _accessor.postion))
+        _accessor.bb, o: _accessor.indirect(o + _accessor.position))
   }
   ///  If isDelta is true the values in the dictionary are to be appended to a
   ///  dictionary with the indicated id. If isDelta is false this dictionary

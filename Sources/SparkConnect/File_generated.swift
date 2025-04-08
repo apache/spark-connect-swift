@@ -120,7 +120,7 @@ public struct org_apache_arrow_flatbuf_Footer: FlatBufferObject, Verifiable {
     let o = _accessor.offset(VTOFFSET.schema.v)
     return o == 0
       ? nil
-      : org_apache_arrow_flatbuf_Schema(_accessor.bb, o: _accessor.indirect(o + _accessor.postion))
+      : org_apache_arrow_flatbuf_Schema(_accessor.bb, o: _accessor.indirect(o + _accessor.position))
   }
   public var hasDictionaries: Bool {
     let o = _accessor.offset(VTOFFSET.dictionaries.v)

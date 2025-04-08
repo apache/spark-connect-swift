@@ -38,7 +38,7 @@ let package = Package(
     .package(url: "https://github.com/grpc/grpc-swift-protobuf.git", from: "1.1.0"),
     .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", from: "1.0.2"),
     .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.9.0"),
-    .package(url: "https://github.com/google/flatbuffers.git", branch: "v24.3.7"),
+    .package(url: "https://github.com/google/flatbuffers.git", branch: "v25.2.10"),
   ],
   targets: [
     .target(

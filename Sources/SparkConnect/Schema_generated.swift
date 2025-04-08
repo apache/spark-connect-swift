@@ -1655,7 +1655,7 @@ public struct org_apache_arrow_flatbuf_DictionaryEncoding: FlatBufferObject, Ver
     let o = _accessor.offset(VTOFFSET.indexType.v)
     return o == 0
       ? nil
-      : org_apache_arrow_flatbuf_Int(_accessor.bb, o: _accessor.indirect(o + _accessor.postion))
+      : org_apache_arrow_flatbuf_Int(_accessor.bb, o: _accessor.indirect(o + _accessor.position))
   }
   ///  By default, dictionaries are not ordered, or the order does not have
   ///  semantic meaning. In some statistical, applications, dictionary-encoding
@@ -1785,7 +1785,7 @@ public struct org_apache_arrow_flatbuf_Field: FlatBufferObject, Verifiable {
     return o == 0
       ? nil
       : org_apache_arrow_flatbuf_DictionaryEncoding(
-        _accessor.bb, o: _accessor.indirect(o + _accessor.postion))
+        _accessor.bb, o: _accessor.indirect(o + _accessor.position))
   }
   ///  children apply only to nested data types like Struct, List and Union. For
   ///  primitive types children will have length 0.
