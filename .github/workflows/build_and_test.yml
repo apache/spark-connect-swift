@@ -55,7 +55,7 @@ jobs:
     - name: Build
       run: swift build -v
 
-  integration-test:
+  integration-test-linux:
     runs-on: ubuntu-latest
     services:
       spark:
@@ -72,3 +72,19 @@ jobs:
         swift-version: "6"
     - name: Test
       run: swift test --no-parallel
+
+  integration-test-mac:
+    runs-on: macos-15
+    steps:
+    - uses: actions/checkout@v4
+    - uses: swift-actions/setup-swift@v2.2.0
+      with:
+        swift-version: "6"
+    - name: Test
+      run: |
+        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc3-bin/spark-4.0.0-bin-hadoop3.tgz
+        tar xvfz spark-4.0.0-bin-hadoop3.tgz
+        cd spark-4.0.0-bin-hadoop3/sbin
+        ./start-connect-server.sh
+        cd ../..
+        swift test --no-parallel

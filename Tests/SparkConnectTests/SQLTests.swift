@@ -30,9 +30,23 @@ struct SQLTests {
 
   let regexID = /#\d+L?/
   let regexPlanId = /plan_id=\d+/
+  let regexLocation = /file:[a-zA-Z0-9\.\-\/\\]+/
+  let regexOwner = /(runner|185)/
+
+  private func cleanUp(_ str: String) -> String {
+    return removeOwner(removeID(removeLocation(str)))
+  }
 
   private func removeID(_ str: String) -> String {
     return str.replacing(regexPlanId, with: "plan_id=").replacing(regexID, with: "#")
+  }
+
+  private func removeLocation(_ str: String) -> String {
+    return str.replacing(regexLocation, with: "*")
+  }
+
+  private func removeOwner(_ str: String) -> String {
+    return str.replacing(regexOwner, with: "*")
   }
 
   @Test
@@ -42,6 +56,17 @@ struct SQLTests {
     #expect(removeID("#123") == "#")
     #expect(removeID("#123L") == "#")
     #expect(removeID("plan_id=123") == "plan_id=")
+  }
+
+  @Test
+  func removeLocation() {
+    #expect(removeLocation("file:/abc") == "*")
+  }
+
+  @Test
+  func removeOwner() {
+    #expect(removeOwner("runner") == "*")
+    #expect(removeOwner("185") == "*")
   }
 
 #if !os(Linux)
@@ -54,8 +79,8 @@ struct SQLTests {
 
       let sql = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name)"), encoding: .utf8)
       let jsonData = try encoder.encode(try await spark.sql(sql).collect())
-      let answer = removeID(String(data: jsonData, encoding: .utf8)!)
-      let expected = removeID(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).json"), encoding: .utf8))
+      let answer = cleanUp(String(data: jsonData, encoding: .utf8)!)
+      let expected = cleanUp(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).json"), encoding: .utf8))
       #expect(answer == expected.trimmingCharacters(in: .whitespacesAndNewlines))
     }
     await spark.stop()
