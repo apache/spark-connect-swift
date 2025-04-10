@@ -28,7 +28,7 @@ public enum ErrorUtils {
       result = try await block()
       try await finallyBlock()
     } catch {
-      try await finallyBlock()
+      try? await finallyBlock()
       throw error
     }
     return result
