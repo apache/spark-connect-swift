@@ -160,6 +160,22 @@ public actor DataFrameReader: Sendable {
     return load(paths)
   }
 
+  /// Loads an XML file and returns the result as a `DataFrame`.
+  /// - Parameter path: A path string
+  /// - Returns: A `DataFrame`.
+  public func xml(_ path: String) -> DataFrame {
+    self.source = "xml"
+    return load(path)
+  }
+
+  /// Loads XML files and returns the result as a `DataFrame`.
+  /// - Parameter paths: Path strings
+  /// - Returns: A `DataFrame`.
+  public func xml(_ paths: String...) -> DataFrame {
+    self.source = "xml"
+    return load(paths)
+  }
+
   /// Loads an ORC file and returns the result as a `DataFrame`.
   /// - Parameter path: A path string
   /// - Returns: A `DataFrame`.

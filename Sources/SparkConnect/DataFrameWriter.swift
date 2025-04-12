@@ -171,6 +171,14 @@ public actor DataFrameWriter: Sendable {
     return try await save(path)
   }
 
+  /// Saves the content of the `DataFrame` in XML format at the specified path.
+  /// - Parameter path: A path string
+  /// - Returns: A `DataFrame`.
+  public func xml(_ path: String) async throws {
+    self.source = "xml"
+    return try await save(path)
+  }
+
   /// Saves the content of the `DataFrame` in ORC format at the specified path.
   /// - Parameter path: A path string
   /// - Returns: A `DataFrame`.

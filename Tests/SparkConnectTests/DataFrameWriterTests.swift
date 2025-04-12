@@ -44,6 +44,15 @@ struct DataFrameWriterTests {
   }
 
   @Test
+  func xml() async throws {
+    let tmpDir = "/tmp/" + UUID().uuidString
+    let spark = try await SparkSession.builder.getOrCreate()
+    try await spark.range(2025).write.option("rowTag", "person").xml(tmpDir)
+    #expect(try await spark.read.option("rowTag", "person").xml(tmpDir).count() == 2025)
+    await spark.stop()
+  }
+
+  @Test
   func orc() async throws {
     let tmpDir = "/tmp/" + UUID().uuidString
     let spark = try await SparkSession.builder.getOrCreate()
