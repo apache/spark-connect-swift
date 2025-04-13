@@ -222,7 +222,7 @@ public actor SparkConnectClient {
   /// - Parameters:
   ///   - plan: A plan to execute.
   /// - Returns: An ``ExecutePlanRequest`` instance.
-  func getExecutePlanRequest(_ sessionID: String, _ plan: Plan) async
+  func getExecutePlanRequest(_ plan: Plan) async
     -> ExecutePlanRequest
   {
     var request = ExecutePlanRequest()
@@ -402,7 +402,7 @@ public actor SparkConnectClient {
       let service = SparkConnectService.Client(wrapping: client)
       var plan = Plan()
       plan.opType = .command(command)
-      try await service.executePlan(getExecutePlanRequest(sessionID, plan)) {
+      try await service.executePlan(getExecutePlanRequest(plan)) {
         response in
         for try await m in response.messages {
           await self.addResponse(m)

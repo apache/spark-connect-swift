@@ -139,7 +139,7 @@ public actor DataFrame: Sendable {
       )
     ) { client in
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-      try await service.executePlan(spark.client.getExecutePlanRequest(spark.sessionID, plan)) {
+      try await service.executePlan(spark.client.getExecutePlanRequest(plan)) {
         response in
         for try await m in response.messages {
           counter.add(m.arrowBatch.rowCount, ordering: .relaxed)
@@ -158,7 +158,7 @@ public actor DataFrame: Sendable {
       )
     ) { client in
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-      try await service.executePlan(spark.client.getExecutePlanRequest(spark.sessionID, plan)) {
+      try await service.executePlan(spark.client.getExecutePlanRequest(plan)) {
         response in
         for try await m in response.messages {
           if m.hasSchema {

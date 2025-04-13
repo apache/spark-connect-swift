@@ -50,17 +50,16 @@ struct SparkConnectClientTests {
   @Test
   func tags() async throws {
     let client = SparkConnectClient(remote: "sc://localhost", user: "test")
-    let sessionID = UUID().uuidString
-    let _ = try await client.connect(sessionID)
+    let _ = try await client.connect(UUID().uuidString)
     let plan = await client.getPlanRange(0, 1, 1)
 
-    #expect(await client.getExecutePlanRequest(sessionID, plan).tags.isEmpty)
+    #expect(await client.getExecutePlanRequest(plan).tags.isEmpty)
     try await client.addTag(tag: "tag1")
 
-    #expect(await client.getExecutePlanRequest(sessionID, plan).tags == ["tag1"])
+    #expect(await client.getExecutePlanRequest(plan).tags == ["tag1"])
     await client.clearTags()
 
-    #expect(await client.getExecutePlanRequest(sessionID, plan).tags.isEmpty)
+    #expect(await client.getExecutePlanRequest(plan).tags.isEmpty)
     await client.stop()
   }
 }
