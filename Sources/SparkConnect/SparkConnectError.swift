@@ -20,6 +20,7 @@
 /// A enum for ``SparkConnect`` package errors
 public enum SparkConnectError: Error {
   case UnsupportedOperationException
+  case InvalidArgumentException
   case InvalidSessionIDException
   case InvalidTypeException
 }

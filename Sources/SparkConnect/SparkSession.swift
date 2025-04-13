@@ -158,6 +158,31 @@ public actor SparkSession {
     return ret
   }
 
+  /// Add a tag to be assigned to all the operations started by this thread in this session.
+  /// - Parameter tag: The tag to be added. Cannot contain ',' (comma) character or be an empty string.
+  public func addTag(_ tag: String) async throws {
+    try await client.addTag(tag: tag)
+  }
+
+  /// Remove a tag previously added to be assigned to all the operations started by this thread in this session.
+  /// Noop if such a tag was not added earlier.
+  /// - Parameter tag: The tag to be removed. Cannot contain ',' (comma) character or be an empty string.
+  public func removeTag(_ tag: String) async throws {
+    try await client.removeTag(tag: tag)
+  }
+
+  /// Get the operation tags that are currently set to be assigned to all the operations started by
+  /// this thread in this session.
+  /// - Returns: A set of string.
+  public func getTags() async -> Set<String> {
+    return await client.getTags()
+  }
+
+  /// Clear the current thread's operation tags.
+  public func clearTags() async {
+    await client.clearTags()
+  }
+
   /// This is defined as the return type of `SparkSession.sparkContext` method.
   /// This is an empty `Struct` type because `sparkContext` method is designed to throw
   /// `UNSUPPORTED_CONNECT_FEATURE.SESSION_SPARK_CONTEXT`.

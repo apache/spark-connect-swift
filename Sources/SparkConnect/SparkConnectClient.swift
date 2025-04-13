@@ -30,6 +30,7 @@ public actor SparkConnectClient {
   let port: Int
   let userContext: UserContext
   var sessionID: String? = nil
+  var tags = Set<String>()
 
   /// Create a client to use GRPCClient.
   /// - Parameters:
@@ -229,6 +230,7 @@ public actor SparkConnectClient {
     request.userContext = userContext
     request.sessionID = self.sessionID!
     request.operationID = UUID().uuidString
+    request.tags = Array(tags)
     request.plan = plan
     return request
   }
@@ -408,5 +410,32 @@ public actor SparkConnectClient {
       }
     }
     return result
+  }
+
+  /// Add a tag to be assigned to all the operations started by this thread in this session.
+  /// - Parameter tag: The tag to be added. Cannot contain ',' (comma) character or be an empty string.
+  public func addTag(tag: String) throws {
+    try ProtoUtils.throwIfInvalidTag(tag)
+    tags.insert(tag)
+  }
+
+  /// Remove a tag previously added to be assigned to all the operations started by this thread in this session.
+  /// Noop if such a tag was not added earlier.
+  /// - Parameter tag: The tag to be removed. Cannot contain ',' (comma) character or be an empty string.
+  public func removeTag(tag: String) throws {
+    try ProtoUtils.throwIfInvalidTag(tag)
+    tags.remove(tag)
+  }
+
+  /// Get the operation tags that are currently set to be assigned to all the operations started by
+  /// this thread in this session.
+  /// - Returns: A set of string.
+  public func getTags() -> Set<String> {
+    return tags
+  }
+
+  /// Clear the current thread's operation tags.
+  public func clearTags() {
+    tags.removeAll()
   }
 }

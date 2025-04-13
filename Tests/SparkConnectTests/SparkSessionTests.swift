@@ -96,4 +96,30 @@ struct SparkSessionTests {
 #endif
     await spark.stop()
   }
+
+  @Test
+  func tag() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    try await spark.addTag("tag1")
+    #expect(await spark.getTags() == Set(["tag1"]))
+    try await spark.addTag("tag2")
+    #expect(await spark.getTags() == Set(["tag1", "tag2"]))
+    try await spark.removeTag("tag1")
+    #expect(await spark.getTags() == Set(["tag2"]))
+    await spark.clearTags()
+    #expect(await spark.getTags().isEmpty)
+    await spark.stop()
+  }
+
+  @Test
+  func invalidTags() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    await #expect(throws: SparkConnectError.InvalidArgumentException) {
+      try await spark.addTag("")
+    }
+    await #expect(throws: SparkConnectError.InvalidArgumentException) {
+      try await spark.addTag(",")
+    }
+    await spark.stop()
+  }
 }
