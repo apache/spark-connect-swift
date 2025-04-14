@@ -438,4 +438,46 @@ public actor SparkConnectClient {
   public func clearTags() {
     tags.removeAll()
   }
+
+  /// Parse a DDL string to ``Spark_Connect_DataType`` instance.
+  /// - Parameter ddlString: A string to parse.
+  /// - Returns: A ``Spark_Connect_DataType`` instance.
+  func ddlParse(_ ddlString: String) async throws -> Spark_Connect_DataType {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: self.host, port: self.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      let request = analyze(self.sessionID!, {
+        var ddlParse = AnalyzePlanRequest.DDLParse()
+        ddlParse.ddlString = ddlString
+        return OneOf_Analyze.ddlParse(ddlParse)
+      })
+      let response = try await service.analyzePlan(request)
+      return response.ddlParse.parsed
+    }
+  }
+
+  /// Convert an JSON string to a DDL string.
+  /// - Parameter jsonString: A JSON string.
+  /// - Returns: A DDL string.
+  func jsonToDdl(_ jsonString: String) async throws -> String {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: self.host, port: self.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      let request = analyze(self.sessionID!, {
+        var jsonToDDL = AnalyzePlanRequest.JsonToDDL()
+        jsonToDDL.jsonString = jsonString
+        return OneOf_Analyze.jsonToDdl(jsonToDDL)
+      })
+      let response = try await service.analyzePlan(request)
+      return response.jsonToDdl.ddlString
+    }
+  }
 }
