@@ -102,6 +102,49 @@ struct DataFrameWriterTests {
   }
 
   @Test
+  func saveAsTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.saveAsTable(tableName)
+      #expect(try await spark.read.table(tableName).count() == 1)
+
+      try await #require(throws: Error.self) {
+        try await spark.range(1).write.saveAsTable(tableName)
+      }
+
+      try await spark.range(1).write.mode("overwrite").saveAsTable(tableName)
+      #expect(try await spark.read.table(tableName).count() == 1)
+
+      try await spark.range(1).write.mode("append").saveAsTable(tableName)
+      #expect(try await spark.read.table(tableName).count() == 2)
+    })
+    await spark.stop()
+  }
+
+  @Test
+  func insertInto() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      // Table doesn't exist.
+      try await #require(throws: Error.self) {
+        try await spark.range(1).write.insertInto(tableName)
+      }
+
+      try await spark.range(1).write.saveAsTable(tableName)
+      #expect(try await spark.read.table(tableName).count() == 1)
+
+      try await spark.range(1).write.insertInto(tableName)
+      #expect(try await spark.read.table(tableName).count() == 2)
+
+      try await spark.range(1).write.insertInto(tableName)
+      #expect(try await spark.read.table(tableName).count() == 3)
+    })
+    await spark.stop()
+  }
+
+  @Test
   func partitionBy() async throws {
     let tmpDir = "/tmp/" + UUID().uuidString
     let spark = try await SparkSession.builder.getOrCreate()

@@ -113,16 +113,48 @@ public actor DataFrameWriter: Sendable {
   }
 
   private func saveInternal(_ path: String?) async throws {
-    var write = WriteOperation()
+    try await executeWriteOperation({
+      var write = WriteOperation()
+      if let path = path {
+        write.path = path
+      }
+      return write
+    })
+  }
+
+  /// Saves the content of the ``DataFrame`` as the specified table.
+  /// - Parameter tableName: A table name.
+  public func saveAsTable(_ tableName: String) async throws {
+    try await executeWriteOperation({
+      var write = WriteOperation()
+      write.table.tableName = tableName
+      write.table.saveMethod = .saveAsTable
+      return write
+    })
+  }
+
+  /// Inserts the content of the ``DataFrame`` to the specified table. It requires that the schema of
+  /// the ``DataFrame`` is the same as the schema of the table. Unlike ``saveAsTable``,
+  /// ``insertInto`` ignores the column names and just uses position-based resolution.
+  /// - Parameter tableName: A table name.
+  public func insertInto(_ tableName: String) async throws {
+    try await executeWriteOperation({
+      var write = WriteOperation()
+      write.table.tableName = tableName
+      write.table.saveMethod = .insertInto
+      return write
+    })
+  }
+
+  private func executeWriteOperation(_ f: () -> WriteOperation) async throws {
+    var write = f()
+
+    // Cannot both be set
+    assert(!(!write.path.isEmpty && !write.table.tableName.isEmpty))
+
     let plan = await self.df.getPlan() as! Plan
     write.input = plan.root
     write.mode = self.saveMode.toSaveMode
-    if let path = path {
-      write.path = path
-    }
-
-    // Cannot both be set
-    // require(!(builder.hasPath && builder.hasTable))
 
     if let source = self.source {
       write.source = source
