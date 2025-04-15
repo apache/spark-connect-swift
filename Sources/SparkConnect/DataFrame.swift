@@ -311,7 +311,6 @@ public actor DataFrame: Sendable {
   /// - Parameters:
   ///   - withReplacement: Sample with replacement or not.
   ///   - fraction: Fraction of rows to generate, range [0.0, 1.0].
-  ///   - seed: Seed for sampling.
   /// - Returns: A subset of the records.
   public func sample(_ withReplacement: Bool, _ fraction: Double) -> DataFrame {
     return sample(withReplacement, fraction, Int64.random(in: Int64.min...Int64.max))
