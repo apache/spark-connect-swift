@@ -34,6 +34,8 @@ public actor DataFrameReader: Sendable {
 
   var extraOptions: CaseInsensitiveDictionary = CaseInsensitiveDictionary([:])
 
+  var userSpecifiedSchemaDDL: String? = nil
+
   let sparkSession: SparkSession
 
   init(sparkSession: SparkSession) {
@@ -85,6 +87,22 @@ public actor DataFrameReader: Sendable {
     return self
   }
 
+  /// Specifies the input schema. Some data sources (e.g. JSON) can infer the input schema
+  /// automatically from data. By specifying the schema here, the underlying data source can skip
+  /// the schema inference step, and thus speed up data loading.
+  /// - Parameter schema: A DDL schema string.
+  /// - Returns: A `DataFrameReader`.
+  public func schema(_ schema: String) async throws -> DataFrameReader {
+    // Validate by parsing.
+    do {
+      _ = try await sparkSession.client.ddlParse(schema)
+    } catch {
+      throw SparkConnectError.InvalidTypeException
+    }
+    self.userSpecifiedSchemaDDL = schema
+    return self
+  }
+
   /// Loads input in as a `DataFrame`, for data sources that don't require a path (e.g. external
   /// key-value stores).
   /// - Returns: A `DataFrame`.
@@ -111,6 +129,9 @@ public actor DataFrameReader: Sendable {
     dataSource.format = self.source
     dataSource.paths = self.paths
     dataSource.options = self.extraOptions.toStringDictionary()
+    if let userSpecifiedSchemaDDL = self.userSpecifiedSchemaDDL {
+      dataSource.schema = userSpecifiedSchemaDDL
+    }
 
     var read = Read()
     read.dataSource = dataSource

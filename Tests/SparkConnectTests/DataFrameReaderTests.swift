@@ -85,4 +85,27 @@ struct DataFrameReaderTests {
     })
     await spark.stop()
   }
+
+  @Test
+  func schema() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let path = "../examples/src/main/resources/people.json"
+    #expect(try await spark.read.schema("age SHORT").json(path).dtypes.count == 1)
+    #expect(try await spark.read.schema("age SHORT").json(path).dtypes[0] == ("age", "smallint"))
+    #expect(try await spark.read.schema("age SHORT, name STRING").json(path).dtypes[0] == ("age", "smallint"))
+    #expect(try await spark.read.schema("age SHORT, name STRING").json(path).dtypes[1] == ("name", "string"))
+    await spark.stop()
+  }
+
+  @Test
+  func invalidSchema() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    await #expect(throws: SparkConnectError.InvalidTypeException) {
+      _ = try await spark.read.schema("invalid-name SHORT")
+    }
+    await #expect(throws: SparkConnectError.InvalidTypeException) {
+      _ = try await spark.read.schema("age UNKNOWN_TYPE")
+    }
+    await spark.stop()
+  }
 }
