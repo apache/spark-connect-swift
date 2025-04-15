@@ -39,6 +39,7 @@ typealias Project = Spark_Connect_Project
 typealias Range = Spark_Connect_Range
 typealias Read = Spark_Connect_Read
 typealias Relation = Spark_Connect_Relation
+typealias Sample = Spark_Connect_Sample
 typealias SaveMode = Spark_Connect_WriteOperation.SaveMode
 typealias SparkConnectService = Spark_Connect_SparkConnectService
 typealias Sort = Spark_Connect_Sort

@@ -197,6 +197,15 @@ struct DataFrameTests {
   }
 
   @Test
+  func sample() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(100000).sample(0.001).count() < 1000)
+    #expect(try await spark.range(100000).sample(0.999).count() > 99000)
+    #expect(try await spark.range(100000).sample(true, 0.001, 0).count() < 1000)
+    await spark.stop()
+  }
+
+  @Test
   func isEmpty() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).isEmpty())

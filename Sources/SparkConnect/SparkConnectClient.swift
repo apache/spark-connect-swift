@@ -375,6 +375,20 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getSample(_ child: Relation, _ withReplacement: Bool, _ fraction: Double, _ seed: Int64) -> Plan {
+    var sample = Sample()
+    sample.input = child
+    sample.withReplacement = withReplacement
+    sample.lowerBound = 0.0
+    sample.upperBound = fraction
+    sample.seed = seed
+    var relation = Relation()
+    relation.sample = sample
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getTail(_ child: Relation, _ n: Int32) -> Plan {
     var tail = Tail()
     tail.input = child

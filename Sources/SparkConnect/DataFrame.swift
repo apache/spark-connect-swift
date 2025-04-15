@@ -297,6 +297,23 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getLimit(self.plan.root, n))
   }
 
+  public func sample(_ withReplacement: Bool, _ fraction: Double, _ seed: Int64) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getSample(self.plan.root, withReplacement, fraction, seed))
+  }
+
+  public func sample(_ withReplacement: Bool, _ fraction: Double) -> DataFrame {
+    return sample(withReplacement, fraction, Int64.random(in: Int64.min...Int64.max))
+  }
+
+  public func sample(_ fraction: Double, _ seed: Int64) -> DataFrame {
+    return sample(false, fraction, seed)
+  }
+
+  public func sample(_ fraction: Double) -> DataFrame {
+    return sample(false, fraction)
+  }
+
+
   /// Returns the first `n` rows.
   /// - Parameter n: The number of rows. (default: 1)
   /// - Returns: ``[[String?]]``
