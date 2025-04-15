@@ -173,6 +173,28 @@ struct DataFrameTests {
   }
 
   @Test
+  func withColumnRenamed() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(1).withColumnRenamed("id", "id2").columns == ["id2"])
+    let df = try await spark.sql("SELECT 1 a, 2 b, 3 c, 4 d")
+    #expect(try await df.withColumnRenamed(["a": "x", "c": "z"]).columns == ["x", "b", "z", "d"])
+    // Ignore unknown column names.
+    #expect(try await df.withColumnRenamed(["unknown": "x"]).columns == ["a", "b", "c", "d"])
+    await spark.stop()
+  }
+
+  @Test
+  func drop() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT 1 a, 2 b, 3 c, 4 d")
+    #expect(try await df.drop("a").collect() == [["2", "3", "4"]])
+    #expect(try await df.drop("b", "c").collect() == [["1", "4"]])
+    // Ignore unknown column names.
+    #expect(try await df.drop("x", "y").collect() == [["1", "2", "3", "4"]])
+    await spark.stop()
+  }
+
+  @Test
   func filter() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(2025).filter("id % 2 == 0").count() == 1013)

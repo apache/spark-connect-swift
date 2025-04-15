@@ -335,12 +335,34 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getWithColumnRenamed(_ child: Relation, _ colsMap: [String: String]) -> Plan {
+    var withColumnsRenamed = WithColumnsRenamed()
+    withColumnsRenamed.input = child
+    withColumnsRenamed.renameColumnsMap = colsMap
+    var relation = Relation()
+    relation.withColumnsRenamed = withColumnsRenamed
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getFilter(_ child: Relation, _ conditionExpr: String) -> Plan {
     var filter = Filter()
     filter.input = child
     filter.condition.expressionString = conditionExpr.toExpressionString
     var relation = Relation()
     relation.filter = filter
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
+  static func getDrop(_ child: Relation, _ columnNames: [String]) -> Plan {
+    var drop = Drop()
+    drop.input = child
+    drop.columnNames = columnNames
+    var relation = Relation()
+    relation.drop = drop
     var plan = Plan()
     plan.opType = .root(relation)
     return plan

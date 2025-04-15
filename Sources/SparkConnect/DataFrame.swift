@@ -262,6 +262,39 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
   }
 
+  /// Returns a new Dataset with a column dropped. This is a no-op if schema doesn't contain column name.
+  /// - Parameter cols: Column names
+  /// - Returns: A ``DataFrame`` with subset of columns.
+  public func drop(_ cols: String...) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getDrop(self.plan.root, cols))
+  }
+
+  /// Returns a new Dataset with a column renamed. This is a no-op if schema doesn't contain existingName.
+  /// - Parameters:
+  ///   - existingName: A existing column name to be renamed.
+  ///   - newName: A new column name.
+  /// - Returns: A ``DataFrame`` with the renamed column.
+  public func withColumnRenamed(_ existingName: String, _ newName: String) -> DataFrame {
+    return withColumnRenamed([existingName: newName])
+  }
+
+  /// Returns a new Dataset with columns renamed. This is a no-op if schema doesn't contain existingName.
+  /// - Parameters:
+  ///   - colNames: A list of existing colum names to be renamed.
+  ///   - newColNames: A list of new column names.
+  /// - Returns: A ``DataFrame`` with the renamed columns.
+  public func withColumnRenamed(_ colNames: [String], _ newColNames: [String]) -> DataFrame {
+    let dic = Dictionary(uniqueKeysWithValues: zip(colNames, newColNames))
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, dic))
+  }
+
+  /// Returns a new Dataset with columns renamed. This is a no-op if schema doesn't contain existingName.
+  /// - Parameter colsMap: A dictionary of existing column name and new column name.
+  /// - Returns: A ``DataFrame`` with the renamed columns.
+  public func withColumnRenamed(_ colsMap: [String: String]) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, colsMap))
+  }
+
   /// Return a new ``DataFrame`` with filtered rows using the given expression.
   /// - Parameter conditionExpr: A string to filter.
   /// - Returns: A ``DataFrame`` with subset of rows.
