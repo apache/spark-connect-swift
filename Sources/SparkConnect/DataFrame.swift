@@ -331,8 +331,8 @@ public actor DataFrame: Sendable {
   }
 
   /// Returns a new Dataset by skipping the first `n` rows.
-  /// - Parameter n: Number of records to skip.
-  /// - Returns: A subset of the records
+  /// - Parameter n: Number of rows to skip.
+  /// - Returns: A subset of the rows
   public func offset(_ n: Int32) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getOffset(self.plan.root, n))
   }
