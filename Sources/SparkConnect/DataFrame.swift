@@ -297,22 +297,44 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getLimit(self.plan.root, n))
   }
 
+  /// Returns a new ``Dataset`` by sampling a fraction of rows, using a user-supplied seed.
+  /// - Parameters:
+  ///   - withReplacement: Sample with replacement or not.
+  ///   - fraction: Fraction of rows to generate, range [0.0, 1.0].
+  ///   - seed: Seed for sampling.
+  /// - Returns: A subset of the records.
   public func sample(_ withReplacement: Bool, _ fraction: Double, _ seed: Int64) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSample(self.plan.root, withReplacement, fraction, seed))
   }
 
+  /// Returns a new ``Dataset`` by sampling a fraction of rows, using a random seed.
+  /// - Parameters:
+  ///   - withReplacement: Sample with replacement or not.
+  ///   - fraction: Fraction of rows to generate, range [0.0, 1.0].
+  ///   - seed: Seed for sampling.
+  /// - Returns: A subset of the records.
   public func sample(_ withReplacement: Bool, _ fraction: Double) -> DataFrame {
     return sample(withReplacement, fraction, Int64.random(in: Int64.min...Int64.max))
   }
 
+  /// Returns a new ``Dataset`` by sampling a fraction of rows (without replacement), using a
+  /// user-supplied seed.
+  /// - Parameters:
+  ///   - fraction: Fraction of rows to generate, range [0.0, 1.0].
+  ///   - seed: Seed for sampling.
+  /// - Returns: A subset of the records.
   public func sample(_ fraction: Double, _ seed: Int64) -> DataFrame {
     return sample(false, fraction, seed)
   }
 
+  /// Returns a new ``Dataset`` by sampling a fraction of rows (without replacement), using a
+  /// random seed.
+  /// - Parameters:
+  ///   - fraction: Fraction of rows to generate, range [0.0, 1.0].
+  /// - Returns: A subset of the records.
   public func sample(_ fraction: Double) -> DataFrame {
     return sample(false, fraction)
   }
-
 
   /// Returns the first `n` rows.
   /// - Parameter n: The number of rows. (default: 1)
