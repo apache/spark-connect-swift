@@ -330,6 +330,13 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getLimit(self.plan.root, n))
   }
 
+  /// Returns a new Dataset by skipping the first `n` rows.
+  /// - Parameter n: Number of records to skip.
+  /// - Returns: A subset of the records
+  public func offset(_ n: Int32) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getOffset(self.plan.root, n))
+  }
+
   /// Returns a new ``Dataset`` by sampling a fraction of rows, using a user-supplied seed.
   /// - Parameters:
   ///   - withReplacement: Sample with replacement or not.

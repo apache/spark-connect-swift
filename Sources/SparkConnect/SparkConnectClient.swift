@@ -397,6 +397,17 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getOffset(_ child: Relation, _ n: Int32) -> Plan {
+    var offset = Spark_Connect_Offset()
+    offset.input = child
+    offset.offset = n
+    var relation = Relation()
+    relation.offset = offset
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getSample(_ child: Relation, _ withReplacement: Bool, _ fraction: Double, _ seed: Int64) -> Plan {
     var sample = Sample()
     sample.input = child

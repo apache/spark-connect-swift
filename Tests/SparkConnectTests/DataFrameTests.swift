@@ -219,6 +219,16 @@ struct DataFrameTests {
   }
 
   @Test
+  func offset() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(10).offset(0).count() == 10)
+    #expect(try await spark.range(10).offset(1).count() == 9)
+    #expect(try await spark.range(10).offset(2).count() == 8)
+    #expect(try await spark.range(10).offset(15).count() == 0)
+    await spark.stop()
+  }
+
+  @Test
   func sample() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(100000).sample(0.001).count() < 1000)
