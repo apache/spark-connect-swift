@@ -187,10 +187,10 @@ struct DataFrameTests {
   func drop() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.sql("SELECT 1 a, 2 b, 3 c, 4 d")
-    #expect(try await df.drop("a").collect() == [["2", "3", "4"]])
-    #expect(try await df.drop("b", "c").collect() == [["1", "4"]])
+    #expect(try await df.drop("a").columns == ["b", "c", "d"])
+    #expect(try await df.drop("b", "c").columns == ["a", "d"])
     // Ignore unknown column names.
-    #expect(try await df.drop("x", "y").collect() == [["1", "2", "3", "4"]])
+    #expect(try await df.drop("x", "y").columns == ["a", "b", "c", "d"])
     await spark.stop()
   }
 
