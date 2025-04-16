@@ -18,9 +18,8 @@
 //
 
 import Foundation
-import Testing
-
 import SparkConnect
+import Testing
 
 /// A test suite for `Row`
 struct RowTests {
@@ -67,8 +66,8 @@ struct RowTests {
 
     #expect(Row(1) == Row(1))
     #expect(Row(1) != Row(2))
-    #expect(Row(1,2,3) == Row(1,2,3))
-    #expect(Row(1,2,3) != Row(1,2,4))
+    #expect(Row(1, 2, 3) == Row(1, 2, 3))
+    #expect(Row(1, 2, 3) != Row(1, 2, 4))
 
     #expect(Row(1.0) == Row(1.0))
     #expect(Row(1.0) != Row(2.0))
@@ -79,9 +78,9 @@ struct RowTests {
     #expect(Row(true) == Row(true))
     #expect(Row(true) != Row(false))
 
-    #expect(Row(1,"a") == Row(1,"a"))
-    #expect(Row(1,"a") != Row(2,"a"))
-    #expect(Row(1,"a") != Row(1,"b"))
+    #expect(Row(1, "a") == Row(1, "a"))
+    #expect(Row(1, "a") != Row(2, "a"))
+    #expect(Row(1, "a") != Row(1, "b"))
 
     #expect(Row(0, 1, 2) == Row(valueArray: [0, 1, 2]))
 

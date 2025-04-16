@@ -19,7 +19,7 @@
 import Foundation
 
 public struct Row: Sendable, Equatable {
-  let values : [Sendable?]
+  let values: [Sendable?]
 
   public init(_ values: Sendable?...) {
     self.values = values
@@ -30,14 +30,12 @@ public struct Row: Sendable, Equatable {
   }
 
   public static var empty: Row {
-    get {
-      return Row()
-    }
+    return Row()
   }
 
-  public var size: Int { get { return length } }
+  public var size: Int { return length }
 
-  public var length: Int { get { return values.count } }
+  public var length: Int { return values.count }
 
   subscript(index: Int) -> Sendable {
     get throws {
@@ -46,21 +44,21 @@ public struct Row: Sendable, Equatable {
   }
 
   public func get(_ i: Int) throws -> Sendable {
-    if (i < 0 || i >= self.length) {
+    if i < 0 || i >= self.length {
       throw SparkConnectError.InvalidArgumentException
     }
     return values[i]
   }
 
   public static func == (lhs: Row, rhs: Row) -> Bool {
-    if (lhs.values.count != rhs.values.count) {
+    if lhs.values.count != rhs.values.count {
       return false
     }
     return lhs.values.elementsEqual(rhs.values) { (x, y) in
       if x == nil && y == nil {
         return true
       } else if let a = x as? Bool, let b = y as? Bool {
-          return a == b
+        return a == b
       } else if let a = x as? Int, let b = y as? Int {
         return a == b
       } else if let a = x as? Int8, let b = y as? Int8 {
@@ -72,11 +70,11 @@ public struct Row: Sendable, Equatable {
       } else if let a = x as? Int64, let b = y as? Int64 {
         return a == b
       } else if let a = x as? Float, let b = y as? Float {
-          return a == b
+        return a == b
       } else if let a = x as? Double, let b = y as? Double {
-          return a == b
+        return a == b
       } else if let a = x as? String, let b = y as? String {
-          return a == b
+        return a == b
       } else {
         return false
       }
