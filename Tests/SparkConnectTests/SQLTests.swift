@@ -78,9 +78,8 @@ struct SQLTests {
       print(name)
 
       let sql = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name)"), encoding: .utf8)
-      let jsonData = try encoder.encode(try await spark.sql(sql).collect())
-      let answer = cleanUp(String(data: jsonData, encoding: .utf8)!)
-      let expected = cleanUp(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).json"), encoding: .utf8))
+      let answer = cleanUp(try await spark.sql(sql).collect().map { $0.toString() }.joined(separator: "\n"))
+      let expected = cleanUp(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).answer"), encoding: .utf8))
       #expect(answer == expected.trimmingCharacters(in: .whitespacesAndNewlines))
     }
     await spark.stop()

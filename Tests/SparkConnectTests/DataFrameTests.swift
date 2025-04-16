@@ -249,7 +249,7 @@ struct DataFrameTests {
   @Test
   func sort() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let expected = (1...10).map{ [String($0)] }
+    let expected = Array((1...10).map{ Row(String($0)) })
     #expect(try await spark.range(10, 0, -1).sort("id").collect() == expected)
     await spark.stop()
   }
@@ -257,7 +257,7 @@ struct DataFrameTests {
   @Test
   func orderBy() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let expected = (1...10).map{ [String($0)] }
+    let expected = Array((1...10).map{ Row(String($0)) })
     #expect(try await spark.range(10, 0, -1).orderBy("id").collect() == expected)
     await spark.stop()
   }
@@ -284,7 +284,7 @@ struct DataFrameTests {
     #expect(
       try await spark.sql(
         "SELECT * FROM VALUES (1, true, 'abc'), (null, null, null), (3, false, 'def')"
-      ).collect() == [["1", "true", "abc"], [nil, nil, nil], ["3", "false", "def"]])
+      ).collect() == [Row("1", "true", "abc"), Row(nil, nil, nil), Row("3", "false", "def")])
     await spark.stop()
   }
 
@@ -292,10 +292,10 @@ struct DataFrameTests {
   func head() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).head().isEmpty)
-    #expect(try await spark.range(2).sort("id").head() == [["0"]])
-    #expect(try await spark.range(2).sort("id").head(1) == [["0"]])
-    #expect(try await spark.range(2).sort("id").head(2) == [["0"], ["1"]])
-    #expect(try await spark.range(2).sort("id").head(3) == [["0"], ["1"]])
+    #expect(try await spark.range(2).sort("id").head() == [Row("0")])
+    #expect(try await spark.range(2).sort("id").head(1) == [Row("0")])
+    #expect(try await spark.range(2).sort("id").head(2) == [Row("0"), Row("1")])
+    #expect(try await spark.range(2).sort("id").head(3) == [Row("0"), Row("1")])
     await spark.stop()
   }
 
@@ -303,9 +303,9 @@ struct DataFrameTests {
   func tail() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).tail(1).isEmpty)
-    #expect(try await spark.range(2).sort("id").tail(1) == [["1"]])
-    #expect(try await spark.range(2).sort("id").tail(2) == [["0"], ["1"]])
-    #expect(try await spark.range(2).sort("id").tail(3) == [["0"], ["1"]])
+    #expect(try await spark.range(2).sort("id").tail(1) == [Row("1")])
+    #expect(try await spark.range(2).sort("id").tail(2) == [Row("0"), Row("1")])
+    #expect(try await spark.range(2).sort("id").tail(3) == [Row("0"), Row("1")])
     await spark.stop()
   }
 

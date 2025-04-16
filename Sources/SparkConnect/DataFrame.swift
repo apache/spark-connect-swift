@@ -197,15 +197,15 @@ public actor DataFrame: Sendable {
     }
   }
 
-  /// Execute the plan and return the result as ``[[String?]]``.
-  /// - Returns: ``[[String?]]``
-  public func collect() async throws -> [[String?]] {
+  /// Execute the plan and return the result as ``[Row]``.
+  /// - Returns: ``[Row]``
+  public func collect() async throws -> [Row] {
     try await execute()
 
-    var result: [[String?]] = []
+    var result: [Row] = []
     for batch in self.batches {
       for i in 0..<batch.length {
-        var values: [String?] = []
+        var values: [Sendable?] = []
         for column in batch.columns {
           let str = column.array as! AsString
           if column.data.isNull(i) {
@@ -217,7 +217,7 @@ public actor DataFrame: Sendable {
             values.append(str.asString(i))
           }
         }
-        result.append(values)
+        result.append(Row(valueArray: values))
       }
     }
 
@@ -377,15 +377,15 @@ public actor DataFrame: Sendable {
 
   /// Returns the first `n` rows.
   /// - Parameter n: The number of rows. (default: 1)
-  /// - Returns: ``[[String?]]``
-  public func head(_ n: Int32 = 1) async throws -> [[String?]] {
+  /// - Returns: ``[Row]``
+  public func head(_ n: Int32 = 1) async throws -> [Row] {
     return try await limit(n).collect()
   }
 
   /// Returns the last `n` rows.
   /// - Parameter n: The number of rows.
-  /// - Returns: ``[[String?]]``
-  public func tail(_ n: Int32) async throws -> [[String?]] {
+  /// - Returns: ``[Row]``
+  public func tail(_ n: Int32) async throws -> [Row] {
     let lastN = DataFrame(spark:spark, plan: SparkConnectClient.getTail(self.plan.root, n))
     return try await lastN.collect()
   }

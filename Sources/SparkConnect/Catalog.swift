@@ -100,7 +100,7 @@ public actor Catalog: Sendable {
       catalog.catType = .currentCatalog(Spark_Connect_CurrentCatalog())
       return catalog
     })
-    return try await df.collect()[0][0]!
+    return try await df.collect()[0][0] as! String
   }
 
   /// Sets the current default catalog in this session.
@@ -130,7 +130,7 @@ public actor Catalog: Sendable {
       return catalog
     })
     return try await df.collect().map {
-      CatalogMetadata(name: $0[0]!, description: $0[1])
+      try CatalogMetadata(name: $0[0] as! String, description: $0[1] as? String)
     }
   }
 
@@ -142,7 +142,7 @@ public actor Catalog: Sendable {
       catalog.catType = .currentDatabase(Spark_Connect_CurrentDatabase())
       return catalog
     })
-    return try await df.collect()[0][0]!
+    return try await df.collect()[0][0] as! String
   }
 
   /// Sets the current default database in this session.
@@ -173,7 +173,7 @@ public actor Catalog: Sendable {
       return catalog
     })
     return try await df.collect().map {
-      Database(name: $0[0]!, catalog: $0[1], description: $0[2], locationUri: $0[3]!)
+      try Database(name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String, locationUri: $0[3] as! String)
     }
   }
 
@@ -189,7 +189,7 @@ public actor Catalog: Sendable {
       return catalog
     })
     return try await df.collect().map {
-      Database(name: $0[0]!, catalog: $0[1], description: $0[2], locationUri: $0[3]!)
+      try Database(name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String, locationUri: $0[3] as! String)
     }.first!
   }
 
