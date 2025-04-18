@@ -454,10 +454,13 @@ public actor DataFrame: Sendable {
     }
   }
 
+  /// Prints the physical plan to the console for debugging purposes.
   public func explain() async throws {
     try await explain("simple")
   }
 
+  /// Prints the plans (logical and physical) to the console for debugging purposes.
+  /// - Parameter extended: If `false`, prints only the physical plan.
   public func explain(_ extended: Bool) async throws {
     if (extended) {
       try await explain("extended")
@@ -466,6 +469,9 @@ public actor DataFrame: Sendable {
     }
   }
 
+  /// Prints the plans (logical and physical) with a format specified by a given explain mode.
+  /// - Parameter mode: the expected output format of plans;
+  /// `simple`, `extended`,  `codegen`, `cost`,  `formatted`.
   public func explain(_ mode: String) async throws {
     try await withGRPCClient(
       transport: .http2NIOPosix(
@@ -476,6 +482,23 @@ public actor DataFrame: Sendable {
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
       let response = try await service.analyzePlan(spark.client.getExplain(spark.sessionID, plan, mode))
       print(response.explain.explainString)
+    }
+  }
+
+  /// Returns a best-effort snapshot of the files that compose this Dataset. This method simply
+  /// asks each constituent BaseRelation for its respective files and takes the union of all
+  /// results. Depending on the source relations, this may not find all input files. Duplicates are removed.
+  /// - Returns: An array of file path strings.
+  public func inputFiles() async throws -> [String] {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: spark.client.host, port: spark.client.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.analyzePlan(spark.client.getInputFiles(spark.sessionID, plan))
+      return response.inputFiles.files
     }
   }
 

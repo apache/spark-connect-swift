@@ -307,6 +307,17 @@ public actor SparkConnectClient {
       })
   }
 
+  func getInputFiles(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest
+  {
+    return analyze(
+      sessionID,
+      {
+        var inputFiles = AnalyzePlanRequest.InputFiles()
+        inputFiles.plan = plan
+        return OneOf_Analyze.inputFiles(inputFiles)
+      })
+  }
+
   func getTreeString(_ sessionID: String, _ plan: Plan, _ level: Int32) async -> AnalyzePlanRequest
   {
     return analyze(

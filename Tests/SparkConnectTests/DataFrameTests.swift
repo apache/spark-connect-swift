@@ -119,6 +119,13 @@ struct DataFrameTests {
   }
 
   @Test
+  func inputFiles() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(1).inputFiles().isEmpty)
+    await spark.stop()
+  }
+
+  @Test
   func count() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("SELECT 'spark' as swift").count() == 1)

@@ -108,4 +108,14 @@ struct DataFrameReaderTests {
     }
     await spark.stop()
   }
+
+  @Test
+  func inputFiles() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let path = "../examples/src/main/resources/users.orc"
+    let answer = try await spark.read.format("orc").load(path).inputFiles()
+    #expect(answer.count == 1)
+    #expect(answer[0].hasSuffix("users.orc"))
+    await spark.stop()
+  }
 }
