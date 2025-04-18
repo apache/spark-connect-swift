@@ -573,6 +573,7 @@ public actor DataFrame: Sendable {
       self.plan.root,
       right,
       SetOpType.union,
+      isAll: true,
       byName: true,
       allowMissingColumns: allowMissingColumns
     )

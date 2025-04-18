@@ -445,6 +445,8 @@ struct DataFrameTests {
     let df2 = try await spark.sql("SELECT 4 b, 3 a")
     #expect(try await df1.unionByName(df2).collect() == [Row("1", "2"), Row("3", "4")])
     #expect(try await df1.union(df2).collect() == [Row("1", "2"), Row("4", "3")])
+    let df3 = try await spark.sql("SELECT * FROM VALUES 1, 1")
+    #expect(try await df3.unionByName(df3).count() == 4)
     await spark.stop()
   }
 #endif
