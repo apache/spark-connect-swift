@@ -390,6 +390,38 @@ public actor DataFrame: Sendable {
     return try await lastN.collect()
   }
 
+  /// Returns true if the `collect` and `take` methods can be run locally
+  /// (without any Spark executors).
+  /// - Returns: True if the plan is local.
+  public func isLocal() async throws -> Bool {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: spark.client.host, port: spark.client.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.analyzePlan(spark.client.getIsLocal(spark.sessionID, plan))
+      return response.isLocal.isLocal
+    }
+  }
+
+  /// Returns true if this `DataFrame` contains one or more sources that continuously return data as it
+  /// arrives.
+  /// - Returns: True if a plan is streaming.
+  public func isStreaming() async throws -> Bool {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: spark.client.host, port: spark.client.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.analyzePlan(spark.client.getIsStreaming(spark.sessionID, plan))
+      return response.isStreaming.isStreaming
+    }
+  }
+
   /// Checks if the ``DataFrame`` is empty and returns a boolean value.
   /// - Returns: `true` if the ``DataFrame`` is empty, `false` otherwise.
   public func isEmpty() async throws -> Bool {

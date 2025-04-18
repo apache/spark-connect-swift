@@ -252,6 +252,22 @@ struct DataFrameTests {
     await spark.stop()
   }
 
+  @Test
+  func isLocal() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.sql("SHOW DATABASES").isLocal())
+    #expect(try await spark.sql("SHOW TABLES").isLocal())
+    #expect(try await spark.range(1).isLocal() == false)
+    await spark.stop()
+  }
+
+  @Test
+  func isStreaming() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(1).isStreaming() == false)
+    await spark.stop()
+  }
+
 #if !os(Linux)
   @Test
   func sort() async throws {

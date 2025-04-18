@@ -556,4 +556,24 @@ public actor SparkConnectClient {
     plan.opType = .root(relation)
     return plan
   }
+
+  func getIsLocal(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest {
+    return analyze(
+      sessionID,
+      {
+        var isLocal = AnalyzePlanRequest.IsLocal()
+        isLocal.plan = plan
+        return OneOf_Analyze.isLocal(isLocal)
+      })
+  }
+
+  func getIsStreaming(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest {
+    return analyze(
+      sessionID,
+      {
+        var isStreaming = AnalyzePlanRequest.IsStreaming()
+        isStreaming.plan = plan
+        return OneOf_Analyze.isStreaming(isStreaming)
+      })
+  }
 }
