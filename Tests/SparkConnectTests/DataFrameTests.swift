@@ -369,6 +369,84 @@ struct DataFrameTests {
     #expect(try await df.unpersist().count() == 30)
     await spark.stop()
   }
+
+  @Test
+  func except() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1, 3)
+    #expect(try await df.except(spark.range(1, 5)).collect() == [])
+    #expect(try await df.except(spark.range(2, 5)).collect() == [Row("1")])
+    #expect(try await df.except(spark.range(3, 5)).collect() == [Row("1"), Row("2")])
+    #expect(try await spark.sql("SELECT * FROM VALUES 1, 1").except(df).count() == 0)
+    await spark.stop()
+  }
+
+  @Test
+  func exceptAll() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1, 3)
+    #expect(try await df.exceptAll(spark.range(1, 5)).collect() == [])
+    #expect(try await df.exceptAll(spark.range(2, 5)).collect() == [Row("1")])
+    #expect(try await df.exceptAll(spark.range(3, 5)).collect() == [Row("1"), Row("2")])
+    #expect(try await spark.sql("SELECT * FROM VALUES 1, 1").exceptAll(df).count() == 1)
+    await spark.stop()
+  }
+
+  @Test
+  func intersect() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1, 3)
+    #expect(try await df.intersect(spark.range(1, 5)).collect() == [Row("1"), Row("2")])
+    #expect(try await df.intersect(spark.range(2, 5)).collect() == [Row("2")])
+    #expect(try await df.intersect(spark.range(3, 5)).collect() == [])
+    let df2 = try await spark.sql("SELECT * FROM VALUES 1, 1")
+    #expect(try await df2.intersect(df2).count() == 1)
+    await spark.stop()
+  }
+
+  @Test
+  func intersectAll() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1, 3)
+    #expect(try await df.intersectAll(spark.range(1, 5)).collect() == [Row("1"), Row("2")])
+    #expect(try await df.intersectAll(spark.range(2, 5)).collect() == [Row("2")])
+    #expect(try await df.intersectAll(spark.range(3, 5)).collect() == [])
+    let df2 = try await spark.sql("SELECT * FROM VALUES 1, 1")
+    #expect(try await df2.intersectAll(df2).count() == 2)
+    await spark.stop()
+  }
+
+  @Test
+  func union() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1, 2)
+    #expect(try await df.union(spark.range(1, 3)).collect() == [Row("1"), Row("1"), Row("2")])
+    #expect(try await df.union(spark.range(2, 3)).collect() == [Row("1"), Row("2")])
+    let df2 = try await spark.sql("SELECT * FROM VALUES 1, 1")
+    #expect(try await df2.union(df2).count() == 4)
+    await spark.stop()
+  }
+
+  @Test
+  func unionAll() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1, 2)
+    #expect(try await df.unionAll(spark.range(1, 3)).collect() == [Row("1"), Row("1"), Row("2")])
+    #expect(try await df.unionAll(spark.range(2, 3)).collect() == [Row("1"), Row("2")])
+    let df2 = try await spark.sql("SELECT * FROM VALUES 1, 1")
+    #expect(try await df2.unionAll(df2).count() == 4)
+    await spark.stop()
+  }
+
+  @Test
+  func unionByName() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df1 = try await spark.sql("SELECT 1 a, 2 b")
+    let df2 = try await spark.sql("SELECT 4 b, 3 a")
+    #expect(try await df1.unionByName(df2).collect() == [Row("1", "2"), Row("3", "4")])
+    #expect(try await df1.union(df2).collect() == [Row("1", "2"), Row("4", "3")])
+    await spark.stop()
+  }
 #endif
 
   @Test

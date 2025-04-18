@@ -499,6 +499,86 @@ public actor DataFrame: Sendable {
     }
   }
 
+  /// Returns a new `DataFrame` containing rows in this `DataFrame` but not in another `DataFrame`.
+  /// This is equivalent to `EXCEPT DISTINCT` in SQL.
+  /// - Parameter other: A `DataFrame` to exclude.
+  /// - Returns: A `DataFrame`.
+  public func except(_ other: DataFrame) async -> DataFrame {
+    let right = await (other.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getSetOperation(self.plan.root, right, SetOpType.except)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Returns a new `DataFrame` containing rows in this `DataFrame` but not in another `DataFrame` while
+  /// preserving the duplicates. This is equivalent to `EXCEPT ALL` in SQL.
+  /// - Parameter other: A `DataFrame` to exclude.
+  /// - Returns: A `DataFrame`.
+  public func exceptAll(_ other: DataFrame) async -> DataFrame {
+    let right = await (other.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getSetOperation(self.plan.root, right, SetOpType.except, isAll: true)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Returns a new `DataFrame` containing rows only in both this `DataFrame` and another `DataFrame`.
+  /// This is equivalent to `INTERSECT` in SQL.
+  /// - Parameter other: A `DataFrame` to intersect with.
+  /// - Returns: A `DataFrame`.
+  public func intersect(_ other: DataFrame) async -> DataFrame {
+    let right = await (other.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getSetOperation(self.plan.root, right, SetOpType.intersect)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Returns a new `DataFrame` containing rows only in both this `DataFrame` and another `DataFrame` while
+  /// preserving the duplicates. This is equivalent to `INTERSECT ALL` in SQL.
+  /// - Parameter other: A `DataFrame` to intersect with.
+  /// - Returns: A `DataFrame`.
+  public func intersectAll(_ other: DataFrame) async -> DataFrame {
+    let right = await (other.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getSetOperation(self.plan.root, right, SetOpType.intersect, isAll: true)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Returns a new `DataFrame` containing union of rows in this `DataFrame` and another `DataFrame`.
+  /// This is equivalent to `UNION ALL` in SQL. To do a SQL-style set union (that does
+  /// deduplication of elements), use this function followed by a [[distinct]].
+  /// Also as standard in SQL, this function resolves columns by position (not by name)
+  /// - Parameter other: A `DataFrame` to union with.
+  /// - Returns: A `DataFrame`.
+  public func union(_ other: DataFrame) async -> DataFrame {
+    let right = await (other.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getSetOperation(self.plan.root, right, SetOpType.union, isAll: true)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Returns a new `DataFrame` containing union of rows in this `DataFrame` and another `DataFrame`.
+  /// This is an alias of `union`.
+  /// - Parameter other: A `DataFrame` to union with.
+  /// - Returns: A `DataFrame`.
+  public func unionAll(_ other: DataFrame) async -> DataFrame {
+    return await union(other)
+  }
+
+  /// Returns a new `DataFrame` containing union of rows in this `DataFrame` and another `DataFrame`.
+  /// The difference between this function and [[union]] is that this function resolves columns by
+  /// name (not by position).
+  /// When the parameter `allowMissingColumns` is `true`, the set of column names in this and other
+  /// `DataFrame` can differ; missing columns will be filled with null. Further, the missing columns
+  /// of this `DataFrame` will be added at the end in the schema of the union result
+  /// - Parameter other: A `DataFrame` to union with.
+  /// - Returns: A `DataFrame`.
+  public func unionByName(_ other: DataFrame, _ allowMissingColumns: Bool = false) async -> DataFrame {
+    let right = await (other.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getSetOperation(
+      self.plan.root,
+      right,
+      SetOpType.union,
+      byName: true,
+      allowMissingColumns: allowMissingColumns
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.
   public var write: DataFrameWriter {
     get {

@@ -527,4 +527,22 @@ public actor SparkConnectClient {
       return response.jsonToDdl.ddlString
     }
   }
+
+  static func getSetOperation(
+    _ left: Relation, _ right: Relation, _ opType: SetOpType, isAll: Bool = false,
+    byName: Bool = false, allowMissingColumns: Bool = false
+  ) -> Plan {
+    var setOp = SetOperation()
+    setOp.leftInput = left
+    setOp.rightInput = right
+    setOp.setOpType = opType
+    setOp.isAll = isAll
+    setOp.allowMissingColumns = allowMissingColumns
+    setOp.byName = byName
+    var relation = Relation()
+    relation.setOp = setOp
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
 }
