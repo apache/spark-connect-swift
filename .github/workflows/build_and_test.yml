@@ -46,6 +46,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
+          - ubuntu-24.04-arm
           - macos-15
     steps:
     - uses: actions/checkout@v4
@@ -56,7 +57,13 @@ jobs:
       run: swift build -v
 
   integration-test-linux:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
     services:
       spark:
         image: apache/spark:4.0.0-preview2
