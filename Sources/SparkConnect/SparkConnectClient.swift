@@ -52,12 +52,7 @@ public actor SparkConnectClient {
   /// - Parameter sessionID: A string for the session ID.
   /// - Returns: An `AnalyzePlanResponse` instance for `SparkVersion`
   func connect(_ sessionID: String) async throws -> AnalyzePlanResponse {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
-      )
-    ) { client in
+    try await withGPRC { client in
       // To prevent server-side `INVALID_HANDLE.FORMAT (SQLSTATE: HY000)` exception.
       if UUID(uuidString: sessionID) == nil {
         throw SparkConnectError.InvalidSessionIDException
@@ -70,6 +65,19 @@ public actor SparkConnectClient {
       })
       let response = try await service.analyzePlan(request)
       return response
+    }
+  }
+
+  private func withGPRC<Result: Sendable>(
+    _ f: (GRPCClient<GRPCNIOTransportHTTP2.HTTP2ClientTransport.Posix>) async throws -> Result
+  ) async throws -> Result {
+    try await withGRPCClient(
+      transport: .http2NIOPosix(
+        target: .dns(host: self.host, port: self.port),
+        transportSecurity: .plaintext
+      )
+    ) { client in
+      return try await f(client)
     }
   }
 
@@ -89,12 +97,7 @@ public actor SparkConnectClient {
   /// - Parameter map: A map of key-value pairs to set.
   /// - Returns: Always return true.
   func setConf(map: [String: String]) async throws -> Bool {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
-      )
-    ) { client in
+    try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
       var request = getConfigRequestSet(map: map)
       request.clientType = clientType
@@ -118,12 +121,7 @@ public actor SparkConnectClient {
   }
 
   func unsetConf(keys: [String]) async throws -> Bool {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
-      )
-    ) { client in
+    try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
       var request = getConfigRequestUnset(keys: keys)
       request.clientType = clientType
@@ -150,12 +148,7 @@ public actor SparkConnectClient {
   /// - Parameter key: A string for key to look up.
   /// - Returns: A string for the value of the key.
   func getConf(_ key: String) async throws -> String {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
-      )
-    ) { client in
+    try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
       var request = getConfigRequestGet(keys: [key])
       request.clientType = clientType
@@ -179,12 +172,7 @@ public actor SparkConnectClient {
   /// Request the server to get all configurations.
   /// - Returns: A map of key-value pairs.
   func getConfAll() async throws -> [String: String] {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
-      )
-    ) { client in
+    try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
       var request = getConfigRequestGetAll()
       request.clientType = clientType
@@ -451,12 +439,7 @@ public actor SparkConnectClient {
 
   func execute(_ sessionID: String, _ command: Command) async throws -> [ExecutePlanResponse] {
     self.result.removeAll()
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
-      )
-    ) { client in
+    try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
       var plan = Plan()
       plan.opType = .command(command)
@@ -501,12 +484,7 @@ public actor SparkConnectClient {
   /// - Parameter ddlString: A string to parse.
   /// - Returns: A ``Spark_Connect_DataType`` instance.
   func ddlParse(_ ddlString: String) async throws -> Spark_Connect_DataType {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
-      )
-    ) { client in
+    try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
       let request = analyze(self.sessionID!, {
         var ddlParse = AnalyzePlanRequest.DDLParse()
@@ -522,12 +500,7 @@ public actor SparkConnectClient {
   /// - Parameter jsonString: A JSON string.
   /// - Returns: A DDL string.
   func jsonToDdl(_ jsonString: String) async throws -> String {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
-      )
-    ) { client in
+    try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
       let request = analyze(self.sessionID!, {
         var jsonToDDL = AnalyzePlanRequest.JsonToDDL()
