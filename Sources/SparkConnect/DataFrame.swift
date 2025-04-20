@@ -117,7 +117,8 @@ public actor DataFrame: Sendable {
       transport: .http2NIOPosix(
         target: .dns(host: spark.client.host, port: spark.client.port),
         transportSecurity: .plaintext
-      )
+      ),
+      interceptors: spark.client.getIntercepters()
     ) { client in
       return try await f(client)
     }

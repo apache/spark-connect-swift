@@ -28,6 +28,8 @@ public actor SparkConnectClient {
   let url: URL
   let host: String
   let port: Int
+  let token: String?
+  var intercepters: [ClientInterceptor] = []
   let userContext: UserContext
   var sessionID: String? = nil
   var tags = Set<String>()
@@ -36,10 +38,14 @@ public actor SparkConnectClient {
   /// - Parameters:
   ///   - remote: A string to connect `Spark Connect` server.
   ///   - user: A string for the user ID of this connection.
-  init(remote: String, user: String) {
+  init(remote: String, user: String, token: String? = nil) {
     self.url = URL(string: remote)!
     self.host = url.host() ?? "localhost"
     self.port = self.url.port ?? 15002
+    self.token = token ?? ProcessInfo.processInfo.environment["SPARK_CONNECT_AUTHENTICATE_TOKEN"]
+    if let token = self.token {
+      self.intercepters.append(BearerTokenInterceptor(token: token))
+    }
     self.userContext = user.toUserContext
   }
 
@@ -75,10 +81,15 @@ public actor SparkConnectClient {
       transport: .http2NIOPosix(
         target: .dns(host: self.host, port: self.port),
         transportSecurity: .plaintext
-      )
+      ),
+      interceptors: self.intercepters
     ) { client in
       return try await f(client)
     }
+  }
+
+  public func getIntercepters() -> [ClientInterceptor] {
+    return self.intercepters
   }
 
   /// Create a ``ConfigRequest`` instance for `Set` operation.
