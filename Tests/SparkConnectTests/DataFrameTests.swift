@@ -312,6 +312,15 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectMultiple() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1)
+    #expect(try await df.collect().count == 1)
+    #expect(try await df.collect().count == 1)
+    await spark.stop()
+  }
+
+  @Test
   func head() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).head().isEmpty)

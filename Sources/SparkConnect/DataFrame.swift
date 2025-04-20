@@ -151,6 +151,9 @@ public actor DataFrame: Sendable {
 
   /// Execute the plan and try to fill `schema` and `batches`.
   private func execute() async throws {
+    // Clear all existing batches.
+    self.batches.removeAll()
+
     try await withGRPCClient(
       transport: .http2NIOPosix(
         target: .dns(host: spark.client.host, port: spark.client.port),
