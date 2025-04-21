@@ -27,13 +27,24 @@ import Testing
 struct SparkConnectClientTests {
   @Test
   func createAndStop() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
+    await client.stop()
+  }
+
+  @Test
+  func parameters() async throws {
+    let client = SparkConnectClient(remote: "sc://host1:123/;token=abcd;userId=test;userAgent=myagent")
+    #expect(await client.token == "abcd")
+    #expect(await client.userContext.userID == "test")
+    #expect(await client.clientType == "myagent")
+    #expect(await client.host == "host1")
+    #expect(await client.port == 123)
     await client.stop()
   }
 
   @Test
   func connectWithInvalidUUID() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     try await #require(throws: SparkConnectError.InvalidSessionIDException) {
       let _ = try await client.connect("not-a-uuid-format")
     }
@@ -42,14 +53,14 @@ struct SparkConnectClientTests {
 
   @Test
   func connect() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     let _ = try await client.connect(UUID().uuidString)
     await client.stop()
   }
 
   @Test
   func tags() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     let _ = try await client.connect(UUID().uuidString)
     let plan = await client.getPlanRange(0, 1, 1)
 
@@ -65,7 +76,7 @@ struct SparkConnectClientTests {
 
   @Test
   func ddlParse() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     let _ = try await client.connect(UUID().uuidString)
     #expect(try await client.ddlParse("a int").simpleString == "struct<a:int>")
     await client.stop()
@@ -74,7 +85,7 @@ struct SparkConnectClientTests {
 #if !os(Linux) // TODO: Enable this with the offical Spark 4 docker image
   @Test
   func jsonToDdl() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     let _ = try await client.connect(UUID().uuidString)
     let json =
       #"{"type":"struct","fields":[{"name":"id","type":"long","nullable":false,"metadata":{}}]}"#

@@ -27,7 +27,7 @@ import Testing
 struct RuntimeConfTests {
   @Test
   func get() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     _ = try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
 
@@ -42,7 +42,7 @@ struct RuntimeConfTests {
 
   @Test
   func set() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     _ = try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
     try await conf.set("spark.test.key1", "value1")
@@ -52,7 +52,7 @@ struct RuntimeConfTests {
 
   @Test
   func reset() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     _ = try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
 
@@ -73,7 +73,7 @@ struct RuntimeConfTests {
 
   @Test
   func getAll() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost", user: "test")
+    let client = SparkConnectClient(remote: "sc://localhost")
     _ = try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
     let map = try await conf.getAll()

@@ -23,7 +23,7 @@ import GRPCProtobuf
 
 /// Conceptually the remote spark session that communicates with the server
 public actor SparkConnectClient {
-  let clientType: String = "swift"
+  var clientType: String = "swift"
   let url: URL
   let host: String
   let port: Int
@@ -36,16 +36,36 @@ public actor SparkConnectClient {
   /// Create a client to use GRPCClient.
   /// - Parameters:
   ///   - remote: A string to connect `Spark Connect` server.
-  ///   - user: A string for the user ID of this connection.
-  init(remote: String, user: String, token: String? = nil) {
+  init(remote: String) {
     self.url = URL(string: remote)!
     self.host = url.host() ?? "localhost"
     self.port = self.url.port ?? 15002
+    var token: String? = nil
+    let processInfo = ProcessInfo.processInfo
+#if os(macOS) || os(Linux)
+    var userName = processInfo.environment["SPARK_USER"] ?? processInfo.userName
+#else
+    var userName = processInfo.environment["SPARK_USER"] ?? ""
+#endif
+    for param in self.url.path.split(separator: ";").dropFirst().filter({ !$0.isEmpty }) {
+      let kv = param.split(separator: "=")
+      switch String(kv[0]) {
+      case URIParams.PARAM_USER_AGENT:
+        clientType = String(kv[1])
+      case URIParams.PARAM_TOKEN:
+        token = String(kv[1])
+      case URIParams.PARAM_USER_ID:
+        userName = String(kv[1])
+      default:
+        // Print warning and ignore
+        print("Unknown parameter: \(param)")
+      }
+    }
     self.token = token ?? ProcessInfo.processInfo.environment["SPARK_CONNECT_AUTHENTICATE_TOKEN"]
     if let token = self.token {
       self.intercepters.append(BearerTokenInterceptor(token: token))
     }
-    self.userContext = user.toUserContext
+    self.userContext = userName.toUserContext
   }
 
   /// Stop the connection. Currently, this API is no-op because we don't reuse the connection yet.
@@ -573,5 +593,14 @@ public actor SparkConnectClient {
         isStreaming.plan = plan
         return OneOf_Analyze.isStreaming(isStreaming)
       })
+  }
+
+  private enum URIParams {
+    static let PARAM_USER_ID = "userId"
+    static let PARAM_USER_AGENT = "userAgent"
+    static let PARAM_TOKEN = "token"
+    static let PARAM_USE_SSL = "useSsl"
+    static let PARAM_SESSION_ID = "sessionId"
+    static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpcMaxMessageSize"
   }
 }

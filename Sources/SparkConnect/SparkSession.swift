@@ -17,7 +17,6 @@
 // under the License.
 //
 
-import Dispatch
 import Foundation
 
 /// The entry point to programming Spark with ``DataFrame`` API.
@@ -39,15 +38,8 @@ public actor SparkSession {
   /// Create a session that uses the specified connection string and userID.
   /// - Parameters:
   ///   - connection: a string in a patter, `sc://{host}:{port}`
-  ///   - userID: an optional user ID. If absent, `SPARK_USER` environment or ``ProcessInfo.processInfo.userName`` is used.
-  init(_ connection: String, _ userID: String? = nil) {
-    let processInfo = ProcessInfo.processInfo
-#if os(macOS) || os(Linux)
-    let userName = processInfo.environment["SPARK_USER"] ?? processInfo.userName
-#else
-    let userName = processInfo.environment["SPARK_USER"] ?? ""
-#endif
-    self.client = SparkConnectClient(remote: connection, user: userID ?? userName)
+  init(_ connection: String) {
+    self.client = SparkConnectClient(remote: connection)
     self.conf = RuntimeConf(self.client)
   }
 
