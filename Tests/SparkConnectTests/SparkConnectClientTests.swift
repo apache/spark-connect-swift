@@ -25,9 +25,11 @@ import Testing
 /// A test suite for `SparkConnectClient`
 @Suite(.serialized)
 struct SparkConnectClientTests {
+  let TEST_REMOTE = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost"
+
   @Test
   func createAndStop() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost")
+    let client = SparkConnectClient(remote: TEST_REMOTE)
     await client.stop()
   }
 
@@ -44,7 +46,7 @@ struct SparkConnectClientTests {
 
   @Test
   func connectWithInvalidUUID() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost")
+    let client = SparkConnectClient(remote: TEST_REMOTE)
     try await #require(throws: SparkConnectError.InvalidSessionIDException) {
       let _ = try await client.connect("not-a-uuid-format")
     }
@@ -53,14 +55,14 @@ struct SparkConnectClientTests {
 
   @Test
   func connect() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost")
+    let client = SparkConnectClient(remote: TEST_REMOTE)
     let _ = try await client.connect(UUID().uuidString)
     await client.stop()
   }
 
   @Test
   func tags() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost")
+    let client = SparkConnectClient(remote: TEST_REMOTE)
     let _ = try await client.connect(UUID().uuidString)
     let plan = await client.getPlanRange(0, 1, 1)
 
@@ -76,7 +78,7 @@ struct SparkConnectClientTests {
 
   @Test
   func ddlParse() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost")
+    let client = SparkConnectClient(remote: TEST_REMOTE)
     let _ = try await client.connect(UUID().uuidString)
     #expect(try await client.ddlParse("a int").simpleString == "struct<a:int>")
     await client.stop()
@@ -85,7 +87,7 @@ struct SparkConnectClientTests {
 #if !os(Linux) // TODO: Enable this with the offical Spark 4 docker image
   @Test
   func jsonToDdl() async throws {
-    let client = SparkConnectClient(remote: "sc://localhost")
+    let client = SparkConnectClient(remote: TEST_REMOTE)
     let _ = try await client.connect(UUID().uuidString)
     let json =
       #"{"type":"struct","fields":[{"name":"id","type":"long","nullable":false,"metadata":{}}]}"#

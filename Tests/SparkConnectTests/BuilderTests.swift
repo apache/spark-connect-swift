@@ -17,6 +17,7 @@
 // under the License.
 //
 
+import Foundation
 import Testing
 
 @testable import SparkConnect
@@ -24,12 +25,15 @@ import Testing
 /// A test suite for `SparkSession.Builder`
 @Suite(.serialized)
 struct BuilderTests {
+  let TEST_REMOTE = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost:15002"
+
   @Test
   func builderDefault() async throws {
+    let url = URL(string: self.TEST_REMOTE)!
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(await spark.client.clientType == "swift")
-    #expect(await spark.client.url.host() == "localhost")
-    #expect(await spark.client.url.port == 15002)
+    #expect(await spark.client.url.host() == url.host())
+    #expect(await spark.client.url.port == url.port)
     await spark.stop()
   }
 

@@ -221,7 +221,8 @@ public actor SparkSession {
     /// Create a new ``SparkSession``. If `spark.remote` is not given, `sc://localhost:15002` is used.
     /// - Returns: A newly created `SparkSession`.
     func create() async throws -> SparkSession {
-      let session = SparkSession(sparkConf["spark.remote"] ?? "sc://localhost:15002")
+      let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost:15002"
+      let session = SparkSession(sparkConf["spark.remote"] ?? remote)
       let response = try await session.client.connect(session.sessionID)
       await session.setVersion(response.sparkVersion.version)
       let isSuccess = try await session.client.setConf(map: sparkConf)
