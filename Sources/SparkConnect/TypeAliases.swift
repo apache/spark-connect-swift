@@ -44,6 +44,7 @@ typealias Sample = Spark_Connect_Sample
 typealias SaveMode = Spark_Connect_WriteOperation.SaveMode
 typealias SetOperation = Spark_Connect_SetOperation
 typealias SetOpType = SetOperation.SetOpType
+typealias ShowString = Spark_Connect_ShowString
 typealias SparkConnectService = Spark_Connect_SparkConnectService
 typealias Sort = Spark_Connect_Sort
 typealias StructType = Spark_Connect_DataType.Struct

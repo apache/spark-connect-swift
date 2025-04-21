@@ -226,35 +226,42 @@ public actor DataFrame: Sendable {
     return result
   }
 
-  /// Execute the plan and show the result.
+  /// Displays the top 20 rows of ``DataFrame`` in a tabular form.
   public func show() async throws {
-    try await execute()
+    try await show(20)
+  }
 
-    if let schema = self._schema {
-      var columns: [TextTableColumn] = []
-      for f in schema.struct.fields {
-        columns.append(TextTableColumn(header: f.name))
-      }
-      var table = TextTable(columns: columns)
-      for batch in self.batches {
-        for i in 0..<batch.length {
-          var values: [String] = []
-          for column in batch.columns {
-            let str = column.array as! AsString
-            if column.data.isNull(i) {
-              values.append("NULL")
-            } else if column.data.type.info == ArrowType.ArrowBinary {
-              let binary = str.asString(i).utf8.map { String(format: "%02x", $0) }.joined(separator: " ")
-              values.append("[\(binary)]")
-            } else {
-              values.append(str.asString(i))
-            }
-          }
-          table.addRow(values: values)
-        }
-      }
-      print(table.render())
-    }
+  /// Displays the top 20 rows of ``DataFrame`` in a tabular form.
+  /// - Parameter truncate: Whether truncate long strings. If true, strings more than 20 characters will be truncated
+  /// and all cells will be aligned right
+  public func show(_ truncate: Bool) async throws {
+    try await show(20, truncate)
+  }
+
+  /// Displays the ``DataFrame`` in a tabular form.
+  /// - Parameters:
+  ///   - numRows: Number of rows to show
+  ///   - truncate: Whether truncate long strings. If true, strings more than 20 characters will be truncated
+  ///   and all cells will be aligned right
+  public func show(_ numRows: Int32 = 20, _ truncate: Bool = true) async throws {
+    try await show(numRows, truncate ? 20 : 0)
+  }
+
+  /// Displays the ``DataFrame`` in a tabular form.
+  /// - Parameters:
+  ///   - numRows: Number of rows to show
+  ///   - truncate: If set to more than 0, truncates strings to `truncate` characters and all cells will be aligned right.
+  ///   - vertical: If set to true, prints output rows vertically (one line per column value).
+  public func show(_ numRows: Int32, _ truncate: Int32, _ vertical: Bool = false) async throws {
+    let rows = try await showString(numRows, truncate, vertical).collect()
+    assert(rows.count == 1)
+    assert(rows[0].length == 1)
+    print(try rows[0].get(0) as! String)
+  }
+
+  func showString(_ numRows: Int32, _ truncate: Int32, _ vertical: Bool) -> DataFrame {
+    let plan = SparkConnectClient.getShowString(self.plan.root, numRows, truncate, vertical)
+    return DataFrame(spark: self.spark, plan: plan)
   }
 
   /// Projects a set of expressions and returns a new ``DataFrame``.

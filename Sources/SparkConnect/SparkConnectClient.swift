@@ -317,6 +317,21 @@ public actor SparkConnectClient {
       })
   }
 
+  static func getShowString(
+    _ child: Relation, _ numRows: Int32, _ truncate: Int32 = 0, _ vertical: Bool = false
+  ) -> Plan {
+    var showString = ShowString()
+    showString.input = child
+    showString.numRows = numRows
+    showString.truncate = truncate
+    showString.vertical = vertical
+    var relation = Relation()
+    relation.showString = showString
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   func getTreeString(_ sessionID: String, _ plan: Plan, _ level: Int32) async -> AnalyzePlanRequest
   {
     return analyze(

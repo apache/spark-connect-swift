@@ -348,6 +348,18 @@ struct DataFrameTests {
     try await spark.sql("SELECT * FROM VALUES (true, false)").show()
     try await spark.sql("SELECT * FROM VALUES (1, 2)").show()
     try await spark.sql("SELECT * FROM VALUES ('abc', 'def'), ('ghi', 'jkl')").show()
+
+    // Check all signatures
+    try await spark.range(1000).show()
+    try await spark.range(1000).show(1)
+    try await spark.range(1000).show(true)
+    try await spark.range(1000).show(false)
+    try await spark.range(1000).show(1, true)
+    try await spark.range(1000).show(1, false)
+    try await spark.range(1000).show(1, 20)
+    try await spark.range(1000).show(1, 20, true)
+    try await spark.range(1000).show(1, 20, false)
+
     await spark.stop()
   }
 
