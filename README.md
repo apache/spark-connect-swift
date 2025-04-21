@@ -106,3 +106,73 @@ SELECT * FROM t
 
 You can find this example in the following repository.
 - https://github.com/dongjoon-hyun/spark-connect-swift-app
+
+## How to use `Spark SQL REPL` via `Spark Connect for Swift`
+
+This project also provides `Spark SQL REPL`. You can run it directly from this repository.
+
+```
+$ swift run
+...
+Build of product 'SQLRepl' complete! (2.33s)
+Connected to Apache Spark 4.0.0 Server
+spark-sql (default)> SHOW DATABASES;
++---------+
+|namespace|
++---------+
+|  default|
++---------+
+
+Time taken: 30 ms
+spark-sql (default)> CREATE DATABASE db1;
+++
+||
+++
+++
+
+Time taken: 31 ms
+spark-sql (default)> USE db1;
+++
+||
+++
+++
+
+Time taken: 27 ms
+spark-sql (db1)> CREATE TABLE t1 AS SELECT * FROM RANGE(10);
+++
+||
+++
+++
+
+Time taken: 99 ms
+spark-sql (db1)> SELECT * FROM t1;
++---+
+| id|
++---+
+|  1|
+|  5|
+|  3|
+|  0|
+|  6|
+|  9|
+|  4|
+|  8|
+|  7|
+|  2|
++---+
+
+Time taken: 80 ms
+spark-sql (db1)> USE default;
+++
+||
+++
+++
+
+Time taken: 26 ms
+spark-sql (default)> DROP DATABASE db1 CASCADE;
+++
+||
+++
+++
+spark-sql (default)> exit;
+```

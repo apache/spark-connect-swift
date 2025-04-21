@@ -49,6 +49,10 @@ let package = Package(
         .product(name: "FlatBuffers", package: "flatbuffers"),
       ]
     ),
+    .executableTarget(
+      name: "SQLRepl",
+      dependencies: ["SparkConnect"]
+    ),
     .testTarget(
       name: "SparkConnectTests",
       dependencies: ["SparkConnect"],
