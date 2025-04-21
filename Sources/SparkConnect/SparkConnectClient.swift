@@ -20,7 +20,6 @@ import Foundation
 import GRPCCore
 import GRPCNIOTransportHTTP2
 import GRPCProtobuf
-import Synchronization
 
 /// Conceptually the remote spark session that communicates with the server
 public actor SparkConnectClient {

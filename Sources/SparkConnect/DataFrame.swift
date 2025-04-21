@@ -21,8 +21,6 @@ import Foundation
 import GRPCCore
 import GRPCNIOTransportHTTP2
 import GRPCProtobuf
-import NIOCore
-import SwiftyTextTable
 import Synchronization
 
 /// A DataFrame which supports only SQL queries
