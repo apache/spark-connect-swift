@@ -50,7 +50,7 @@ let package = Package(
       ]
     ),
     .executableTarget(
-      name: "SQLRepl",
+      name: "SparkSQLRepl",
       dependencies: ["SparkConnect"]
     ),
     .testTarget(
