@@ -49,7 +49,7 @@ public actor SparkConnectClient {
 #endif
     for param in self.url.path.split(separator: ";").dropFirst().filter({ !$0.isEmpty }) {
       let kv = param.split(separator: "=")
-      switch String(kv[0]) {
+      switch String(kv[0]).lowercased() {
       case URIParams.PARAM_USER_AGENT:
         clientType = String(kv[1])
       case URIParams.PARAM_TOKEN:
@@ -596,11 +596,11 @@ public actor SparkConnectClient {
   }
 
   private enum URIParams {
-    static let PARAM_USER_ID = "userId"
-    static let PARAM_USER_AGENT = "userAgent"
+    static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpc_max_message_size"
+    static let PARAM_SESSION_ID = "session_id"
     static let PARAM_TOKEN = "token"
-    static let PARAM_USE_SSL = "useSsl"
-    static let PARAM_SESSION_ID = "sessionId"
-    static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpcMaxMessageSize"
+    static let PARAM_USER_AGENT = "user_agent"
+    static let PARAM_USER_ID = "user_id"
+    static let PARAM_USE_SSL = "use_ssl"
   }
 }

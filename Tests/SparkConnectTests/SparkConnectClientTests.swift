@@ -35,7 +35,7 @@ struct SparkConnectClientTests {
 
   @Test
   func parameters() async throws {
-    let client = SparkConnectClient(remote: "sc://host1:123/;token=abcd;userId=test;userAgent=myagent")
+    let client = SparkConnectClient(remote: "sc://host1:123/;tOkeN=abcd;user_ID=test;USER_agent=myagent")
     #expect(await client.token == "abcd")
     #expect(await client.userContext.userID == "test")
     #expect(await client.clientType == "myagent")
