@@ -9,24 +9,28 @@ This is an experimental Swift library to show how to connect to a remote Apache 
 So far, this library project is tracking the upstream changes like the [Apache Spark](https://spark.apache.org) 4.0.0 RC4 release and [Apache Arrow](https://arrow.apache.org) project's Swift-support.
 
 ## Requirement
+
 - [Apache Spark 4.0.0 RC4 (April 2025)](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc4-bin/)
-- [Swift 6.0 (2024)](https://swift.org)
+- [Swift 6.0 (2024) or 6.1 (2025)](https://swift.org)
 - [gRPC Swift 2.1 (March 2025)](https://github.com/grpc/grpc-swift/releases/tag/2.1.2)
-- [gRPC Swift Protobuf 1.1 (March 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/1.1.0)
-- [gRPC Swift NIO Transport 1.0 (March 2025)](https://github.com/grpc/grpc-swift-nio-transport/releases/tag/1.0.2)
+- [gRPC Swift Protobuf 1.2 (April 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/1.2.0)
+- [gRPC Swift NIO Transport 1.0 (March 2025)](https://github.com/grpc/grpc-swift-nio-transport/releases/tag/1.0.3)
+- [FlatBuffers v25.2.10 (February 2025)](https://github.com/google/flatbuffers/releases/tag/v25.2.10)
 - [Apache Arrow Swift](https://github.com/apache/arrow/tree/main/swift)
 
 ## How to use in your apps
 
 Create a Swift project.
-```
-$ mkdir SparkConnectSwiftApp
-$ cd SparkConnectSwiftApp
-$ swift package init --name SparkConnectSwiftApp --type executable
+
+```bash
+mkdir SparkConnectSwiftApp
+cd SparkConnectSwiftApp
+swift package init --name SparkConnectSwiftApp --type executable
 ```
 
 Add `SparkConnect` package to the dependency like the following
-```
+
+```bash
 $ cat Package.swift
 import PackageDescription
 
@@ -49,7 +53,7 @@ let package = Package(
 
 Use `SparkSession` of `SparkConnect` module in Swift.
 
-```
+```bash
 $ cat Sources/main.swift
 
 import SparkConnect
@@ -78,7 +82,7 @@ await spark.stop()
 
 Run your Swift application.
 
-```
+```bash
 $ swift run
 ...
 Connected to Apache Spark 4.0.0 Server
@@ -105,16 +109,17 @@ SELECT * FROM t
 ```
 
 You can find this example in the following repository.
-- https://github.com/dongjoon-hyun/spark-connect-swift-app
+
+- <https://github.com/dongjoon-hyun/spark-connect-swift-app>
 
 ## How to use `Spark SQL REPL` via `Spark Connect for Swift`
 
 This project also provides `Spark SQL REPL`. You can run it directly from this repository.
 
-```
+```bash
 $ swift run
 ...
-Build of product 'SQLRepl' complete! (2.33s)
+Build of product 'SparkSQLRepl' complete! (2.33s)
 Connected to Apache Spark 4.0.0 Server
 spark-sql (default)> SHOW DATABASES;
 +---------+
@@ -175,4 +180,10 @@ spark-sql (default)> DROP DATABASE db1 CASCADE;
 ++
 ++
 spark-sql (default)> exit;
+```
+
+You can use `SPARK_REMOTE` to specify the [Spark Connect connection string](https://spark.apache.org/docs/latest/spark-connect-overview.html#set-sparkremote-environment-variable) in order to provide more options.
+
+```bash
+SPARK_REMOTE=sc://localhost swift run
 ```
