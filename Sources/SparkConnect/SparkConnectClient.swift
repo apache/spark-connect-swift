@@ -557,6 +557,28 @@ public actor SparkConnectClient {
     }
   }
 
+  static func getJoin(
+    _ left: Relation, _ right: Relation, _ joinType: JoinType,
+    joinCondition: String? = nil, usingColumns: [String]? = nil
+  ) -> Plan {
+    var join = Join()
+    join.left = left
+    join.right = right
+    join.joinType = joinType
+    if let joinCondition {
+      join.joinCondition.expressionString = joinCondition.toExpressionString
+    }
+    if let usingColumns {
+      join.usingColumns = usingColumns
+    }
+    // join.joinDataType = Join.JoinDataType()
+    var relation = Relation()
+    relation.join = join
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getSetOperation(
     _ left: Relation, _ right: Relation, _ opType: SetOpType, isAll: Bool = false,
     byName: Bool = false, allowMissingColumns: Bool = false

@@ -415,6 +415,43 @@ struct DataFrameTests {
   }
 
   @Test
+  func join() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df1 = try await spark.sql("SELECT * FROM VALUES ('a', '1'), ('b', '2') AS T(a, b)")
+    let df2 = try await spark.sql("SELECT * FROM VALUES ('c', '2'), ('d', '3') AS S(c, b)")
+    let expectedCross = [
+      Row("a", "1", "c", "2"),
+      Row("a", "1", "d", "3"),
+      Row("b", "2", "c", "2"),
+      Row("b", "2", "d", "3"),
+    ]
+    #expect(try await df1.join(df2).collect() == expectedCross)
+    #expect(try await df1.crossJoin(df2).collect() == expectedCross)
+
+    #expect(try await df1.join(df2, "b").collect() == [Row("2", "b", "c")])
+    #expect(try await df1.join(df2, ["b"]).collect() == [Row("2", "b", "c")])
+
+    #expect(try await df1.join(df2, "b", "left").collect() == [Row("1", "a", nil), Row("2", "b", "c")])
+    #expect(try await df1.join(df2, "b", "right").collect() == [Row("2", "b", "c"), Row("3", nil, "d")])
+    #expect(try await df1.join(df2, "b", "semi").collect() == [Row("2", "b")])
+    #expect(try await df1.join(df2, "b", "anti").collect() == [Row("1", "a")])
+
+    let expectedOuter = [
+      Row("1", "a", nil),
+      Row("2", "b", "c"),
+      Row("3", nil, "d"),
+    ]
+    #expect(try await df1.join(df2, "b", "outer").collect() == expectedOuter)
+    #expect(try await df1.join(df2, "b", "full").collect() == expectedOuter)
+    #expect(try await df1.join(df2, ["b"], "full").collect() == expectedOuter)
+
+    let expected = [Row("b", "2", "c", "2")]
+    #expect(try await df1.join(df2, joinExprs: "T.b = S.b").collect() == expected)
+    #expect(try await df1.join(df2, joinExprs: "T.b = S.b", joinType: "inner").collect() == expected)
+    await spark.stop()
+  }
+
+  @Test
   func except() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 3)

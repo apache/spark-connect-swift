@@ -521,6 +521,80 @@ public actor DataFrame: Sendable {
     }
   }
 
+  /// Join with another `DataFrame`.
+  /// Behaves as an INNER JOIN and requires a subsequent join predicate.
+  /// - Parameter right: Right side of the join operation.
+  /// - Returns: A `DataFrame`.
+  public func join(_ right: DataFrame) async -> DataFrame {
+    let right = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getJoin(self.plan.root, right, JoinType.inner)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Equi-join with another `DataFrame` using the given column. A cross join with a predicate is
+  /// specified as an inner join. If you would explicitly like to perform a cross join use the
+  /// `crossJoin` method.
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - usingColumn: Name of the column to join on. This column must exist on both sides.
+  ///   - joinType: Type of join to perform. Default `inner`.
+  /// - Returns: <#description#>
+  public func join(_ right: DataFrame, _ usingColumn: String, _ joinType: String = "inner") async -> DataFrame {
+    await join(right, [usingColumn], joinType)
+  }
+
+  /// Inner equi-join with another `DataFrame` using the given columns.
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - usingColumn: Names of the columns to join on. These columns must exist on both sides.
+  ///   - joinType: A join type name.
+  /// - Returns: A `DataFrame`.
+  public func join(_ other: DataFrame, _ usingColumns: [String], _ joinType: String = "inner") async -> DataFrame {
+    let right = await (other.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getJoin(
+      self.plan.root,
+      right,
+      joinType.toJoinType,
+      usingColumns: usingColumns
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Inner equi-join with another `DataFrame` using the given columns.
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - joinExprs:A join expression string.
+  /// - Returns: A `DataFrame`.
+  public func join(_ right: DataFrame, joinExprs: String) async -> DataFrame {
+    return await join(right, joinExprs: joinExprs, joinType: "inner")
+  }
+
+  /// Inner equi-join with another `DataFrame` using the given columns.
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - joinExprs:A join expression string.
+  ///   - joinType: A join type name.
+  /// - Returns: A `DataFrame`.
+  public func join(_ right: DataFrame, joinExprs: String, joinType: String) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getJoin(
+      self.plan.root,
+      rightPlan,
+      joinType.toJoinType,
+      joinCondition: joinExprs
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Explicit cartesian join with another `DataFrame`.
+  /// - Parameter right: Right side of the join operation.
+  /// - Returns: Cartesian joins are very expensive without an extra filter that can be pushed down.
+  public func crossJoin(_ right: DataFrame) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getJoin(self.plan.root, rightPlan, JoinType.cross)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
   /// Returns a new `DataFrame` containing rows in this `DataFrame` but not in another `DataFrame`.
   /// This is equivalent to `EXCEPT DISTINCT` in SQL.
   /// - Parameter other: A `DataFrame` to exclude.

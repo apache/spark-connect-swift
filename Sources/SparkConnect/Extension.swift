@@ -80,6 +80,19 @@ extension String {
     default: SaveMode.errorIfExists
     }
   }
+
+  var toJoinType: JoinType {
+    return switch self.lowercased() {
+    case "inner": JoinType.inner
+    case "cross": JoinType.cross
+    case "outer", "full", "fullouter", "full_outer": JoinType.fullOuter
+    case "left", "leftouter", "left_outer": JoinType.leftOuter
+    case "right", "rightouter", "right_outer": JoinType.rightOuter
+    case "semi", "leftsemi", "left_semi": JoinType.leftSemi
+    case "anti", "leftanti", "left_anti": JoinType.leftAnti
+    default: JoinType.inner
+    }
+  }
 }
 
 extension [String: String] {
