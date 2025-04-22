@@ -28,6 +28,8 @@ public actor SparkConnectClient {
   let host: String
   let port: Int
   let token: String?
+  var useTLS: Bool = false
+  let transportSecurity: HTTP2ClientTransport.Posix.TransportSecurity
   var intercepters: [ClientInterceptor] = []
   let userContext: UserContext
   var sessionID: String? = nil
@@ -56,6 +58,10 @@ public actor SparkConnectClient {
         token = String(kv[1])
       case URIParams.PARAM_USER_ID:
         userName = String(kv[1])
+      case URIParams.PARAM_USE_SSL:
+        if String(kv[1]).lowercased() == "true" {
+          self.useTLS = true
+        }
       default:
         // Print warning and ignore
         print("Unknown parameter: \(param)")
@@ -64,6 +70,11 @@ public actor SparkConnectClient {
     self.token = token ?? ProcessInfo.processInfo.environment["SPARK_CONNECT_AUTHENTICATE_TOKEN"]
     if let token = self.token {
       self.intercepters.append(BearerTokenInterceptor(token: token))
+    }
+    if self.useTLS {
+      self.transportSecurity = .tls
+    } else {
+      self.transportSecurity = .plaintext
     }
     self.userContext = userName.toUserContext
   }
@@ -99,7 +110,7 @@ public actor SparkConnectClient {
     try await withGRPCClient(
       transport: .http2NIOPosix(
         target: .dns(host: self.host, port: self.port),
-        transportSecurity: .plaintext
+        transportSecurity: self.transportSecurity
       ),
       interceptors: self.intercepters
     ) { client in
