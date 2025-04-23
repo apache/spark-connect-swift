@@ -1,5 +1,9 @@
-[Catalog Name,spark_catalog]
-[Namespace Name,default]
-[Comment,default database]
-[Location,*]
-[Owner,*]
++--------------+----------------------------------------+
+|     info_name|                              info_value|
++--------------+----------------------------------------+
+|  Catalog Name|                           spark_catalog|
+|Namespace Name|                                 default|
+|       Comment|                        default database|
+|      Location|*|
+|         Owner|                                     *|
++--------------+----------------------------------------+

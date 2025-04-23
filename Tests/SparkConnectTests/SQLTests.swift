@@ -20,7 +20,7 @@
 import Foundation
 import Testing
 
-import SparkConnect
+@testable import SparkConnect
 
 /// A test suite for various SQL statements.
 struct SQLTests {
@@ -49,6 +49,10 @@ struct SQLTests {
     return str.replacing(regexOwner, with: "*")
   }
 
+  private func normalize(_ str: String) -> String {
+    return str.replacing(/[-]+/, with: "-").replacing(/[ ]+/, with: " ")
+  }
+
   @Test
   func testRemoveID() {
     #expect(removeID("123") == "123")
@@ -69,6 +73,12 @@ struct SQLTests {
     #expect(removeOwner("185") == "*")
   }
 
+  @Test
+  func testNormalize() {
+    #expect(normalize("+------+------------------+") == "+-+-+")
+    #expect(normalize("+      +                  +") == "+ + +")
+  }
+
   let queriesForSpark4Only: [String] = [
     "create_scala_function.sql",
     "create_table_function.sql",
@@ -80,6 +90,7 @@ struct SQLTests {
   @Test
   func runAll() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
+    let MAX = Int32.max
     for name in try! fm.contentsOfDirectory(atPath: path).sorted() {
       guard name.hasSuffix(".sql") else { continue }
       print(name)
@@ -89,13 +100,18 @@ struct SQLTests {
       }
 
       let sql = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name)"), encoding: .utf8)
-      let answer = cleanUp(try await spark.sql(sql).collect().map { $0.toString() }.joined(separator: "\n"))
+      let result = try await spark.sql(sql).showString(MAX, MAX, false).collect()[0].get(0) as! String
+      let answer = cleanUp(result.trimmingCharacters(in: .whitespacesAndNewlines))
       if (regenerateGoldenFiles) {
         let path = "\(FileManager.default.currentDirectoryPath)/Tests/SparkConnectTests/Resources/queries/\(name).answer"
-        fm.createFile(atPath: path, contents: (answer + "\n").data(using: .utf8)!, attributes: nil)
+        fm.createFile(atPath: path, contents: answer.data(using: .utf8)!, attributes: nil)
       } else {
         let expected = cleanUp(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).answer"), encoding: .utf8))
-        #expect(answer == expected.trimmingCharacters(in: .whitespacesAndNewlines))
+          .trimmingCharacters(in: .whitespacesAndNewlines)
+        if (answer != expected) {
+          print("Try to compare normalized result.")
+          #expect(normalize(answer) == normalize(expected))
+        }
       }
     }
     await spark.stop()

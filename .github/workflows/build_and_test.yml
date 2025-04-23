@@ -96,9 +96,10 @@ jobs:
       run: |
         curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc4-bin/spark-4.0.0-bin-hadoop3.tgz
         tar xvfz spark-4.0.0-bin-hadoop3.tgz
-        cd spark-4.0.0-bin-hadoop3/sbin
+        mv spark-4.0.0-bin-hadoop3 /tmp/spark
+        cd /tmp/spark/sbin
         ./start-connect-server.sh
-        cd ../..
+        cd -
         swift test --no-parallel
 
   integration-test-token:
@@ -114,9 +115,10 @@ jobs:
       run: |
         curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc4-bin/spark-4.0.0-bin-hadoop3.tgz
         tar xvfz spark-4.0.0-bin-hadoop3.tgz
-        cd spark-4.0.0-bin-hadoop3/sbin
+        mv spark-4.0.0-bin-hadoop3 /tmp/spark
+        cd /tmp/spark/sbin
         ./start-connect-server.sh
-        cd ../..
+        cd -
         swift test --no-parallel
 
   integration-test-mac-spark3:
@@ -135,7 +137,8 @@ jobs:
       run: |
         curl -LO https://downloads.apache.org/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz
         tar xvfz spark-3.5.5-bin-hadoop3.tgz
-        cd spark-3.5.5-bin-hadoop3/sbin
+        mv spark-3.5.5-bin-hadoop3 /tmp/spark
+        cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5
-        cd ../..
+        cd -
         swift test --no-parallel
