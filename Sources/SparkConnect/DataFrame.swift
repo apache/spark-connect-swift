@@ -743,7 +743,7 @@ public actor DataFrame: Sendable {
   /// Create a multi-dimensional rollup for the current ``DataFrame`` using the specified columns, so we
   /// can run aggregation on them.
   /// - Parameter cols: Grouping column names.
-  /// - Returns:A ``GroupedData``.
+  /// - Returns: A ``GroupedData``.
   public func rollup(_ cols: String...) -> GroupedData {
     return GroupedData(self, GroupType.rollup, cols)
   }
