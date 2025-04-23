@@ -24,6 +24,20 @@ import SparkConnect
 
 /// A test suite for `DataFrame`
 struct DataFrameTests {
+  let DEALER_TABLE =
+    """
+    VALUES
+      (100, 'Fremont', 'Honda Civic', 10),
+      (100, 'Fremont', 'Honda Accord', 15),
+      (100, 'Fremont', 'Honda CRV', 7),
+      (200, 'Dublin', 'Honda Civic', 20),
+      (200, 'Dublin', 'Honda Accord', 10),
+      (200, 'Dublin', 'Honda CRV', 3),
+      (300, 'San Jose', 'Honda Civic', 5),
+      (300, 'San Jose', 'Honda Accord', 8)
+    dealer (id, city, car_model, quantity)
+    """
+
   @Test
   func sparkSession() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -575,6 +589,61 @@ struct DataFrameTests {
     }
     try await spark.range(1).coalesce(10).write.mode("overwrite").orc(tmpDir)
     #expect(try await spark.read.orc(tmpDir).inputFiles().count < 10)
+    await spark.stop()
+  }
+
+  @Test
+  func groupBy() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.range(3).groupBy("id").agg("count(*)", "sum(*)", "avg(*)").collect()
+    #expect(rows == [Row("0", "1", "0", "0.0"), Row("1", "1", "1", "1.0"), Row("2", "1", "2", "2.0")])
+    await spark.stop()
+  }
+
+  @Test
+  func rollup() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql(DEALER_TABLE).rollup("city", "car_model")
+      .agg("sum(quantity) sum").orderBy("city", "car_model").collect()
+    #expect(rows == [
+      Row("Dublin", "Honda Accord", "10"),
+      Row("Dublin", "Honda CRV", "3"),
+      Row("Dublin", "Honda Civic", "20"),
+      Row("Dublin", nil, "33"),
+      Row("Fremont", "Honda Accord", "15"),
+      Row("Fremont", "Honda CRV", "7"),
+      Row("Fremont", "Honda Civic", "10"),
+      Row("Fremont", nil, "32"),
+      Row("San Jose", "Honda Accord", "8"),
+      Row("San Jose", "Honda Civic", "5"),
+      Row("San Jose", nil, "13"),
+      Row(nil, nil, "78"),
+    ])
+    await spark.stop()
+  }
+
+  @Test
+  func cube() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql(DEALER_TABLE).cube("city", "car_model")
+      .agg("sum(quantity) sum").orderBy("city", "car_model").collect()
+    #expect(rows == [
+      Row("Dublin", "Honda Accord", "10"),
+      Row("Dublin", "Honda CRV", "3"),
+      Row("Dublin", "Honda Civic", "20"),
+      Row("Dublin", nil, "33"),
+      Row("Fremont", "Honda Accord", "15"),
+      Row("Fremont", "Honda CRV", "7"),
+      Row("Fremont", "Honda Civic", "10"),
+      Row("Fremont", nil, "32"),
+      Row("San Jose", "Honda Accord", "8"),
+      Row("San Jose", "Honda Civic", "5"),
+      Row("San Jose", nil, "13"),
+      Row(nil, "Honda Accord", "33"),
+      Row(nil, "Honda CRV", "10"),
+      Row(nil, "Honda Civic", "35"),
+      Row(nil, nil, "78"),
+    ])
     await spark.stop()
   }
 #endif

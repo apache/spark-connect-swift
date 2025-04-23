@@ -733,6 +733,29 @@ public actor DataFrame: Sendable {
     return buildRepartition(numPartitions: numPartitions, shuffle: false)
   }
 
+  /// Groups the ``DataFrame`` using the specified columns, so we can run aggregation on them.
+  /// - Parameter cols: Grouping column names.
+  /// - Returns:A ``GroupedData``.
+  public func groupBy(_ cols: String...) -> GroupedData {
+    return GroupedData(self, GroupType.groupby, cols)
+  }
+
+  /// Create a multi-dimensional rollup for the current ``DataFrame`` using the specified columns, so we
+  /// can run aggregation on them.
+  /// - Parameter cols: Grouping column names.
+  /// - Returns:A ``GroupedData``.
+  public func rollup(_ cols: String...) -> GroupedData {
+    return GroupedData(self, GroupType.rollup, cols)
+  }
+
+  /// Create a multi-dimensional cube for the current ``DataFrame`` using the specified columns, so we
+  /// can run aggregation on them.
+  /// - Parameter cols: Grouping column names.
+  /// - Returns:A ``GroupedData``.
+  public func cube(_ cols: String...) -> GroupedData {
+    return GroupedData(self, GroupType.cube, cols)
+  }
+
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.
   public var write: DataFrameWriter {
     get {

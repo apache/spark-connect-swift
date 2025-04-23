@@ -93,6 +93,17 @@ extension String {
     default: JoinType.inner
     }
   }
+
+  var toGroupType: GroupType {
+    return switch self.lowercased() {
+    case "groupby": .groupby
+    case "rollup": .rollup
+    case "cube": .cube
+    case "pivot": .pivot
+    case "groupingsets": .groupingSets
+    default: .UNRECOGNIZED(-1)
+    }
+  }
 }
 
 extension [String: String] {

@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+typealias Aggregate = Spark_Connect_Aggregate
 typealias AnalyzePlanRequest = Spark_Connect_AnalyzePlanRequest
 typealias AnalyzePlanResponse = Spark_Connect_AnalyzePlanResponse
 typealias Command = Spark_Connect_Command
@@ -29,6 +30,7 @@ typealias ExecutePlanResponse = Spark_Connect_ExecutePlanResponse
 typealias ExplainMode = AnalyzePlanRequest.Explain.ExplainMode
 typealias ExpressionString = Spark_Connect_Expression.ExpressionString
 typealias Filter = Spark_Connect_Filter
+typealias GroupType = Spark_Connect_Aggregate.GroupType
 typealias Join = Spark_Connect_Join
 typealias JoinType = Spark_Connect_Join.JoinType
 typealias KeyValue = Spark_Connect_KeyValue
