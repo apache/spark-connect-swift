@@ -538,7 +538,7 @@ public actor DataFrame: Sendable {
   ///   - right: Right side of the join operation.
   ///   - usingColumn: Name of the column to join on. This column must exist on both sides.
   ///   - joinType: Type of join to perform. Default `inner`.
-  /// - Returns: <#description#>
+  /// - Returns: A `DataFrame`.
   public func join(_ right: DataFrame, _ usingColumn: String, _ joinType: String = "inner") async -> DataFrame {
     await join(right, [usingColumn], joinType)
   }
@@ -588,7 +588,7 @@ public actor DataFrame: Sendable {
 
   /// Explicit cartesian join with another `DataFrame`.
   /// - Parameter right: Right side of the join operation.
-  /// - Returns: Cartesian joins are very expensive without an extra filter that can be pushed down.
+  /// - Returns: A `DataFrame`.
   public func crossJoin(_ right: DataFrame) async -> DataFrame {
     let rightPlan = await (right.getPlan() as! Plan).root
     let plan = SparkConnectClient.getJoin(self.plan.root, rightPlan, JoinType.cross)
@@ -674,6 +674,63 @@ public actor DataFrame: Sendable {
       allowMissingColumns: allowMissingColumns
     )
     return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  private func buildRepartition(numPartitions: Int32, shuffle: Bool) -> DataFrame {
+    let plan = SparkConnectClient.getRepartition(self.plan.root, numPartitions, shuffle)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  private func buildRepartitionByExpression(numPartitions: Int32?, partitionExprs: [String]) -> DataFrame {
+    let plan = SparkConnectClient.getRepartitionByExpression(self.plan.root, partitionExprs, numPartitions)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Returns a new ``DataFrame`` that has exactly `numPartitions` partitions.
+  /// - Parameter numPartitions: The number of partitions.
+  /// - Returns: A `DataFrame`.
+  public func repartition(_ numPartitions: Int32) -> DataFrame {
+    return buildRepartition(numPartitions: numPartitions, shuffle: true)
+  }
+
+  /// Returns a new ``DataFrame`` partitioned by the given partitioning expressions, using
+  /// `spark.sql.shuffle.partitions` as number of partitions. The resulting Dataset is hash
+  /// partitioned.
+  /// - Parameter partitionExprs: The partition expression strings.
+  /// - Returns: A `DataFrame`.
+  public func repartition(_ partitionExprs: String...) -> DataFrame {
+    return buildRepartitionByExpression(numPartitions: nil, partitionExprs: partitionExprs)
+  }
+
+  /// Returns a new ``DataFrame`` partitioned by the given partitioning expressions, using
+  /// `spark.sql.shuffle.partitions` as number of partitions. The resulting Dataset is hash
+  /// partitioned.
+  /// - Parameters:
+  ///   - numPartitions: The number of partitions.
+  ///   - partitionExprs: The partition expression strings.
+  /// - Returns: A `DataFrame`.
+  public func repartition(_ numPartitions: Int32, _ partitionExprs: String...) -> DataFrame {
+    return buildRepartitionByExpression(numPartitions: numPartitions, partitionExprs: partitionExprs)
+  }
+
+  /// Returns a new ``DataFrame`` partitioned by the given partitioning expressions, using
+  /// `spark.sql.shuffle.partitions` as number of partitions. The resulting Dataset is hash
+  /// partitioned.
+  /// - Parameter partitionExprs: The partition expression strings.
+  /// - Returns: A `DataFrame`.
+  public func repartitionByExpression(_ numPartitions: Int32?, _ partitionExprs: String...) -> DataFrame {
+    return buildRepartitionByExpression(numPartitions: numPartitions, partitionExprs: partitionExprs)
+  }
+
+  /// Returns a new ``DataFrame`` that has exactly `numPartitions` partitions, when the fewer partitions
+  /// are requested. If a larger number of partitions is requested, it will stay at the current
+  /// number of partitions. Similar to coalesce defined on an `RDD`, this operation results in a
+  /// narrow dependency, e.g. if you go from 1000 partitions to 100 partitions, there will not be a
+  /// shuffle, instead each of the 100 new partitions will claim 10 of the current partitions.
+  /// - Parameter numPartitions: The number of partitions.
+  /// - Returns: A `DataFrame`.
+  public func coalesce(_ numPartitions: Int32) -> DataFrame {
+    return buildRepartition(numPartitions: numPartitions, shuffle: false)
   }
 
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.

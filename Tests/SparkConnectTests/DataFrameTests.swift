@@ -17,6 +17,7 @@
 // under the License.
 //
 
+import Foundation
 import Testing
 
 import SparkConnect
@@ -528,6 +529,52 @@ struct DataFrameTests {
     #expect(try await df1.union(df2).collect() == [Row("1", "2"), Row("4", "3")])
     let df3 = try await spark.sql("SELECT * FROM VALUES 1, 1")
     #expect(try await df3.unionByName(df3).count() == 4)
+    await spark.stop()
+  }
+
+  @Test
+  func repartition() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tmpDir = "/tmp/" + UUID().uuidString
+    let df = try await spark.range(2025)
+    for n in [1, 3, 5] as [Int32] {
+      try await df.repartition(n).write.mode("overwrite").orc(tmpDir)
+      #expect(try await spark.read.orc(tmpDir).inputFiles().count == n)
+    }
+    try await spark.range(1).repartition(10).write.mode("overwrite").orc(tmpDir)
+    #expect(try await spark.read.orc(tmpDir).inputFiles().count < 10)
+    await spark.stop()
+  }
+
+  @Test
+  func repartitionByExpression() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tmpDir = "/tmp/" + UUID().uuidString
+    let df = try await spark.range(2025)
+    for n in [1, 3, 5] as [Int32] {
+      try await df.repartition(n, "id").write.mode("overwrite").orc(tmpDir)
+      #expect(try await spark.read.orc(tmpDir).inputFiles().count == n)
+      try await df.repartitionByExpression(n, "id").write.mode("overwrite").orc(tmpDir)
+      #expect(try await spark.read.orc(tmpDir).inputFiles().count == n)
+    }
+    try await spark.range(1).repartition(10, "id").write.mode("overwrite").orc(tmpDir)
+    #expect(try await spark.read.orc(tmpDir).inputFiles().count < 10)
+    try await spark.range(1).repartition("id").write.mode("overwrite").orc(tmpDir)
+    #expect(try await spark.read.orc(tmpDir).inputFiles().count < 10)
+    await spark.stop()
+  }
+
+  @Test
+  func coalesce() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tmpDir = "/tmp/" + UUID().uuidString
+    let df = try await spark.range(2025)
+    for n in [1, 3, 5] as [Int32] {
+      try await df.coalesce(n).write.mode("overwrite").orc(tmpDir)
+      #expect(try await spark.read.orc(tmpDir).inputFiles().count == n)
+    }
+    try await spark.range(1).coalesce(10).write.mode("overwrite").orc(tmpDir)
+    #expect(try await spark.read.orc(tmpDir).inputFiles().count < 10)
     await spark.stop()
   }
 #endif

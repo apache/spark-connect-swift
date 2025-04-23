@@ -628,6 +628,38 @@ public actor SparkConnectClient {
       })
   }
 
+  static func getRepartition(_ child: Relation, _ numPartitions: Int32, _ shuffle: Bool = false) -> Plan {
+    var repartition = Repartition()
+    repartition.input = child
+    repartition.numPartitions = numPartitions
+    repartition.shuffle = shuffle
+    var relation = Relation()
+    relation.repartition = repartition
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
+  static func getRepartitionByExpression(
+    _ child: Relation, _ partitionExprs: [String], _ numPartitions: Int32? = nil
+  ) -> Plan {
+    var repartitionByExpression = RepartitionByExpression()
+    repartitionByExpression.input = child
+    repartitionByExpression.partitionExprs = partitionExprs.map {
+      var expr = Spark_Connect_Expression()
+      expr.expressionString = $0.toExpressionString
+      return expr
+    }
+    if let numPartitions {
+      repartitionByExpression.numPartitions = numPartitions
+    }
+    var relation = Relation()
+    relation.repartitionByExpression = repartitionByExpression
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   private enum URIParams {
     static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpc_max_message_size"
     static let PARAM_SESSION_ID = "session_id"
