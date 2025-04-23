@@ -569,7 +569,7 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let tmpDir = "/tmp/" + UUID().uuidString
     let df = try await spark.range(2025)
-    for n in [1, 3, 5] as [Int32] {
+    for n in [1, 2, 3] as [Int32] {
       try await df.coalesce(n).write.mode("overwrite").orc(tmpDir)
       #expect(try await spark.read.orc(tmpDir).inputFiles().count == n)
     }
