@@ -735,7 +735,7 @@ public actor DataFrame: Sendable {
 
   /// Groups the ``DataFrame`` using the specified columns, so we can run aggregation on them.
   /// - Parameter cols: Grouping column names.
-  /// - Returns:A ``GroupedData``.
+  /// - Returns: A ``GroupedData``.
   public func groupBy(_ cols: String...) -> GroupedData {
     return GroupedData(self, GroupType.groupby, cols)
   }
