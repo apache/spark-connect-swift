@@ -751,7 +751,7 @@ public actor DataFrame: Sendable {
   /// Create a multi-dimensional cube for the current ``DataFrame`` using the specified columns, so we
   /// can run aggregation on them.
   /// - Parameter cols: Grouping column names.
-  /// - Returns:A ``GroupedData``.
+  /// - Returns: A ``GroupedData``.
   public func cube(_ cols: String...) -> GroupedData {
     return GroupedData(self, GroupType.cube, cols)
   }
