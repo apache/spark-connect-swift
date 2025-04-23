@@ -26,7 +26,7 @@ import SparkConnect
 struct SQLTests {
   let fm = FileManager.default
   let path = Bundle.module.path(forResource: "queries", ofType: "")!
-  let encoder = JSONEncoder()
+  let regenerateGoldenFiles = ProcessInfo.processInfo.environment["SPARK_GENERATE_GOLDEN_FILES"] == "1"
 
   let regexID = /#\d+L?/
   let regexPlanId = /plan_id=\d+/
@@ -79,8 +79,13 @@ struct SQLTests {
 
       let sql = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name)"), encoding: .utf8)
       let answer = cleanUp(try await spark.sql(sql).collect().map { $0.toString() }.joined(separator: "\n"))
-      let expected = cleanUp(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).answer"), encoding: .utf8))
-      #expect(answer == expected.trimmingCharacters(in: .whitespacesAndNewlines))
+      if (regenerateGoldenFiles) {
+        let path = "\(FileManager.default.currentDirectoryPath)/Tests/SparkConnectTests/Resources/queries/\(name).answer"
+        fm.createFile(atPath: path, contents: (answer + "\n").data(using: .utf8)!, attributes: nil)
+      } else {
+        let expected = cleanUp(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).answer"), encoding: .utf8))
+        #expect(answer == expected.trimmingCharacters(in: .whitespacesAndNewlines))
+      }
     }
     await spark.stop()
   }
