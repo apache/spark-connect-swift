@@ -60,4 +60,5 @@ typealias UserContext = Spark_Connect_UserContext
 typealias UnresolvedAttribute = Spark_Connect_Expression.UnresolvedAttribute
 typealias WithColumnsRenamed = Spark_Connect_WithColumnsRenamed
 typealias WriteOperation = Spark_Connect_WriteOperation
+typealias WriteOperationV2 = Spark_Connect_WriteOperationV2
 typealias YearMonthInterval = Spark_Connect_DataType.YearMonthInterval

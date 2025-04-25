@@ -852,4 +852,11 @@ public actor DataFrame: Sendable {
       return DataFrameWriter(df: self)
     }
   }
+
+  /// Create a write configuration builder for v2 sources.
+  /// - Parameter table: A table name, e.g., `catalog.db.table`.
+  /// - Returns: A ``DataFrameWriterV2`` instance.
+  public func writeTo(_ table: String) -> DataFrameWriterV2 {
+    return DataFrameWriterV2(table, self)
+  }
 }
