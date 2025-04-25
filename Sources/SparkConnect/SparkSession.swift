@@ -171,6 +171,14 @@ public actor SparkSession {
     await client.clearTags()
   }
 
+  func sameSemantics(_ plan: Plan, _ otherPlan: Plan) async throws -> Bool {
+    return try await client.sameSemantics(plan, otherPlan)
+  }
+
+  func semanticHash(_ plan: Plan) async throws -> Int32 {
+    return try await client.semanticHash(plan)
+  }
+
   /// This is defined as the return type of `SparkSession.sparkContext` method.
   /// This is an empty `Struct` type because `sparkContext` method is designed to throw
   /// `UNSUPPORTED_CONNECT_FEATURE.SESSION_SPARK_CONTEXT`.

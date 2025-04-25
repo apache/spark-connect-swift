@@ -568,6 +568,33 @@ public actor SparkConnectClient {
     }
   }
 
+  func sameSemantics(_ plan: Plan, _ otherPlan: Plan) async throws -> Bool {
+    try await withGPRC { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      let request = analyze(self.sessionID!, {
+        var sameSemantics = AnalyzePlanRequest.SameSemantics()
+        sameSemantics.targetPlan = plan
+        sameSemantics.otherPlan = otherPlan
+        return OneOf_Analyze.sameSemantics(sameSemantics)
+      })
+      let response = try await service.analyzePlan(request)
+      return response.sameSemantics.result
+    }
+  }
+
+  func semanticHash(_ plan: Plan) async throws -> Int32 {
+    try await withGPRC { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      let request = analyze(self.sessionID!, {
+        var semanticHash = AnalyzePlanRequest.SemanticHash()
+        semanticHash.plan = plan
+        return OneOf_Analyze.semanticHash(semanticHash)
+      })
+      let response = try await service.analyzePlan(request)
+      return response.semanticHash.result
+    }
+  }
+
   static func getJoin(
     _ left: Relation, _ right: Relation, _ joinType: JoinType,
     joinCondition: String? = nil, usingColumns: [String]? = nil

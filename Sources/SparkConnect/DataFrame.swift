@@ -468,6 +468,20 @@ public actor DataFrame: Sendable {
     }
   }
 
+  /// Returns a `hashCode` of the logical query plan against this ``DataFrame``.
+  /// - Returns: A hashcode value.
+  public func semanticHash() async throws -> Int32 {
+    return try await self.spark.semanticHash(self.plan)
+  }
+
+  /// Returns `true` when the logical query plans inside both ``Dataset``s are equal and therefore
+  /// return same results.
+  /// - Parameter other: A ``DataFrame`` to compare.
+  /// - Returns: Whether the both logical plans are equal.
+  public func sameSemantics(other: DataFrame) async throws -> Bool {
+    return try await self.spark.sameSemantics(self.plan, other.getPlan() as! Plan)
+  }
+
   /// Prints the physical plan to the console for debugging purposes.
   public func explain() async throws {
     try await explain("simple")
