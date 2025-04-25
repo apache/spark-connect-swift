@@ -467,6 +467,26 @@ struct DataFrameTests {
   }
 
   @Test
+  func lateralJoin() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df1 = try await spark.sql("SELECT * FROM VALUES ('a', '1'), ('b', '2') AS T(a, b)")
+    let df2 = try await spark.sql("SELECT * FROM VALUES ('c', '2'), ('d', '3') AS S(c, b)")
+    let expectedCross = [
+      Row("a", "1", "c", "2"),
+      Row("a", "1", "d", "3"),
+      Row("b", "2", "c", "2"),
+      Row("b", "2", "d", "3"),
+    ]
+    #expect(try await df1.lateralJoin(df2).collect() == expectedCross)
+    #expect(try await df1.lateralJoin(df2, joinType: "inner").collect() == expectedCross)
+
+    let expected = [Row("b", "2", "c", "2")]
+    #expect(try await df1.lateralJoin(df2, joinExprs: "T.b = S.b").collect() == expected)
+    #expect(try await df1.lateralJoin(df2, joinExprs: "T.b = S.b", joinType: "inner").collect() == expected)
+    await spark.stop()
+  }
+
+  @Test
   func except() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 3)

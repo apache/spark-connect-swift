@@ -595,6 +595,82 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: plan)
   }
 
+  /// Lateral join with another ``DataFrame``.
+  ///
+  /// Behaves as an JOIN LATERAL.
+  ///
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  /// - Returns: A ``DataFrame``.
+  public func lateralJoin(_ right: DataFrame) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getLateralJoin(
+      self.plan.root,
+      rightPlan,
+      JoinType.inner
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Lateral join with another ``DataFrame``.
+  ///
+  /// Behaves as an JOIN LATERAL.
+  ///
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - joinType: One of `inner` (default), `cross`, `left`, `leftouter`, `left_outer`.
+  /// - Returns: A ``DataFrame``.
+  public func lateralJoin(_ right: DataFrame, joinType: String) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getLateralJoin(
+      self.plan.root,
+      rightPlan,
+      joinType.toJoinType
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Lateral join with another ``DataFrame``.
+  ///
+  /// Behaves as an JOIN LATERAL.
+  ///
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - joinExprs: A join expression string.
+  /// - Returns: A ``DataFrame``.
+  public func lateralJoin(_ right: DataFrame, joinExprs: String) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getLateralJoin(
+      self.plan.root,
+      rightPlan,
+      JoinType.inner,
+      joinCondition: joinExprs
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Lateral join with another ``DataFrame``.
+  ///
+  /// Behaves as an JOIN LATERAL.
+  ///
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - joinType: One of `inner` (default), `cross`, `left`, `leftouter`, `left_outer`.
+  ///   - joinExprs: A join expression string.
+  /// - Returns: A ``DataFrame``.
+  public func lateralJoin(
+    _ right: DataFrame, joinExprs: String, joinType: String = "inner"
+  ) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getLateralJoin(
+      self.plan.root,
+      rightPlan,
+      joinType.toJoinType,
+      joinCondition: joinExprs
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
   /// Returns a new `DataFrame` containing rows in this `DataFrame` but not in another `DataFrame`.
   /// This is equivalent to `EXCEPT DISTINCT` in SQL.
   /// - Parameter other: A `DataFrame` to exclude.

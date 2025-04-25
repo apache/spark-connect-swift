@@ -34,6 +34,7 @@ typealias GroupType = Spark_Connect_Aggregate.GroupType
 typealias Join = Spark_Connect_Join
 typealias JoinType = Spark_Connect_Join.JoinType
 typealias KeyValue = Spark_Connect_KeyValue
+typealias LateralJoin = Spark_Connect_LateralJoin
 typealias Limit = Spark_Connect_Limit
 typealias MapType = Spark_Connect_DataType.Map
 typealias NamedTable = Spark_Connect_Read.NamedTable

@@ -590,6 +590,24 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getLateralJoin(
+    _ left: Relation, _ right: Relation, _ joinType: JoinType,
+    joinCondition: String? = nil
+  ) -> Plan {
+    var lateralJoin = LateralJoin()
+    lateralJoin.left = left
+    lateralJoin.right = right
+    lateralJoin.joinType = joinType
+    if let joinCondition {
+      lateralJoin.joinCondition.expressionString = joinCondition.toExpressionString
+    }
+    var relation = Relation()
+    relation.lateralJoin = lateralJoin
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getSetOperation(
     _ left: Relation, _ right: Relation, _ opType: SetOpType, isAll: Bool = false,
     byName: Bool = false, allowMissingColumns: Bool = false
