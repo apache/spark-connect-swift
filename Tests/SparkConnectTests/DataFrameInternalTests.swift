@@ -32,7 +32,7 @@ struct DataFrameInternalTests {
     #expect(rows.count == 1)
     #expect(rows[0].length == 1)
     #expect(
-      try rows[0].get(0) as! String == """
+      try (rows[0].get(0) as! String).trimmingCharacters(in: .whitespacesAndNewlines) == """
         +---+
         |id |
         +---+
@@ -73,7 +73,7 @@ struct DataFrameInternalTests {
     #expect(rows[0].length == 1)
     print(try rows[0].get(0) as! String)
     #expect(
-      try rows[0].get(0) as! String == """
+      try (rows[0].get(0) as! String).trimmingCharacters(in: .whitespacesAndNewlines) == """
         -RECORD 0--
          id  | 0   
         -RECORD 1--

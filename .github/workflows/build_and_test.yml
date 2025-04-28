@@ -118,3 +118,24 @@ jobs:
         ./start-connect-server.sh
         cd ../..
         swift test --no-parallel
+
+  integration-test-mac-spark3:
+    runs-on: macos-15
+    steps:
+    - uses: actions/checkout@v4
+    - uses: swift-actions/setup-swift@v2.3.0
+      with:
+        swift-version: "6.1"
+    - name: Install Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: zulu
+        java-version: 17
+    - name: Test
+      run: |
+        curl -LO https://downloads.apache.org/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz
+        tar xvfz spark-3.5.5-bin-hadoop3.tgz
+        cd spark-3.5.5-bin-hadoop3/sbin
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5
+        cd ../..
+        swift test --no-parallel

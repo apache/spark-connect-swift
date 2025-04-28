@@ -69,16 +69,20 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
 
     let schema1 = try await spark.sql("SELECT 'a' as col1").schema
-    #expect(
-      schema1
-        == #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
-    )
+    let answer1 = if await spark.version.starts(with: "4.") {
+      #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
+    } else {
+      #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{}}}]}}"#
+    }
+    #expect(schema1 == answer1)
 
     let schema2 = try await spark.sql("SELECT 'a' as col1, 'b' as col2").schema
-    #expect(
-      schema2
-        == #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}},{"name":"col2","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
-    )
+    let answer2 = if await spark.version.starts(with: "4.") {
+      #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}},{"name":"col2","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
+    } else {
+      #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{}}},{"name":"col2","dataType":{"string":{}}}]}}"#
+    }
+    #expect(schema2 == answer2)
 
     let emptySchema = try await spark.sql("DROP TABLE IF EXISTS nonexistent").schema
     #expect(emptySchema == #"{"struct":{}}"#)
@@ -319,11 +323,12 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("DROP TABLE IF EXISTS t").count() == 0)
     #expect(try await spark.sql("SHOW TABLES").count() == 0)
-    #expect(try await spark.sql("CREATE TABLE IF NOT EXISTS t(a INT)").count() == 0)
+    #expect(try await spark.sql("CREATE TABLE IF NOT EXISTS t(a INT) USING ORC").count() == 0)
     #expect(try await spark.sql("SHOW TABLES").count() == 1)
     #expect(try await spark.sql("SELECT * FROM t").count() == 0)
     #expect(try await spark.sql("INSERT INTO t VALUES (1), (2), (3)").count() == 0)
     #expect(try await spark.sql("SELECT * FROM t").count() == 3)
+    #expect(try await spark.sql("DROP TABLE IF EXISTS t").count() == 0)
     await spark.stop()
   }
 
@@ -482,20 +487,22 @@ struct DataFrameTests {
   @Test
   func lateralJoin() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let df1 = try await spark.sql("SELECT * FROM VALUES ('a', '1'), ('b', '2') AS T(a, b)")
-    let df2 = try await spark.sql("SELECT * FROM VALUES ('c', '2'), ('d', '3') AS S(c, b)")
-    let expectedCross = [
-      Row("a", "1", "c", "2"),
-      Row("a", "1", "d", "3"),
-      Row("b", "2", "c", "2"),
-      Row("b", "2", "d", "3"),
-    ]
-    #expect(try await df1.lateralJoin(df2).collect() == expectedCross)
-    #expect(try await df1.lateralJoin(df2, joinType: "inner").collect() == expectedCross)
+    if await spark.version.starts(with: "4.") {
+      let df1 = try await spark.sql("SELECT * FROM VALUES ('a', '1'), ('b', '2') AS T(a, b)")
+      let df2 = try await spark.sql("SELECT * FROM VALUES ('c', '2'), ('d', '3') AS S(c, b)")
+      let expectedCross = [
+        Row("a", "1", "c", "2"),
+        Row("a", "1", "d", "3"),
+        Row("b", "2", "c", "2"),
+        Row("b", "2", "d", "3"),
+      ]
+      #expect(try await df1.lateralJoin(df2).collect() == expectedCross)
+      #expect(try await df1.lateralJoin(df2, joinType: "inner").collect() == expectedCross)
 
-    let expected = [Row("b", "2", "c", "2")]
-    #expect(try await df1.lateralJoin(df2, joinExprs: "T.b = S.b").collect() == expected)
-    #expect(try await df1.lateralJoin(df2, joinExprs: "T.b = S.b", joinType: "inner").collect() == expected)
+      let expected = [Row("b", "2", "c", "2")]
+      #expect(try await df1.lateralJoin(df2, joinExprs: "T.b = S.b").collect() == expected)
+      #expect(try await df1.lateralJoin(df2, joinExprs: "T.b = S.b", joinType: "inner").collect() == expected)
+    }
     await spark.stop()
   }
 

@@ -53,7 +53,8 @@ struct SparkSessionTests {
   @Test
   func version() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(await spark.version.starts(with: "4.0.0"))
+    let version = await spark.version
+    #expect(version.starts(with: "4.0.0") || version.starts(with: "3.5."))
     await spark.stop()
   }
 
@@ -80,7 +81,7 @@ struct SparkSessionTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     let spark = try await SparkSession.builder.getOrCreate()
     try await SQLHelper.withTable(spark, tableName)({
-      _ = try await spark.sql("CREATE TABLE \(tableName) AS VALUES (1), (2)").count()
+      _ = try await spark.sql("CREATE TABLE \(tableName) USING ORC AS VALUES (1), (2)").count()
       #expect(try await spark.table(tableName).count() == 2)
     })
     await spark.stop()

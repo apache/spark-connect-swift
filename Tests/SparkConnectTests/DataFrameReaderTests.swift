@@ -48,10 +48,12 @@ struct DataFrameReaderTests {
   @Test
   func xml() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let path = "../examples/src/main/resources/people.xml"
-    #expect(try await spark.read.option("rowTag", "person").format("xml").load(path).count() == 3)
-    #expect(try await spark.read.option("rowTag", "person").xml(path).count() == 3)
-    #expect(try await spark.read.option("rowTag", "person").xml(path, path).count() == 6)
+    if await spark.version >= "4.0.0" {
+      let path = "../examples/src/main/resources/people.xml"
+      #expect(try await spark.read.option("rowTag", "person").format("xml").load(path).count() == 3)
+      #expect(try await spark.read.option("rowTag", "person").xml(path).count() == 3)
+      #expect(try await spark.read.option("rowTag", "person").xml(path, path).count() == 6)
+    }
     await spark.stop()
   }
 
@@ -80,7 +82,7 @@ struct DataFrameReaderTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     let spark = try await SparkSession.builder.getOrCreate()
     try await SQLHelper.withTable(spark, tableName)({
-      _ = try await spark.sql("CREATE TABLE \(tableName) AS VALUES (1), (2)").count()
+      _ = try await spark.sql("CREATE TABLE \(tableName) USING ORC AS VALUES (1), (2)").count()
       #expect(try await spark.read.table(tableName).count() == 2)
     })
     await spark.stop()

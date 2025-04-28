@@ -84,15 +84,15 @@ struct SparkConnectClientTests {
     await client.stop()
   }
 
-#if !os(Linux) // TODO: Enable this with the offical Spark 4 docker image
   @Test
   func jsonToDdl() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
-    let _ = try await client.connect(UUID().uuidString)
-    let json =
+    let response = try await client.connect(UUID().uuidString)
+    if response.sparkVersion.version.starts(with: "4.") {
+      let json =
       #"{"type":"struct","fields":[{"name":"id","type":"long","nullable":false,"metadata":{}}]}"#
-    #expect(try await client.jsonToDdl(json) == "id BIGINT NOT NULL")
+      #expect(try await client.jsonToDdl(json) == "id BIGINT NOT NULL")
+    }
     await client.stop()
   }
-#endif
 }

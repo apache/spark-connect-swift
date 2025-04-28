@@ -69,6 +69,13 @@ struct SQLTests {
     #expect(removeOwner("185") == "*")
   }
 
+  let queriesForSpark4Only: [String] = [
+    "create_scala_function.sql",
+    "create_table_function.sql",
+    "pipesyntax.sql",
+    "explain.sql",
+  ]
+
 #if !os(Linux)
   @Test
   func runAll() async throws {
@@ -76,6 +83,10 @@ struct SQLTests {
     for name in try! fm.contentsOfDirectory(atPath: path).sorted() {
       guard name.hasSuffix(".sql") else { continue }
       print(name)
+      if queriesForSpark4Only.contains(name) {
+        print("Skip query \(name) due to the difference between Spark 3 and 4.")
+        continue
+      }
 
       let sql = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name)"), encoding: .utf8)
       let answer = cleanUp(try await spark.sql(sql).collect().map { $0.toString() }.joined(separator: "\n"))
