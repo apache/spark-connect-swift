@@ -390,6 +390,22 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getProjectExprs(_ child: Relation, _ exprs: [String]) -> Plan {
+    var project = Project()
+    project.input = child
+    let expressions: [Spark_Connect_Expression] = exprs.map {
+      var expression = Spark_Connect_Expression()
+      expression.exprType = .expressionString($0.toExpressionString)
+      return expression
+    }
+    project.expressions = expressions
+    var relation = Relation()
+    relation.project = project
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getWithColumnRenamed(_ child: Relation, _ colsMap: [String: String]) -> Plan {
     var withColumnsRenamed = WithColumnsRenamed()
     withColumnsRenamed.input = child

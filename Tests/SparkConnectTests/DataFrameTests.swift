@@ -208,6 +208,20 @@ struct DataFrameTests {
     try await #require(throws: Error.self) {
       let _ = try await spark.range(1).select("invalid").schema
     }
+    try await #require(throws: Error.self) {
+      let _ = try await spark.range(1).select("id + 1").schema
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func selectExpr() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let schema = try await spark.range(1).selectExpr("id + 1 as id2").schema
+    #expect(
+      schema
+        == #"{"struct":{"fields":[{"name":"id2","dataType":{"long":{}}}]}}"#
+    )
     await spark.stop()
   }
 

@@ -84,6 +84,7 @@ struct SparkConnectClientTests {
     await client.stop()
   }
 
+#if !os(Linux)  // TODO: Enable this with the offical Spark 4 docker image
   @Test
   func jsonToDdl() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
@@ -95,4 +96,5 @@ struct SparkConnectClientTests {
     }
     await client.stop()
   }
+#endif
 }

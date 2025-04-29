@@ -269,6 +269,13 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
   }
 
+  /// Projects a set of expressions and returns a new ``DataFrame``.
+  /// - Parameter exprs: Expression strings
+  /// - Returns: A ``DataFrame`` with subset of columns.
+  public func selectExpr(_ exprs: String...) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getProjectExprs(self.plan.root, exprs))
+  }
+
   /// Returns a new Dataset with a column dropped. This is a no-op if schema doesn't contain column name.
   /// - Parameter cols: Column names
   /// - Returns: A ``DataFrame`` with subset of columns.
