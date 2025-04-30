@@ -81,7 +81,7 @@ struct SparkSessionTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     let spark = try await SparkSession.builder.getOrCreate()
     try await SQLHelper.withTable(spark, tableName)({
-      _ = try await spark.sql("CREATE TABLE \(tableName) USING ORC AS VALUES (1), (2)").count()
+      try await spark.sql("CREATE TABLE \(tableName) USING ORC AS VALUES (1), (2)").count()
       #expect(try await spark.table(tableName).count() == 2)
     })
     await spark.stop()

@@ -48,7 +48,7 @@ struct SparkConnectClientTests {
   func connectWithInvalidUUID() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
     try await #require(throws: SparkConnectError.InvalidSessionIDException) {
-      let _ = try await client.connect("not-a-uuid-format")
+      try await client.connect("not-a-uuid-format")
     }
     await client.stop()
   }
@@ -56,14 +56,14 @@ struct SparkConnectClientTests {
   @Test
   func connect() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
-    let _ = try await client.connect(UUID().uuidString)
+    try await client.connect(UUID().uuidString)
     await client.stop()
   }
 
   @Test
   func tags() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
-    let _ = try await client.connect(UUID().uuidString)
+    try await client.connect(UUID().uuidString)
     let plan = await client.getPlanRange(0, 1, 1)
 
     #expect(await client.getExecutePlanRequest(plan).tags.isEmpty)
@@ -79,7 +79,7 @@ struct SparkConnectClientTests {
   @Test
   func ddlParse() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
-    let _ = try await client.connect(UUID().uuidString)
+    try await client.connect(UUID().uuidString)
     #expect(try await client.ddlParse("a int").simpleString == "struct<a:int>")
     await client.stop()
   }
@@ -91,7 +91,7 @@ struct SparkConnectClientTests {
     let response = try await client.connect(UUID().uuidString)
     if response.sparkVersion.version.starts(with: "4.") {
       let json =
-      #"{"type":"struct","fields":[{"name":"id","type":"long","nullable":false,"metadata":{}}]}"#
+        #"{"type":"struct","fields":[{"name":"id","type":"long","nullable":false,"metadata":{}}]}"#
       #expect(try await client.jsonToDdl(json) == "id BIGINT NOT NULL")
     }
     await client.stop()

@@ -85,10 +85,11 @@ public actor DataFrameReader: Sendable {
   /// the schema inference step, and thus speed up data loading.
   /// - Parameter schema: A DDL schema string.
   /// - Returns: A `DataFrameReader`.
+  @discardableResult
   public func schema(_ schema: String) async throws -> DataFrameReader {
     // Validate by parsing.
     do {
-      _ = try await sparkSession.client.ddlParse(schema)
+      try await sparkSession.client.ddlParse(schema)
     } catch {
       throw SparkConnectError.InvalidTypeException
     }

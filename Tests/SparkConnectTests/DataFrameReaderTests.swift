@@ -82,7 +82,7 @@ struct DataFrameReaderTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     let spark = try await SparkSession.builder.getOrCreate()
     try await SQLHelper.withTable(spark, tableName)({
-      _ = try await spark.sql("CREATE TABLE \(tableName) USING ORC AS VALUES (1), (2)").count()
+      try await spark.sql("CREATE TABLE \(tableName) USING ORC AS VALUES (1), (2)").count()
       #expect(try await spark.read.table(tableName).count() == 2)
     })
     await spark.stop()
@@ -103,10 +103,10 @@ struct DataFrameReaderTests {
   func invalidSchema() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     await #expect(throws: SparkConnectError.InvalidTypeException) {
-      _ = try await spark.read.schema("invalid-name SHORT")
+      try await spark.read.schema("invalid-name SHORT")
     }
     await #expect(throws: SparkConnectError.InvalidTypeException) {
-      _ = try await spark.read.schema("age UNKNOWN_TYPE")
+      try await spark.read.schema("age UNKNOWN_TYPE")
     }
     await spark.stop()
   }

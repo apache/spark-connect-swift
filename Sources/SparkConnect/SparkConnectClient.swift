@@ -87,6 +87,7 @@ public actor SparkConnectClient {
   /// As a test connection, this sends the server `SparkVersion` request.
   /// - Parameter sessionID: A string for the session ID.
   /// - Returns: An `AnalyzePlanResponse` instance for `SparkVersion`
+  @discardableResult
   func connect(_ sessionID: String) async throws -> AnalyzePlanResponse {
     try await withGPRC { client in
       // To prevent server-side `INVALID_HANDLE.FORMAT (SQLSTATE: HY000)` exception.
@@ -137,6 +138,7 @@ public actor SparkConnectClient {
   /// Request the server to set a map of configurations for this session.
   /// - Parameter map: A map of key-value pairs to set.
   /// - Returns: Always return true.
+  @discardableResult
   func setConf(map: [String: String]) async throws -> Bool {
     try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
@@ -144,7 +146,7 @@ public actor SparkConnectClient {
       request.clientType = clientType
       request.userContext = userContext
       request.sessionID = self.sessionID!
-      let _ = try await service.config(request)
+      _ = try await service.config(request)
       return true
     }
   }
@@ -160,7 +162,11 @@ public actor SparkConnectClient {
     request.operation.opType = .unset(unset)
     return request
   }
-
+  
+  /// Request the server to unset keys
+  /// - Parameter keys: An array of keys
+  /// - Returns: Always return true
+  @discardableResult
   func unsetConf(keys: [String]) async throws -> Bool {
     try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
@@ -509,6 +515,7 @@ public actor SparkConnectClient {
     self.result.append(response)
   }
 
+  @discardableResult
   func execute(_ sessionID: String, _ command: Command) async throws -> [ExecutePlanResponse] {
     self.result.removeAll()
     try await withGPRC { client in
@@ -555,6 +562,7 @@ public actor SparkConnectClient {
   /// Parse a DDL string to ``Spark_Connect_DataType`` instance.
   /// - Parameter ddlString: A string to parse.
   /// - Returns: A ``Spark_Connect_DataType`` instance.
+  @discardableResult
   func ddlParse(_ ddlString: String) async throws -> Spark_Connect_DataType {
     try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)

@@ -201,6 +201,7 @@ public actor SparkSession {
 
     /// Remove all stored configurations.
     /// - Returns: self
+    @discardableResult
     func clear() -> Builder {
       sparkConf.removeAll()
       return self

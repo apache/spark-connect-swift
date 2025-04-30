@@ -114,7 +114,7 @@ public actor Catalog: Sendable {
       catalog.catType = .setCurrentCatalog(setCurrentCatalog)
       return catalog
     })
-    _ = try await df.count()
+    try await df.count()
   }
 
   /// Returns a list of catalogs in this session.
@@ -156,7 +156,7 @@ public actor Catalog: Sendable {
       catalog.catType = .setCurrentDatabase(setCurrentDatabase)
       return catalog
     })
-    _ = try await df.count()
+    try await df.count()
   }
 
   /// Returns a list of databases available across all sessions.

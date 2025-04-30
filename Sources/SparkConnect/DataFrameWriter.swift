@@ -177,7 +177,7 @@ public actor DataFrameWriter: Sendable {
     var command = Spark_Connect_Command()
     command.writeOperation = write
 
-    _ = try await df.spark.client.execute(df.spark.sessionID, command)
+    try await df.spark.client.execute(df.spark.sessionID, command)
   }
 
   /// Saves the content of the `DataFrame` in CSV format at the specified path.

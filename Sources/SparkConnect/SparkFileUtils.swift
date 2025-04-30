@@ -85,7 +85,7 @@ public enum SparkFileUtils {
   static func createDirectory(root: String, namePrefix: String = "spark") -> URL {
     let tempDir = URL(fileURLWithPath: root).appendingPathComponent(
       "\(namePrefix)-\(UUID().uuidString)")
-    _ = createDirectory(at: tempDir)
+    createDirectory(at: tempDir)
     return tempDir
   }
 

@@ -206,10 +206,10 @@ struct DataFrameTests {
   func selectInvalidColumn() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await #require(throws: Error.self) {
-      let _ = try await spark.range(1).select("invalid").schema
+      try await spark.range(1).select("invalid").schema
     }
     try await #require(throws: Error.self) {
-      let _ = try await spark.range(1).select("id + 1").schema
+      try await spark.range(1).select("id + 1").schema
     }
     await spark.stop()
   }
@@ -447,7 +447,7 @@ struct DataFrameTests {
     try await #require(throws: Error.self) {
       var invalidLevel = StorageLevel.DISK_ONLY
       invalidLevel.replication = 0
-      let _ = try await spark.range(9999).persist(storageLevel: invalidLevel).count()
+      try await spark.range(9999).persist(storageLevel: invalidLevel).count()
     }
     await spark.stop()
   }
@@ -707,14 +707,14 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1)
 
-    _ = try await df.unpersist()
+    try await df.unpersist()
     #expect(try await df.storageLevel == StorageLevel.NONE)
-    _ = try await df.persist()
+    try await df.persist()
     #expect(try await df.storageLevel == StorageLevel.MEMORY_AND_DISK)
 
-    _ = try await df.unpersist()
+    try await df.unpersist()
     #expect(try await df.storageLevel == StorageLevel.NONE)
-    _ = try await df.persist(storageLevel: StorageLevel.MEMORY_ONLY)
+    try await df.persist(storageLevel: StorageLevel.MEMORY_ONLY)
     #expect(try await df.storageLevel == StorageLevel.MEMORY_ONLY)
 
     await spark.stop()

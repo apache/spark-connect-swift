@@ -32,7 +32,7 @@ struct SQLHelper {
         f,
         {
           for name in dbNames {
-            _ = try await spark.sql("DROP DATABASE IF EXISTS \(name) CASCADE").count()
+            try await spark.sql("DROP DATABASE IF EXISTS \(name) CASCADE").count()
           }
         })
     }
@@ -47,7 +47,7 @@ struct SQLHelper {
         f,
         {
           for name in tableNames {
-            _ = try await spark.sql("DROP TABLE IF EXISTS \(name)").count()
+            try await spark.sql("DROP TABLE IF EXISTS \(name)").count()
           }
         })
     }

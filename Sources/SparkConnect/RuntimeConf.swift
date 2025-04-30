@@ -32,14 +32,14 @@ public actor RuntimeConf {
   ///   - key: A string for the configuration key.
   ///   - value: A string for the configuration value.
   public func set(_ key: String, _ value: String) async throws {
-    _ = try await client.setConf(map: [key: value])
+    try await client.setConf(map: [key: value])
   }
 
   /// Reset a configuration.
   /// - Parameters:
   ///   - key: A string for the configuration key.
   public func unset(_ key: String) async throws {
-    _ = try await client.unsetConf(keys: [key])
+    try await client.unsetConf(keys: [key])
   }
 
   /// Get a configuration.

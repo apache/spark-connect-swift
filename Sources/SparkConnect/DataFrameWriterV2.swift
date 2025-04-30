@@ -147,6 +147,6 @@ public actor DataFrameWriterV2: Sendable {
 
     var command = Spark_Connect_Command()
     command.writeOperationV2 = write
-    _ = try await df.spark.client.execute(df.spark.sessionID, command)
+    try await df.spark.client.execute(df.spark.sessionID, command)
   }
 }

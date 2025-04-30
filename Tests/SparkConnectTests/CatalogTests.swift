@@ -104,7 +104,7 @@ struct CatalogTests {
     let dbName = "DB_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     #expect(try await spark.catalog.databaseExists(dbName) == false)
     try await SQLHelper.withDatabase(spark, dbName) ({
-      _ = try await spark.sql("CREATE DATABASE \(dbName)").count()
+      try await spark.sql("CREATE DATABASE \(dbName)").count()
       #expect(try await spark.catalog.databaseExists(dbName))
     })
     #expect(try await spark.catalog.databaseExists(dbName) == false)

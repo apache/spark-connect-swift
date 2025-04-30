@@ -136,6 +136,7 @@ public actor DataFrame: Sendable {
 
   /// Return the total number of rows.
   /// - Returns: a `Int64` value.
+  @discardableResult
   public func count() async throws -> Int64 {
     let counter = Atomic(Int64(0))
 
@@ -440,6 +441,7 @@ public actor DataFrame: Sendable {
 
   /// Persist this `DataFrame` with the given storage level.
   /// - Parameter storageLevel: A storage level to apply.
+  @discardableResult
   public func persist(storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK) async throws
     -> DataFrame
   {
@@ -456,6 +458,7 @@ public actor DataFrame: Sendable {
   /// This will not un-persist any cached data that is built upon this `DataFrame`.
   /// - Parameter blocking: Whether to block until all blocks are deleted.
   /// - Returns: A `DataFrame`
+  @discardableResult
   public func unpersist(blocking: Bool = false) async throws -> DataFrame {
     try await withGPRC { client in
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
