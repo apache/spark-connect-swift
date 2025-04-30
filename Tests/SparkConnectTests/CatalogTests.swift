@@ -110,6 +110,50 @@ struct CatalogTests {
     #expect(try await spark.catalog.databaseExists(dbName) == false)
     await spark.stop()
   }
+
+  @Test
+  func createTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.orc("/tmp/\(tableName)")
+      #expect(try await spark.catalog.createTable(tableName, "/tmp/\(tableName)", source: "orc").count() == 1)
+      #expect(try await spark.catalog.tableExists(tableName))
+    })
+    await spark.stop()
+  }
+
+  @Test
+  func tableExists() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.parquet("/tmp/\(tableName)")
+      #expect(try await spark.catalog.tableExists(tableName) == false)
+      #expect(try await spark.catalog.createTable(tableName, "/tmp/\(tableName)").count() == 1)
+      #expect(try await spark.catalog.tableExists(tableName))
+      #expect(try await spark.catalog.tableExists("default", tableName))
+      #expect(try await spark.catalog.tableExists("default2", tableName) == false)
+    })
+    #expect(try await spark.catalog.tableExists(tableName) == false)
+
+    try await #require(throws: Error.self) {
+      try await spark.catalog.tableExists("invalid table name")
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func functionExists() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.catalog.functionExists("base64"))
+    #expect(try await spark.catalog.functionExists("non_exist_function") == false)
+
+    try await #require(throws: Error.self) {
+      try await spark.catalog.functionExists("invalid function name")
+    }
+    await spark.stop()
+  }
 #endif
 
   @Test
