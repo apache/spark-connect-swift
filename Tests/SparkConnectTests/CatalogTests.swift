@@ -111,4 +111,108 @@ struct CatalogTests {
     await spark.stop()
   }
 #endif
+
+  @Test
+  func cacheTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.saveAsTable(tableName)
+      try await spark.catalog.cacheTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName))
+      try await spark.catalog.cacheTable(tableName, StorageLevel.MEMORY_ONLY)
+    })
+
+    try await #require(throws: Error.self) {
+      try await spark.catalog.cacheTable("not_exist_table")
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func isCached() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.saveAsTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName) == false)
+      try await spark.catalog.cacheTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName))
+    })
+
+    try await #require(throws: Error.self) {
+      try await spark.catalog.isCached("not_exist_table")
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func refreshTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.saveAsTable(tableName)
+      try await spark.catalog.refreshTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName) == false)
+
+      try await spark.catalog.cacheTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName))
+      try await spark.catalog.refreshTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName))
+    })
+
+    try await #require(throws: Error.self) {
+      try await spark.catalog.refreshTable("not_exist_table")
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func refreshByPath() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.saveAsTable(tableName)
+      try await spark.catalog.refreshByPath("/")
+      #expect(try await spark.catalog.isCached(tableName) == false)
+
+      try await spark.catalog.cacheTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName))
+      try await spark.catalog.refreshByPath("/")
+      #expect(try await spark.catalog.isCached(tableName))
+    })
+    await spark.stop()
+  }
+
+  @Test
+  func uncacheTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.saveAsTable(tableName)
+      try await spark.catalog.cacheTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName))
+      try await spark.catalog.uncacheTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName) == false)
+    })
+
+    try await #require(throws: Error.self) {
+      try await spark.catalog.uncacheTable("not_exist_table")
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func clearCache() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.saveAsTable(tableName)
+      try await spark.catalog.cacheTable(tableName)
+      #expect(try await spark.catalog.isCached(tableName))
+      try await spark.catalog.clearCache()
+      #expect(try await spark.catalog.isCached(tableName) == false)
+    })
+    await spark.stop()
+  }
 }

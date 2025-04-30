@@ -199,4 +199,90 @@ public actor Catalog: Sendable {
   public func databaseExists(_ dbName: String) async throws -> Bool {
     return try await self.listDatabases(pattern: dbName).count > 0
   }
+
+  /// Caches the specified table in-memory.
+  /// - Parameters:
+  ///   - tableName: A qualified or unqualified name that designates a table/view.
+  ///   If no database identifier is provided, it refers to a temporary view or a table/view in the current database.
+  ///   - storageLevel: storage level to cache table.
+  public func cacheTable(_ tableName: String, _ storageLevel: StorageLevel? = nil) async throws {
+    let df = getDataFrame({
+      var cacheTable = Spark_Connect_CacheTable()
+      cacheTable.tableName = tableName
+      if let storageLevel {
+        cacheTable.storageLevel = storageLevel.toSparkConnectStorageLevel
+      }
+      var catalog = Spark_Connect_Catalog()
+      catalog.cacheTable = cacheTable
+      return catalog
+    })
+    try await df.count()
+  }
+
+  /// Returns true if the table is currently cached in-memory.
+  /// - Parameter tableName: A qualified or unqualified name that designates a table/view.
+  /// If no database identifier is provided, it refers to a temporary view or a table/view in the current database.
+  public func isCached(_ tableName: String) async throws -> Bool {
+    let df = getDataFrame({
+      var isCached = Spark_Connect_IsCached()
+      isCached.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.isCached = isCached
+      return catalog
+    })
+    return "true" == (try await df.collect().first!.get(0) as! String)
+  }
+
+  /// Invalidates and refreshes all the cached data and metadata of the given table.
+  /// - Parameter tableName: A qualified or unqualified name that designates a table/view.
+  /// If no database identifier is provided, it refers to a temporary view or a table/view in the current database.
+  public func refreshTable(_ tableName: String) async throws {
+    let df = getDataFrame({
+      var refreshTable = Spark_Connect_RefreshTable()
+      refreshTable.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.refreshTable = refreshTable
+      return catalog
+    })
+    try await df.count()
+  }
+
+  /// Invalidates and refreshes all the cached data (and the associated metadata) for any ``DataFrame``
+  /// that contains the given data source path. Path matching is by checking for sub-directories,
+  /// i.e. "/" would invalidate everything that is cached and "/test/parent" would invalidate
+  /// everything that is a subdirectory of "/test/parent".
+  public func refreshByPath(_ path: String) async throws {
+    let df = getDataFrame({
+      var refreshByPath = Spark_Connect_RefreshByPath()
+      refreshByPath.path = path
+      var catalog = Spark_Connect_Catalog()
+      catalog.refreshByPath = refreshByPath
+      return catalog
+    })
+    try await df.count()
+  }
+
+  /// Removes the specified table from the in-memory cache.
+  /// - Parameter tableName: A qualified or unqualified name that designates a table/view.
+  /// If no database identifier is provided, it refers to a temporary view or a table/view in the current database.
+  public func uncacheTable(_ tableName: String) async throws {
+    let df = getDataFrame({
+      var uncacheTable = Spark_Connect_UncacheTable()
+      uncacheTable.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.uncacheTable = uncacheTable
+      return catalog
+    })
+    try await df.count()
+  }
+
+  /// Removes all cached tables from the in-memory cache.
+  public func clearCache() async throws {
+    let df = getDataFrame({
+      var catalog = Spark_Connect_Catalog()
+      catalog.clearCache_p = Spark_Connect_ClearCache()
+      return catalog
+    })
+    try await df.count()
+  }
 }

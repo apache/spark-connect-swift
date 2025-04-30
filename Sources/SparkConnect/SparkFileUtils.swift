@@ -64,6 +64,7 @@ public enum SparkFileUtils {
   /// Create a directory given the abstract pathname
   /// - Parameter url: An URL location.
   /// - Returns: Return true if the directory is successfully created; otherwise, return false.
+  @discardableResult
   static func createDirectory(at url: URL) -> Bool {
     let fileManager = FileManager.default
     do {
