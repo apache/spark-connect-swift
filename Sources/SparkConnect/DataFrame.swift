@@ -208,14 +208,34 @@ public actor DataFrame: Sendable {
       for i in 0..<batch.length {
         var values: [Sendable?] = []
         for column in batch.columns {
-          let str = column.array as! AsString
           if column.data.isNull(i) {
             values.append(nil)
-          } else if column.data.type.info == ArrowType.ArrowBinary {
-            let binary = str.asString(i).utf8.map { String(format: "%02x", $0) }.joined(separator: " ")
-            values.append("[\(binary)]")
           } else {
-            values.append(str.asString(i))
+            let array = column.array
+            switch column.data.type.info {
+            case .primitiveInfo(.boolean):
+              values.append(array.asAny(i) as? Bool)
+            case .primitiveInfo(.int8):
+              values.append(array.asAny(i) as? Int8)
+            case .primitiveInfo(.int16):
+              values.append(array.asAny(i) as? Int16)
+            case .primitiveInfo(.int32):
+              values.append(array.asAny(i) as? Int32)
+            case .primitiveInfo(.int64):
+              values.append(array.asAny(i) as! Int64)
+            case .primitiveInfo(.float):
+              values.append(array.asAny(i) as? Float)
+            case .primitiveInfo(.double):
+              values.append(array.asAny(i) as? Double)
+            case .primitiveInfo(.date32):
+              values.append(array.asAny(i) as! Date)
+            case ArrowType.ArrowBinary:
+              values.append((array as! AsString).asString(i).utf8)
+            case .complexInfo(.strct):
+              values.append((array as! AsString).asString(i))
+            default:
+              values.append(array.asAny(i) as? String)
+            }
           }
         }
         result.append(Row(valueArray: values))

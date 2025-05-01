@@ -318,7 +318,7 @@ struct DataFrameTests {
   @Test
   func sort() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let expected = Array((1...10).map{ Row(String($0)) })
+    let expected = Array((1...10).map{ Row($0) })
     #expect(try await spark.range(10, 0, -1).sort("id").collect() == expected)
     await spark.stop()
   }
@@ -326,7 +326,7 @@ struct DataFrameTests {
   @Test
   func orderBy() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let expected = Array((1...10).map{ Row(String($0)) })
+    let expected = Array((1...10).map{ Row($0) })
     #expect(try await spark.range(10, 0, -1).orderBy("id").collect() == expected)
     await spark.stop()
   }
@@ -354,7 +354,7 @@ struct DataFrameTests {
     #expect(
       try await spark.sql(
         "SELECT * FROM VALUES (1, true, 'abc'), (null, null, null), (3, false, 'def')"
-      ).collect() == [Row("1", "true", "abc"), Row(nil, nil, nil), Row("3", "false", "def")])
+      ).collect() == [Row(1, true, "abc"), Row(nil, nil, nil), Row(3, false, "def")])
     await spark.stop()
   }
 
@@ -371,10 +371,11 @@ struct DataFrameTests {
   func head() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).head().isEmpty)
-    #expect(try await spark.range(2).sort("id").head() == [Row("0")])
-    #expect(try await spark.range(2).sort("id").head(1) == [Row("0")])
-    #expect(try await spark.range(2).sort("id").head(2) == [Row("0"), Row("1")])
-    #expect(try await spark.range(2).sort("id").head(3) == [Row("0"), Row("1")])
+    print(try await spark.range(2).sort("id").head())
+    #expect(try await spark.range(2).sort("id").head() == [Row(0)])
+    #expect(try await spark.range(2).sort("id").head(1) == [Row(0)])
+    #expect(try await spark.range(2).sort("id").head(2) == [Row(0), Row(1)])
+    #expect(try await spark.range(2).sort("id").head(3) == [Row(0), Row(1)])
     await spark.stop()
   }
 
@@ -382,9 +383,9 @@ struct DataFrameTests {
   func tail() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).tail(1).isEmpty)
-    #expect(try await spark.range(2).sort("id").tail(1) == [Row("1")])
-    #expect(try await spark.range(2).sort("id").tail(2) == [Row("0"), Row("1")])
-    #expect(try await spark.range(2).sort("id").tail(3) == [Row("0"), Row("1")])
+    #expect(try await spark.range(2).sort("id").tail(1) == [Row(1)])
+    #expect(try await spark.range(2).sort("id").tail(2) == [Row(0), Row(1)])
+    #expect(try await spark.range(2).sort("id").tail(3) == [Row(0), Row(1)])
     await spark.stop()
   }
 
@@ -464,35 +465,35 @@ struct DataFrameTests {
   @Test
   func join() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let df1 = try await spark.sql("SELECT * FROM VALUES ('a', '1'), ('b', '2') AS T(a, b)")
-    let df2 = try await spark.sql("SELECT * FROM VALUES ('c', '2'), ('d', '3') AS S(c, b)")
+    let df1 = try await spark.sql("SELECT * FROM VALUES ('a', 1), ('b', 2) AS T(a, b)")
+    let df2 = try await spark.sql("SELECT * FROM VALUES ('c', 2), ('d', 3) AS S(c, b)")
     let expectedCross = [
-      Row("a", "1", "c", "2"),
-      Row("a", "1", "d", "3"),
-      Row("b", "2", "c", "2"),
-      Row("b", "2", "d", "3"),
+      Row("a", 1, "c", 2),
+      Row("a", 1, "d", 3),
+      Row("b", 2, "c", 2),
+      Row("b", 2, "d", 3),
     ]
     #expect(try await df1.join(df2).collect() == expectedCross)
     #expect(try await df1.crossJoin(df2).collect() == expectedCross)
 
-    #expect(try await df1.join(df2, "b").collect() == [Row("2", "b", "c")])
-    #expect(try await df1.join(df2, ["b"]).collect() == [Row("2", "b", "c")])
+    #expect(try await df1.join(df2, "b").collect() == [Row(2, "b", "c")])
+    #expect(try await df1.join(df2, ["b"]).collect() == [Row(2, "b", "c")])
 
-    #expect(try await df1.join(df2, "b", "left").collect() == [Row("1", "a", nil), Row("2", "b", "c")])
-    #expect(try await df1.join(df2, "b", "right").collect() == [Row("2", "b", "c"), Row("3", nil, "d")])
-    #expect(try await df1.join(df2, "b", "semi").collect() == [Row("2", "b")])
-    #expect(try await df1.join(df2, "b", "anti").collect() == [Row("1", "a")])
+    #expect(try await df1.join(df2, "b", "left").collect() == [Row(1, "a", nil), Row(2, "b", "c")])
+    #expect(try await df1.join(df2, "b", "right").collect() == [Row(2, "b", "c"), Row(3, nil, "d")])
+    #expect(try await df1.join(df2, "b", "semi").collect() == [Row(2, "b")])
+    #expect(try await df1.join(df2, "b", "anti").collect() == [Row(1, "a")])
 
     let expectedOuter = [
-      Row("1", "a", nil),
-      Row("2", "b", "c"),
-      Row("3", nil, "d"),
+      Row(1, "a", nil),
+      Row(2, "b", "c"),
+      Row(3, nil, "d"),
     ]
     #expect(try await df1.join(df2, "b", "outer").collect() == expectedOuter)
     #expect(try await df1.join(df2, "b", "full").collect() == expectedOuter)
     #expect(try await df1.join(df2, ["b"], "full").collect() == expectedOuter)
 
-    let expected = [Row("b", "2", "c", "2")]
+    let expected = [Row("b", 2, "c", 2)]
     #expect(try await df1.join(df2, joinExprs: "T.b = S.b").collect() == expected)
     #expect(try await df1.join(df2, joinExprs: "T.b = S.b", joinType: "inner").collect() == expected)
     await spark.stop()
@@ -502,18 +503,18 @@ struct DataFrameTests {
   func lateralJoin() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await spark.version.starts(with: "4.") {
-      let df1 = try await spark.sql("SELECT * FROM VALUES ('a', '1'), ('b', '2') AS T(a, b)")
-      let df2 = try await spark.sql("SELECT * FROM VALUES ('c', '2'), ('d', '3') AS S(c, b)")
+      let df1 = try await spark.sql("SELECT * FROM VALUES ('a', 1), ('b', 2) AS T(a, b)")
+      let df2 = try await spark.sql("SELECT * FROM VALUES ('c', 2), ('d', 3) AS S(c, b)")
       let expectedCross = [
-        Row("a", "1", "c", "2"),
-        Row("a", "1", "d", "3"),
-        Row("b", "2", "c", "2"),
-        Row("b", "2", "d", "3"),
+        Row("a", 1, "c", 2),
+        Row("a", 1, "d", 3),
+        Row("b", 2, "c", 2),
+        Row("b", 2, "d", 3),
       ]
       #expect(try await df1.lateralJoin(df2).collect() == expectedCross)
       #expect(try await df1.lateralJoin(df2, joinType: "inner").collect() == expectedCross)
 
-      let expected = [Row("b", "2", "c", "2")]
+      let expected = [Row("b", 2, "c", 2)]
       #expect(try await df1.lateralJoin(df2, joinExprs: "T.b = S.b").collect() == expected)
       #expect(try await df1.lateralJoin(df2, joinExprs: "T.b = S.b", joinType: "inner").collect() == expected)
     }
@@ -525,8 +526,8 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 3)
     #expect(try await df.except(spark.range(1, 5)).collect() == [])
-    #expect(try await df.except(spark.range(2, 5)).collect() == [Row("1")])
-    #expect(try await df.except(spark.range(3, 5)).collect() == [Row("1"), Row("2")])
+    #expect(try await df.except(spark.range(2, 5)).collect() == [Row(1)])
+    #expect(try await df.except(spark.range(3, 5)).collect() == [Row(1), Row(2)])
     #expect(try await spark.sql("SELECT * FROM VALUES 1, 1").except(df).count() == 0)
     await spark.stop()
   }
@@ -536,8 +537,8 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 3)
     #expect(try await df.exceptAll(spark.range(1, 5)).collect() == [])
-    #expect(try await df.exceptAll(spark.range(2, 5)).collect() == [Row("1")])
-    #expect(try await df.exceptAll(spark.range(3, 5)).collect() == [Row("1"), Row("2")])
+    #expect(try await df.exceptAll(spark.range(2, 5)).collect() == [Row(1)])
+    #expect(try await df.exceptAll(spark.range(3, 5)).collect() == [Row(1), Row(2)])
     #expect(try await spark.sql("SELECT * FROM VALUES 1, 1").exceptAll(df).count() == 1)
     await spark.stop()
   }
@@ -546,8 +547,8 @@ struct DataFrameTests {
   func intersect() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 3)
-    #expect(try await df.intersect(spark.range(1, 5)).collect() == [Row("1"), Row("2")])
-    #expect(try await df.intersect(spark.range(2, 5)).collect() == [Row("2")])
+    #expect(try await df.intersect(spark.range(1, 5)).collect() == [Row(1), Row(2)])
+    #expect(try await df.intersect(spark.range(2, 5)).collect() == [Row(2)])
     #expect(try await df.intersect(spark.range(3, 5)).collect() == [])
     let df2 = try await spark.sql("SELECT * FROM VALUES 1, 1")
     #expect(try await df2.intersect(df2).count() == 1)
@@ -558,8 +559,8 @@ struct DataFrameTests {
   func intersectAll() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 3)
-    #expect(try await df.intersectAll(spark.range(1, 5)).collect() == [Row("1"), Row("2")])
-    #expect(try await df.intersectAll(spark.range(2, 5)).collect() == [Row("2")])
+    #expect(try await df.intersectAll(spark.range(1, 5)).collect() == [Row(1), Row(2)])
+    #expect(try await df.intersectAll(spark.range(2, 5)).collect() == [Row(2)])
     #expect(try await df.intersectAll(spark.range(3, 5)).collect() == [])
     let df2 = try await spark.sql("SELECT * FROM VALUES 1, 1")
     #expect(try await df2.intersectAll(df2).count() == 2)
@@ -570,8 +571,8 @@ struct DataFrameTests {
   func union() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 2)
-    #expect(try await df.union(spark.range(1, 3)).collect() == [Row("1"), Row("1"), Row("2")])
-    #expect(try await df.union(spark.range(2, 3)).collect() == [Row("1"), Row("2")])
+    #expect(try await df.union(spark.range(1, 3)).collect() == [Row(1), Row(1), Row(2)])
+    #expect(try await df.union(spark.range(2, 3)).collect() == [Row(1), Row(2)])
     let df2 = try await spark.sql("SELECT * FROM VALUES 1, 1")
     #expect(try await df2.union(df2).count() == 4)
     await spark.stop()
@@ -581,8 +582,8 @@ struct DataFrameTests {
   func unionAll() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 2)
-    #expect(try await df.unionAll(spark.range(1, 3)).collect() == [Row("1"), Row("1"), Row("2")])
-    #expect(try await df.unionAll(spark.range(2, 3)).collect() == [Row("1"), Row("2")])
+    #expect(try await df.unionAll(spark.range(1, 3)).collect() == [Row(1), Row(1), Row(2)])
+    #expect(try await df.unionAll(spark.range(2, 3)).collect() == [Row(1), Row(2)])
     let df2 = try await spark.sql("SELECT * FROM VALUES 1, 1")
     #expect(try await df2.unionAll(df2).count() == 4)
     await spark.stop()
@@ -593,8 +594,8 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let df1 = try await spark.sql("SELECT 1 a, 2 b")
     let df2 = try await spark.sql("SELECT 4 b, 3 a")
-    #expect(try await df1.unionByName(df2).collect() == [Row("1", "2"), Row("3", "4")])
-    #expect(try await df1.union(df2).collect() == [Row("1", "2"), Row("4", "3")])
+    #expect(try await df1.unionByName(df2).collect() == [Row(1, 2), Row(3, 4)])
+    #expect(try await df1.union(df2).collect() == [Row(1, 2), Row(4, 3)])
     let df3 = try await spark.sql("SELECT * FROM VALUES 1, 1")
     #expect(try await df3.unionByName(df3).count() == 4)
     await spark.stop()
@@ -650,7 +651,7 @@ struct DataFrameTests {
   func groupBy() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let rows = try await spark.range(3).groupBy("id").agg("count(*)", "sum(*)", "avg(*)").collect()
-    #expect(rows == [Row("0", "1", "0", "0.0"), Row("1", "1", "1", "1.0"), Row("2", "1", "2", "2.0")])
+    #expect(rows == [Row(0, 1, 0, 0.0), Row(1, 1, 1, 1.0), Row(2, 1, 2, 2.0)])
     await spark.stop()
   }
 
@@ -660,18 +661,18 @@ struct DataFrameTests {
     let rows = try await spark.sql(DEALER_TABLE).rollup("city", "car_model")
       .agg("sum(quantity) sum").orderBy("city", "car_model").collect()
     #expect(rows == [
-      Row("Dublin", "Honda Accord", "10"),
-      Row("Dublin", "Honda CRV", "3"),
-      Row("Dublin", "Honda Civic", "20"),
-      Row("Dublin", nil, "33"),
-      Row("Fremont", "Honda Accord", "15"),
-      Row("Fremont", "Honda CRV", "7"),
-      Row("Fremont", "Honda Civic", "10"),
-      Row("Fremont", nil, "32"),
-      Row("San Jose", "Honda Accord", "8"),
-      Row("San Jose", "Honda Civic", "5"),
-      Row("San Jose", nil, "13"),
-      Row(nil, nil, "78"),
+      Row("Dublin", "Honda Accord", 10),
+      Row("Dublin", "Honda CRV", 3),
+      Row("Dublin", "Honda Civic", 20),
+      Row("Dublin", nil, 33),
+      Row("Fremont", "Honda Accord", 15),
+      Row("Fremont", "Honda CRV", 7),
+      Row("Fremont", "Honda Civic", 10),
+      Row("Fremont", nil, 32),
+      Row("San Jose", "Honda Accord", 8),
+      Row("San Jose", "Honda Civic", 5),
+      Row("San Jose", nil, 13),
+      Row(nil, nil, 78),
     ])
     await spark.stop()
   }
@@ -682,21 +683,21 @@ struct DataFrameTests {
     let rows = try await spark.sql(DEALER_TABLE).cube("city", "car_model")
       .agg("sum(quantity) sum").orderBy("city", "car_model").collect()
     #expect(rows == [
-      Row("Dublin", "Honda Accord", "10"),
-      Row("Dublin", "Honda CRV", "3"),
-      Row("Dublin", "Honda Civic", "20"),
-      Row("Dublin", nil, "33"),
-      Row("Fremont", "Honda Accord", "15"),
-      Row("Fremont", "Honda CRV", "7"),
-      Row("Fremont", "Honda Civic", "10"),
-      Row("Fremont", nil, "32"),
-      Row("San Jose", "Honda Accord", "8"),
-      Row("San Jose", "Honda Civic", "5"),
-      Row("San Jose", nil, "13"),
-      Row(nil, "Honda Accord", "33"),
-      Row(nil, "Honda CRV", "10"),
-      Row(nil, "Honda Civic", "35"),
-      Row(nil, nil, "78"),
+      Row("Dublin", "Honda Accord", 10),
+      Row("Dublin", "Honda CRV", 3),
+      Row("Dublin", "Honda Civic", 20),
+      Row("Dublin", nil, 33),
+      Row("Fremont", "Honda Accord", 15),
+      Row("Fremont", "Honda CRV", 7),
+      Row("Fremont", "Honda Civic", 10),
+      Row("Fremont", nil, 32),
+      Row("San Jose", "Honda Accord", 8),
+      Row("San Jose", "Honda Civic", 5),
+      Row("San Jose", nil, 13),
+      Row(nil, "Honda Accord", 33),
+      Row(nil, "Honda CRV", 10),
+      Row(nil, "Honda Civic", 35),
+      Row(nil, nil, 78),
     ])
     await spark.stop()
   }

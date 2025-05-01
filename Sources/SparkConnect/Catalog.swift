@@ -252,7 +252,7 @@ public actor Catalog: Sendable {
       catalog.tableExists = tableExists
       return catalog
     })
-    return "true" == (try await df.collect().first!.get(0) as! String)
+    return try await df.collect()[0].getAsBool(0)
   }
 
   /// Check if the table or view with the specified name exists. This can either be a temporary
@@ -270,7 +270,7 @@ public actor Catalog: Sendable {
       catalog.tableExists = tableExists
       return catalog
     })
-    return "true" == (try await df.collect().first!.get(0) as! String)
+    return try await df.collect()[0].getAsBool(0)
   }
 
   /// Check if the function with the specified name exists. This can either be a temporary function
@@ -287,7 +287,7 @@ public actor Catalog: Sendable {
       catalog.functionExists = functionExists
       return catalog
     })
-    return "true" == (try await df.collect().first!.get(0) as! String)
+    return try await df.collect()[0].getAsBool(0)
   }
 
   /// Check if the function with the specified name exists in the specified database under the Hive
@@ -305,7 +305,7 @@ public actor Catalog: Sendable {
       catalog.functionExists = functionExists
       return catalog
     })
-    return "true" == (try await df.collect().first!.get(0) as! String)
+    return try await df.collect()[0].getAsBool(0)
   }
 
   /// Caches the specified table in-memory.
@@ -338,7 +338,7 @@ public actor Catalog: Sendable {
       catalog.isCached = isCached
       return catalog
     })
-    return "true" == (try await df.collect().first!.get(0) as! String)
+    return try await df.collect()[0].getAsBool(0)
   }
 
   /// Invalidates and refreshes all the cached data and metadata of the given table.
@@ -407,7 +407,7 @@ public actor Catalog: Sendable {
       catalog.dropTempView = dropTempView
       return catalog
     })
-    return "true" == (try await df.collect().first!.get(0) as! String)
+    return try await df.collect().first!.getAsBool(0)
   }
 
   /// Drops the global temporary view with the given view name in the catalog. If the view has been
@@ -423,6 +423,6 @@ public actor Catalog: Sendable {
       catalog.dropGlobalTempView = dropGlobalTempView
       return catalog
     })
-    return "true" == (try await df.collect().first!.get(0) as! String)
+    return try await df.collect()[0].getAsBool(0)
   }
 }

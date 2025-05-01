@@ -50,6 +50,10 @@ public struct Row: Sendable, Equatable {
     return values[i]
   }
 
+  public func getAsBool(_ i: Int) throws -> Bool {
+    return try get(i) as! Bool
+  }
+
   public static func == (lhs: Row, rhs: Row) -> Bool {
     if lhs.values.count != rhs.values.count {
       return false
@@ -59,16 +63,8 @@ public struct Row: Sendable, Equatable {
         return true
       } else if let a = x as? Bool, let b = y as? Bool {
         return a == b
-      } else if let a = x as? Int, let b = y as? Int {
-        return a == b
-      } else if let a = x as? Int8, let b = y as? Int8 {
-        return a == b
-      } else if let a = x as? Int16, let b = y as? Int16 {
-        return a == b
-      } else if let a = x as? Int32, let b = y as? Int32 {
-        return a == b
-      } else if let a = x as? Int64, let b = y as? Int64 {
-        return a == b
+      } else if let a = x as? any FixedWidthInteger, let b = y as? any FixedWidthInteger {
+        return Int64(a) == Int64(b)
       } else if let a = x as? Float, let b = y as? Float {
         return a == b
       } else if let a = x as? Double, let b = y as? Double {

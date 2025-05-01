@@ -83,7 +83,7 @@ struct SQLTests {
     for name in try! fm.contentsOfDirectory(atPath: path).sorted() {
       guard name.hasSuffix(".sql") else { continue }
       print(name)
-      if queriesForSpark4Only.contains(name) {
+      if await !spark.version.starts(with: "4.") && queriesForSpark4Only.contains(name) {
         print("Skip query \(name) due to the difference between Spark 3 and 4.")
         continue
       }
