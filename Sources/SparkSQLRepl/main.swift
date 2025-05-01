@@ -26,15 +26,20 @@ let spark = try await SparkSession.builder.getOrCreate()
 print("Connected to Apache Spark \(await spark.version) Server")
 
 var isRunning = true
+var lines = ""
 while isRunning {
-  print("spark-sql (\(try await spark.catalog.currentDatabase()))> ", terminator: "")
+  if lines.isEmpty {
+    print("spark-sql (\(try await spark.catalog.currentDatabase()))> ", terminator: "")
+  }
   guard let input = readLine() else {
     isRunning = false
     break
   }
+  lines += input + " "
 
-  let matches = input.matches(of: statement)
+  let matches = lines.matches(of: statement)
   for match in matches {
+    lines = ""
     switch match.1 {
     case "exit":
       isRunning = false

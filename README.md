@@ -182,6 +182,29 @@ spark-sql (default)> DROP DATABASE db1 CASCADE;
 spark-sql (default)> exit;
 ```
 
+Apache Spark 4 supports [SQL Pipe Syntax](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc4-docs/_site/sql-pipe-syntax.html).
+
+```
+$ swift run
+...
+Build of product 'SparkSQLRepl' complete! (2.33s)
+Connected to Apache Spark 4.0.0 Server
+spark-sql (default)>
+FROM ORC.`/opt/spark/examples/src/main/resources/users.orc`
+|> AGGREGATE COUNT(*) cnt
+   GROUP BY name
+|> ORDER BY cnt DESC, name ASC
+;
++------+---+
+|  name|cnt|
++------+---+
+|Alyssa|  1|
+|   Ben|  1|
++------+---+
+
+Time taken: 159 ms
+```
+
 You can use `SPARK_REMOTE` to specify the [Spark Connect connection string](https://spark.apache.org/docs/latest/spark-connect-overview.html#set-sparkremote-environment-variable) in order to provide more options.
 
 ```bash
