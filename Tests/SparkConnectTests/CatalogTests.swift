@@ -154,6 +154,117 @@ struct CatalogTests {
     }
     await spark.stop()
   }
+
+  @Test
+  func createTempView() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTempView(spark, viewName)({
+      #expect(try await spark.catalog.tableExists(viewName) == false)
+      try await spark.range(1).createTempView(viewName)
+      #expect(try await spark.catalog.tableExists(viewName))
+
+      try await #require(throws: Error.self) {
+        try await spark.range(1).createTempView(viewName)
+      }
+    })
+
+    try await #require(throws: Error.self) {
+      try await spark.range(1).createTempView("invalid view name")
+    }
+
+    await spark.stop()
+  }
+
+  @Test
+  func createOrReplaceTempView() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTempView(spark, viewName)({
+      #expect(try await spark.catalog.tableExists(viewName) == false)
+      try await spark.range(1).createOrReplaceTempView(viewName)
+      #expect(try await spark.catalog.tableExists(viewName))
+      try await spark.range(1).createOrReplaceTempView(viewName)
+    })
+
+    try await #require(throws: Error.self) {
+      try await spark.range(1).createOrReplaceTempView("invalid view name")
+    }
+
+    await spark.stop()
+  }
+
+  @Test
+  func createGlobalTempView() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withGlobalTempView(spark, viewName)({
+      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
+      try await spark.range(1).createGlobalTempView(viewName)
+      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
+
+      try await #require(throws: Error.self) {
+        try await spark.range(1).createGlobalTempView(viewName)
+      }
+    })
+    #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
+
+    try await #require(throws: Error.self) {
+      try await spark.range(1).createGlobalTempView("invalid view name")
+    }
+
+    await spark.stop()
+  }
+
+  @Test
+  func createOrReplaceGlobalTempView() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withGlobalTempView(spark, viewName)({
+      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
+      try await spark.range(1).createOrReplaceGlobalTempView(viewName)
+      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
+      try await spark.range(1).createOrReplaceGlobalTempView(viewName)
+    })
+    #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
+
+    try await #require(throws: Error.self) {
+      try await spark.range(1).createOrReplaceGlobalTempView("invalid view name")
+    }
+
+    await spark.stop()
+  }
+
+  @Test
+  func dropTempView() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTempView(spark, viewName)({      #expect(try await spark.catalog.tableExists(viewName) == false)
+      try await spark.range(1).createTempView(viewName)
+      try await spark.catalog.dropTempView(viewName)
+      #expect(try await spark.catalog.tableExists(viewName) == false)
+    })
+
+    #expect(try await spark.catalog.dropTempView("non_exist_view") == false)
+    #expect(try await spark.catalog.dropTempView("invalid view name") == false)
+    await spark.stop()
+  }
+
+  @Test
+  func dropGlobalTempView() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTempView(spark, viewName)({      #expect(try await spark.catalog.tableExists(viewName) == false)
+      try await spark.range(1).createGlobalTempView(viewName)
+      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
+      try await spark.catalog.dropGlobalTempView(viewName)
+      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
+    })
+
+    #expect(try await spark.catalog.dropGlobalTempView("non_exist_view") == false)
+    #expect(try await spark.catalog.dropGlobalTempView("invalid view name") == false)
+    await spark.stop()
+  }
 #endif
 
   @Test

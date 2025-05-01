@@ -729,6 +729,20 @@ public actor SparkConnectClient {
     return plan
   }
 
+  func createTempView(
+    _ child: Relation, _ viewName: String, replace: Bool, isGlobal: Bool
+  ) async throws {
+    var viewCommand = Spark_Connect_CreateDataFrameViewCommand()
+    viewCommand.input = child
+    viewCommand.name = viewName
+    viewCommand.replace = replace
+    viewCommand.isGlobal = isGlobal
+
+    var command = Spark_Connect_Command()
+    command.createDataframeView = viewCommand
+    try await execute(self.sessionID!, command)
+  }
+
   private enum URIParams {
     static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpc_max_message_size"
     static let PARAM_SESSION_ID = "session_id"

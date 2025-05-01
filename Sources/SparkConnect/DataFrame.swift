@@ -856,6 +856,38 @@ public actor DataFrame: Sendable {
     return GroupedData(self, GroupType.cube, cols)
   }
 
+  /// Creates a local temporary view using the given name. The lifetime of this temporary view is
+  /// tied to the `SparkSession` that was used to create this ``DataFrame``.
+  /// - Parameter viewName: A view name.
+  public func createTempView(_ viewName: String) async throws {
+    try await createTempView(viewName, replace: false, global: false)
+  }
+
+  /// Creates a local temporary view using the given name. The lifetime of this temporary view is
+  /// tied to the `SparkSession` that was used to create this ``DataFrame``.
+  /// - Parameter viewName: A view name.
+  public func createOrReplaceTempView(_ viewName: String) async throws {
+    try await createTempView(viewName, replace: true, global: false)
+  }
+
+  /// Creates a global temporary view using the given name. The lifetime of this temporary view is
+  /// tied to this Spark application, but is cross-session.
+  /// - Parameter viewName: A view name.
+  public func createGlobalTempView(_ viewName: String) async throws {
+    try await createTempView(viewName, replace: false, global: true)
+  }
+
+  /// Creates a global temporary view using the given name. The lifetime of this temporary view is
+  /// tied to this Spark application, but is cross-session.
+  /// - Parameter viewName: A view name.
+  public func createOrReplaceGlobalTempView(_ viewName: String) async throws {
+    try await createTempView(viewName, replace: true, global: true)
+  }
+
+  func createTempView(_ viewName: String, replace: Bool, global: Bool) async throws {
+    try await spark.client.createTempView(self.plan.root, viewName, replace: replace, isGlobal: global)
+  }
+
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.
   public var write: DataFrameWriter {
     get {

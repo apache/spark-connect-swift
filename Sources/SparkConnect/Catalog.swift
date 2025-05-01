@@ -393,4 +393,36 @@ public actor Catalog: Sendable {
     })
     try await df.count()
   }
+
+  /// Drops the local temporary view with the given view name in the catalog. If the view has been
+  /// cached before, then it will also be uncached.
+  /// - Parameter viewName: The name of the temporary view to be dropped.
+  /// - Returns: true if the view is dropped successfully, false otherwise.
+  @discardableResult
+  public func dropTempView(_ viewName: String) async throws -> Bool {
+    let df = getDataFrame({
+      var dropTempView = Spark_Connect_DropTempView()
+      dropTempView.viewName = viewName
+      var catalog = Spark_Connect_Catalog()
+      catalog.dropTempView = dropTempView
+      return catalog
+    })
+    return "true" == (try await df.collect().first!.get(0) as! String)
+  }
+
+  /// Drops the global temporary view with the given view name in the catalog. If the view has been
+  /// cached before, then it will also be uncached.
+  /// - Parameter viewName: The unqualified name of the temporary view to be dropped.
+  /// - Returns: true if the view is dropped successfully, false otherwise.
+  @discardableResult
+  public func dropGlobalTempView(_ viewName: String) async throws -> Bool {
+    let df = getDataFrame({
+      var dropGlobalTempView = Spark_Connect_DropGlobalTempView()
+      dropGlobalTempView.viewName = viewName
+      var catalog = Spark_Connect_Catalog()
+      catalog.dropGlobalTempView = dropGlobalTempView
+      return catalog
+    })
+    return "true" == (try await df.collect().first!.get(0) as! String)
+  }
 }

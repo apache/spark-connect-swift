@@ -53,4 +53,34 @@ struct SQLHelper {
     }
     return body
   }
+
+  public static func withTempView(_ spark: SparkSession, _ viewNames: String...) -> (
+    () async throws -> Void
+  ) async throws -> Void {
+    func body(_ f: () async throws -> Void) async throws {
+      try await ErrorUtils.tryWithSafeFinally(
+        f,
+        {
+          for name in viewNames {
+            try await spark.catalog.dropTempView(name)
+          }
+        })
+    }
+    return body
+  }
+
+  public static func withGlobalTempView(_ spark: SparkSession, _ viewNames: String...) -> (
+    () async throws -> Void
+  ) async throws -> Void {
+    func body(_ f: () async throws -> Void) async throws {
+      try await ErrorUtils.tryWithSafeFinally(
+        f,
+        {
+          for name in viewNames {
+            try await spark.catalog.dropGlobalTempView(name)
+          }
+        })
+    }
+    return body
+  }
 }
