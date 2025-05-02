@@ -116,7 +116,7 @@ public actor SparkSession {
   /// result as a `DataFrame`.
   /// - Parameters:
   ///   - sqlText: A SQL statement with positional parameters to execute.
-  ///   - args: An array of strings that can be converted to SQL literal expressions.
+  ///   - args: ``Sendable`` values that can be converted to SQL literal expressions.
   /// - Returns: A ``DataFrame``.
   public func sql(_ sqlText: String, _ args: Sendable...) async throws -> DataFrame {
     return try await DataFrame(spark: self, sqlText: sqlText, args)
@@ -126,7 +126,7 @@ public actor SparkSession {
   /// result as a `DataFrame`.
   /// - Parameters:
   ///   - sqlText: A SQL statement with named parameters to execute.
-  ///   - args: A dictionary with key string and values.
+  ///   - args: A dictionary with key string and ``Sendable`` value.
   /// - Returns: A ``DataFrame``.
   public func sql(_ sqlText: String, args: [String: Sendable]) async throws -> DataFrame {
     return try await DataFrame(spark: self, sqlText: sqlText, args)
