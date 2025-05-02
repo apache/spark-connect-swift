@@ -112,6 +112,26 @@ public actor SparkSession {
     return try await DataFrame(spark: self, sqlText: sqlText)
   }
 
+  /// Executes a SQL query substituting positional parameters by the given arguments, returning the
+  /// result as a `DataFrame`.
+  /// - Parameters:
+  ///   - sqlText: A SQL statement with positional parameters to execute.
+  ///   - args: An array of strings that can be converted to SQL literal expressions.
+  /// - Returns: A ``DataFrame``.
+  public func sql(_ sqlText: String, _ args: Sendable...) async throws -> DataFrame {
+    return try await DataFrame(spark: self, sqlText: sqlText, args)
+  }
+
+  /// Executes a SQL query substituting named parameters by the given arguments, returning the
+  /// result as a `DataFrame`.
+  /// - Parameters:
+  ///   - sqlText: A SQL statement with named parameters to execute.
+  ///   - args: A dictionary with key string and values.
+  /// - Returns: A ``DataFrame``.
+  public func sql(_ sqlText: String, args: [String: Sendable]) async throws -> DataFrame {
+    return try await DataFrame(spark: self, sqlText: sqlText, args)
+  }
+
   /// Returns a ``DataFrameReader`` that can be used to read non-streaming data in as a
   /// `DataFrame`
   public var read: DataFrameReader {

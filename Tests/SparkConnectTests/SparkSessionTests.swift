@@ -76,6 +76,19 @@ struct SparkSessionTests {
     await spark.stop()
   }
 
+#if !os(Linux)
+  @Test
+  func sql() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = [Row(true, 1, "a")]
+    if await spark.version.starts(with: "4.") {
+      #expect(try await spark.sql("SELECT ?, ?, ?", true, 1, "a").collect() == expected)
+      #expect(try await spark.sql("SELECT :x, :y, :z", args: ["x": true, "y": 1, "z": "a"]).collect() == expected)
+    }
+    await spark.stop()
+  }
+#endif
+
   @Test
   func table() async throws {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")

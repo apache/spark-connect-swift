@@ -43,9 +43,19 @@ public actor DataFrame: Sendable {
   /// - Parameters:
   ///   - spark: A `SparkSession` instance to use.
   ///   - sqlText: A SQL statement.
-  init(spark: SparkSession, sqlText: String) async throws {
+  ///   - posArgs: An array of strings.
+  init(spark: SparkSession, sqlText: String, _ posArgs: [Sendable]? = nil) async throws {
     self.spark = spark
-    self.plan = sqlText.toSparkConnectPlan
+    if let posArgs {
+      self.plan = sqlText.toSparkConnectPlan(posArgs)
+    } else {
+      self.plan = sqlText.toSparkConnectPlan
+    }
+  }
+
+  init(spark: SparkSession, sqlText: String, _ args: [String: Sendable]) async throws {
+    self.spark = spark
+    self.plan = sqlText.toSparkConnectPlan(args)
   }
 
   public func getPlan() -> Sendable {

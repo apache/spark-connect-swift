@@ -28,6 +28,7 @@ typealias Drop = Spark_Connect_Drop
 typealias ExecutePlanRequest = Spark_Connect_ExecutePlanRequest
 typealias ExecutePlanResponse = Spark_Connect_ExecutePlanResponse
 typealias ExplainMode = AnalyzePlanRequest.Explain.ExplainMode
+typealias ExpressionLiteral = Spark_Connect_Expression.Literal
 typealias ExpressionString = Spark_Connect_Expression.ExpressionString
 typealias Filter = Spark_Connect_Filter
 typealias GroupType = Spark_Connect_Aggregate.GroupType
