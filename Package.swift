@@ -47,6 +47,9 @@ let package = Package(
         .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
         .product(name: "GRPCNIOTransportHTTP2", package: "grpc-swift-nio-transport"),
         .product(name: "FlatBuffers", package: "flatbuffers"),
+      ],
+      resources: [
+        .process("Documentation.docc")
       ]
     ),
     .executableTarget(

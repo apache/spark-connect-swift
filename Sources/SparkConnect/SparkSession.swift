@@ -105,58 +105,145 @@ public actor SparkSession {
     return await DataFrame(spark: self, plan: client.getPlanRange(start, end, step))
   }
 
-  /// Create a ``DataFrame`` for the given SQL statement.
-  /// - Parameter sqlText: A SQL string.
-  /// - Returns: A ``DataFrame`` instance.
+  /// Executes a SQL query and returns the result as a DataFrame.
+  ///
+  /// This method allows you to run SQL queries against tables and views registered in the Spark catalog.
+  ///
+  /// ```swift
+  /// // Simple query
+  /// let users = try await spark.sql("SELECT * FROM users")
+  ///
+  /// // Query with filtering and aggregation
+  /// let stats = try await spark.sql("""
+  ///     SELECT department, COUNT(*) as count, AVG(salary) as avg_salary
+  ///     FROM employees
+  ///     GROUP BY department
+  ///     ORDER BY avg_salary DESC
+  /// """)
+  /// ```
+  ///
+  /// - Parameter sqlText: A SQL query string
+  /// - Returns: A DataFrame containing the query results
+  /// - Throws: `SparkConnectError` if the query execution fails
   public func sql(_ sqlText: String) async throws -> DataFrame {
     return try await DataFrame(spark: self, sqlText: sqlText)
   }
 
-  /// Executes a SQL query substituting positional parameters by the given arguments, returning the
-  /// result as a `DataFrame`.
+  /// Executes a SQL query with positional parameters.
+  ///
+  /// This method allows you to execute parameterized SQL queries using positional placeholders (`?`).
+  /// Parameters are automatically converted to SQL literal expressions.
+  ///
+  /// ```swift
+  /// // Query with positional parameters
+  /// let result = try await spark.sql(
+  ///     "SELECT * FROM users WHERE age > ? AND department = ?",
+  ///     21,
+  ///     "Engineering"
+  /// )
+  /// ```
+  ///
   /// - Parameters:
-  ///   - sqlText: A SQL statement with positional parameters to execute.
-  ///   - args: ``Sendable`` values that can be converted to SQL literal expressions.
-  /// - Returns: A ``DataFrame``.
+  ///   - sqlText: A SQL query with positional parameter placeholders (`?`)
+  ///   - args: Parameter values to substitute for the placeholders
+  /// - Returns: A DataFrame containing the query results
+  /// - Throws: `SparkConnectError` if the query execution fails or if parameter conversion fails
   public func sql(_ sqlText: String, _ args: Sendable...) async throws -> DataFrame {
     return try await DataFrame(spark: self, sqlText: sqlText, args)
   }
 
-  /// Executes a SQL query substituting named parameters by the given arguments, returning the
-  /// result as a `DataFrame`.
+  /// Executes a SQL query with named parameters.
+  ///
+  /// This method allows you to execute parameterized SQL queries using named placeholders.
+  /// Named parameters provide better readability and maintainability for complex queries.
+  ///
+  /// ```swift
+  /// // Query with named parameters
+  /// let result = try await spark.sql(
+  ///     "SELECT * FROM users WHERE age > :minAge AND department = :dept",
+  ///     args: [
+  ///         "minAge": 21,
+  ///         "dept": "Engineering"
+  ///     ]
+  /// )
+  /// ```
+  ///
   /// - Parameters:
-  ///   - sqlText: A SQL statement with named parameters to execute.
-  ///   - args: A dictionary with key string and ``Sendable`` value.
-  /// - Returns: A ``DataFrame``.
+  ///   - sqlText: A SQL query with named parameter placeholders (`:paramName`)
+  ///   - args: A dictionary mapping parameter names to values
+  /// - Returns: A DataFrame containing the query results
+  /// - Throws: `SparkConnectError` if the query execution fails or if parameter conversion fails
   public func sql(_ sqlText: String, args: [String: Sendable]) async throws -> DataFrame {
     return try await DataFrame(spark: self, sqlText: sqlText, args)
   }
 
-  /// Returns a ``DataFrameReader`` that can be used to read non-streaming data in as a
-  /// `DataFrame`
+  /// Returns a DataFrameReader for reading data in various formats.
+  ///
+  /// The DataFrameReader provides methods to load data from external storage systems
+  /// such as file systems, databases, and streaming sources.
+  ///
+  /// ```swift
+  /// // Read a CSV file
+  /// let csvData = spark.read
+  ///     .option("header", "true")
+  ///     .option("inferSchema", "true")
+  ///     .csv("path/to/file.csv")
+  ///
+  /// // Read a JSON file
+  /// let jsonData = spark.read
+  ///     .json("path/to/file.json")
+  ///
+  /// // Read an ORC file
+  /// let parquetData = spark.read
+  ///     .orc("path/to/file.orc")
+  /// ```
+  ///
+  /// - Returns: A DataFrameReader instance configured for this session
   public var read: DataFrameReader {
     get {
       return DataFrameReader(sparkSession: self)
     }
   }
 
-  /// Returns the specified table/view as a ``DataFrame``. If it's a table, it must support batch
-  /// reading and the returned ``DataFrame`` is the batch scan query plan of this table. If it's a
-  /// view, the returned ``DataFrame`` is simply the query plan of the view, which can either be a
-  /// batch or streaming query plan.
+  /// Returns a DataFrame representing the specified table or view.
   ///
-  /// - Parameter tableName: a qualified or unqualified name that designates a table or view. If a database is
-  /// specified, it identifies the table/view from the database. Otherwise, it first attempts to
-  /// find a temporary view with the given name and then match the table/view from the current
-  /// database. Note that, the global temporary view database is also valid here.
-  /// - Returns: A ``DataFrame`` instance.
+  /// This method retrieves a table or view from the Spark catalog and returns it as a DataFrame.
+  /// The table name can be qualified with a database name (e.g., "database.table") or unqualified.
+  ///
+  /// ```swift
+  /// // Load a table from the default database
+  /// let users = try await spark.table("users")
+  ///
+  /// // Load a table from a specific database
+  /// let sales = try await spark.table("analytics.sales_data")
+  ///
+  /// // Load a temporary view
+  /// let tempView = try await spark.table("temp_user_stats")
+  /// ```
+  ///
+  /// - Parameter tableName: The name of the table or view to load
+  /// - Returns: A DataFrame representing the table data
+  /// - Throws: `SparkConnectError` if the table doesn't exist or cannot be accessed
   public func table(_ tableName: String) async throws -> DataFrame {
     return await read.table(tableName)
   }
 
-  /// Executes some code block and prints to stdout the time taken to execute the block.
-  /// - Parameter f: A function to execute.
-  /// - Returns: The result of the executed code.
+  /// Executes a code block and prints the execution time.
+  ///
+  /// This utility method is useful for performance testing and optimization.
+  /// It measures the time taken to execute the provided async closure and prints it to stdout.
+  ///
+  /// ```swift
+  /// // Measure query execution time
+  /// let result = try await spark.time {
+  ///     try await spark.sql("SELECT COUNT(*) FROM large_table").collect()
+  /// }
+  /// // Prints: Time taken: 1234 ms
+  /// ```
+  ///
+  /// - Parameter f: An async closure to execute and measure
+  /// - Returns: The result of the executed closure
+  /// - Throws: Any error thrown by the closure
   public func time<T: Sendable>(_ f: () async throws -> T) async throws -> T {
     let start = DispatchTime.now()
     let ret = try await f()
@@ -166,27 +253,63 @@ public actor SparkSession {
     return ret
   }
 
-  /// Add a tag to be assigned to all the operations started by this thread in this session.
-  /// - Parameter tag: The tag to be added. Cannot contain ',' (comma) character or be an empty string.
+  /// Adds a tag to all operations started by this thread in this session.
+  ///
+  /// Tags are useful for tracking and monitoring Spark operations. They can help identify
+  /// specific workloads in the Spark UI and logs.
+  ///
+  /// ```swift
+  /// // Add a tag for a specific operation
+  /// try await spark.addTag("etl_job_2024")
+  /// 
+  /// // Perform operations that will be tagged
+  /// let df = try await spark.sql("SELECT * FROM source_table")
+  /// try await df.write.saveAsTable("processed_table")
+  /// 
+  /// // Remove the tag when done
+  /// try await spark.removeTag("etl_job_2024")
+  /// ```
+  ///
+  /// - Parameter tag: The tag to add. Cannot contain commas or be empty
+  /// - Throws: `SparkConnectError` if the tag is invalid
   public func addTag(_ tag: String) async throws {
     try await client.addTag(tag: tag)
   }
 
-  /// Remove a tag previously added to be assigned to all the operations started by this thread in this session.
-  /// Noop if such a tag was not added earlier.
-  /// - Parameter tag: The tag to be removed. Cannot contain ',' (comma) character or be an empty string.
+  /// Removes a previously added tag from operations in this session.
+  ///
+  /// If the specified tag was not previously added, this method does nothing.
+  ///
+  /// ```swift
+  /// // Remove a specific tag
+  /// try await spark.removeTag("etl_job_2024")
+  /// ```
+  ///
+  /// - Parameter tag: The tag to remove. Cannot contain commas or be empty
+  /// - Throws: `SparkConnectError` if the tag is invalid
   public func removeTag(_ tag: String) async throws {
     try await client.removeTag(tag: tag)
   }
 
-  /// Get the operation tags that are currently set to be assigned to all the operations started by
-  /// this thread in this session.
-  /// - Returns: A set of string.
+  /// Returns all operation tags currently set for this thread in this session.
+  ///
+  /// ```swift
+  /// // Get all current tags
+  /// let currentTags = await spark.getTags()
+  /// print("Active tags: \(currentTags)")
+  /// ```
+  ///
+  /// - Returns: A set of currently active tags
   public func getTags() async -> Set<String> {
     return await client.getTags()
   }
 
-  /// Clear the current thread's operation tags.
+  /// Removes all operation tags for this thread in this session.
+  ///
+  /// ```swift
+  /// // Clear all tags
+  /// await spark.clearTags()
+  /// ```
   public func clearTags() async {
     await client.clearTags()
   }
@@ -205,44 +328,126 @@ public actor SparkSession {
   public struct SparkContext: Sendable {
   }
 
-  /// A builder to create ``SparkSession``
+  /// A builder to create ``SparkSession`` instances.
+  ///
+  /// The Builder pattern provides a fluent interface for configuring and creating SparkSession instances.
+  /// This is the recommended way to create a SparkSession.
+  ///
+  /// ## Creating a Session
+  ///
+  /// ```swift
+  /// // Basic session creation
+  /// let spark = try await SparkSession.builder
+  ///     .remote("sc://localhost:15002")
+  ///     .getOrCreate()
+  ///
+  /// // With additional configuration
+  /// let configuredSpark = try await SparkSession.builder
+  ///     .appName("MyAnalyticsApp")
+  ///     .config("spark.sql.shuffle.partitions", "200")
+  ///     .remote("sc://spark-cluster:15002")
+  ///     .getOrCreate()
+  /// ```
+  ///
+  /// ## Environment Variables
+  ///
+  /// The builder will use the `SPARK_REMOTE` environment variable if no remote URL is specified.
+  /// If neither is provided, it defaults to `sc://localhost:15002`.
+  ///
+  /// - Important: This is a singleton builder. Multiple calls to `SparkSession.builder` return the same instance.
   public actor Builder {
     var sparkConf: [String: String] = [:]
 
-    /// Set a new configuration.
+    /// Sets a configuration option for the SparkSession.
+    ///
+    /// Configuration options control various aspects of Spark behavior, from execution settings
+    /// to SQL optimization parameters.
+    ///
+    /// ```swift
+    /// let spark = try await SparkSession.builder
+    ///     .config("spark.sql.shuffle.partitions", "200")
+    ///     .config("spark.sql.adaptive.enabled", "true")
+    ///     .getOrCreate()
+    /// ```
+    ///
     /// - Parameters:
-    ///   - key: A string for the configuration key.
-    ///   - value: A string for the configuration value.
-    /// - Returns: self
+    ///   - key: The configuration key (e.g., "spark.sql.shuffle.partitions")
+    ///   - value: The configuration value as a string
+    /// - Returns: The builder instance for method chaining
     public func config(_ key: String, _ value: String) -> Builder {
       sparkConf[key] = value
       return self
     }
 
-    /// Remove all stored configurations.
-    /// - Returns: self
+    /// Removes all configuration options from the builder.
+    ///
+    /// This method clears all previously set configurations, allowing you to start fresh.
+    ///
+    /// ```swift
+    /// // Clear all configurations
+    /// SparkSession.builder.clear()
+    /// ```
+    ///
+    /// - Returns: The builder instance for method chaining
     @discardableResult
     func clear() -> Builder {
       sparkConf.removeAll()
       return self
     }
 
-    /// Set a url for remote connection.
-    /// - Parameter url: A connection string in a pattern, `sc://{host}:{post}`.
-    /// - Returns: self
+    /// Sets the remote URL for the Spark Connect server.
+    ///
+    /// The remote URL specifies which Spark Connect server to connect to.
+    /// The URL format is `sc://{host}:{port}`.
+    ///
+    /// ```swift
+    /// // Connect to a local Spark server
+    /// let localSpark = try await SparkSession.builder
+    ///     .remote("sc://localhost:15002")
+    ///     .getOrCreate()
+    ///
+    /// // Connect to a remote cluster
+    /// let remoteSpark = try await SparkSession.builder
+    ///     .remote("sc://spark-cluster.example.com:15002")
+    ///     .getOrCreate()
+    /// ```
+    ///
+    /// - Parameter url: The connection URL in format `sc://{host}:{port}`
+    /// - Returns: The builder instance for method chaining
     public func remote(_ url: String) -> Builder {
       return config("spark.remote", url)
     }
 
-    /// Set `appName` of this session.
-    /// - Parameter name: A string for application name
-    /// - Returns: self
+    /// Sets the application name for this SparkSession.
+    ///
+    /// The application name is displayed in the Spark UI and helps identify your application
+    /// among others running on the cluster.
+    ///
+    /// ```swift
+    /// let spark = try await SparkSession.builder
+    ///     .appName("ETL Pipeline - Q4 2024")
+    ///     .remote("sc://localhost:15002")
+    ///     .getOrCreate()
+    /// ```
+    ///
+    /// - Parameter name: The name of your Spark application
+    /// - Returns: The builder instance for method chaining
     public func appName(_ name: String) -> Builder {
       return config("spark.app.name", name)
     }
 
-    /// Enable `Apache Hive` metastore support configuration.
-    /// - Returns: self
+    /// Enables Apache Hive metastore support.
+    ///
+    /// When Hive support is enabled, Spark can read and write data from Hive tables
+    /// and use the Hive metastore for table metadata.
+    ///
+    /// ```swift
+    /// let spark = try await SparkSession.builder
+    ///     .enableHiveSupport()
+    ///     .getOrCreate()
+    /// ```
+    ///
+    /// - Returns: The builder instance for method chaining
     func enableHiveSupport() -> Builder {
       return config("spark.sql.catalogImplementation", "hive")
     }
@@ -259,8 +464,31 @@ public actor SparkSession {
       return session
     }
 
-    /// Create a ``SparkSession`` from the given configurations.
-    /// - Returns: A spark session.
+    /// Creates or retrieves an existing SparkSession.
+    ///
+    /// This is the primary method for obtaining a SparkSession instance. If a session with
+    /// the same configuration already exists, it will be returned. Otherwise, a new session
+    /// is created with the specified configuration.
+    ///
+    /// The method will:
+    /// 1. Check for the `SPARK_REMOTE` environment variable if no remote URL is set
+    /// 2. Use `sc://localhost:15002` as the default if neither is specified
+    /// 3. Connect to the Spark server and set up the session
+    /// 4. Apply all configured settings
+    ///
+    /// ```swift
+    /// // Basic usage
+    /// let spark = try await SparkSession.builder.getOrCreate()
+    ///
+    /// // With configuration
+    /// let configuredSpark = try await SparkSession.builder
+    ///     .appName("DataAnalysis")
+    ///     .config("spark.sql.shuffle.partitions", "100")
+    ///     .getOrCreate()
+    /// ```
+    ///
+    /// - Returns: A configured SparkSession instance
+    /// - Throws: `SparkConnectError` if connection fails or configuration is invalid
     public func getOrCreate() async throws -> SparkSession {
       return try await create()
     }

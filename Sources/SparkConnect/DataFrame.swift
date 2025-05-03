@@ -23,7 +23,154 @@ import GRPCNIOTransportHTTP2
 import GRPCProtobuf
 import Synchronization
 
-/// A DataFrame which supports only SQL queries
+/// A distributed collection of data organized into named columns.
+///
+/// A DataFrame is equivalent to a relational table in Spark SQL, and can be created using various
+/// functions in ``SparkSession``. Once created, it can be manipulated using the various domain-specific
+/// language (DSL) functions defined in: ``DataFrame``, ``Column``, and functions.
+///
+/// ## Creating DataFrames
+///
+/// DataFrames can be created from various sources:
+///
+/// ```swift
+/// // From a range
+/// let df1 = try await spark.range(1, 100)
+///
+/// // From a SQL query
+/// let df2 = try await spark.sql("SELECT * FROM users")
+///
+/// // From files
+/// let df3 = try await spark.read.csv("data.csv")
+/// ```
+///
+/// ## Common Operations
+///
+/// ### Transformations
+///
+/// ```swift
+/// // Select specific columns
+/// let names = try await df.select("name", "age")
+///
+/// // Filter rows
+/// let adults = try await df.filter("age >= 18")
+///
+/// // Group and aggregate
+/// let stats = try await df.groupBy("department").agg("avg(salary)", "count(*)")
+/// ```
+///
+/// ### Actions
+///
+/// ```swift
+/// // Show the first 20 rows
+/// try await df.show()
+///
+/// // Collect all data to the driver
+/// let rows = try await df.collect()
+///
+/// // Count rows
+/// let count = try await df.count()
+/// ```
+///
+/// ## Topics
+///
+/// ### Basic Information
+/// - ``columns``
+/// - ``schema``
+/// - ``dtypes``
+/// - ``sparkSession``
+///
+/// ### Data Collection
+/// - ``count()``
+/// - ``collect()``
+/// - ``head(_:)``
+/// - ``tail(_:)``
+/// - ``show()``
+/// - ``show(_:)``
+/// - ``show(_:_:)``
+/// - ``show(_:_:_:)``
+///
+/// ### Transformation Operations
+/// - ``select(_:)``
+/// - ``selectExpr(_:)``
+/// - ``filter(_:)``
+/// - ``where(_:)``
+/// - ``sort(_:)``
+/// - ``orderBy(_:)``
+/// - ``limit(_:)``
+/// - ``offset(_:)``
+/// - ``drop(_:)``
+/// - ``withColumnRenamed(_:_:)``
+///
+/// ### Join Operations
+/// - ``join(_:)``
+/// - ``join(_:_:_:)``
+/// - ``join(_:joinExprs:)``
+/// - ``join(_:joinExprs:joinType:)``
+/// - ``crossJoin(_:)``
+/// - ``lateralJoin(_:)``
+/// - ``lateralJoin(_:joinType:)``
+/// - ``lateralJoin(_:joinExprs:)``
+/// - ``lateralJoin(_:joinExprs:joinType:)``
+///
+/// ### Set Operations
+/// - ``union(_:)``
+/// - ``unionAll(_:)``
+/// - ``unionByName(_:_:)``
+/// - ``intersect(_:)``
+/// - ``intersectAll(_:)``
+/// - ``except(_:)``
+/// - ``exceptAll(_:)``
+///
+/// ### Partitioning
+/// - ``repartition(_:)``
+/// - ``repartition(_:_:)``
+/// - ``repartitionByExpression(_:_:)``
+/// - ``coalesce(_:)``
+///
+/// ### Grouping Operations
+/// - ``groupBy(_:)``
+/// - ``rollup(_:)``
+/// - ``cube(_:)``
+///
+/// ### Persistence
+/// - ``cache()``
+/// - ``persist(storageLevel:)``
+/// - ``unpersist(blocking:)``
+/// - ``storageLevel``
+///
+/// ### Schema Information
+/// - ``printSchema()``
+/// - ``printSchema(_:)``
+/// - ``explain()``
+/// - ``explain(_:)``
+///
+/// ### View Creation
+/// - ``createTempView(_:)``
+/// - ``createOrReplaceTempView(_:)``
+/// - ``createGlobalTempView(_:)``
+/// - ``createOrReplaceGlobalTempView(_:)``
+///
+/// ### Write Operations
+/// - ``write``
+/// - ``writeTo(_:)``
+///
+/// ### Sampling
+/// - ``sample(_:_:_:)``
+/// - ``sample(_:_:)``
+/// - ``sample(_:)``
+///
+/// ### Utility Methods
+/// - ``isEmpty()``
+/// - ``isLocal()``
+/// - ``isStreaming()``
+/// - ``inputFiles()``
+/// - ``semanticHash()``
+/// - ``sameSemantics(other:)``
+///
+/// ### Internal Methods
+/// - ``rdd()``
+/// - ``getPlan()``
 public actor DataFrame: Sendable {
   var spark: SparkSession
   var plan: Plan
@@ -340,23 +487,58 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, colsMap))
   }
 
-  /// Return a new ``DataFrame`` with filtered rows using the given expression.
-  /// - Parameter conditionExpr: A string to filter.
-  /// - Returns: A ``DataFrame`` with subset of rows.
+  /// Filters rows using the given condition.
+  ///
+  /// The condition should be a SQL expression that evaluates to a boolean value.
+  ///
+  /// ```swift
+  /// // Filter with simple condition
+  /// let adults = df.filter("age >= 18")
+  ///
+  /// // Filter with complex condition
+  /// let qualifiedUsers = df.filter("age >= 21 AND department = 'Engineering'")
+  ///
+  /// // Filter with SQL functions
+  /// let recent = df.filter("date_diff(current_date(), join_date) < 30")
+  /// ```
+  ///
+  /// - Parameter conditionExpr: A SQL expression string for filtering
+  /// - Returns: A new DataFrame containing only rows that match the condition
   public func filter(_ conditionExpr: String) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getFilter(self.plan.root, conditionExpr))
   }
 
-  /// Return a new ``DataFrame`` with filtered rows using the given expression.
-  /// - Parameter conditionExpr: A string to filter.
-  /// - Returns: A ``DataFrame`` with subset of rows.
+  /// Filters rows using the given condition (alias for filter).
+  ///
+  /// This method is an alias for ``filter(_:)`` and behaves identically.
+  ///
+  /// ```swift
+  /// let highSalary = df.where("salary > 100000")
+  /// ```
+  ///
+  /// - Parameter conditionExpr: A SQL expression string for filtering
+  /// - Returns: A new DataFrame containing only rows that match the condition
   public func `where`(_ conditionExpr: String) -> DataFrame {
     return filter(conditionExpr)
   }
 
-  /// Return a new ``DataFrame`` sorted by the specified column(s).
-  /// - Parameter cols: Column names.
-  /// - Returns: A sorted ``DataFrame``
+  /// Returns a new DataFrame sorted by the specified columns.
+  ///
+  /// By default, sorts in ascending order. Use `desc("column")` for descending order.
+  ///
+  /// ```swift
+  /// // Sort by single column (ascending)
+  /// let sorted = df.sort("age")
+  ///
+  /// // Sort by multiple columns
+  /// let multiSort = df.sort("department", "salary")
+  ///
+  /// // Sort with mixed order
+  /// let mixedSort = df.sort("department", "desc(salary)")
+  /// ```
+  ///
+  /// - Parameter cols: Column names or expressions to sort by
+  /// - Returns: A new DataFrame sorted by the specified columns
   public func sort(_ cols: String...) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
   }
@@ -369,8 +551,22 @@ public actor DataFrame: Sendable {
   }
 
   /// Limits the result count to the number specified.
-  /// - Parameter n: Number of records to return. Will return this number of records or all records if the ``DataFrame`` contains less than this number of records.
-  /// - Returns: A subset of the records
+  ///
+  /// This transformation is often used for:
+  /// - Previewing data
+  /// - Reducing data size for testing
+  /// - Implementing pagination
+  ///
+  /// ```swift
+  /// // Get top 10 records
+  /// let top10 = df.limit(10)
+  ///
+  /// // Preview data
+  /// let preview = df.filter("status = 'active'").limit(100)
+  /// ```
+  ///
+  /// - Parameter n: Maximum number of rows to return
+  /// - Returns: A new DataFrame with at most n rows
   public func limit(_ n: Int32) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getLimit(self.plan.root, n))
   }
@@ -420,9 +616,21 @@ public actor DataFrame: Sendable {
     return sample(false, fraction)
   }
 
-  /// Returns the first `n` rows.
-  /// - Parameter n: The number of rows. (default: 1)
-  /// - Returns: ``[Row]``
+  /// Returns the first n rows.
+  ///
+  /// This method is useful for quickly examining the contents of a DataFrame.
+  ///
+  /// ```swift
+  /// // Get the first row
+  /// let firstRow = try await df.head()
+  ///
+  /// // Get the first 5 rows
+  /// let firstFive = try await df.head(5)
+  /// ```
+  ///
+  /// - Parameter n: Number of rows to return (default: 1)
+  /// - Returns: An array of ``Row`` objects
+  /// - Throws: `SparkConnectError` if the operation fails
   public func head(_ n: Int32 = 1) async throws -> [Row] {
     return try await limit(n).collect()
   }
@@ -463,8 +671,22 @@ public actor DataFrame: Sendable {
     return try await select().limit(1).count() == 0
   }
 
-  /// Persist this `DataFrame` with the default storage level (`MEMORY_AND_DISK`).
-  /// - Returns: A `DataFrame`.
+  /// Persists this DataFrame with the default storage level (MEMORY_AND_DISK).
+  ///
+  /// Caching can significantly improve performance when a DataFrame is accessed multiple times.
+  /// The cached data is stored in memory and/or disk depending on the storage level.
+  ///
+  /// ```swift
+  /// // Cache a frequently used DataFrame
+  /// let cachedDf = try await df.cache()
+  ///
+  /// // Use the cached DataFrame multiple times
+  /// let count1 = try await cachedDf.count()
+  /// let count2 = try await cachedDf.filter("age > 30").count()
+  /// ```
+  ///
+  /// - Returns: The cached DataFrame
+  /// - Throws: `SparkConnectError` if the operation fails
   public func cache() async throws -> DataFrame {
     return try await persist()
   }
@@ -575,24 +797,47 @@ public actor DataFrame: Sendable {
     }
   }
 
-  /// Join with another `DataFrame`.
-  /// Behaves as an INNER JOIN and requires a subsequent join predicate.
-  /// - Parameter right: Right side of the join operation.
-  /// - Returns: A `DataFrame`.
+  /// Join with another DataFrame.
+  ///
+  /// This performs an inner join and requires a subsequent join predicate.
+  /// For other join types, use the overloaded methods with join type parameter.
+  ///
+  /// ```swift
+  /// // Basic join (requires join condition)
+  /// let joined = df1.join(df2)
+  ///     .where("df1.id = df2.user_id")
+  ///
+  /// // Join with condition
+  /// let result = users.join(orders, "id")
+  /// ```
+  ///
+  /// - Parameter right: The DataFrame to join with
+  /// - Returns: A new DataFrame representing the join result
   public func join(_ right: DataFrame) async -> DataFrame {
     let right = await (right.getPlan() as! Plan).root
     let plan = SparkConnectClient.getJoin(self.plan.root, right, JoinType.inner)
     return DataFrame(spark: self.spark, plan: plan)
   }
 
-  /// Equi-join with another `DataFrame` using the given column. A cross join with a predicate is
-  /// specified as an inner join. If you would explicitly like to perform a cross join use the
-  /// `crossJoin` method.
+  /// Equi-join with another DataFrame using the given column.
+  ///
+  /// This method performs an equi-join on a single column that exists in both DataFrames.
+  ///
+  /// ```swift
+  /// // Inner join on a single column
+  /// let joined = users.join(orders, "user_id")
+  ///
+  /// // Left outer join
+  /// let leftJoined = users.join(orders, "user_id", "left")
+  ///
+  /// // Other join types: "inner", "outer", "left", "right", "semi", "anti"
+  /// ```
+  ///
   /// - Parameters:
-  ///   - right: Right side of the join operation.
-  ///   - usingColumn: Name of the column to join on. This column must exist on both sides.
-  ///   - joinType: Type of join to perform. Default `inner`.
-  /// - Returns: A `DataFrame`.
+  ///   - right: The DataFrame to join with
+  ///   - usingColumn: Column name that exists in both DataFrames
+  ///   - joinType: Type of join (default: "inner")
+  /// - Returns: A new DataFrame with the join result
   public func join(_ right: DataFrame, _ usingColumn: String, _ joinType: String = "inner") async -> DataFrame {
     await join(right, [usingColumn], joinType)
   }
@@ -863,9 +1108,26 @@ public actor DataFrame: Sendable {
     return buildRepartition(numPartitions: numPartitions, shuffle: false)
   }
 
-  /// Groups the ``DataFrame`` using the specified columns, so we can run aggregation on them.
-  /// - Parameter cols: Grouping column names.
-  /// - Returns: A ``GroupedData``.
+  /// Groups the DataFrame using the specified columns.
+  ///
+  /// This method is used to perform aggregations on groups of data.
+  /// After grouping, you can apply aggregation functions like count(), sum(), avg(), etc.
+  ///
+  /// ```swift
+  /// // Group by single column
+  /// let byDept = df.groupBy("department")
+  ///     .agg(count("*").alias("employee_count"))
+  ///
+  /// // Group by multiple columns
+  /// let byDeptAndLocation = df.groupBy("department", "location")
+  ///     .agg(
+  ///         avg("salary").alias("avg_salary"),
+  ///         max("salary").alias("max_salary")
+  ///     )
+  /// ```
+  ///
+  /// - Parameter cols: Column names to group by
+  /// - Returns: A ``GroupedData`` object for aggregation operations
   public func groupBy(_ cols: String...) -> GroupedData {
     return GroupedData(self, GroupType.groupby, cols)
   }
