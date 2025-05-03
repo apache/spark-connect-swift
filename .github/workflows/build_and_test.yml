@@ -51,7 +51,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: GPG
       run: |
-        curl -LO https://swift.org/keys/all-keys.asc
+        curl -LO https://www.swift.org/keys/all-keys.asc
         gpg --import all-keys.asc
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
