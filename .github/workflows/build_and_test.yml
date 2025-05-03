@@ -39,14 +39,8 @@ jobs:
         with:
           config: .github/.licenserc.yaml
 
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-15
+  build-macos-15:
+    runs-on: macos-15
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
@@ -54,6 +48,15 @@ jobs:
         swift-version: "6.1"
     - name: Build
       run: swift build -v
+
+  build-ubuntu-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: |
+        docker run swift:6.1 uname -a
+        docker run -v $PWD:/spark -w /spark swift:6.1 swift build -v
 
   # setup-swift doesn't support ARM linux yet.
   build-ubuntu-arm:
@@ -63,7 +66,7 @@ jobs:
     - name: Build
       run: |
         docker run swift:6.1 uname -a
-        docker run -v $PWD:/orc -w /orc swift:6.1 swift build -v
+        docker run -v $PWD:/spark -w /spark swift:6.1 swift build -v
 
   integration-test-linux:
     runs-on: ubuntu-latest
@@ -79,11 +82,10 @@ jobs:
         options: --entrypoint /opt/spark/sbin/start-connect-server.sh
     steps:
     - uses: actions/checkout@v4
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.1"
-    - name: Test
-      run: swift test --no-parallel
+    - name: Build
+      run: |
+        docker run swift:6.1 uname -a
+        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.1 swift test --no-parallel
 
   integration-test-mac:
     runs-on: macos-15
