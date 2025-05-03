@@ -136,4 +136,25 @@ struct SparkSessionTests {
     }
     await spark.stop()
   }
+
+  @Test
+  func interruptAll() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.interruptAll() == [])
+    await spark.stop()
+  }
+
+  @Test
+  func interruptTag() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.interruptTag("etl") == [])
+    await spark.stop()
+  }
+
+  @Test
+  func interruptOperation() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.interruptOperation("id") == [])
+    await spark.stop()
+  }
 }

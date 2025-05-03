@@ -314,6 +314,27 @@ public actor SparkSession {
     await client.clearTags()
   }
 
+  /// Request to interrupt all currently running operations of this session.
+  /// - Returns: Sequence of operation IDs requested to be interrupted.
+  @discardableResult
+  public func interruptAll() async throws -> [String] {
+    return try await client.interruptAll()
+  }
+
+  /// Request to interrupt all currently running operations of this session with the given job tag.
+  /// - Returns: Sequence of operation IDs requested to be interrupted.
+  @discardableResult
+  public func interruptTag(_ tag: String) async throws -> [String] {
+    return try await client.interruptTag(tag)
+  }
+
+  /// Request to interrupt an operation of this session, given its operation ID.
+  /// - Returns: Sequence of operation IDs requested to be interrupted.
+  @discardableResult
+  public func interruptOperation(_ operationId: String) async throws -> [String] {
+    return try await client.interruptOperation(operationId)
+  }
+
   func sameSemantics(_ plan: Plan, _ otherPlan: Plan) async throws -> Bool {
     return try await client.sameSemantics(plan, otherPlan)
   }

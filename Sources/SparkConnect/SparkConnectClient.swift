@@ -559,6 +559,50 @@ public actor SparkConnectClient {
     tags.removeAll()
   }
 
+  public func interruptAll() async throws -> [String] {
+    var request = Spark_Connect_InterruptRequest()
+    request.sessionID = self.sessionID!
+    request.userContext = self.userContext
+    request.clientType = self.clientType
+    request.interruptType = .all
+
+    return try await withGPRC { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.interrupt(request)
+      return response.interruptedIds
+    }
+  }
+
+  public func interruptTag(_ tag: String) async throws -> [String] {
+    var request = Spark_Connect_InterruptRequest()
+    request.sessionID = self.sessionID!
+    request.userContext = self.userContext
+    request.clientType = self.clientType
+    request.interruptType = .tag
+    request.operationTag = tag
+
+    return try await withGPRC { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.interrupt(request)
+      return response.interruptedIds
+    }
+  }
+
+  public func interruptOperation(_ operationId: String) async throws -> [String] {
+    var request = Spark_Connect_InterruptRequest()
+    request.sessionID = self.sessionID!
+    request.userContext = self.userContext
+    request.clientType = self.clientType
+    request.interruptType = .operationID
+    request.operationID = operationId
+
+    return try await withGPRC { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.interrupt(request)
+      return response.interruptedIds
+    }
+  }
+
   /// Parse a DDL string to ``Spark_Connect_DataType`` instance.
   /// - Parameter ddlString: A string to parse.
   /// - Returns: A ``Spark_Connect_DataType`` instance.

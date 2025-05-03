@@ -32,15 +32,13 @@ let csvDf = spark.read.csv("path/to/file.csv")
 
 ### Creating Sessions
 
-- ``builder()``
-- ``active()``
+- ``builder``
 - ``stop()``
 
-### DataFrame Operations  
+### DataFrame Operations
 
-- ``range(_:_:)``
+- ``range(_:_:_:)``
 - ``sql(_:)``
-- ``createDataFrame(_:_:)``
 
 ### Data I/O
 
@@ -53,3 +51,13 @@ let csvDf = spark.read.csv("path/to/file.csv")
 ### Catalog Operations
 
 - ``catalog``
+
+### Managing Operations
+
+- ``addTag(_:)``
+- ``removeTag(_:)``
+- ``getTags()``
+- ``clearTags()``
+- ``interruptAll()``
+- ``interruptTag(_:)``
+- ``interruptOperation(_:)``
