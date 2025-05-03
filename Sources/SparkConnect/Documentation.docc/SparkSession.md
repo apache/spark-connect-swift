@@ -37,6 +37,7 @@ let csvDf = spark.read.csv("path/to/file.csv")
 
 ### DataFrame Operations
 
+- ``emptyDataFrame``
 - ``range(_:_:_:)``
 - ``sql(_:)``
 

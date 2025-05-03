@@ -234,6 +234,16 @@ public actor SparkConnectClient {
     }
   }
 
+  func getLocalRelation() -> Plan {
+    var localRelation = Spark_Connect_LocalRelation()
+    localRelation.schema = ""
+    var relation = Relation()
+    relation.localRelation = localRelation
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   /// Create a `Plan` instance for `Range` relation.
   /// - Parameters:
   ///   - start: A start of the range.

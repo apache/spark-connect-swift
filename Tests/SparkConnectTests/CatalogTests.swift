@@ -144,6 +144,32 @@ struct CatalogTests {
   }
 
   @Test
+  func listColumns() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+
+    // Table
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    let path = "/tmp/\(tableName)"
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(2).write.orc(path)
+      let expected = [Row("id", nil, "bigint", true, false, false, false)]
+      #expect(try await spark.catalog.createTable(tableName, path, source: "orc").count() == 2)
+      #expect(try await spark.catalog.listColumns(tableName).collect() == expected)
+      #expect(try await spark.catalog.listColumns("default.\(tableName)").collect() == expected)
+    })
+
+    // View
+    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTempView(spark, viewName)({
+      try await spark.range(1).createTempView(viewName)
+      let expected = [Row("id", nil, "bigint", false, false, false, false)]
+      #expect(try await spark.catalog.listColumns(viewName).collect() == expected)
+    })
+
+    await spark.stop()
+  }
+
+  @Test
   func functionExists() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.catalog.functionExists("base64"))

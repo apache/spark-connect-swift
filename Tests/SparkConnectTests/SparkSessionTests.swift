@@ -68,6 +68,15 @@ struct SparkSessionTests {
   }
 
   @Test
+  func emptyDataFrame() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.emptyDataFrame.count() == 0)
+    #expect(try await spark.emptyDataFrame.dtypes.isEmpty)
+    #expect(try await spark.emptyDataFrame.isLocal())
+    await spark.stop()
+  }
+
+  @Test
   func range() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(10).count() == 10)

@@ -83,6 +83,13 @@ public actor SparkSession {
   public func stop() async {
     await client.stop()
   }
+  
+  /// Returns a `DataFrame` with no rows or columns.
+  public var emptyDataFrame: DataFrame {
+    get async {
+      return await DataFrame(spark: self, plan: client.getLocalRelation())
+    }
+  }
 
   /// Create a ``DataFrame`` with a single ``Int64`` column name `id`, containing elements in a
   /// range from 0 to `end` (exclusive) with step value 1.

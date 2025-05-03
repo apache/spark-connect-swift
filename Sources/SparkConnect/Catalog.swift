@@ -273,6 +273,22 @@ public actor Catalog: Sendable {
     return try await df.collect()[0].getAsBool(0)
   }
 
+  /// Returns a list of columns for the given table/view or temporary view.
+  /// - Parameter tableName: a qualified or unqualified name that designates a table/view. It follows the same
+  /// resolution rule with SQL: search for temp views first then table/views in the current
+  /// database (namespace).
+  /// - Returns: A ``DataFrame`` of ``Column``.
+  public func listColumns(_ tableName: String) async throws -> DataFrame {
+    let df = getDataFrame({
+      var listColumns = Spark_Connect_ListColumns()
+      listColumns.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.listColumns = listColumns
+      return catalog
+    })
+    return df
+  }
+
   /// Check if the function with the specified name exists. This can either be a temporary function
   /// or a function.
   /// - Parameter functionName: a qualified or unqualified name that designates a function. It follows the same
