@@ -152,7 +152,11 @@ struct CatalogTests {
     let path = "/tmp/\(tableName)"
     try await SQLHelper.withTable(spark, tableName)({
       try await spark.range(2).write.orc(path)
-      let expected = [Row("id", nil, "bigint", true, false, false, false)]
+      let expected = if await spark.version.starts(with: "4.") {
+        [Row("id", nil, "bigint", true, false, false, false)]
+      } else {
+        [Row("id", nil, "bigint", true, false, false)]
+      }
       #expect(try await spark.catalog.createTable(tableName, path, source: "orc").count() == 2)
       #expect(try await spark.catalog.listColumns(tableName).collect() == expected)
       #expect(try await spark.catalog.listColumns("default.\(tableName)").collect() == expected)
@@ -162,7 +166,11 @@ struct CatalogTests {
     let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     try await SQLHelper.withTempView(spark, viewName)({
       try await spark.range(1).createTempView(viewName)
-      let expected = [Row("id", nil, "bigint", false, false, false, false)]
+      let expected = if await spark.version.starts(with: "4.") {
+        [Row("id", nil, "bigint", false, false, false, false)]
+      } else {
+        [Row("id", nil, "bigint", false, false, false)]
+      }
       #expect(try await spark.catalog.listColumns(viewName).collect() == expected)
     })
 
