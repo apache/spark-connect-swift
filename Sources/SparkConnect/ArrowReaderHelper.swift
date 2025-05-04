@@ -18,6 +18,7 @@
 import FlatBuffers
 import Foundation
 
+/// @nodoc
 private func makeBinaryHolder(
   _ buffers: [ArrowBuffer],
   nullCount: UInt

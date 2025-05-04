@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class ArrowField {
   public let type: ArrowType
   public let name: String
@@ -29,6 +30,7 @@ public class ArrowField {
   }
 }
 
+/// @nodoc
 public class ArrowSchema {
   public let fields: [ArrowField]
   public let fieldLookup: [String: Int]

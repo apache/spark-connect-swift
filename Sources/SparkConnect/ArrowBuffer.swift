@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class ArrowBuffer {
   static let minLength: UInt = 1 << 5
   static let maxLength = UInt.max

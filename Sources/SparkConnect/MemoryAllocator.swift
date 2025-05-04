@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class MemoryAllocator {
   let alignment: Int
   init(_ alignment: Int) {

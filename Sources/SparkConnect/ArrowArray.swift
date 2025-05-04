@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public protocol ArrowArrayHolder {
   var type: ArrowType { get }
   var length: UInt { get }
@@ -28,6 +29,7 @@ public protocol ArrowArrayHolder {
   var getArrowColumn: (ArrowField, [ArrowArrayHolder]) throws -> ArrowColumn { get }
 }
 
+/// @nodoc
 public class ArrowArrayHolderImpl: ArrowArrayHolder {
   public let data: ArrowData
   public let type: ArrowType
@@ -121,6 +123,7 @@ public class ArrowArrayHolderImpl: ArrowArrayHolder {
   }
 }
 
+/// @nodoc
 public class ArrowArray<T>: AsString, AnyArray {
   public typealias ItemType = T
   public let arrowData: ArrowData
@@ -160,6 +163,7 @@ public class ArrowArray<T>: AsString, AnyArray {
   }
 }
 
+/// @nodoc
 public class FixedArray<T>: ArrowArray<T> {
   public override subscript(_ index: UInt) -> T? {
     if self.arrowData.isNull(index) {
@@ -171,6 +175,7 @@ public class FixedArray<T>: ArrowArray<T> {
   }
 }
 
+/// @nodoc
 public class StringArray: ArrowArray<String> {
   public override subscript(_ index: UInt) -> String? {
     let offsetIndex = MemoryLayout<Int32>.stride * Int(index)
@@ -197,6 +202,7 @@ public class StringArray: ArrowArray<String> {
   }
 }
 
+/// @nodoc
 public class BoolArray: ArrowArray<Bool> {
   public override subscript(_ index: UInt) -> Bool? {
     if self.arrowData.isNull(index) {
@@ -208,6 +214,7 @@ public class BoolArray: ArrowArray<Bool> {
   }
 }
 
+/// @nodoc
 public class Date32Array: ArrowArray<Date> {
   public override subscript(_ index: UInt) -> Date? {
     if self.arrowData.isNull(index) {
@@ -221,6 +228,7 @@ public class Date32Array: ArrowArray<Date> {
   }
 }
 
+/// @nodoc
 public class Date64Array: ArrowArray<Date> {
   public override subscript(_ index: UInt) -> Date? {
     if self.arrowData.isNull(index) {
@@ -234,9 +242,12 @@ public class Date64Array: ArrowArray<Date> {
   }
 }
 
+/// @nodoc
 public class Time32Array: FixedArray<Time32> {}
+/// @nodoc
 public class Time64Array: FixedArray<Time64> {}
 
+/// @nodoc
 public class BinaryArray: ArrowArray<Data> {
   public struct Options {
     public var printAsHex = false
@@ -279,6 +290,7 @@ public class BinaryArray: ArrowArray<Data> {
   }
 }
 
+/// @nodoc
 public class StructArray: ArrowArray<[Any?]> {
   public private(set) var arrowFields: [ArrowArrayHolder]?
   public required init(_ arrowData: ArrowData) throws {

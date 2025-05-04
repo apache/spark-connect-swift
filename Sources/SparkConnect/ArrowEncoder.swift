@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class ArrowEncoder: Encoder {
   public private(set) var builders = [String: ArrowArrayHolderBuilder]()
   private var byIndex = [String]()

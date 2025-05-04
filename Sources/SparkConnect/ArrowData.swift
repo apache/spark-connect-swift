@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class ArrowData {
   public let type: ArrowType
   public let buffers: [ArrowBuffer]

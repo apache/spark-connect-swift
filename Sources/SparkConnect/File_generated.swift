@@ -21,6 +21,7 @@
 
 import FlatBuffers
 
+/// @nodoc
 public struct org_apache_arrow_flatbuf_Block: NativeStruct, Verifiable, FlatbuffersInitializable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -67,6 +68,7 @@ public struct org_apache_arrow_flatbuf_Block: NativeStruct, Verifiable, Flatbuff
   }
 }
 
+/// @nodoc
 public struct org_apache_arrow_flatbuf_Block_Mutable: FlatBufferObject {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -83,6 +85,7 @@ public struct org_apache_arrow_flatbuf_Block_Mutable: FlatBufferObject {
 ///  ----------------------------------------------------------------------
 ///  Arrow File metadata
 ///
+/// @nodoc
 public struct org_apache_arrow_flatbuf_Footer: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }

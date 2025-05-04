@@ -21,6 +21,7 @@
 
 import FlatBuffers
 
+/// @nodoc
 public enum org_apache_arrow_flatbuf_CompressionType: Int8, Enum, Verifiable {
   public typealias T = Int8
   public static var byteSize: Int { return MemoryLayout<Int8>.size }
@@ -60,6 +61,7 @@ public enum org_apache_arrow_flatbuf_BodyCompressionMethod: Int8, Enum, Verifiab
 ///  Arrow implementations do not need to implement all of the message types,
 ///  which may include experimental metadata types. For maximum compatibility,
 ///  it is best to send data using RecordBatch
+/// @nodoc
 public enum org_apache_arrow_flatbuf_MessageHeader: UInt8, UnionEnum {
   public typealias T = UInt8
 
@@ -89,6 +91,7 @@ public enum org_apache_arrow_flatbuf_MessageHeader: UInt8, UnionEnum {
 ///  For example, a List<Int16> with values `[[1, 2, 3], null, [4], [5, 6], null]`
 ///  would have {length: 5, null_count: 2} for its List node, and {length: 6,
 ///  null_count: 0} for its Int16 node, as separate FieldNode structs
+/// @nodoc
 public struct org_apache_arrow_flatbuf_FieldNode: NativeStruct, Verifiable, FlatbuffersInitializable
 {
 
@@ -141,6 +144,7 @@ public struct org_apache_arrow_flatbuf_FieldNode: NativeStruct, Verifiable, Flat
 ///  For example, a List<Int16> with values `[[1, 2, 3], null, [4], [5, 6], null]`
 ///  would have {length: 5, null_count: 2} for its List node, and {length: 6,
 ///  null_count: 0} for its Int16 node, as separate FieldNode structs
+/// @nodoc
 public struct org_apache_arrow_flatbuf_FieldNode_Mutable: FlatBufferObject {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -156,6 +160,7 @@ public struct org_apache_arrow_flatbuf_FieldNode_Mutable: FlatBufferObject {
 ///  Optional compression for the memory buffers constituting IPC message
 ///  bodies. Intended for use with RecordBatch but could be used for other
 ///  message types
+/// @nodoc
 public struct org_apache_arrow_flatbuf_BodyCompression: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -238,6 +243,7 @@ public struct org_apache_arrow_flatbuf_BodyCompression: FlatBufferObject, Verifi
 ///  A data header describing the shared memory layout of a "record" or "row"
 ///  batch. Some systems call this a "row batch" internally and others a "record
 ///  batch".
+/// @nodoc
 public struct org_apache_arrow_flatbuf_RecordBatch: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -398,6 +404,7 @@ public struct org_apache_arrow_flatbuf_RecordBatch: FlatBufferObject, Verifiable
 ///  There is one vector / column per dictionary, but that vector / column
 ///  may be spread across multiple dictionary batches by using the isDelta
 ///  flag
+/// @nodoc
 public struct org_apache_arrow_flatbuf_DictionaryBatch: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -485,6 +492,7 @@ public struct org_apache_arrow_flatbuf_DictionaryBatch: FlatBufferObject, Verifi
   }
 }
 
+/// @nodoc
 public struct org_apache_arrow_flatbuf_Message: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }

@@ -18,11 +18,13 @@
 import FlatBuffers
 import Foundation
 
+/// @nodoc
 public protocol DataWriter {
   var count: Int { get }
   func append(_ data: Data)
 }
 
+/// @nodoc
 public class ArrowWriter {  // swiftlint:disable:this type_body_length
   public class InMemDataWriter: DataWriter {
     public private(set) var data: Data

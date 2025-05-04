@@ -17,16 +17,19 @@
 
 import Foundation
 
+/// @nodoc
 public protocol AnyArray {
   var arrowData: ArrowData { get }
   func asAny(_ index: UInt) -> Any?
   var length: UInt { get }
 }
 
+/// @nodoc
 public protocol AsString {
   func asString(_ index: UInt) -> String
 }
 
+/// @nodoc
 public class ChunkedArrayHolder {
   public let type: ArrowType
   public let length: UInt
@@ -93,6 +96,7 @@ public class ChunkedArrayHolder {
   }
 }
 
+/// @nodoc
 public class ChunkedArray<T>: AsString {
   public let arrays: [ArrowArray<T>]
   public let type: ArrowType

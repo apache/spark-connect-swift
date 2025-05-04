@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class ArrowDecoder: Decoder {
   var rbIndex: UInt = 0
   var singleRBCol: Int = 0

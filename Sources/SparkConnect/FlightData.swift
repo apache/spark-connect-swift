@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class FlightData {
   let flightData: Arrow_Flight_Protocol_FlightData
   public var flightDescriptor: FlightDescriptor? {

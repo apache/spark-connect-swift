@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class ArrowColumn {
   public let field: ArrowField
   fileprivate let dataHolder: ChunkedArrayHolder
@@ -35,6 +36,7 @@ public class ArrowColumn {
   }
 }
 
+/// @nodoc
 public class ArrowTable {
   public let schema: ArrowSchema
   public var columnCount: UInt { return UInt(self.columns.count) }

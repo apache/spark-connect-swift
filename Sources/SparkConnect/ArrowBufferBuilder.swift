@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public protocol ArrowBufferBuilder {
   associatedtype ItemType
   var capacity: UInt { get }

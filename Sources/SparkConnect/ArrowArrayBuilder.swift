@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public protocol ArrowArrayHolderBuilder {
   func toHolder() throws -> ArrowArrayHolder
   func appendAny(_ val: Any?)

@@ -17,6 +17,7 @@
 
 import Foundation
 
+/// @nodoc
 public class FlightDescriptor {
   public enum DescriptorType {
     case unknown

@@ -21,6 +21,7 @@ import Foundation
 let FILEMARKER = "ARROW1"
 let CONTINUATIONMARKER = -1
 
+/// @nodoc
 public class ArrowReader {  // swiftlint:disable:this type_body_length
   private class RecordBatchData {
     let schema: org_apache_arrow_flatbuf_Schema

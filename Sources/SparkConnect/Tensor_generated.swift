@@ -24,6 +24,7 @@ import FlatBuffers
 ///  ----------------------------------------------------------------------
 ///  Data structures for dense tensors
 ///  Shape data for a single axis in a tensor
+/// @nodoc
 public struct org_apache_arrow_flatbuf_TensorDim: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -92,6 +93,7 @@ public struct org_apache_arrow_flatbuf_TensorDim: FlatBufferObject, Verifiable {
   }
 }
 
+/// @nodoc
 public struct org_apache_arrow_flatbuf_Tensor: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }

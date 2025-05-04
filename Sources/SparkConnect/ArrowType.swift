@@ -17,14 +17,19 @@
 
 import Foundation
 
+/// @nodoc
 public typealias Time32 = Int32
+/// @nodoc
 public typealias Time64 = Int64
+/// @nodoc
 public typealias Date32 = Int32
+/// @nodoc
 public typealias Date64 = Int64
 
 func FlatBuffersVersion_23_1_4() {  // swiftlint:disable:this identifier_name
 }
 
+/// @nodoc
 public enum ArrowError: Error {
   case none
   case unknownType(String)
@@ -84,6 +89,7 @@ public enum ArrowTime64Unit {
   case nanoseconds
 }
 
+/// @nodoc
 public class ArrowTypeTime32: ArrowType {
   let unit: ArrowTime32Unit
   public init(_ unit: ArrowTime32Unit) {
@@ -103,6 +109,7 @@ public class ArrowTypeTime32: ArrowType {
   }
 }
 
+/// @nodoc
 public class ArrowTypeTime64: ArrowType {
   let unit: ArrowTime64Unit
   public init(_ unit: ArrowTime64Unit) {
@@ -122,6 +129,7 @@ public class ArrowTypeTime64: ArrowType {
   }
 }
 
+/// @nodoc
 public class ArrowNestedType: ArrowType {
   let fields: [ArrowField]
   public init(_ info: ArrowType.Info, fields: [ArrowField]) {
@@ -130,6 +138,7 @@ public class ArrowNestedType: ArrowType {
   }
 }
 
+/// @nodoc
 public class ArrowType {
   public private(set) var info: ArrowType.Info
   public static let ArrowInt8 = Info.primitiveInfo(ArrowTypeId.int8)

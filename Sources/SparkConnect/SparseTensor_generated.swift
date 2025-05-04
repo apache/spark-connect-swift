@@ -21,6 +21,7 @@
 
 import FlatBuffers
 
+/// @nodoc
 public enum org_apache_arrow_flatbuf_SparseMatrixCompressedAxis: Int16, Enum, Verifiable {
   public typealias T = Int16
   public static var byteSize: Int { return MemoryLayout<Int16>.size }
@@ -82,6 +83,7 @@ public enum org_apache_arrow_flatbuf_SparseTensorIndex: UInt8, UnionEnum {
 ///  When isCanonical is true, the indices is sorted in lexicographical order
 ///  (row-major order), and it does not have duplicated entries.  Otherwise,
 ///  the indices may not be sorted, or may have duplicated entries.
+/// @nodoc
 public struct org_apache_arrow_flatbuf_SparseTensorIndexCOO: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -212,6 +214,7 @@ public struct org_apache_arrow_flatbuf_SparseTensorIndexCOO: FlatBufferObject, V
 }
 
 ///  Compressed Sparse format, that is matrix-specific.
+/// @nodoc
 public struct org_apache_arrow_flatbuf_SparseMatrixIndexCSX: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -379,6 +382,7 @@ public struct org_apache_arrow_flatbuf_SparseMatrixIndexCSX: FlatBufferObject, V
 }
 
 ///  Compressed Sparse Fiber (CSF) sparse tensor index.
+/// @nodoc
 public struct org_apache_arrow_flatbuf_SparseTensorIndexCSF: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
@@ -613,6 +617,7 @@ public struct org_apache_arrow_flatbuf_SparseTensorIndexCSF: FlatBufferObject, V
   }
 }
 
+/// @nodoc
 public struct org_apache_arrow_flatbuf_SparseTensor: FlatBufferObject, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
