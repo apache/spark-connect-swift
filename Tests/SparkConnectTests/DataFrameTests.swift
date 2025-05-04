@@ -183,11 +183,20 @@ struct DataFrameTests {
   @Test
   func select() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(1).select().columns.isEmpty)
     let schema = try await spark.range(1).select("id").schema
     #expect(
       schema
         == #"{"struct":{"fields":[{"name":"id","dataType":{"long":{}}}]}}"#
     )
+    await spark.stop()
+  }
+
+  @Test
+  func toDF() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(1).toDF().columns == ["id"])
+    #expect(try await spark.range(1).toDF("id").columns == ["id"])
     await spark.stop()
   }
 
@@ -644,6 +653,32 @@ struct DataFrameTests {
     }
     try await spark.range(1).coalesce(10).write.mode("overwrite").orc(tmpDir)
     #expect(try await spark.read.orc(tmpDir).inputFiles().count < 10)
+    await spark.stop()
+  }
+
+  @Test
+  func distinct() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT * FROM VALUES (1), (2), (3), (1), (3) T(a)")
+    #expect(try await df.distinct().collect() == [Row(1), Row(2), Row(3)])
+    await spark.stop()
+  }
+
+  @Test
+  func dropDuplicates() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT * FROM VALUES (1), (2), (3), (1), (3) T(a)")
+    #expect(try await df.dropDuplicates().collect() == [Row(1), Row(2), Row(3)])
+    #expect(try await df.dropDuplicates("a").collect() == [Row(1), Row(2), Row(3)])
+    await spark.stop()
+  }
+
+  @Test
+  func dropDuplicatesWithinWatermark() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT * FROM VALUES (1), (2), (3), (1), (3) T(a)")
+    #expect(try await df.dropDuplicatesWithinWatermark().collect() == [Row(1), Row(2), Row(3)])
+    #expect(try await df.dropDuplicatesWithinWatermark("a").collect() == [Row(1), Row(2), Row(3)])
     await spark.stop()
   }
 

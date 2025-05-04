@@ -91,6 +91,7 @@ import Synchronization
 /// - ``show(_:_:_:)``
 ///
 /// ### Transformation Operations
+/// - ``toDF(_:)``
 /// - ``select(_:)``
 /// - ``selectExpr(_:)``
 /// - ``filter(_:)``
@@ -100,6 +101,9 @@ import Synchronization
 /// - ``limit(_:)``
 /// - ``offset(_:)``
 /// - ``drop(_:)``
+/// - ``dropDuplicates(_:)``
+/// - ``dropDuplicatesWithinWatermark(_:)``
+/// - ``distinct()``
 /// - ``withColumnRenamed(_:_:)``
 ///
 /// ### Join Operations
@@ -440,11 +444,23 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: plan)
   }
 
-  /// Projects a set of expressions and returns a new ``DataFrame``.
+  /// Selects a subset of existing columns using column names.
   /// - Parameter cols: Column names
   /// - Returns: A ``DataFrame`` with subset of columns.
   public func select(_ cols: String...) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
+  }
+
+  /// Selects a subset of existing columns using column names.
+  /// - Parameter cols: Column names
+  /// - Returns: A ``DataFrame`` with subset of columns.
+  public func toDF(_ cols: String...) -> DataFrame {
+    let df = if cols.isEmpty {
+      DataFrame(spark: self.spark, plan: self.plan)
+    } else {
+      DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
+    }
+    return df
   }
 
   /// Projects a set of expressions and returns a new ``DataFrame``.
@@ -459,6 +475,24 @@ public actor DataFrame: Sendable {
   /// - Returns: A ``DataFrame`` with subset of columns.
   public func drop(_ cols: String...) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getDrop(self.plan.root, cols))
+  }
+
+  /// Returns a new ``DataFrame`` that contains only the unique rows from this ``DataFrame``.
+  /// This is an alias for `distinct`. If column names are given, Spark considers only those columns.
+  /// - Parameter cols: Column names
+  /// - Returns: A ``DataFrame``.
+  public func dropDuplicates(_ cols: String...) -> DataFrame {
+    let plan = SparkConnectClient.getDropDuplicates(self.plan.root, cols, withinWatermark: false)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Returns a new Dataset with duplicates rows removed, within watermark.
+  /// If column names are given, Spark considers only those columns.
+  /// - Parameter cols: Column names
+  /// - Returns: A ``DataFrame``.
+  public func dropDuplicatesWithinWatermark(_ cols: String...) -> DataFrame {
+    let plan = SparkConnectClient.getDropDuplicates(self.plan.root, cols, withinWatermark: true)
+    return DataFrame(spark: self.spark, plan: plan)
   }
 
   /// Returns a new Dataset with a column renamed. This is a no-op if schema doesn't contain existingName.
@@ -1106,6 +1140,13 @@ public actor DataFrame: Sendable {
   /// - Returns: A `DataFrame`.
   public func coalesce(_ numPartitions: Int32) -> DataFrame {
     return buildRepartition(numPartitions: numPartitions, shuffle: false)
+  }
+
+  /// Returns a new ``Dataset`` that contains only the unique rows from this ``Dataset``.
+  /// This is an alias for `dropDuplicates`.
+  /// - Returns: A `DataFrame`.
+  public func distinct() -> DataFrame {
+    return dropDuplicates()
   }
 
   /// Groups the DataFrame using the specified columns.

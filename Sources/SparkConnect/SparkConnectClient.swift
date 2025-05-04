@@ -455,6 +455,25 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getDropDuplicates(
+    _ child: Relation,
+    _ columnNames: [String],
+    withinWatermark: Bool = false
+  ) -> Plan {
+    var deduplicate = Spark_Connect_Deduplicate()
+    deduplicate.input = child
+    if columnNames.isEmpty {
+      deduplicate.allColumnsAsKeys = true
+    } else {
+      deduplicate.columnNames = columnNames
+    }
+    var relation = Relation()
+    relation.deduplicate = deduplicate
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
     var sort = Sort()
     sort.input = child
