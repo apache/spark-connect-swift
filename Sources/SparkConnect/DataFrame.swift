@@ -164,6 +164,10 @@ import Synchronization
 /// - ``sample(_:_:)``
 /// - ``sample(_:)``
 ///
+/// ### Statistics
+/// - ``describe(_:)``
+/// - ``summary(_:)``
+///
 /// ### Utility Methods
 /// - ``isEmpty()``
 /// - ``isLocal()``
@@ -493,6 +497,25 @@ public actor DataFrame: Sendable {
   public func dropDuplicatesWithinWatermark(_ cols: String...) -> DataFrame {
     let plan = SparkConnectClient.getDropDuplicates(self.plan.root, cols, withinWatermark: true)
     return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Computes basic statistics for numeric and string columns, including count, mean, stddev, min,
+  /// and max. If no columns are given, this function computes statistics for all numerical or
+  /// string columns.
+  /// - Parameter cols: Column names.
+  /// - Returns: A ``DataFrame`` containing basic statistics.
+  public func describe(_ cols: String...) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getDescribe(self.plan.root, cols))
+  }
+
+  /// Computes specified statistics for numeric and string columns. Available statistics are:
+  /// count, mean, stddev, min, max, arbitrary approximate percentiles specified as a percentage (e.g. 75%)
+  /// count_distinct, approx_count_distinct . If no statistics are given, this function computes count, mean,
+  /// stddev, min, approximate quartiles (percentiles at 25%, 50%, and 75%), and max.
+  /// - Parameter statistics: Statistics names.
+  /// - Returns: A ``DataFrame`` containing specified statistics.
+  public func summary(_ statistics: String...) -> DataFrame {
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getSummary(self.plan.root, statistics))
   }
 
   /// Returns a new Dataset with a column renamed. This is a no-op if schema doesn't contain existingName.

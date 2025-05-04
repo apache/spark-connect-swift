@@ -474,6 +474,28 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getDescribe(_ child: Relation, _ cols: [String]) -> Plan {
+    var describe = Spark_Connect_StatDescribe()
+    describe.input = child
+    describe.cols = cols
+    var relation = Relation()
+    relation.describe = describe
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
+  static func getSummary(_ child: Relation, _ statistics: [String]) -> Plan {
+    var summary = Spark_Connect_StatSummary()
+    summary.input = child
+    summary.statistics = statistics
+    var relation = Relation()
+    relation.summary = summary
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
     var sort = Sort()
     sort.input = child

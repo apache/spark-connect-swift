@@ -683,6 +683,28 @@ struct DataFrameTests {
   }
 
   @Test
+  func describe() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(10)
+    let expected = [Row("10"), Row("4.5"), Row("3.0276503540974917"), Row("0"), Row("9")]
+    #expect(try await df.describe().select("id").collect() == expected)
+    #expect(try await df.describe("id").select("id").collect() == expected)
+    await spark.stop()
+  }
+
+  @Test
+  func summary() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = [
+      Row("10"), Row("4.5"), Row("3.0276503540974917"),
+      Row("0"), Row("2"), Row("4"), Row("7"), Row("9")
+    ]
+    #expect(try await spark.range(10).summary().select("id").collect() == expected)
+    #expect(try await spark.range(10).summary("min", "max").select("id").collect() == [Row("0"), Row("9")])
+    await spark.stop()
+  }
+
+  @Test
   func groupBy() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let rows = try await spark.range(3).groupBy("id").agg("count(*)", "sum(*)", "avg(*)").collect()
