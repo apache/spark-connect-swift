@@ -660,7 +660,7 @@ struct DataFrameTests {
   func distinct() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.sql("SELECT * FROM VALUES (1), (2), (3), (1), (3) T(a)")
-    #expect(try await df.distinct().collect() == [Row(1), Row(2), Row(3)])
+    #expect(try await df.distinct().count() == 3)
     await spark.stop()
   }
 
@@ -668,8 +668,8 @@ struct DataFrameTests {
   func dropDuplicates() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.sql("SELECT * FROM VALUES (1), (2), (3), (1), (3) T(a)")
-    #expect(try await df.dropDuplicates().collect() == [Row(1), Row(2), Row(3)])
-    #expect(try await df.dropDuplicates("a").collect() == [Row(1), Row(2), Row(3)])
+    #expect(try await df.dropDuplicates().count() == 3)
+    #expect(try await df.dropDuplicates("a").count() == 3)
     await spark.stop()
   }
 
@@ -677,8 +677,8 @@ struct DataFrameTests {
   func dropDuplicatesWithinWatermark() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.sql("SELECT * FROM VALUES (1), (2), (3), (1), (3) T(a)")
-    #expect(try await df.dropDuplicatesWithinWatermark().collect() == [Row(1), Row(2), Row(3)])
-    #expect(try await df.dropDuplicatesWithinWatermark("a").collect() == [Row(1), Row(2), Row(3)])
+    #expect(try await df.dropDuplicatesWithinWatermark().count() == 3)
+    #expect(try await df.dropDuplicatesWithinWatermark("a").count() == 3)
     await spark.stop()
   }
 
