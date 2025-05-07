@@ -22,6 +22,7 @@ import Testing
 @testable import SparkConnect
 
 /// A test suite for `DataFrame` internal APIs
+@Suite(.serialized)
 struct DataFrameInternalTests {
 
 #if !os(Linux)

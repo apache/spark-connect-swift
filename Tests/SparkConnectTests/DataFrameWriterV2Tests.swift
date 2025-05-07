@@ -22,6 +22,7 @@ import SparkConnect
 import Testing
 
 /// A test suite for `DataFrameWriterV2`
+@Suite(.serialized)
 struct DataFrameWriterV2Tests {
 
   @Test

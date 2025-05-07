@@ -23,6 +23,7 @@ import Testing
 @testable import SparkConnect
 
 /// A test suite for `SparkSession`
+@Suite(.serialized)
 struct SparkSessionTests {
   @Test
   func sparkContext() async throws {

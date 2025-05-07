@@ -23,6 +23,7 @@ import Testing
 @testable import SparkConnect
 
 /// A test suite for various SQL statements.
+@Suite(.serialized)
 struct SQLTests {
   let fm = FileManager.default
   let path = Bundle.module.path(forResource: "queries", ofType: "")!

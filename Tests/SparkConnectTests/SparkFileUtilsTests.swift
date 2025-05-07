@@ -23,6 +23,7 @@ import Testing
 @testable import SparkConnect
 
 /// A test suite for `SparkFileUtils`
+@Suite(.serialized)
 struct SparkFileUtilsTests {
   let fm = FileManager.default
 

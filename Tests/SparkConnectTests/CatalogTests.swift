@@ -23,6 +23,7 @@ import Testing
 @testable import SparkConnect
 
 /// A test suite for `Catalog`
+@Suite(.serialized)
 struct CatalogTests {
 #if !os(Linux)
   @Test

@@ -22,6 +22,7 @@ import SparkConnect
 import Testing
 
 /// A test suite for `Row`
+@Suite(.serialized)
 struct RowTests {
   @Test
   func empty() {

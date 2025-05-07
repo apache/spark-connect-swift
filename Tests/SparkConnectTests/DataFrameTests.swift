@@ -23,6 +23,7 @@ import Testing
 import SparkConnect
 
 /// A test suite for `DataFrame`
+@Suite(.serialized)
 struct DataFrameTests {
   let DEALER_TABLE =
     """

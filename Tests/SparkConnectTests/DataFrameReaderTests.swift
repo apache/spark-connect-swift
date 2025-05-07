@@ -23,6 +23,7 @@ import Testing
 import SparkConnect
 
 /// A test suite for `DataFrameReader`
+@Suite(.serialized)
 struct DataFrameReaderTests {
 
   @Test

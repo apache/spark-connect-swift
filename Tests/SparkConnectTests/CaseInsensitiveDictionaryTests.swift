@@ -23,6 +23,7 @@ import Testing
 @testable import SparkConnect
 
 /// A test suite for `CaseInsensitiveDictionary`
+@Suite(.serialized)
 struct CaseInsensitiveDictionaryTests {
   @Test
   func empty() async throws {
