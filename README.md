@@ -108,9 +108,10 @@ SELECT * FROM t
 +----+
 ```
 
-You can find this example in the following repository.
+You can find this command line example and additional `Swift Web Server` example in the following repositories.
 
 - <https://github.com/dongjoon-hyun/spark-connect-swift-app>
+- <https://github.com/dongjoon-hyun/spark-connect-swift-web>
 
 ## How to use `Spark SQL REPL` via `Spark Connect for Swift`
 
