@@ -324,7 +324,6 @@ struct DataFrameTests {
     await spark.stop()
   }
 
-#if !os(Linux)
   @Test
   func sort() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -340,7 +339,6 @@ struct DataFrameTests {
     #expect(try await spark.range(10, 0, -1).orderBy("id").collect() == expected)
     await spark.stop()
   }
-#endif
 
   @Test
   func table() async throws {
@@ -356,7 +354,6 @@ struct DataFrameTests {
     await spark.stop()
   }
 
-#if !os(Linux)
   @Test
   func collect() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -508,7 +505,7 @@ struct DataFrameTests {
     #expect(try await df1.join(df2, joinExprs: "T.b = S.b", joinType: "inner").collect() == expected)
     await spark.stop()
   }
-
+#if !os(Linux) // TODO: Enable this on linux
   @Test
   func lateralJoin() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -530,7 +527,7 @@ struct DataFrameTests {
     }
     await spark.stop()
   }
-
+#endif
   @Test
   func except() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -759,7 +756,6 @@ struct DataFrameTests {
     ])
     await spark.stop()
   }
-#endif
 
   @Test
   func storageLevel() async throws {

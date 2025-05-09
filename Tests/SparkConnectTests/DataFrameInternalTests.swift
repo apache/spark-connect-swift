@@ -25,7 +25,6 @@ import Testing
 @Suite(.serialized)
 struct DataFrameInternalTests {
 
-#if !os(Linux)
   @Test
   func showString() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -83,5 +82,4 @@ struct DataFrameInternalTests {
         """)
     await spark.stop()
   }
-#endif
 }
