@@ -206,6 +206,73 @@ public actor SparkConnectClient {
     }
   }
 
+  /// Create a ``ConfigRequest`` instance for `GetWithDefault` operation.
+  /// - Parameter pairs: A key-value dictionary.
+  /// - Returns: A `ConfigRequest` instance.
+  func getConfigRequestGetWithDefault(_ pairs: [String: String]) -> ConfigRequest {
+    var request = ConfigRequest()
+    request.operation = ConfigRequest.Operation()
+    var getWithDefault = ConfigRequest.GetWithDefault()
+    getWithDefault.pairs = pairs.toSparkConnectKeyValue
+    request.operation.opType = .getWithDefault(getWithDefault)
+    return request
+  }
+
+  /// Returns the value of Spark runtime configuration property for the given key. If the key is
+  /// not set yet, return the user given `value`. This is useful when its default value defined
+  /// by Apache Spark is not the desired one.
+  /// - Parameters:
+  ///   - key: A string for the configuration key.
+  ///   - value: A default value for the configuration.
+  func getConfWithDefault(_ key: String, _ value: String) async throws -> String {
+    try await withGPRC { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      var request = getConfigRequestGetWithDefault([key: value])
+      request.clientType = clientType
+      request.userContext = userContext
+      request.sessionID = self.sessionID!
+      let response = try await service.config(request)
+      let result = if response.pairs[0].hasValue {
+        response.pairs[0].value
+      } else {
+        value
+      }
+      return result
+    }
+  }
+
+  /// Create a ``ConfigRequest`` instance for `GetOption` operation.
+  /// - Parameter keys: An array of keys to get.
+  /// - Returns: A `ConfigRequest` instance.
+  func getConfigRequestGetOption(_ keys: [String]) -> ConfigRequest {
+    var request = ConfigRequest()
+    request.operation = ConfigRequest.Operation()
+    var getOption = ConfigRequest.GetOption()
+    getOption.keys = keys
+    request.operation.opType = .getOption(getOption)
+    return request
+  }
+
+  /// Request the server to get a value of the given key.
+  /// - Parameter key: A string for key to look up.
+  /// - Returns: A string or nil for the value of the key.
+  func getConfOption(_ key: String) async throws -> String? {
+    try await withGPRC { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      var request = getConfigRequestGetOption([key])
+      request.clientType = clientType
+      request.userContext = userContext
+      request.sessionID = self.sessionID!
+      let response = try await service.config(request)
+      let result: String? = if response.pairs[0].hasValue {
+        response.pairs[0].value
+      } else {
+        nil
+      }
+      return result
+    }
+  }
+
   /// Create a ``ConfigRequest`` for `GetAll` operation.
   /// - Returns: A `ConfigRequest` instance.
   func getConfigRequestGetAll() -> ConfigRequest {
@@ -231,6 +298,35 @@ public actor SparkConnectClient {
         map[pair.key] = pair.value
       }
       return map
+    }
+  }
+
+  /// Create a ``ConfigRequest`` for `IsModifiable` operation.
+  /// - Returns: A `ConfigRequest` instance.
+  func getConfigRequestIsModifiable(_ keys: [String]) -> ConfigRequest {
+    var request = ConfigRequest()
+    request.operation = ConfigRequest.Operation()
+    var isModifiable = ConfigRequest.IsModifiable()
+    isModifiable.keys = keys
+    request.operation.opType = .isModifiable(isModifiable)
+    return request
+  }
+
+  /// Indicates whether the configuration property with the given key is modifiable in the current
+  /// session.
+  /// - Parameter key: A string for the configuration look-up.
+  /// - Returns: `true` if the configuration property is modifiable. For static SQL, Spark Core, invalid
+  /// (not existing) and other non-modifiable configuration properties, the returned value is
+  /// `false`.
+  func isModifiable(_ key: String) async throws -> Bool {
+    try await withGPRC { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      var request = getConfigRequestIsModifiable([key])
+      request.clientType = clientType
+      request.userContext = userContext
+      request.sessionID = self.sessionID!
+      let response = try await service.config(request)
+      return response.pairs[0].value == "true"
     }
   }
 

@@ -43,6 +43,26 @@ struct RuntimeConfTests {
   }
 
   @Test
+  func getWithDefault() async throws {
+    let client = SparkConnectClient(remote: TEST_REMOTE)
+    try await client.connect(UUID().uuidString)
+    let conf = RuntimeConf(client)
+    #expect(try await conf.get("spark.sql.adaptive.customCostEvaluatorClass", "XYZ") == "XYZ")
+    #expect(try await conf.get("spark.test.non-exist", "my_default") == "my_default")
+    await client.stop()
+  }
+
+  @Test
+  func getOption() async throws {
+    let client = SparkConnectClient(remote: TEST_REMOTE)
+    try await client.connect(UUID().uuidString)
+    let conf = RuntimeConf(client)
+    #expect(try await conf.getOption("spark.app.name") != nil)
+    #expect(try await conf.getOption("spark.test.non-exist") == nil)
+    await client.stop()
+  }
+
+  @Test
   func set() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
@@ -84,6 +104,17 @@ struct RuntimeConfTests {
     #expect(map["spark.app.startTime"] != nil)
     #expect(map["spark.executor.id"] == "driver")
     #expect(map["spark.master"] != nil)
+    await client.stop()
+  }
+
+  @Test
+  func isModifiable() async throws {
+    let client = SparkConnectClient(remote: TEST_REMOTE)
+    try await client.connect(UUID().uuidString)
+    let conf = RuntimeConf(client)
+    #expect(try await conf.isModifiable("spark.sql.adaptive.customCostEvaluatorClass"))
+    #expect(try await conf.isModifiable("spark.sql.warehouse.dir") == false)
+    #expect(try await conf.isModifiable("spark.test.non-exist") == false)
     await client.stop()
   }
 }
