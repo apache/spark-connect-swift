@@ -46,6 +46,13 @@ public actor SparkSession {
   /// The Spark version of Spark Connect Servier. This is supposed to be overwritten during establishing connections.
   public var version: String = ""
 
+  /// Start a new session with isolated SQL configurations, temporary tables, registered functions
+  /// are isolated, but sharing the underlying `SparkContext` and cached data.
+  /// - Returns: a new ``SparkSession`` instance.
+  public func newSession() async throws -> SparkSession {
+    return try await SparkSession.builder.create()
+  }
+
   func setVersion(_ version: String) {
     self.version = version
   }

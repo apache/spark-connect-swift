@@ -40,6 +40,16 @@ struct SparkSessionTests {
     await spark.stop()
   }
 
+  @Test
+  func newSession() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    await spark.stop()
+    let newSpark = try await spark.newSession()
+    #expect(newSpark != spark)
+    #expect(try await newSpark.range(1).count() == 1)
+    await newSpark.stop()
+  }
+
   @Test func userContext() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
 #if os(macOS) || os(Linux)
