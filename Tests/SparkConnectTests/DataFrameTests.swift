@@ -378,14 +378,31 @@ struct DataFrameTests {
   }
 
   @Test
+  func first() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(2).sort("id").first() == Row(0))
+    #expect(try await spark.range(2).sort("id").head() == Row(0))
+    await spark.stop()
+  }
+
+  @Test
   func head() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.range(0).head().isEmpty)
-    print(try await spark.range(2).sort("id").head())
-    #expect(try await spark.range(2).sort("id").head() == [Row(0)])
+    #expect(try await spark.range(0).head(1).isEmpty)
+    #expect(try await spark.range(2).sort("id").head() == Row(0))
     #expect(try await spark.range(2).sort("id").head(1) == [Row(0)])
     #expect(try await spark.range(2).sort("id").head(2) == [Row(0), Row(1)])
     #expect(try await spark.range(2).sort("id").head(3) == [Row(0), Row(1)])
+    await spark.stop()
+  }
+
+  @Test
+  func take() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(0).take(1).isEmpty)
+    #expect(try await spark.range(2).sort("id").take(1) == [Row(0)])
+    #expect(try await spark.range(2).sort("id").take(2) == [Row(0), Row(1)])
+    #expect(try await spark.range(2).sort("id").take(3) == [Row(0), Row(1)])
     await spark.stop()
   }
 
@@ -757,6 +774,18 @@ struct DataFrameTests {
       Row(nil, "Honda Civic", 35),
       Row(nil, nil, 78),
     ])
+    await spark.stop()
+  }
+
+  @Test
+  func toJSON() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(2).toJSON()
+    #expect(try await df.columns == ["to_json(struct(id))"])
+    #expect(try await df.collect() == [Row("{\"id\":0}"), Row("{\"id\":1}")])
+
+    let expected = [Row("{\"a\":1,\"b\":2,\"c\":3}")]
+    #expect(try await spark.sql("SELECT 1 a, 2 b, 3 c").toJSON().collect() == expected)
     await spark.stop()
   }
 #endif

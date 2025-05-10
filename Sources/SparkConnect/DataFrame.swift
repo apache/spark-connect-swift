@@ -83,7 +83,10 @@ import Synchronization
 /// ### Data Collection
 /// - ``count()``
 /// - ``collect()``
+/// - ``first()``
+/// - ``head()``
 /// - ``head(_:)``
+/// - ``take(_:)``
 /// - ``tail(_:)``
 /// - ``show()``
 /// - ``show(_:)``
@@ -92,6 +95,7 @@ import Synchronization
 ///
 /// ### Transformation Operations
 /// - ``toDF(_:)``
+/// - ``toJSON()``
 /// - ``select(_:)``
 /// - ``selectExpr(_:)``
 /// - ``filter(_:)``
@@ -467,6 +471,12 @@ public actor DataFrame: Sendable {
     return df
   }
 
+  /// Returns the content of the Dataset as a Dataset of JSON strings.
+  /// - Returns: A ``DataFrame`` with a single string column whose content is JSON.
+  public func toJSON() -> DataFrame {
+    return selectExpr("to_json(struct(*))")
+  }
+
   /// Projects a set of expressions and returns a new ``DataFrame``.
   /// - Parameter exprs: Expression strings
   /// - Returns: A ``DataFrame`` with subset of columns.
@@ -685,11 +695,31 @@ public actor DataFrame: Sendable {
   /// let firstFive = try await df.head(5)
   /// ```
   ///
-  /// - Parameter n: Number of rows to return (default: 1)
+  /// - Parameter n: Number of rows to return.
   /// - Returns: An array of ``Row`` objects
   /// - Throws: `SparkConnectError` if the operation fails
-  public func head(_ n: Int32 = 1) async throws -> [Row] {
+  public func head(_ n: Int32) async throws -> [Row] {
     return try await limit(n).collect()
+  }
+
+  /// Returns the first row.
+  /// - Returns: A ``Row``.
+  public func head() async throws -> Row {
+    return try await head(1)[0]
+  }
+
+  /// Returns the first row. Alias for head().
+  /// - Returns: A ``Row``.
+  public func first() async throws -> Row {
+    return try await head()
+  }
+
+  /// Returns the first n rows.
+  /// - Parameter n: Number of rows to return.
+  /// - Returns: An array of ``Row`` objects
+  /// - Throws: `SparkConnectError` if the operation fails
+  public func take(_ n: Int32) async throws -> [Row] {
+    return try await head(n)
   }
 
   /// Returns the last `n` rows.
