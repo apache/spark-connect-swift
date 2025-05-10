@@ -109,6 +109,10 @@ import Synchronization
 /// - ``dropDuplicatesWithinWatermark(_:)``
 /// - ``distinct()``
 /// - ``withColumnRenamed(_:_:)``
+/// - ``unpivot(_:_:_:)``
+/// - ``unpivot(_:_:_:_:)``
+/// - ``melt(_:_:_:)``
+/// - ``melt(_:_:_:_:)``
 ///
 /// ### Join Operations
 /// - ``join(_:)``
