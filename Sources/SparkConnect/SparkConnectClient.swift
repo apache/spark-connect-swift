@@ -920,6 +920,53 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getUnpivot(
+    _ child: Relation,
+    _ ids: [String],
+    _ values: [String]?,
+    _ variableColumnName: String,
+    _ valueColumnName: String,
+  ) -> Plan {
+    var unpivot = Spark_Connect_Unpivot()
+    unpivot.input = child
+    unpivot.ids = ids.map {
+      var expr = Spark_Connect_Expression()
+      expr.expressionString = $0.toExpressionString
+      return expr
+    }
+    if let values {
+      var unpivotValues = Spark_Connect_Unpivot.Values()
+      unpivotValues.values = values.map {
+        var expr = Spark_Connect_Expression()
+        expr.expressionString = $0.toExpressionString
+        return expr
+      }
+      unpivot.values = unpivotValues
+    }
+    unpivot.variableColumnName = variableColumnName
+    unpivot.valueColumnName = valueColumnName
+    var relation = Relation()
+    relation.unpivot = unpivot
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
+  static func getTranspose(_ child: Relation, _ indexColumn: [String]) -> Plan {
+    var transpose = Spark_Connect_Transpose()
+    transpose.input = child
+    transpose.indexColumns = indexColumn.map {
+      var expr = Spark_Connect_Expression()
+      expr.expressionString = $0.toExpressionString
+      return expr
+    }
+    var relation = Relation()
+    relation.transpose = transpose
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   func createTempView(
     _ child: Relation, _ viewName: String, replace: Bool, isGlobal: Bool
   ) async throws {

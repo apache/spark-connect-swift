@@ -1202,6 +1202,106 @@ public actor DataFrame: Sendable {
     return dropDuplicates()
   }
 
+  /// Transposes a DataFrame, switching rows to columns. This function transforms the DataFrame
+  /// such that the values in the first column become the new columns of the DataFrame.
+  /// - Returns: A transposed ``DataFrame``.
+  public func transpose() -> DataFrame {
+    return buildTranspose([])
+  }
+
+  /// Unpivot a DataFrame from wide format to long format, optionally leaving identifier columns
+  /// set. This is the reverse to `groupBy(...).pivot(...).agg(...)`, except for the aggregation,
+  /// which cannot be reversed. This is an alias for `unpivot`.
+  /// - Parameters:
+  ///   - ids: ID column names
+  ///   - values: Value column names to unpivot
+  ///   - variableColumnName: Name of the variable column
+  ///   - valueColumnName: Name of the value column
+  /// - Returns: A ``DataFrame``.
+  public func melt(
+    _ ids: [String],
+    _ values: [String],
+    _ variableColumnName: String,
+    _ valueColumnName: String
+  ) -> DataFrame {
+    return unpivot(ids, values, variableColumnName, valueColumnName)
+  }
+
+  /// Unpivot a DataFrame from wide format to long format, optionally leaving identifier columns
+  /// set. This is the reverse to `groupBy(...).pivot(...).agg(...)`, except for the aggregation,
+  /// which cannot be reversed. This is an alias for `unpivot`.
+  /// - Parameters:
+  ///   - ids: ID column names
+  ///   - variableColumnName: Name of the variable column
+  ///   - valueColumnName: Name of the value column
+  /// - Returns: A ``DataFrame``.
+  public func melt(
+    _ ids: [String],
+    _ variableColumnName: String,
+    _ valueColumnName: String
+  ) -> DataFrame {
+    return unpivot(ids, variableColumnName, valueColumnName)
+  }
+
+  /// Unpivot a DataFrame from wide format to long format, optionally leaving identifier columns
+  /// set. This is the reverse to `groupBy(...).pivot(...).agg(...)`, except for the aggregation,
+  /// which cannot be reversed.
+  /// - Parameters:
+  ///   - ids: ID column names
+  ///   - values: Value column names to unpivot
+  ///   - variableColumnName: Name of the variable column
+  ///   - valueColumnName: Name of the value column
+  /// - Returns: A ``DataFrame``.
+  public func unpivot(
+    _ ids: [String],
+    _ values: [String],
+    _ variableColumnName: String,
+    _ valueColumnName: String
+  ) -> DataFrame {
+    return buildUnpivot(ids, values, variableColumnName, valueColumnName)
+  }
+
+  /// Unpivot a DataFrame from wide format to long format, optionally leaving identifier columns
+  /// set. This is the reverse to `groupBy(...).pivot(...).agg(...)`, except for the aggregation,
+  /// which cannot be reversed.
+  /// - Parameters:
+  ///   - ids: ID column names
+  ///   - variableColumnName: Name of the variable column
+  ///   - valueColumnName: Name of the value column
+  /// - Returns: A ``DataFrame``.
+  public func unpivot(
+    _ ids: [String],
+    _ variableColumnName: String,
+    _ valueColumnName: String
+  ) -> DataFrame {
+    return buildUnpivot(ids, nil, variableColumnName, valueColumnName)
+  }
+
+  func buildUnpivot(
+    _ ids: [String],
+    _ values: [String]?,
+    _ variableColumnName: String,
+    _ valueColumnName: String,
+  ) -> DataFrame {
+    let plan = SparkConnectClient.getUnpivot(self.plan.root, ids, values, variableColumnName, valueColumnName)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Transposes a ``DataFrame`` such that the values in the specified index column become the new
+  /// columns of the ``DataFrame``.
+  /// - Parameter indexColumn: The single column that will be treated as the index for the transpose operation.
+  /// This column will be used to pivot the data, transforming the DataFrame such that the values of
+  /// the indexColumn become the new columns in the transposed DataFrame.
+  /// - Returns: A transposed ``DataFrame``.
+  public func transpose(_ indexColumn: String) -> DataFrame {
+    return buildTranspose([indexColumn])
+  }
+
+  func buildTranspose(_ indexColumn: [String]) -> DataFrame {
+    let plan = SparkConnectClient.getTranspose(self.plan.root, indexColumn)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
   /// Groups the DataFrame using the specified columns.
   ///
   /// This method is used to perform aggregations on groups of data.

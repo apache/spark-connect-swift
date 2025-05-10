@@ -788,6 +788,49 @@ struct DataFrameTests {
     #expect(try await spark.sql("SELECT 1 a, 2 b, 3 c").toJSON().collect() == expected)
     await spark.stop()
   }
+
+  @Test
+  func unpivot() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(
+      """
+      SELECT * FROM
+      VALUES (1, 11, 12L),
+             (2, 21, 22L)
+      T(id, int, long)
+      """)
+    let expected = [
+      Row(1, "int", 11),
+      Row(1, "long", 12),
+      Row(2, "int", 21),
+      Row(2, "long", 22),
+    ]
+    #expect(try await df.unpivot(["id"], ["int", "long"], "variable", "value").collect() == expected)
+    #expect(try await df.melt(["id"], ["int", "long"], "variable", "value").collect() == expected)
+    await spark.stop()
+  }
+
+  @Test
+  func transpose() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.range(1).transpose().columns == ["key", "0"])
+    #expect(try await spark.range(1).transpose().count() == 0)
+
+    let df = try await spark.sql(
+      """
+      SELECT * FROM
+      VALUES ('A', 1, 2),
+             ('B', 3, 4)
+      T(id, val1, val2)
+      """)
+    let expected = [
+      Row("val1", 1, 3),
+      Row("val2", 2, 4),
+    ]
+    #expect(try await df.transpose().collect() == expected)
+    #expect(try await df.transpose("id").collect() == expected)
+    await spark.stop()
+  }
 #endif
 
   @Test
