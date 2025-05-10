@@ -55,6 +55,7 @@ typealias SetOpType = SetOperation.SetOpType
 typealias ShowString = Spark_Connect_ShowString
 typealias SparkConnectService = Spark_Connect_SparkConnectService
 typealias Sort = Spark_Connect_Sort
+typealias StreamingQueryCommand = Spark_Connect_StreamingQueryCommand
 typealias StructType = Spark_Connect_DataType.Struct
 typealias Tail = Spark_Connect_Tail
 typealias UserContext = Spark_Connect_UserContext

@@ -981,6 +981,22 @@ public actor SparkConnectClient {
     try await execute(self.sessionID!, command)
   }
 
+  func executeStreamingQueryCommand(
+    _ id: String,
+    _ runID: String,
+    _ command: StreamingQueryCommand.OneOf_Command,
+  ) async throws -> [ExecutePlanResponse] {
+    var queryID = Spark_Connect_StreamingQueryInstanceId()
+    queryID.id = id
+    queryID.runID = runID
+    var streamingQueryCommand = Spark_Connect_StreamingQueryCommand()
+    streamingQueryCommand.queryID = queryID
+    streamingQueryCommand.command = command
+    var command = Spark_Connect_Command()
+    command.streamingQueryCommand = streamingQueryCommand
+    return try await execute(self.sessionID!, command)
+  }
+
   private enum URIParams {
     static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpc_max_message_size"
     static let PARAM_SESSION_ID = "session_id"
