@@ -813,22 +813,24 @@ struct DataFrameTests {
   @Test
   func transpose() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.range(1).transpose().columns == ["key", "0"])
-    #expect(try await spark.range(1).transpose().count() == 0)
-
-    let df = try await spark.sql(
+    if await spark.version.starts(with: "4.") {
+      #expect(try await spark.range(1).transpose().columns == ["key", "0"])
+      #expect(try await spark.range(1).transpose().count() == 0)
+      
+      let df = try await spark.sql(
       """
       SELECT * FROM
       VALUES ('A', 1, 2),
              ('B', 3, 4)
       T(id, val1, val2)
       """)
-    let expected = [
-      Row("val1", 1, 3),
-      Row("val2", 2, 4),
-    ]
-    #expect(try await df.transpose().collect() == expected)
-    #expect(try await df.transpose("id").collect() == expected)
+      let expected = [
+        Row("val1", 1, 3),
+        Row("val2", 2, 4),
+      ]
+      #expect(try await df.transpose().collect() == expected)
+      #expect(try await df.transpose("id").collect() == expected)
+    }
     await spark.stop()
   }
 #endif
