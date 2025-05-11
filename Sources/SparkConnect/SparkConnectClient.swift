@@ -925,7 +925,7 @@ public actor SparkConnectClient {
     _ ids: [String],
     _ values: [String]?,
     _ variableColumnName: String,
-    _ valueColumnName: String,
+    _ valueColumnName: String
   ) -> Plan {
     var unpivot = Spark_Connect_Unpivot()
     unpivot.input = child
@@ -984,7 +984,7 @@ public actor SparkConnectClient {
   func executeStreamingQueryCommand(
     _ id: String,
     _ runID: String,
-    _ command: StreamingQueryCommand.OneOf_Command,
+    _ command: StreamingQueryCommand.OneOf_Command
   ) async throws -> [ExecutePlanResponse] {
     var queryID = Spark_Connect_StreamingQueryInstanceId()
     queryID.id = id

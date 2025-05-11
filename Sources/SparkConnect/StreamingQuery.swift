@@ -86,7 +86,7 @@ public actor StreamingQuery: Sendable {
     return StreamingQueryException(
       exceptionMessage: result.exceptionMessage,
       errorClass: result.errorClass,
-      stackTrace: result.stackTrace,
+      stackTrace: result.stackTrace
     )
   }
 
@@ -99,7 +99,7 @@ public actor StreamingQuery: Sendable {
       statusMessage: result.statusMessage,
       isDataAvailable: result.isDataAvailable,
       isTriggerActive: result.isTriggerActive,
-      isActive: result.isActive,
+      isActive: result.isActive
     )
   }
 
