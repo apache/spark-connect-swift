@@ -113,6 +113,8 @@ import Synchronization
 /// - ``unpivot(_:_:_:_:)``
 /// - ``melt(_:_:_:)``
 /// - ``melt(_:_:_:_:)``
+/// - ``transpose()``
+/// - ``transpose(_:)``
 ///
 /// ### Join Operations
 /// - ``join(_:)``
@@ -166,6 +168,7 @@ import Synchronization
 /// ### Write Operations
 /// - ``write``
 /// - ``writeTo(_:)``
+/// - ``writeStream``
 ///
 /// ### Sampling
 /// - ``sample(_:_:_:)``
