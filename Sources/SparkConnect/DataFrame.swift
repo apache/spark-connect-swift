@@ -1285,7 +1285,7 @@ public actor DataFrame: Sendable {
     _ ids: [String],
     _ values: [String]?,
     _ variableColumnName: String,
-    _ valueColumnName: String,
+    _ valueColumnName: String
   ) -> DataFrame {
     let plan = SparkConnectClient.getUnpivot(self.plan.root, ids, values, variableColumnName, valueColumnName)
     return DataFrame(spark: self.spark, plan: plan)
