@@ -47,7 +47,7 @@ jobs:
       with:
         swift-version: "6.1"
     - name: Build
-      run: swift build -v
+      run: swift build -c release
 
   build-ubuntu-latest:
     runs-on: ubuntu-latest
@@ -56,7 +56,7 @@ jobs:
     - name: Build
       run: |
         docker run swift:6.1 uname -a
-        docker run -v $PWD:/spark -w /spark swift:6.1 swift build -v
+        docker run -v $PWD:/spark -w /spark swift:6.1 swift build -c release
 
   # setup-swift doesn't support ARM linux yet.
   build-ubuntu-arm:
@@ -66,7 +66,7 @@ jobs:
     - name: Build
       run: |
         docker run swift:6.1 uname -a
-        docker run -v $PWD:/spark -w /spark swift:6.1 swift build -v
+        docker run -v $PWD:/spark -w /spark swift:6.1 swift build -c release
 
   integration-test-linux:
     runs-on: ubuntu-latest
@@ -85,7 +85,7 @@ jobs:
     - name: Build
       run: |
         docker run swift:6.1 uname -a
-        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.1 swift test --no-parallel
+        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.1 swift test --no-parallel -c release
 
   integration-test-mac:
     runs-on: macos-15
@@ -102,7 +102,7 @@ jobs:
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
-        swift test --no-parallel
+        swift test --no-parallel -c release
 
   integration-test-token:
     runs-on: macos-15
@@ -121,7 +121,7 @@ jobs:
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
-        swift test --no-parallel
+        swift test --no-parallel -c release
 
   integration-test-mac-spark3:
     runs-on: macos-15
@@ -143,4 +143,4 @@ jobs:
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5
         cd -
-        swift test --no-parallel
+        swift test --no-parallel -c release
