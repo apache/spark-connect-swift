@@ -91,14 +91,14 @@ public actor SparkSession {
     await client.stop()
   }
   
-  /// Returns a `DataFrame` with no rows or columns.
+  /// Returns a ``DataFrame`` with no rows or columns.
   public var emptyDataFrame: DataFrame {
     get async {
       return await DataFrame(spark: self, plan: client.getLocalRelation())
     }
   }
 
-  /// Create a ``DataFrame`` with a single ``Int64`` column name `id`, containing elements in a
+  /// Create a ``DataFrame`` with a single `Int64` column name `id`, containing elements in a
   /// range from 0 to `end` (exclusive) with step value 1.
   ///
   /// - Parameter end: A value for the end of range.
@@ -107,7 +107,7 @@ public actor SparkSession {
     return try await range(0, end)
   }
 
-  /// Create a ``DataFrame`` with a single ``Int64`` column named `id`, containing elements in a
+  /// Create a ``DataFrame`` with a single `Int64` column named `id`, containing elements in a
   /// range from `start` to `end` (exclusive) with a step value (default: 1).
   ///
   /// - Parameters:
@@ -138,7 +138,7 @@ public actor SparkSession {
   ///
   /// - Parameter sqlText: A SQL query string
   /// - Returns: A DataFrame containing the query results
-  /// - Throws: `SparkConnectError` if the query execution fails
+  /// - Throws: ``SparkConnectError`` if the query execution fails
   public func sql(_ sqlText: String) async throws -> DataFrame {
     return try await DataFrame(spark: self, sqlText: sqlText)
   }
@@ -161,7 +161,7 @@ public actor SparkSession {
   ///   - sqlText: A SQL query with positional parameter placeholders (`?`)
   ///   - args: Parameter values to substitute for the placeholders
   /// - Returns: A DataFrame containing the query results
-  /// - Throws: `SparkConnectError` if the query execution fails or if parameter conversion fails
+  /// - Throws: ``SparkConnectError`` if the query execution fails or if parameter conversion fails
   public func sql(_ sqlText: String, _ args: Sendable...) async throws -> DataFrame {
     return try await DataFrame(spark: self, sqlText: sqlText, args)
   }
@@ -186,14 +186,14 @@ public actor SparkSession {
   ///   - sqlText: A SQL query with named parameter placeholders (`:paramName`)
   ///   - args: A dictionary mapping parameter names to values
   /// - Returns: A DataFrame containing the query results
-  /// - Throws: `SparkConnectError` if the query execution fails or if parameter conversion fails
+  /// - Throws: ``SparkConnectError`` if the query execution fails or if parameter conversion fails
   public func sql(_ sqlText: String, args: [String: Sendable]) async throws -> DataFrame {
     return try await DataFrame(spark: self, sqlText: sqlText, args)
   }
 
-  /// Returns a DataFrameReader for reading data in various formats.
+  /// Returns a ``DataFrameReader`` for reading data in various formats.
   ///
-  /// The DataFrameReader provides methods to load data from external storage systems
+  /// The ``DataFrameReader`` provides methods to load data from external storage systems
   /// such as file systems and databases.
   ///
   /// ```swift
@@ -212,16 +212,16 @@ public actor SparkSession {
   ///     .orc("path/to/file.orc")
   /// ```
   ///
-  /// - Returns: A DataFrameReader instance configured for this session
+  /// - Returns: A ``DataFrameReader`` instance configured for this session
   public var read: DataFrameReader {
     get {
       DataFrameReader(sparkSession: self)
     }
   }
 
-  /// Returns a `DataStreamReader` that can be used to read streaming data in as a `DataFrame`.
+  /// Returns a ``DataStreamReader`` that can be used to read streaming data in as a ``DataFrame``.
   ///
-  /// The DataFrameReader provides methods to load data from external storage systems
+  /// The ``DataFrameReader`` provides methods to load data from external storage systems
   /// such as file systems, databases, and streaming sources.
   ///
   /// ```swift
@@ -229,16 +229,16 @@ public actor SparkSession {
   /// let orcData = spark.readStream.orc("path/to/file.orc")
   /// ```
   ///
-  /// - Returns: A DataFrameReader instance configured for this session
+  /// - Returns: A ``DataFrameReader`` instance configured for this session
   public var readStream: DataStreamReader {
     get {
       DataStreamReader(sparkSession: self)
     }
   }
 
-  /// Returns a DataFrame representing the specified table or view.
+  /// Returns a ``DataFrame`` representing the specified table or view.
   ///
-  /// This method retrieves a table or view from the Spark catalog and returns it as a DataFrame.
+  /// This method retrieves a table or view from the Spark catalog and returns it as a ``DataFrame``.
   /// The table name can be qualified with a database name (e.g., "database.table") or unqualified.
   ///
   /// ```swift
@@ -253,8 +253,8 @@ public actor SparkSession {
   /// ```
   ///
   /// - Parameter tableName: The name of the table or view to load
-  /// - Returns: A DataFrame representing the table data
-  /// - Throws: `SparkConnectError` if the table doesn't exist or cannot be accessed
+  /// - Returns: A ``DataFrame`` representing the table data
+  /// - Throws: ``SparkConnectError`` if the table doesn't exist or cannot be accessed
   public func table(_ tableName: String) async throws -> DataFrame {
     return await read.table(tableName)
   }
@@ -302,7 +302,7 @@ public actor SparkSession {
   /// ```
   ///
   /// - Parameter tag: The tag to add. Cannot contain commas or be empty
-  /// - Throws: `SparkConnectError` if the tag is invalid
+  /// - Throws: ``SparkConnectError`` if the tag is invalid
   public func addTag(_ tag: String) async throws {
     try await client.addTag(tag: tag)
   }
@@ -317,7 +317,7 @@ public actor SparkSession {
   /// ```
   ///
   /// - Parameter tag: The tag to remove. Cannot contain commas or be empty
-  /// - Throws: `SparkConnectError` if the tag is invalid
+  /// - Throws: ``SparkConnectError`` if the tag is invalid
   public func removeTag(_ tag: String) async throws {
     try await client.removeTag(tag: tag)
   }
@@ -410,7 +410,7 @@ public actor SparkSession {
   public actor Builder {
     var sparkConf: [String: String] = [:]
 
-    /// Sets a configuration option for the SparkSession.
+    /// Sets a configuration option for the ``SparkSession``.
     ///
     /// Configuration options control various aspects of Spark behavior, from execution settings
     /// to SQL optimization parameters.
@@ -429,6 +429,42 @@ public actor SparkSession {
     public func config(_ key: String, _ value: String) -> Builder {
       sparkConf[key] = value
       return self
+    }
+
+    /// Sets a configuration option for the ``SparkSession``.
+    /// - Parameters:
+    ///   - key: The configuration key (e.g., "spark.sql.shuffle.partitions")
+    ///   - value: The configuration bool value.
+    /// - Returns: The builder instance for method chaining
+    public func config(_ key: String, _ value: Bool) -> Builder {
+      return config(key, String(value))
+    }
+
+    /// Sets a configuration option for the ``SparkSession``.
+    /// - Parameters:
+    ///   - key: The configuration key (e.g., "spark.sql.shuffle.partitions")
+    ///   - value: The configuration `Int` value.
+    /// - Returns: The builder instance for method chaining
+    public func config(_ key: String, _ value: Int) -> Builder {
+      return config(key, String(value))
+    }
+
+    /// Sets a configuration option for the ``SparkSession``.
+    /// - Parameters:
+    ///   - key: The configuration key (e.g., "spark.sql.shuffle.partitions")
+    ///   - value: The configuration `Int64` value.
+    /// - Returns: The builder instance for method chaining
+    public func config(_ key: String, _ value: Int64) -> Builder {
+      return config(key, String(value))
+    }
+
+    /// Sets a configuration option for the ``SparkSession``.
+    /// - Parameters:
+    ///   - key: The configuration key (e.g., "spark.sql.shuffle.partitions")
+    ///   - value: The configuration `Double` value.
+    /// - Returns: The builder instance for method chaining
+    public func config(_ key: String, _ value: Double) -> Builder {
+      return config(key, String(value))
     }
 
     /// Removes all configuration options from the builder.
@@ -470,7 +506,7 @@ public actor SparkSession {
       return config("spark.remote", url)
     }
 
-    /// Sets the application name for this SparkSession.
+    /// Sets the application name for this ``SparkSession``.
     ///
     /// The application name is displayed in the Spark UI and helps identify your application
     /// among others running on the cluster.
@@ -505,7 +541,7 @@ public actor SparkSession {
     }
 
     /// Create a new ``SparkSession``. If `spark.remote` is not given, `sc://localhost:15002` is used.
-    /// - Returns: A newly created `SparkSession`.
+    /// - Returns: A newly created ``SparkSession``.
     func create() async throws -> SparkSession {
       let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost:15002"
       let session = SparkSession(sparkConf["spark.remote"] ?? remote)
@@ -516,9 +552,9 @@ public actor SparkSession {
       return session
     }
 
-    /// Creates or retrieves an existing SparkSession.
+    /// Creates or retrieves an existing ``SparkSession``.
     ///
-    /// This is the primary method for obtaining a SparkSession instance. If a session with
+    /// This is the primary method for obtaining a ``SparkSession`` instance. If a session with
     /// the same configuration already exists, it will be returned. Otherwise, a new session
     /// is created with the specified configuration.
     ///
@@ -540,7 +576,7 @@ public actor SparkSession {
     /// ```
     ///
     /// - Returns: A configured SparkSession instance
-    /// - Throws: `SparkConnectError` if connection fails or configuration is invalid
+    /// - Throws: ``SparkConnectError`` if connection fails or configuration is invalid
     public func getOrCreate() async throws -> SparkSession {
       return try await create()
     }
