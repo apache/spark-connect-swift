@@ -108,7 +108,7 @@ SELECT * FROM t
 +----+
 ```
 
-You can find more complete examples including Web Server application in the `Examples` directory.
+You can find more complete examples including Web Server and Streaming applications in the `Examples` directory.
 
 ## How to use `Spark SQL REPL` via `Spark Connect for Swift`
 

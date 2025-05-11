@@ -19,10 +19,10 @@
 import Foundation
 
 public enum Trigger {
-  case OneTimeTrigger
-  case AvailableNowTrigger
-  case ProcessingTimeTrigger(intervalMs: Int64)
-  case ContinuousTrigger(intervalMs: Int64)
+  case OneTime
+  case AvailableNow
+  case ProcessingTime(_ intervalMs: Int64)
+  case Continuous(_ intervalMs: Int64)
 }
 
 /// An actor used to write a streaming `DataFrame` to external storage systems
@@ -32,7 +32,7 @@ public actor DataStreamWriter: Sendable {
 
   var source: String? = nil
 
-  var trigger: Trigger? = nil
+  var trigger: Trigger = Trigger.ProcessingTime(0)
 
   var path: String? = nil
 
@@ -155,15 +155,14 @@ public actor DataStreamWriter: Sendable {
     }
     writeStreamOperationStart.trigger =
       switch self.trigger {
-      case .ProcessingTimeTrigger(let intervalMs):
-          .processingTimeInterval("INTERVAL \(intervalMs) MILLISECOND")
-      case .OneTimeTrigger:
-          .once(true)
-      case .AvailableNowTrigger:
-          .availableNow(true)
-      case .ContinuousTrigger(let intervalMs):
-          .continuousCheckpointInterval("INTERVAL \(intervalMs) MILLISECOND")
-      default: .once(true)
+      case .ProcessingTime(let intervalMs):
+        .processingTimeInterval("INTERVAL \(intervalMs) MILLISECOND")
+      case .OneTime:
+        .once(true)
+      case .AvailableNow:
+        .availableNow(true)
+      case .Continuous(let intervalMs):
+        .continuousCheckpointInterval("INTERVAL \(intervalMs) MILLISECOND")
       }
     if let outputMode = self.outputMode {
       writeStreamOperationStart.outputMode = outputMode

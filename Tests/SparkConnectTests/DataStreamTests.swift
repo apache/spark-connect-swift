@@ -52,7 +52,7 @@ struct DataStreamTests {
       .option("checkpointLocation", checkpoint)
       .outputMode("append")
       .format("orc")
-      .trigger(Trigger.ProcessingTimeTrigger(intervalMs: 1000))
+      .trigger(Trigger.ProcessingTime(1000))
       .start(output)
     #expect(try await query.isActive)
     // Wait for processing
