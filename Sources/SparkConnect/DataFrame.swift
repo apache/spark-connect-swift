@@ -1381,7 +1381,7 @@ public actor DataFrame: Sendable {
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.
   public var write: DataFrameWriter {
     get {
-      return DataFrameWriter(df: self)
+      DataFrameWriter(df: self)
     }
   }
 
@@ -1390,5 +1390,12 @@ public actor DataFrame: Sendable {
   /// - Returns: A ``DataFrameWriterV2`` instance.
   public func writeTo(_ table: String) -> DataFrameWriterV2 {
     return DataFrameWriterV2(table, self)
+  }
+  
+  /// Returns a ``DataStreamWriter`` that can be used to write streaming data.
+  public var writeStream: DataStreamWriter {
+    get {
+      DataStreamWriter(df: self)
+    }
   }
 }

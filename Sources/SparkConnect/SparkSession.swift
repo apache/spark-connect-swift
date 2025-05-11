@@ -194,7 +194,7 @@ public actor SparkSession {
   /// Returns a DataFrameReader for reading data in various formats.
   ///
   /// The DataFrameReader provides methods to load data from external storage systems
-  /// such as file systems, databases, and streaming sources.
+  /// such as file systems and databases.
   ///
   /// ```swift
   /// // Read a CSV file
@@ -208,14 +208,31 @@ public actor SparkSession {
   ///     .json("path/to/file.json")
   ///
   /// // Read an ORC file
-  /// let parquetData = spark.read
+  /// let orcData = spark.read
   ///     .orc("path/to/file.orc")
   /// ```
   ///
   /// - Returns: A DataFrameReader instance configured for this session
   public var read: DataFrameReader {
     get {
-      return DataFrameReader(sparkSession: self)
+      DataFrameReader(sparkSession: self)
+    }
+  }
+
+  /// Returns a `DataStreamReader` that can be used to read streaming data in as a `DataFrame`.
+  ///
+  /// The DataFrameReader provides methods to load data from external storage systems
+  /// such as file systems, databases, and streaming sources.
+  ///
+  /// ```swift
+  /// // Read an ORC file
+  /// let orcData = spark.readStream.orc("path/to/file.orc")
+  /// ```
+  ///
+  /// - Returns: A DataFrameReader instance configured for this session
+  public var readStream: DataStreamReader {
+    get {
+      DataStreamReader(sparkSession: self)
     }
   }
 

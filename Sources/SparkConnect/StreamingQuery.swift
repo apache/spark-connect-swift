@@ -64,8 +64,8 @@ public actor StreamingQuery: Sendable {
     _ command: StreamingQueryCommand.OneOf_Command
   ) async throws -> [ExecutePlanResponse] {
     return try await self.sparkSession.client.executeStreamingQueryCommand(
-      self.id.uuidString,
-      self.runId.uuidString,
+      self.id.uuidString.lowercased(),
+      self.runId.uuidString.lowercased(),
       command
     )
   }
