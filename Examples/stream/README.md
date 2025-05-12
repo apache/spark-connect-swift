@@ -5,7 +5,7 @@ This is an example Swift stream processing application to show how to count word
 ## Run `Spark Connect Server`
 
 ```bash
-./sbin/start-connect-server.sh --wait -c spark.log.level=ERROR
+docker run --rm -p 15002:15002 apache/spark:4.0.0-preview2 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
 ```
 
 ## Run `Netcat` as a streaming input server
@@ -16,12 +16,21 @@ You will first need to run Netcat (a small utility found in most Unix-like syste
 nc -lk 9999
 ```
 
-## Start streaming processing application
+## Build and run from docker image
 
-```bash
-$ swift run
-...
-Connected to Apache Spark 4.0.0 Server
+Build an application Docker image.
+
+```
+$ docker build -t apache/spark-connect-swift:stream .
+$ docker images apache/spark-connect-swift:stream
+REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
+apache/spark-connect-swift   stream    a4daa10ad9c5   7 seconds ago   369MB
+```
+
+Run `stream` docker image.
+
+```
+$ docker run --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 -e TARGET_HOST=host.docker.internal apache/spark-connect-swift:stream
 ```
 
 ## Send input and check output
@@ -34,7 +43,7 @@ apache spark
 apache hadoop
 ```
 
- `Spark Connect Server` output will look something like the following.
+`Spark Connect Server` output will look something like the following.
 
 ```bash
 -------------------------------------------
@@ -65,4 +74,12 @@ Batch: 2
 | spark|       1|
 |hadoop|       1|
 +------+--------+
+```
+
+## Run from source code
+
+```bash
+$ swift run
+...
+Connected to Apache Spark 4.0.0 Server
 ```

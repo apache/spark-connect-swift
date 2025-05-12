@@ -20,7 +20,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "SparkConnectSwiftWebapp",
+  name: "SparkConnectSwiftWeb",
   platforms: [
     .macOS(.v15)
   ],
@@ -33,7 +33,7 @@ let package = Package(
   ],
   targets: [
     .executableTarget(
-      name: "SparkConnectSwiftWebapp",
+      name: "SparkConnectSwiftWeb",
       dependencies: [
         .product(name: "Vapor", package: "vapor"),
         .product(name: "NIOCore", package: "swift-nio"),

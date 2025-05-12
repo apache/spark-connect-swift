@@ -17,17 +17,20 @@
 // under the License.
 //
 
+import Foundation
 import SparkConnect
 
 let spark = try await SparkSession.builder.getOrCreate()
 print("Connected to Apache Spark \(await spark.version) Server")
 
+let host = ProcessInfo.processInfo.environment["TARGET_HOST"] ?? "localhost"
+
 let lines =
   await spark
   .readStream
   .format("socket")
-  .option("host", "localhost")
-  .option("port", "9999")
+  .option("host", host)
+  .option("port", 9999)
   .load()
 
 let word =
