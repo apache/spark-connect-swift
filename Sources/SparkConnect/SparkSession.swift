@@ -374,6 +374,14 @@ public actor SparkSession {
     return try await client.semanticHash(plan)
   }
 
+  /// Returns a `StreamingQueryManager` that allows managing all the `StreamingQuery`s active on
+  /// `this`.
+  public var streams: StreamingQueryManager {
+    get {
+      StreamingQueryManager(self)
+    }
+  }
+
   /// This is defined as the return type of `SparkSession.sparkContext` method.
   /// This is an empty `Struct` type because `sparkContext` method is designed to throw
   /// `UNSUPPORTED_CONNECT_FEATURE.SESSION_SPARK_CONTEXT`.

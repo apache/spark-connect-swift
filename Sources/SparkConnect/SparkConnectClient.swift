@@ -986,14 +986,24 @@ public actor SparkConnectClient {
     _ runID: String,
     _ command: StreamingQueryCommand.OneOf_Command
   ) async throws -> [ExecutePlanResponse] {
-    var queryID = Spark_Connect_StreamingQueryInstanceId()
+    var queryID = StreamingQueryInstanceId()
     queryID.id = id
     queryID.runID = runID
-    var streamingQueryCommand = Spark_Connect_StreamingQueryCommand()
+    var streamingQueryCommand = StreamingQueryCommand()
     streamingQueryCommand.queryID = queryID
     streamingQueryCommand.command = command
     var command = Spark_Connect_Command()
     command.streamingQueryCommand = streamingQueryCommand
+    return try await execute(self.sessionID!, command)
+  }
+
+  func executeStreamingQueryManagerCommand(
+    _ command: StreamingQueryManagerCommand.OneOf_Command
+  ) async throws -> [ExecutePlanResponse] {
+    var streamingQueryManagerCommand = StreamingQueryManagerCommand()
+    streamingQueryManagerCommand.command = command
+    var command = Spark_Connect_Command()
+    command.streamingQueryManagerCommand = streamingQueryManagerCommand
     return try await execute(self.sessionID!, command)
   }
 
