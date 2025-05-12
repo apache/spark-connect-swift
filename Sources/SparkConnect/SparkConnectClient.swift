@@ -52,6 +52,9 @@ public actor SparkConnectClient {
     for param in self.url.path.split(separator: ";").dropFirst().filter({ !$0.isEmpty }) {
       let kv = param.split(separator: "=")
       switch String(kv[0]).lowercased() {
+      case URIParams.PARAM_SESSION_ID:
+        // SparkSession handles this.
+        break
       case URIParams.PARAM_USER_AGENT:
         clientType = String(kv[1])
       case URIParams.PARAM_TOKEN:

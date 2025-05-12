@@ -35,11 +35,19 @@ public actor SparkSession {
   /// Runtime configuration interface for Spark.
   public let conf: RuntimeConf
 
+  let regexSessionID = /;session_id=([a-zA-Z0-9-]+)/
+
   /// Create a session that uses the specified connection string and userID.
   /// - Parameters:
   ///   - connection: a string in a patter, `sc://{host}:{port}`
   init(_ connection: String) {
     self.client = SparkConnectClient(remote: connection)
+    // Since `Session ID` belongs to `SparkSession`, we handle this here.
+    if connection.contains(regexSessionID) {
+      self.sessionID = connection.firstMatch(of: regexSessionID)!.1.uppercased()
+    } else {
+      self.sessionID = UUID().uuidString
+    }
     self.conf = RuntimeConf(self.client)
   }
 
@@ -58,7 +66,7 @@ public actor SparkSession {
   }
 
   /// A unique session ID for this session from client.
-  nonisolated let sessionID: String = UUID().uuidString
+  nonisolated let sessionID: String
 
   /// Get the current session ID
   /// - Returns: the current session ID
