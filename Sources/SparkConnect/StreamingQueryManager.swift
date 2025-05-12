@@ -18,7 +18,7 @@
 //
 import Foundation
 
-/// Information about progress made for a sink in the execution of a ``StreamingQuery``
+/// Information about progress made for a source in the execution of a ``StreamingQuery``
 /// during a trigger. See ``StreamingQueryProgress`` for more information.
 public struct SourceProgress: Sendable {
   let description: String
