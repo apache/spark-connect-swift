@@ -149,27 +149,18 @@ struct Spark_Connect_MlCommand: Sendable {
     fileprivate var _dataset: Spark_Connect_Relation? = nil
   }
 
-  /// Command to delete the cached object which could be a model
+  /// Command to delete the cached objects which could be a model
   /// or summary evaluated by a model
   struct Delete: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
 
-    var objRef: Spark_Connect_ObjectRef {
-      get {return _objRef ?? Spark_Connect_ObjectRef()}
-      set {_objRef = newValue}
-    }
-    /// Returns true if `objRef` has been explicitly set.
-    var hasObjRef: Bool {return self._objRef != nil}
-    /// Clears the value of `objRef`. Subsequent reads from it will return its default value.
-    mutating func clearObjRef() {self._objRef = nil}
+    var objRefs: [Spark_Connect_ObjectRef] = []
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
-
-    fileprivate var _objRef: Spark_Connect_ObjectRef? = nil
   }
 
   /// Command to write ML operator
@@ -626,7 +617,7 @@ extension Spark_Connect_MlCommand.Fit: SwiftProtobuf.Message, SwiftProtobuf._Mes
 extension Spark_Connect_MlCommand.Delete: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".Delete"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "obj_ref"),
+    1: .standard(proto: "obj_refs"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -635,25 +626,21 @@ extension Spark_Connect_MlCommand.Delete: SwiftProtobuf.Message, SwiftProtobuf._
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularMessageField(value: &self._objRef) }()
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.objRefs) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._objRef {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    } }()
+    if !self.objRefs.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.objRefs, fieldNumber: 1)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Spark_Connect_MlCommand.Delete, rhs: Spark_Connect_MlCommand.Delete) -> Bool {
-    if lhs._objRef != rhs._objRef {return false}
+    if lhs.objRefs != rhs.objRefs {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
