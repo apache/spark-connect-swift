@@ -96,7 +96,7 @@ public struct StreamingQueryProcess {
   }
 }
 
-/// A class to manage all the ``StreamingQuery`` active in a ``SparkSession``.
+/// A class to manage all the ``StreamingQuery``s active in a ``SparkSession``.
 public actor StreamingQueryManager {
   let sparkSession: SparkSession
 
