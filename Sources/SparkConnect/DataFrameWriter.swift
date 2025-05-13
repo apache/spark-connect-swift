@@ -228,4 +228,21 @@ public actor DataFrameWriter: Sendable {
     self.source = "text"
     return try await save(path)
   }
+
+  /// Saves the content of the `DataFrame` to an external database table via JDBC. In the case the
+  /// table already exists in the external database, behavior of this function depends on the save
+  /// mode, specified by the `mode` function (default to throwing an exception).
+  /// - Parameters:
+  ///   - url: The JDBC URL of the form `jdbc:subprotocol:subname` to connect to.
+  ///   - table: Name of the table in the external database.
+  ///   - properties:JDBC database connection arguments, a list of arbitrary string tag/value.
+  public func jdbc(_ url: String, _ table: String, _ properties: [String: String] = [:]) async throws {
+    for (key, value) in properties {
+      self.extraOptions[key] = value
+    }
+    self.extraOptions["url"] = url
+    self.extraOptions["dbtable"] = table
+    self.source = "jdbc"
+    return try await save()
+  }
 }

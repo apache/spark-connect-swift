@@ -258,4 +258,21 @@ public actor DataFrameReader: Sendable {
     self.source = "parquet"
     return load(paths)
   }
+
+  /// Construct a `DataFrame` representing the database table accessible via JDBC URL url named
+  /// table and connection properties.
+  /// - Parameters:
+  ///   - url: The JDBC URL of the form `jdbc:subprotocol:subname` to connect to.
+  ///   - table: The JDBC table that should be read from or written into.
+  ///   - properties: A string-string dictionary for connection properties.
+  /// - Returns: A `DataFrame`.
+  public func jdbc(_ url: String, _ table: String, _ properties: [String: String] = [:]) -> DataFrame {
+    for (key, value) in properties {
+      self.extraOptions[key] = value
+    }
+    self.extraOptions["url"] = url
+    self.extraOptions["dbtable"] = table
+    self.source = "jdbc"
+    return load()
+  }
 }
