@@ -39,7 +39,7 @@ jobs:
         with:
           config: .github/.licenserc.yaml
 
-  build-macos-15:
+  build-macos-15-swift60:
     runs-on: macos-15
     steps:
     - uses: actions/checkout@v4
@@ -49,7 +49,7 @@ jobs:
     - name: Build
       run: swift build -c release
 
-  build-macos-15:
+  build-macos-15-swift61:
     runs-on: macos-15
     steps:
     - uses: actions/checkout@v4
