@@ -190,7 +190,7 @@ public actor DataStreamWriter: Sendable {
       UUID(uuidString: result.queryID.id)!,
       UUID(uuidString: result.queryID.runID)!,
       result.name,
-      self.df.sparkSession,
+      self.df.sparkSession
     )
 
     return query
