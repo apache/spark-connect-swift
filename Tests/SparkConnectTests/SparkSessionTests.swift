@@ -54,8 +54,8 @@ struct SparkSessionTests {
   func sessionID() async throws {
     let spark1 = try await SparkSession.builder.getOrCreate()
     await spark1.stop()
-    let remote = "sc://localhost/;session_id=\(spark1.sessionID)"
-    let spark2 = try await SparkSession.builder.remote(remote).getOrCreate()
+    let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost"
+    let spark2 = try await SparkSession.builder.remote("\(remote)/;session_id=\(spark1.sessionID)").getOrCreate()
     await spark2.stop()
     #expect(spark1.sessionID == spark2.sessionID)
     #expect(spark1 == spark2)
