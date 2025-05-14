@@ -6,11 +6,11 @@
 
 This is an experimental Swift library to show how to connect to a remote Apache Spark Connect Server and run SQL statements to manipulate remote data.
 
-So far, this library project is tracking the upstream changes like the [Apache Spark](https://spark.apache.org) 4.0.0 RC5 release and [Apache Arrow](https://arrow.apache.org) project's Swift-support.
+So far, this library project is tracking the upstream changes like the [Apache Spark](https://spark.apache.org) 4.0.0 RC6 release and [Apache Arrow](https://arrow.apache.org) project's Swift-support.
 
 ## Requirement
 
-- [Apache Spark 4.0.0 RC5 (April 2025)](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc5-bin/)
+- [Apache Spark 4.0.0 RC6 (May 2025)](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc6-bin/)
 - [Swift 6.0 (2024) or 6.1 (2025)](https://swift.org)
 - [gRPC Swift 2.2 (May 2025)](https://github.com/grpc/grpc-swift/releases/tag/2.2.0)
 - [gRPC Swift Protobuf 1.2 (April 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/1.2.0)
@@ -180,7 +180,7 @@ spark-sql (default)> DROP DATABASE db1 CASCADE;
 spark-sql (default)> exit;
 ```
 
-Apache Spark 4 supports [SQL Pipe Syntax](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc5-docs/_site/sql-pipe-syntax.html).
+Apache Spark 4 supports [SQL Pipe Syntax](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc6-docs/_site/sql-pipe-syntax.html).
 
 ```
 $ swift run

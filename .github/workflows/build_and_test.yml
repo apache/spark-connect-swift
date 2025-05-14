@@ -106,7 +106,7 @@ jobs:
         swift-version: "6.1"
     - name: Test
       run: |
-        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc5-bin/spark-4.0.0-bin-hadoop3.tgz
+        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc6-bin/spark-4.0.0-bin-hadoop3.tgz
         tar xvfz spark-4.0.0-bin-hadoop3.tgz
         mv spark-4.0.0-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
@@ -125,7 +125,7 @@ jobs:
         swift-version: "6.1"
     - name: Test
       run: |
-        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc5-bin/spark-4.0.0-bin-hadoop3.tgz
+        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc6-bin/spark-4.0.0-bin-hadoop3.tgz
         tar xvfz spark-4.0.0-bin-hadoop3.tgz
         mv spark-4.0.0-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
