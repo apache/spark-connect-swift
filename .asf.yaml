@@ -27,6 +27,8 @@ github:
     merge: false
     squash: true
     rebase: true
+  ghp_branch: gh-pages
+  ghp_path: /
   autolink_jira: SPARK
 
 notifications:
