@@ -8,6 +8,12 @@ This is an experimental Swift library to show how to connect to a remote Apache 
 
 So far, this library project is tracking the upstream changes like the [Apache Spark](https://spark.apache.org) 4.0.0 RC6 release and [Apache Arrow](https://arrow.apache.org) project's Swift-support.
 
+## Resources
+
+- [Homepage](https://apache.github.io/spark-connect-swift/)
+- [Swift Package Index](https://swiftpackageindex.com/apache/spark-connect-swift/)
+- [Library Documentation](https://swiftpackageindex.com/apache/spark-connect-swift/main/documentation/sparkconnect)
+
 ## Requirement
 
 - [Apache Spark 4.0.0 RC6 (May 2025)](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc6-bin/)
