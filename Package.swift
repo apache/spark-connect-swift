@@ -36,7 +36,7 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/grpc/grpc-swift.git", from: "2.2.0"),
     .package(url: "https://github.com/grpc/grpc-swift-protobuf.git", from: "1.2.0"),
-    .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", from: "1.0.3"),
+    .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", from: "1.1.0"),
     .package(url: "https://github.com/google/flatbuffers.git", branch: "v25.2.10"),
   ],
   targets: [

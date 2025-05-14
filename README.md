@@ -20,7 +20,7 @@ So far, this library project is tracking the upstream changes like the [Apache S
 - [Swift 6.0 (2024) or 6.1 (2025)](https://swift.org)
 - [gRPC Swift 2.2 (May 2025)](https://github.com/grpc/grpc-swift/releases/tag/2.2.0)
 - [gRPC Swift Protobuf 1.2 (April 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/1.2.0)
-- [gRPC Swift NIO Transport 1.0 (March 2025)](https://github.com/grpc/grpc-swift-nio-transport/releases/tag/1.0.3)
+- [gRPC Swift NIO Transport 1.1 (May 2025)](https://github.com/grpc/grpc-swift-nio-transport/releases/tag/1.1.0)
 - [FlatBuffers v25.2.10 (February 2025)](https://github.com/google/flatbuffers/releases/tag/v25.2.10)
 - [Apache Arrow Swift](https://github.com/apache/arrow/tree/main/swift)
 
