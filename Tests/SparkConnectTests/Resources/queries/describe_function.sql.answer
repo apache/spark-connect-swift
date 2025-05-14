@@ -1,7 +1,0 @@
-+-------------------------------------------------------------------------------+
-|                                                                  function_desc|
-+-------------------------------------------------------------------------------+
-|                                                                  Function: abs|
-|                           Class: org.apache.spark.sql.catalyst.expressions.Abs|
-|Usage: abs(expr) - Returns the absolute value of the numeric or interval value.|
-+-------------------------------------------------------------------------------+

@@ -1,7 +1,0 @@
-+--------+---------+-------+
-|col_name|data_type|comment|
-+--------+---------+-------+
-|      id|      int|   NULL|
-|    name|   string|   NULL|
-|  salary|   double|   NULL|
-+--------+---------+-------+
