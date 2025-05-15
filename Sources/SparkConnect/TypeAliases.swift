@@ -16,6 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+typealias ActionType = Spark_Connect_MergeAction.ActionType
 typealias Aggregate = Spark_Connect_Aggregate
 typealias AnalyzePlanRequest = Spark_Connect_AnalyzePlanRequest
 typealias AnalyzePlanResponse = Spark_Connect_AnalyzePlanResponse
@@ -38,6 +39,8 @@ typealias KeyValue = Spark_Connect_KeyValue
 typealias LateralJoin = Spark_Connect_LateralJoin
 typealias Limit = Spark_Connect_Limit
 typealias MapType = Spark_Connect_DataType.Map
+typealias MergeAction = Spark_Connect_MergeAction
+typealias MergeIntoTableCommand = Spark_Connect_MergeIntoTableCommand
 typealias NamedTable = Spark_Connect_Read.NamedTable
 typealias OneOf_Analyze = AnalyzePlanRequest.OneOf_Analyze
 typealias OneOf_CatType = Spark_Connect_Catalog.OneOf_CatType

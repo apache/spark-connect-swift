@@ -83,8 +83,31 @@ struct IcebergTests {
 
       try await spark.table(t1).writeTo(t2).overwrite("id = 1")
       #expect(try await spark.table(t2).count() == 3)
-    })
 
+      try await spark.sql(
+        """
+        MERGE INTO \(t2) t
+        USING (SELECT *
+               FROM VALUES
+                 (1, 'delete', null),
+                 (2, 'update', 'updated'),
+                 (4, null, 'new') AS T(id, op, data)) s
+        ON t.id = s.id
+        WHEN MATCHED AND s.op = 'delete' THEN DELETE
+        WHEN MATCHED AND s.op = 'update' THEN UPDATE SET t.data = s.data
+        WHEN NOT MATCHED THEN INSERT *
+        WHEN NOT MATCHED BY SOURCE THEN UPDATE SET data = 'invalid'
+        """
+      ).count()
+      #if !os(Linux)
+        let expected = [
+          Row(2, "updated"),
+          Row(3, "invalid"),
+          Row(4, "new"),
+        ]
+        #expect(try await spark.table(t2).collect() == expected)
+      #endif
+    })
     await spark.stop()
   }
 
