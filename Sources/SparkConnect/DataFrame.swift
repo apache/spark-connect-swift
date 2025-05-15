@@ -94,6 +94,7 @@ import Synchronization
 /// - ``show(_:_:_:)``
 ///
 /// ### Transformation Operations
+/// - ``to(_:)``
 /// - ``toDF(_:)``
 /// - ``toJSON()``
 /// - ``select(_:)``
@@ -476,6 +477,19 @@ public actor DataFrame: Sendable {
       DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
     }
     return df
+  }
+
+  /// Returns a new DataFrame where each row is reconciled to match the specified schema.
+  /// - Parameter schema: The given schema.
+  /// - Returns: A ``DataFrame`` with the given schema.
+  public func to(_ schema: String) async throws -> DataFrame {
+    // Validate by parsing.
+    do {
+      let dataType = try await sparkSession.client.ddlParse(schema)
+      return DataFrame(spark: self.spark, plan: SparkConnectClient.getToSchema(self.plan.root, dataType))
+    } catch {
+      throw SparkConnectError.InvalidTypeException
+    }
   }
 
   /// Returns the content of the Dataset as a Dataset of JSON strings.

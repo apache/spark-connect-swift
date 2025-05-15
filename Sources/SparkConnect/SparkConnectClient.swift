@@ -505,6 +505,17 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getToSchema(_ child: Relation, _ schema: Spark_Connect_DataType) -> Plan {
+    var toSchema = Spark_Connect_ToSchema()
+    toSchema.input = child
+    toSchema.schema = schema
+    var relation = Relation()
+    relation.toSchema = toSchema
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   static func getProjectExprs(_ child: Relation, _ exprs: [String]) -> Plan {
     var project = Project()
     project.input = child

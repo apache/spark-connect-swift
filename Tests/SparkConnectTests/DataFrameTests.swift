@@ -202,6 +202,26 @@ struct DataFrameTests {
   }
 
   @Test
+  func to() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+
+    let schema1 = try await spark.range(1).to("shortID SHORT").schema
+    #expect(
+      schema1
+      == #"{"struct":{"fields":[{"name":"shortID","dataType":{"short":{}},"nullable":true}]}}"#
+    )
+
+    let schema2 = try await spark.sql("SELECT '1'").to("id INT").schema
+    print(schema2)
+    #expect(
+      schema2
+      == #"{"struct":{"fields":[{"name":"id","dataType":{"integer":{}},"nullable":true}]}}"#
+    )
+
+    await spark.stop()
+  }
+
+  @Test
   func selectMultipleColumns() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let schema = try await spark.sql("SELECT * FROM VALUES (1, 2)").select("col2", "col1").schema
