@@ -852,4 +852,26 @@ struct DataFrameTests {
 
     await spark.stop()
   }
+
+  @Test
+  func hint() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df1 = try await spark.range(1)
+    let df2 = try await spark.range(1)
+
+    try await df1.join(df2.hint("broadcast")).count()
+    try await df1.join(df2.hint("coalesce", 10)).count()
+    try await df1.join(df2.hint("rebalance", 10)).count()
+    try await df1.join(df2.hint("rebalance", 10, "id")).count()
+    try await df1.join(df2.hint("repartition", 10)).count()
+    try await df1.join(df2.hint("repartition", 10, "id")).count()
+    try await df1.join(df2.hint("repartition", "id")).count()
+    try await df1.join(df2.hint("repartition_by_range")).count()
+    try await df1.join(df2.hint("merge")).count()
+    try await df1.join(df2.hint("shuffle_hash")).count()
+    try await df1.join(df2.hint("shuffle_replicate_nl")).count()
+    try await df1.join(df2.hint("shuffle_merge")).count()
+
+    await spark.stop()
+  }
 }

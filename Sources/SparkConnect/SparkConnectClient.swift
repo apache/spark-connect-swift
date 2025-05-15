@@ -950,6 +950,41 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getHint(_ child: Relation, _ name: String, _ parameters: [Sendable]) -> Plan {
+    var hint = Spark_Connect_Hint()
+    hint.input = child
+    hint.name = name
+    hint.parameters = parameters.map {
+      var literal = ExpressionLiteral()
+      switch $0 {
+      case let value as Bool:
+        literal.boolean = value
+      case let value as Int8:
+        literal.byte = Int32(value)
+      case let value as Int16:
+        literal.short = Int32(value)
+      case let value as Int32:
+        literal.integer = value
+      case let value as Int64: // Hint parameter raises exceptions for Int64
+        literal.integer = Int32(value)
+      case let value as Int:
+        literal.integer = Int32(value)
+      case let value as String:
+        literal.string = value
+      default:
+        literal.string = $0 as! String
+      }
+      var expr = Spark_Connect_Expression()
+      expr.literal = literal
+      return expr
+    }
+    var relation = Relation()
+    relation.hint = hint
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   func createTempView(
     _ child: Relation, _ viewName: String, replace: Bool, isGlobal: Bool
   ) async throws {

@@ -115,6 +115,7 @@ import Synchronization
 /// - ``melt(_:_:_:_:)``
 /// - ``transpose()``
 /// - ``transpose(_:)``
+/// - ``hint(_:_:)``
 ///
 /// ### Join Operations
 /// - ``join(_:)``
@@ -1347,6 +1348,17 @@ public actor DataFrame: Sendable {
   /// - Returns: A ``GroupedData``.
   public func cube(_ cols: String...) -> GroupedData {
     return GroupedData(self, GroupType.cube, cols)
+  }
+
+  /// Specifies some hint on the current Dataset.
+  /// - Parameters:
+  ///   - name: The hint name.
+  ///   - parameters: The parameters of the hint
+  /// - Returns: A ``DataFrame``.
+  @discardableResult
+  public func hint(_ name: String, _ parameters: Sendable...) -> DataFrame {
+    let plan = SparkConnectClient.getHint(self.plan.root, name, parameters)
+    return DataFrame(spark: self.spark, plan: plan)
   }
 
   /// Creates a local temporary view using the given name. The lifetime of this temporary view is
