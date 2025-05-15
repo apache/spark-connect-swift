@@ -158,4 +158,5 @@ jobs:
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.9.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         cd -
+        swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release

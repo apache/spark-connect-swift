@@ -24,6 +24,7 @@ import Testing
 /// A test suite for `DataFrameWriterV2`
 @Suite(.serialized)
 struct DataFrameWriterV2Tests {
+  let icebergEnabled = ProcessInfo.processInfo.environment["SPARK_ICEBERG_TEST_ENABLED"] != nil
 
   @Test
   func create() async throws {
@@ -48,9 +49,12 @@ struct DataFrameWriterV2Tests {
       let write = try await spark.range(2).writeTo(tableName).using("orc")
       try await write.create()
       #expect(try await spark.table(tableName).count() == 2)
-      // TODO: Use Iceberg to verify success case after Iceberg supports Apache Spark 4
-      try await #require(throws: Error.self) {
+      if icebergEnabled {
         try await write.createOrReplace()
+      } else {
+        try await #require(throws: Error.self) {
+          try await write.createOrReplace()
+        }
       }
     })
     await spark.stop()
@@ -64,9 +68,12 @@ struct DataFrameWriterV2Tests {
       let write = try await spark.range(2).writeTo(tableName).using("orc")
       try await write.create()
       #expect(try await spark.table(tableName).count() == 2)
-      // TODO: Use Iceberg to verify success case after Iceberg supports Apache Spark 4
-      try await #require(throws: Error.self) {
+      if icebergEnabled {
         try await write.replace()
+      } else {
+        try await #require(throws: Error.self) {
+          try await write.replace()
+        }
       }
     })
     await spark.stop()
@@ -80,9 +87,12 @@ struct DataFrameWriterV2Tests {
       let write = try await spark.range(2).writeTo(tableName).using("orc")
       try await write.create()
       #expect(try await spark.table(tableName).count() == 2)
-      // TODO: Use Iceberg to verify success case after Iceberg supports Apache Spark 4
-      try await #require(throws: Error.self) {
+      if icebergEnabled {
         try await write.append()
+      } else {
+        try await #require(throws: Error.self) {
+          try await write.append()
+        }
       }
     })
     await spark.stop()
