@@ -17,12 +17,13 @@
 ---
 github:
   description: "Apache Spark Connect Client for Swift"
-  homepage: https://spark.apache.org/
+  homepage: https://apache.github.io/spark-connect-swift/
   labels:
     - swift
     - big-data
     - sql
     - spark
+    - streaming
   enabled_merge_buttons:
     merge: false
     squash: true
