@@ -135,3 +135,27 @@ jobs:
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5
         cd -
         swift test --no-parallel -c release
+
+  integration-test-mac-iceberg:
+    runs-on: macos-15
+    env:
+      SPARK_ICEBERG_TEST_ENABLED: "true"
+    steps:
+    - uses: actions/checkout@v4
+    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
+      with:
+        swift-version: "6.1"
+    - name: Install Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: zulu
+        java-version: 17
+    - name: Test
+      run: |
+        curl -LO https://downloads.apache.org/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz
+        tar xvfz spark-3.5.5-bin-hadoop3.tgz
+        mv spark-3.5.5-bin-hadoop3 /tmp/spark
+        cd /tmp/spark/sbin
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.9.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        cd -
+        swift test --filter IcebergTest -c release

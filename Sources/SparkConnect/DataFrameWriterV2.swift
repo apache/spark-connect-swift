@@ -108,7 +108,7 @@ public actor DataFrameWriterV2: Sendable {
   /// Overwrite rows matching the given filter condition with the contents of the ``DataFrame`` in the
   /// output table.
   /// - Parameter condition: A filter condition.
-  public func overwrite(condition: String) async throws {
+  public func overwrite(_ condition: String) async throws {
     try await executeWriteOperation(.overwrite, condition)
   }
 
