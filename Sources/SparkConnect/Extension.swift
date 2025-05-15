@@ -126,6 +126,14 @@ extension String {
     return expression
   }
 
+  var toExpression: Spark_Connect_Expression {
+    var expressionString = ExpressionString()
+    expressionString.expression = self
+    var expression = Spark_Connect_Expression()
+    expression.expressionString = expressionString
+    return expression
+  }
+
   var toExplainMode: ExplainMode {
     let mode = switch self {
     case "codegen": ExplainMode.codegen

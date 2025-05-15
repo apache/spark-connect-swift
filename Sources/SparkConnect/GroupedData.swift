@@ -32,16 +32,8 @@ public actor GroupedData {
     var aggregate = Aggregate()
     aggregate.input = await (self.df.getPlan() as! Plan).root
     aggregate.groupType = self.groupType
-    aggregate.groupingExpressions = self.groupingCols.map {
-      var expr = Spark_Connect_Expression()
-      expr.expressionString = $0.toExpressionString
-      return expr
-    }
-    aggregate.aggregateExpressions = exprs.map {
-      var expr = Spark_Connect_Expression()
-      expr.expressionString = $0.toExpressionString
-      return expr
-    }
+    aggregate.groupingExpressions = self.groupingCols.map { $0.toExpression }
+    aggregate.aggregateExpressions = exprs.map { $0.toExpression }
     var relation = Relation()
     relation.aggregate = aggregate
     var plan = Plan()

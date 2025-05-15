@@ -508,11 +508,7 @@ public actor SparkConnectClient {
   static func getProjectExprs(_ child: Relation, _ exprs: [String]) -> Plan {
     var project = Project()
     project.input = child
-    let expressions: [Spark_Connect_Expression] = exprs.map {
-      var expression = Spark_Connect_Expression()
-      expression.exprType = .expressionString($0.toExpressionString)
-      return expression
-    }
+    let expressions: [Spark_Connect_Expression] = exprs.map { $0.toExpression }
     project.expressions = expressions
     var relation = Relation()
     relation.project = project
@@ -908,11 +904,7 @@ public actor SparkConnectClient {
   ) -> Plan {
     var repartitionByExpression = RepartitionByExpression()
     repartitionByExpression.input = child
-    repartitionByExpression.partitionExprs = partitionExprs.map {
-      var expr = Spark_Connect_Expression()
-      expr.expressionString = $0.toExpressionString
-      return expr
-    }
+    repartitionByExpression.partitionExprs = partitionExprs.map { $0.toExpression }
     if let numPartitions {
       repartitionByExpression.numPartitions = numPartitions
     }
@@ -932,18 +924,10 @@ public actor SparkConnectClient {
   ) -> Plan {
     var unpivot = Spark_Connect_Unpivot()
     unpivot.input = child
-    unpivot.ids = ids.map {
-      var expr = Spark_Connect_Expression()
-      expr.expressionString = $0.toExpressionString
-      return expr
-    }
+    unpivot.ids = ids.map { $0.toExpression }
     if let values {
       var unpivotValues = Spark_Connect_Unpivot.Values()
-      unpivotValues.values = values.map {
-        var expr = Spark_Connect_Expression()
-        expr.expressionString = $0.toExpressionString
-        return expr
-      }
+      unpivotValues.values = values.map { $0.toExpression }
       unpivot.values = unpivotValues
     }
     unpivot.variableColumnName = variableColumnName
@@ -958,11 +942,7 @@ public actor SparkConnectClient {
   static func getTranspose(_ child: Relation, _ indexColumn: [String]) -> Plan {
     var transpose = Spark_Connect_Transpose()
     transpose.input = child
-    transpose.indexColumns = indexColumn.map {
-      var expr = Spark_Connect_Expression()
-      expr.expressionString = $0.toExpressionString
-      return expr
-    }
+    transpose.indexColumns = indexColumn.map { $0.toExpression }
     var relation = Relation()
     relation.transpose = transpose
     var plan = Plan()

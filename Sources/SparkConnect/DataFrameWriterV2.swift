@@ -72,11 +72,7 @@ public actor DataFrameWriterV2: Sendable {
   /// - Parameter columns: Columns to partition
   /// - Returns: A ``DataFrameWriterV2``.
   public func partitionBy(_ columns: String...) -> DataFrameWriterV2 {
-    self.partitioningColumns = columns.map {
-      var expr = Spark_Connect_Expression()
-      expr.expressionString = $0.toExpressionString
-      return expr
-    }
+    self.partitioningColumns = columns.map { $0.toExpression }
     return self
   }
 
