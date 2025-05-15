@@ -151,6 +151,8 @@ import Synchronization
 ///
 /// ### Persistence
 /// - ``cache()``
+/// - ``checkpoint(_:_:_:)``
+/// - ``localCheckpoint(_:_:)``
 /// - ``persist(storageLevel:)``
 /// - ``unpersist(blocking:)``
 /// - ``storageLevel``
@@ -1405,6 +1407,41 @@ public actor DataFrame: Sendable {
 
   func createTempView(_ viewName: String, replace: Bool, global: Bool) async throws {
     try await spark.client.createTempView(self.plan.root, viewName, replace: replace, isGlobal: global)
+  }
+
+  /// Eagerly checkpoint a ``DataFrame`` and return the new ``DataFrame``.
+  /// Checkpointing can be used to truncate the logical plan of this ``DataFrame``,
+  /// which is especially useful in iterative algorithms where the plan may grow exponentially.
+  /// It will be saved to files inside the checkpoint directory.
+  /// - Parameters:
+  ///   - eager: Whether to checkpoint this dataframe immediately
+  ///   - reliableCheckpoint: Whether to create a reliable checkpoint saved to files inside the checkpoint directory.
+  ///   If false creates a local checkpoint using the caching subsystem
+  ///   - storageLevel: StorageLevel with which to checkpoint the data.
+  /// - Returns: A ``DataFrame``.
+  public func checkpoint(
+    _ eager: Bool = true,
+    _ reliableCheckpoint: Bool = true,
+    _ storageLevel: StorageLevel? = nil
+  ) async throws -> DataFrame {
+    let plan = try await spark.client.getCheckpoint(self.plan.root, eager, reliableCheckpoint, storageLevel)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Locally checkpoints a ``DataFrame`` and return the new ``DataFrame``.
+  /// Checkpointing can be used to truncate the logical plan of this ``DataFrame``,
+  /// which is especially useful in iterative algorithms where the plan may grow exponentially.
+  /// Local checkpoints are written to executor storage and despite potentially faster they
+  /// are unreliable and may compromise job completion.
+  /// - Parameters:
+  ///   - eager: Whether to checkpoint this dataframe immediately
+  ///   - storageLevel: StorageLevel with which to checkpoint the data.
+  /// - Returns: A ``DataFrame``.
+  public func localCheckpoint(
+    _ eager: Bool = true,
+    _ storageLevel: StorageLevel? = nil
+  ) async throws -> DataFrame {
+    try await checkpoint(eager, false, storageLevel)
   }
 
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.

@@ -996,6 +996,32 @@ public actor SparkConnectClient {
     return plan
   }
 
+  func getCheckpoint(
+    _ child: Relation,
+    _ eager: Bool,
+    _ reliableCheckpoint: Bool,
+    _ storageLevel: StorageLevel?
+  ) async throws -> Plan {
+    var checkpointCommand = Spark_Connect_CheckpointCommand()
+    checkpointCommand.eager = eager
+    checkpointCommand.local = !reliableCheckpoint
+    checkpointCommand.relation = child
+    if let storageLevel {
+      checkpointCommand.storageLevel = storageLevel.toSparkConnectStorageLevel
+    }
+
+    var command = Spark_Connect_Command()
+    command.checkpointCommand = checkpointCommand
+    let response = try await execute(self.sessionID!, command)
+    let cachedRemoteRelation = response.first!.checkpointCommandResult.relation
+
+    var relation = Relation()
+    relation.cachedRemoteRelation = cachedRemoteRelation
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   func createTempView(
     _ child: Relation, _ viewName: String, replace: Bool, isGlobal: Bool
   ) async throws {
