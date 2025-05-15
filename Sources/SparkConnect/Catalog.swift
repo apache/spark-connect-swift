@@ -197,7 +197,14 @@ public actor Catalog: Sendable {
   /// - Parameter dbName: name of the database to check existence
   /// - Returns: Indicating whether the database exists.
   public func databaseExists(_ dbName: String) async throws -> Bool {
-    return try await self.listDatabases(pattern: dbName).count > 0
+    let df = getDataFrame({
+      var databaseExists = Spark_Connect_DatabaseExists()
+      databaseExists.dbName = dbName
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .databaseExists(databaseExists)
+      return catalog
+    })
+    return try await df.collect().first![0] as! Bool
   }
 
   /// Creates a table from the given path and returns the corresponding ``DataFrame``.
