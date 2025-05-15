@@ -109,7 +109,7 @@ public actor DataFrameWriterV2: Sendable {
   /// output table.
   /// - Parameter condition: A filter condition.
   public func overwrite(condition: String) async throws {
-    try await executeWriteOperation(.overwrite)
+    try await executeWriteOperation(.overwrite, condition)
   }
 
   /// Overwrite all partition for which the ``DataFrame`` contains at least one row with the contents
@@ -120,7 +120,10 @@ public actor DataFrameWriterV2: Sendable {
     try await executeWriteOperation(.overwritePartitions)
   }
 
-  private func executeWriteOperation(_ mode: WriteOperationV2.Mode) async throws {
+  private func executeWriteOperation(
+    _ mode: WriteOperationV2.Mode,
+    _ overwriteCondition: String? = nil
+  ) async throws {
     var write = WriteOperationV2()
 
     let plan = await self.df.getPlan() as! Plan
@@ -138,6 +141,9 @@ public actor DataFrameWriterV2: Sendable {
     }
     for property in self.tableProperties.toStringDictionary() {
       write.tableProperties[property.key] = property.value
+    }
+    if let overwriteCondition {
+      write.overwriteCondition = overwriteCondition.toExpression
     }
     write.mode = mode
 
