@@ -122,14 +122,13 @@ public actor MergeIntoWriter {
 
   var mergeIntoTableCommand = MergeIntoTableCommand()
 
-  init(_ table: String, _ df: DataFrame, _ condition: String) async {
+  init(_ table: String, _ df: DataFrame, _ condition: String) {
     self.table = table
     self.df = df
     self.condition = condition
 
-    mergeIntoTableCommand.targetTableName = table
-    mergeIntoTableCommand.sourceTablePlan = await (df.getPlan() as! Plan).root
-    mergeIntoTableCommand.mergeCondition.expressionString = condition.toExpressionString
+    self.mergeIntoTableCommand.targetTableName = table
+    self.mergeIntoTableCommand.mergeCondition.expressionString = condition.toExpressionString
   }
 
   public var schemaEvolutionEnabled: Bool {
@@ -150,7 +149,7 @@ public actor MergeIntoWriter {
   }
 
   /// Initialize a `WhenMatched` action with a condition.
-  /// - Parameter condition: <#condition description#>
+  /// - Parameter condition: The condition to be evaluated for the action.
   /// - Returns: A `WhenMatched` instance configured with the specified condition.
   public func whenMatched(_ condition: String) -> WhenMatched {
     WhenMatched(self, condition)
@@ -190,6 +189,7 @@ public actor MergeIntoWriter {
     {
       throw SparkConnectError.InvalidArgumentException
     }
+    self.mergeIntoTableCommand.sourceTablePlan = await (self.df.getPlan() as! Plan).root
     self.mergeIntoTableCommand.withSchemaEvolution = self.schemaEvolution
 
     var command = Spark_Connect_Command()

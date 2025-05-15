@@ -1401,7 +1401,7 @@ public actor DataFrame: Sendable {
   ///   - condition: A condition expression.
   /// - Returns: A ``MergeIntoWriter`` instance.
   public func mergeInto(_ table: String, _ condition: String) async -> MergeIntoWriter {
-    return await MergeIntoWriter(table, self, condition)
+    return MergeIntoWriter(table, self, condition)
   }
 
   /// Returns a ``DataStreamWriter`` that can be used to write streaming data.
