@@ -75,6 +75,8 @@ public struct WhenNotMatched: Sendable {
   }
 }
 
+/// A struct for defining actions to be performed when there is no match by source during a merge
+/// operation in a ``MergeIntoWriter``.
 public struct WhenNotMatchedBySource: Sendable {
   let mergeIntoWriter: MergeIntoWriter
   let condition: String?
@@ -84,14 +86,24 @@ public struct WhenNotMatchedBySource: Sendable {
     self.condition = condition
   }
 
+  /// Specifies an action to update all non-matched rows in the target ``DataFrame``
+  /// when not matched by the source.
+  /// - Returns: A ``MergeIntoWriter`` instance.
   public func updateAll() async -> MergeIntoWriter {
     await mergeIntoWriter.updateAll(condition, true)
   }
 
+  /// Specifies an action to update non-matched rows in the target ``DataFrame``
+  /// with the provided column assignments when not matched by the source.
+  /// - Parameter map: A dictionary from column names to expressions representing the updates to be applied
+  /// - Returns: A ``MergeIntoWriter`` instance.
   public func update(map: [String: String]) async -> MergeIntoWriter {
     await mergeIntoWriter.update(condition, map, true)
   }
 
+  /// Specifies an action to delete non-matched rows from the target ``DataFrame``
+  /// when not matched by the source.
+  /// - Returns: A ``MergeIntoWriter`` instance.
   public func delete() async -> MergeIntoWriter {
     await mergeIntoWriter.delete(condition, true)
   }
