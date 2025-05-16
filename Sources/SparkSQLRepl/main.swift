@@ -46,7 +46,7 @@ while isRunning {
       break
     default:
       do {
-        try await spark.time(spark.sql(String(match.1)).show)
+        try await spark.time({ try await spark.sql(String(match.1)).show(10000, false) })
       } catch {
         print("Error: \(error)")
       }
