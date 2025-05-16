@@ -484,20 +484,24 @@ struct DataFrameTests {
   @Test
   func checkpoint() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    // By default, reliable checkpoint location is required.
-    try await #require(throws: Error.self) {
-      try await spark.range(10).checkpoint()
+    if await spark.version >= "4.0.0" {
+      // By default, reliable checkpoint location is required.
+      try await #require(throws: Error.self) {
+        try await spark.range(10).checkpoint()
+      }
+      // Checkpointing with unreliable checkpoint
+      let df = try await spark.range(10).checkpoint(true, false)
+      #expect(try await df.count() == 10)
     }
-    // Checkpointing with unreliable checkpoint
-    let df = try await spark.range(10).checkpoint(true, false)
-    #expect(try await df.count() == 10)
     await spark.stop()
   }
 
   @Test
   func localCheckpoint() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.range(10).localCheckpoint().count() == 10)
+    if await spark.version >= "4.0.0" {
+      #expect(try await spark.range(10).localCheckpoint().count() == 10)
+    }
     await spark.stop()
   }
 
