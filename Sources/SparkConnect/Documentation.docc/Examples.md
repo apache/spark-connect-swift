@@ -37,6 +37,30 @@ docker run -it --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 apache/spark
 swift run
 ```
 
+## Spark SQL REPL(Read-Eval-Print Loop) Example
+
+The Spark SQL REPL application example demonstrates interactive operations with ad-hoc Spark SQL queries with Apache Spark Connect, including:
+- Connecting to a Spark server
+- Receiving ad-hoc Spark SQL queries from users
+- Show the SQL results interactively
+
+### Key Features
+- Spark SQL execution for table operations
+- User interactions
+
+### How to Run
+
+Build and run the application:
+
+```bash
+# Using Docker
+docker build -t apache/spark-connect-swift:spark-sql .
+docker run -it --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 apache/spark-connect-swift:spark-sql
+
+# From source code
+swift run
+```
+
 ## Pi Calculation Example
 
 The Pi calculation example shows how to use Spark Connect Swift for computational tasks by calculating an approximation of π (pi) using the Monte Carlo method.

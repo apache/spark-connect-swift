@@ -52,10 +52,6 @@ let package = Package(
         .process("Documentation.docc")
       ]
     ),
-    .executableTarget(
-      name: "SparkSQLRepl",
-      dependencies: ["SparkConnect"]
-    ),
     .testTarget(
       name: "SparkConnectTests",
       dependencies: ["SparkConnect"],
