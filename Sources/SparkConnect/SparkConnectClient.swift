@@ -1022,6 +1022,23 @@ public actor SparkConnectClient {
     return plan
   }
 
+  static func getWithWatermark(
+    _ child: Relation,
+    _ eventTime: String,
+    _ delayThreshold: String
+  ) -> Plan {
+    var withWatermark = Spark_Connect_WithWatermark()
+    withWatermark.input = child
+    withWatermark.eventTime = eventTime
+    withWatermark.delayThreshold = delayThreshold
+
+    var relation = Relation()
+    relation.withWatermark = withWatermark
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
+  }
+
   func createTempView(
     _ child: Relation, _ viewName: String, replace: Bool, isGlobal: Bool
   ) async throws {

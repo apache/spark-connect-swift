@@ -745,6 +745,22 @@ struct DataFrameTests {
   }
 
   @Test
+  func withWatermark() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark
+      .sql("""
+        SELECT * FROM VALUES
+          (1, now()),
+          (1, now() - INTERVAL 1 HOUR),
+          (1, now() - INTERVAL 2 HOUR)
+          T(data, eventTime)
+        """)
+      .withWatermark("eventTime", "1 minute") // This tests only API for now
+    #expect(try await df.dropDuplicatesWithinWatermark("data").count() == 1)
+    await spark.stop()
+  }
+
+  @Test
   func describe() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(10)

@@ -117,6 +117,7 @@ import Synchronization
 /// - ``transpose()``
 /// - ``transpose(_:)``
 /// - ``hint(_:_:)``
+/// - ``withWatermark(_:_:)``
 ///
 /// ### Join Operations
 /// - ``join(_:)``
@@ -1442,6 +1443,19 @@ public actor DataFrame: Sendable {
     _ storageLevel: StorageLevel? = nil
   ) async throws -> DataFrame {
     try await checkpoint(eager, false, storageLevel)
+  }
+
+  /// Defines an event time watermark for this ``DataFrame``.  A watermark tracks a point in time
+  /// before which we assume no more late data is going to arrive.
+  /// - Parameters:
+  ///   - eventTime: the name of the column that contains the event time of the row.
+  ///   - delayThreshold: the minimum delay to wait to data to arrive late, relative to
+  ///   the latest record that has been processed in the form of an interval (e.g. "1 minute" or "5 hours").
+  ///   NOTE: This should not be negative.
+  /// - Returns: A ``DataFrame`` instance.
+  public func withWatermark(_ eventTime: String, _ delayThreshold: String) -> DataFrame {
+    let plan = SparkConnectClient.getWithWatermark(self.plan.root, eventTime, delayThreshold)
+    return DataFrame(spark: self.spark, plan: plan)
   }
 
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.
