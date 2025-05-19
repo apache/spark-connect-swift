@@ -36,10 +36,11 @@ targets: [
 ```swift
 import SparkConnect
 
-let spark = SparkSession.builder()
+let spark = try await SparkSession
+    .builder
     .appName("MySwiftApp")
     .remote("sc://localhost:15002")
-    .build()
+    .getOrCreate()
 ```
 
 ### 2. DataFrame Operations

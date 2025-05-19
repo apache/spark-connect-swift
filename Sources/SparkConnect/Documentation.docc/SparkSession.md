@@ -9,10 +9,11 @@ The entry point for SparkConnect functionality.
 ### Creating a SparkSession
 
 ```swift
-let spark = SparkSession.builder()
-    .appName("My Swift Spark App")
+let spark = try await SparkSession
+    .builder
+    .appName("MySwiftApp")
     .remote("sc://localhost:15002")
-    .build()
+    .getOrCreate()
 ```
 
 ### Basic Usage
