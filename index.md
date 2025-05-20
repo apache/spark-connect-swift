@@ -25,7 +25,8 @@ from their Swift applications.
 ## Library Documentation
 
 - [main](https://swiftpackageindex.com/apache/spark-connect-swift/main/documentation/sparkconnect/)
-- [v0.1.0](https://swiftpackageindex.com/apache/spark-connect-swift/main/documentation/sparkconnect/)
+- [0.2.0](https://swiftpackageindex.com/apache/spark-connect-swift/0.2.0/documentation/sparkconnect)
+- [0.1.0](https://swiftpackageindex.com/apache/spark-connect-swift/v0.1.0/documentation/sparkconnect)
 
 ## Articles
 
