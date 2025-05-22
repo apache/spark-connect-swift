@@ -85,7 +85,7 @@ spark-sql (default)> DROP DATABASE db1 CASCADE;
 spark-sql (default)> exit;
 ```
 
-Apache Spark 4 supports [SQL Pipe Syntax](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc7-docs/_site/sql-pipe-syntax.html).
+Apache Spark 4 supports [SQL Pipe Syntax](https://spark.apache.org/docs/4.0.0/sql-pipe-syntax.html).
 
 ```
 $ swift run

@@ -16,7 +16,7 @@ So far, this library project is tracking the upstream changes like the [Apache S
 
 ## Requirement
 
-- [Apache Spark 4.0.0 RC7 (May 2025)](https://dist.apache.org/repos/dist/dev/spark/v4.0.0-rc7-bin/)
+- [Apache Spark 4.0.0 RC7 (May 2025)](https://github.com/apache/spark/releases/tag/v4.0.0)
 - [Swift 6.0 (2024) or 6.1 (2025)](https://swift.org)
 - [gRPC Swift 2.2 (May 2025)](https://github.com/grpc/grpc-swift/releases/tag/2.2.1)
 - [gRPC Swift Protobuf 1.3 (May 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/1.3.0)
