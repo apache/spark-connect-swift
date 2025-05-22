@@ -85,6 +85,7 @@ struct SQLTests {
     "create_table_function.sql",
     "pipesyntax.sql",
     "explain.sql",
+    "variant.sql",
   ]
 
 #if !os(Linux)
