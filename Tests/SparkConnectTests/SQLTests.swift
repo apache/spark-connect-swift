@@ -83,6 +83,7 @@ struct SQLTests {
   let queriesForSpark4Only: [String] = [
     "create_scala_function.sql",
     "create_table_function.sql",
+    "cast.sql",
     "pipesyntax.sql",
     "explain.sql",
   ]
