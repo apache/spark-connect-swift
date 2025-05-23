@@ -6,7 +6,7 @@
 
 This is an experimental Swift library to show how to connect to a remote Apache Spark Connect Server and run SQL statements to manipulate remote data.
 
-So far, this library project is tracking the upstream changes like the [Apache Spark](https://spark.apache.org) 4.0.0 RC7 release and [Apache Arrow](https://arrow.apache.org) project's Swift-support.
+So far, this library project is tracking the upstream changes of [Apache Arrow](https://arrow.apache.org) project's Swift-support.
 
 ## Resources
 
@@ -16,7 +16,7 @@ So far, this library project is tracking the upstream changes like the [Apache S
 
 ## Requirement
 
-- [Apache Spark 4.0.0 RC7 (May 2025)](https://github.com/apache/spark/releases/tag/v4.0.0)
+- [Apache Spark 4.0.0 (May 2025)](https://github.com/apache/spark/releases/tag/v4.0.0)
 - [Swift 6.0 (2024) or 6.1 (2025)](https://swift.org)
 - [gRPC Swift 2.2 (May 2025)](https://github.com/grpc/grpc-swift/releases/tag/2.2.1)
 - [gRPC Swift Protobuf 1.3 (May 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/1.3.0)

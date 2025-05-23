@@ -77,7 +77,7 @@ index 2edcc8f..22313c8 100644
 Prepare `Spark Connect Server` via running Docker image.
 
 ```
-docker run --rm -p 15002:15002 apache/spark:4.0.0-preview2 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
+docker run --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
 ```
 
 Build an application Docker image.
