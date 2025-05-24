@@ -22,6 +22,36 @@ from their Swift applications.
 
 - <https://swiftpackageindex.com/apache/spark-connect-swift/>
 
+## Run an example
+
+### Install Helm Chart
+
+```bash
+helm repo add spark https://apache.github.io/spark-kubernetes-operator
+helm install spark spark/spark-kubernetes-operator
+```
+
+### Launch Spark Connect Server
+
+```bash
+$ kubectl apply -f https://apache.github.io/spark-kubernetes-operator/spark-connect-server.yaml
+sparkapplication.spark.apache.org/spark-connect-server created
+
+$ kubectl get sparkapp
+NAME                   CURRENT STATE    AGE
+spark-connect-server   RunningHealthy   14s
+```
+
+### Launch `Swift-based SparkPi` Application
+
+```bash
+$ kubectl apply -f https://apache.github.io/spark-kubernetes-operator/pi-swift.yaml
+job.batch/spark-connect-swift-pi created
+
+$ kubectl logs -f job/spark-connect-swift-pi
+Pi is roughly 3.1426151426151425
+```
+
 ## Library Documentation
 
 - [main](https://swiftpackageindex.com/apache/spark-connect-swift/main/documentation/sparkconnect/)
