@@ -6,13 +6,13 @@ This is an example Swift application to show how to use Apache Spark Connect Swi
 
 Prepare `Spark Connect Server` via running Docker image.
 
-```
+```bash
 docker run --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
 ```
 
 Build an application Docker image.
 
-```
+```bash
 $ docker build -t apache/spark-connect-swift:app .
 $ docker images apache/spark-connect-swift:app
 REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
@@ -21,7 +21,7 @@ apache/spark-connect-swift   app       e132e1b38348   5 seconds ago   368MB
 
 Run `app` docker image.
 
-```
+```bash
 $ docker run --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 apache/spark-connect-swift:app
 Connected to Apache Spark 4.0.0 Server
 EXECUTE: DROP TABLE IF EXISTS t
@@ -49,7 +49,7 @@ SELECT * FROM t
 
 Run from source code.
 
-```
+```bash
 $ swift run
 ...
 Connected to Apache Spark 4.0.0 Server

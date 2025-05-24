@@ -2,18 +2,18 @@
 
 This project is designed to illustrate a Swift-based HTTP WebServer with Apache Spark Connect.
 
-- https://swiftpackageindex.com/vapor/vapor
+- <https://swiftpackageindex.com/vapor/vapor>
 
 ## Create a Swift project
 
-```
+```bash
 brew install vapor
 vapor new spark-connect-swift-web -n
 ```
 
-## Use `Apache Spark Connect Swift Client` package.
+## Use `Apache Spark Connect Swift Client` package
 
-```
+```bash
 $ git diff HEAD
 diff --git a/Package.swift b/Package.swift
 index 477bcbd..3e7bb06 100644
@@ -76,13 +76,13 @@ index 2edcc8f..22313c8 100644
 
 Prepare `Spark Connect Server` via running Docker image.
 
-```
+```bash
 docker run --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
 ```
 
 Build an application Docker image.
 
-```
+```bash
 $ docker build -t apache/spark-connect-swift:web .
 $ docker images apache/spark-connect-swift:web
 REPOSITORY                   TAG       IMAGE ID       CREATED          SIZE
@@ -91,14 +91,14 @@ apache/spark-connect-swift   web       3fd2422fdbee   27 seconds ago   417MB
 
 Run `web` docker image
 
-```
+```bash
 $ docker run -it --rm -p 8080:8080 -e SPARK_REMOTE=sc://host.docker.internal:15002 apache/spark-connect-swift:web
 [ NOTICE ] Server started on http://127.0.0.1:8080
 ```
 
 Connect to the Swift Web Server to talk with `Apache Spark`.
 
-```
+```bash
 $ curl http://127.0.0.1:8080/
 Welcome to the Swift world. Say hello!%
 
@@ -108,6 +108,6 @@ Hi, this is powered by the Apache Spark 4.0.0.%
 
 Run from source code.
 
-```
-$ swift run
+```bash
+swift run
 ```

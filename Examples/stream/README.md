@@ -20,7 +20,7 @@ nc -lk 9999
 
 Build an application Docker image.
 
-```
+```bash
 $ docker build -t apache/spark-connect-swift:stream .
 $ docker images apache/spark-connect-swift:stream
 REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
@@ -29,8 +29,8 @@ apache/spark-connect-swift   stream    a4daa10ad9c5   7 seconds ago   369MB
 
 Run `stream` docker image.
 
-```
-$ docker run --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 -e TARGET_HOST=host.docker.internal apache/spark-connect-swift:stream
+```bash
+docker run --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 -e TARGET_HOST=host.docker.internal apache/spark-connect-swift:stream
 ```
 
 ## Send input and check output

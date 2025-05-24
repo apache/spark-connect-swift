@@ -13,12 +13,14 @@ docker run -it --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/s
 ## Basic Application Example
 
 The basic application example demonstrates fundamental operations with Apache Spark Connect, including:
+
 - Connecting to a Spark server
 - Creating and manipulating tables with SQL
 - Using DataFrame operations
 - Reading and writing data in the ORC format
 
 ### Key Features
+
 - SQL execution for table operations
 - DataFrame transformations with filter operations
 - Data persistence with ORC format
@@ -40,11 +42,13 @@ swift run
 ## Spark SQL REPL(Read-Eval-Print Loop) Example
 
 The Spark SQL REPL application example demonstrates interactive operations with ad-hoc Spark SQL queries with Apache Spark Connect, including:
+
 - Connecting to a Spark server
 - Receiving ad-hoc Spark SQL queries from users
 - Show the SQL results interactively
 
 ### Key Features
+
 - Spark SQL execution for table operations
 - User interactions
 
@@ -66,6 +70,7 @@ swift run
 The Pi calculation example shows how to use Spark Connect Swift for computational tasks by calculating an approximation of π (pi) using the Monte Carlo method.
 
 ### Key Features
+
 - Command-line argument handling
 - Mathematical computations with Spark
 - Random number generation
@@ -89,6 +94,7 @@ swift run
 The streaming example demonstrates how to process streaming data using Spark Connect Swift client, specifically for counting words from a network socket stream.
 
 ### Key Features
+
 - Stream processing with Spark Connect
 - Network socket data source
 - Word counting with string operations
@@ -120,6 +126,7 @@ Type text into the Netcat terminal to see real-time word counting from `Spark Co
 The web application example showcases how to integrate Spark Connect Swift with a web server using the Vapor framework.
 
 ### Key Features
+
 - HTTP server integration with Vapor
 - REST API endpoints
 - Spark session management within web requests
@@ -153,6 +160,7 @@ Hi, this is powered by the Apache Spark 4.0.0.%
 ## Development Environment
 
 All examples include:
+
 - A Dockerfile for containerized execution
 - A Package.swift file for Swift Package Manager configuration
 - A README.md with detailed instructions
