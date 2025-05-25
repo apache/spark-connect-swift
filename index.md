@@ -24,7 +24,7 @@ from their Swift applications.
 
 ## Run an example
 
-### Install Helm Chart
+### Install [Spark K8s Operator](https://apache.github.io/spark-kubernetes-operator/) Helm Chart
 
 ```bash
 helm repo add spark https://apache.github.io/spark-kubernetes-operator
