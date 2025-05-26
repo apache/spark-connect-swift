@@ -50,12 +50,7 @@ public actor DataStreamReader: Sendable {
   /// - Returns: A ``DataStreamReader``.
   @discardableResult
   public func schema(_ schema: String) async throws -> DataStreamReader {
-    // Validate by parsing.
-    do {
-      try await sparkSession.client.ddlParse(schema)
-    } catch {
-      throw SparkConnectError.InvalidTypeException
-    }
+    try await sparkSession.client.ddlParse(schema)
     self.userSpecifiedSchemaDDL = schema
     return self
   }

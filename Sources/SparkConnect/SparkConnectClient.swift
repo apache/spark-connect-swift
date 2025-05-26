@@ -781,8 +781,17 @@ public actor SparkConnectClient {
         ddlParse.ddlString = ddlString
         return OneOf_Analyze.ddlParse(ddlParse)
       })
-      let response = try await service.analyzePlan(request)
-      return response.ddlParse.parsed
+      do {
+        let response = try await service.analyzePlan(request)
+        return response.ddlParse.parsed
+      } catch let error as RPCError where error.code == .internalError {
+        switch error.message {
+        case let m where m.contains("UNSUPPORTED_DATATYPE") || m.contains("INVALID_IDENTIFIER"):
+          throw SparkConnectError.InvalidTypeException
+        default:
+          throw error
+        }
+      }
     }
   }
 

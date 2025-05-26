@@ -489,13 +489,8 @@ public actor DataFrame: Sendable {
   /// - Parameter schema: The given schema.
   /// - Returns: A ``DataFrame`` with the given schema.
   public func to(_ schema: String) async throws -> DataFrame {
-    // Validate by parsing.
-    do {
-      let dataType = try await sparkSession.client.ddlParse(schema)
-      return DataFrame(spark: self.spark, plan: SparkConnectClient.getToSchema(self.plan.root, dataType))
-    } catch {
-      throw SparkConnectError.InvalidTypeException
-    }
+    let dataType = try await sparkSession.client.ddlParse(schema)
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getToSchema(self.plan.root, dataType))
   }
 
   /// Returns the content of the Dataset as a Dataset of JSON strings.
