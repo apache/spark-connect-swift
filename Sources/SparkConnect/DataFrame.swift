@@ -408,6 +408,8 @@ public actor DataFrame: Sendable {
               values.append(array.asAny(i) as? Float)
             case .primitiveInfo(.double):
               values.append(array.asAny(i) as? Double)
+            case .primitiveInfo(.decimal128):
+              values.append(array.asAny(i) as? Decimal)
             case .primitiveInfo(.date32):
               values.append(array.asAny(i) as! Date)
             case ArrowType.ArrowBinary:

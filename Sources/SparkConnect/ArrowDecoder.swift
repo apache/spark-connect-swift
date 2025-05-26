@@ -160,7 +160,7 @@ private struct ArrowUnkeyedDecoding: UnkeyedDecodingContainer {
       || type == Bool?.self || type == Bool.self || type == Int8.self || type == Int16.self
       || type == Int32.self || type == Int64.self || type == UInt8.self || type == UInt16.self
       || type == UInt32.self || type == UInt64.self || type == String.self || type == Double.self
-      || type == Float.self || type == Date.self
+      || type == Float.self || type == Date.self || type == Decimal.self || type == Decimal?.self
     {
       defer { increment() }
       return try self.decoder.doDecode(self.currentIndex)!
@@ -260,8 +260,12 @@ private struct ArrowKeyedDecoding<Key: CodingKey>: KeyedDecodingContainerProtoco
     return try self.decoder.doDecode(key)!
   }
 
+  func decode(_ type: Decimal.Type, forKey key: Key) throws -> Decimal {
+    return try self.decoder.doDecode(key)!
+  }
+
   func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Decodable {
-    if ArrowArrayBuilders.isValidBuilderType(type) || type == Date.self {
+    if ArrowArrayBuilders.isValidBuilderType(type) || type == Date.self || type == Decimal.self {
       return try self.decoder.doDecode(key)!
     } else {
       throw ArrowError.invalid("Type \(type) is currently not supported")
@@ -363,8 +367,12 @@ private struct ArrowSingleValueDecoding: SingleValueDecodingContainer {
     return try self.decoder.doDecode(self.decoder.singleRBCol)!
   }
 
+  func decode(_ type: Decimal.Type) throws -> Decimal {
+    return try self.decoder.doDecode(self.decoder.singleRBCol)!
+  }
+
   func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-    if ArrowArrayBuilders.isValidBuilderType(type) || type == Date.self {
+    if ArrowArrayBuilders.isValidBuilderType(type) || type == Date.self || type == Decimal.self {
       return try self.decoder.doDecode(self.decoder.singleRBCol)!
     } else {
       throw ArrowError.invalid("Type \(type) is currently not supported")

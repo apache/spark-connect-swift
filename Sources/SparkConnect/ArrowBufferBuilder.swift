@@ -142,6 +142,8 @@ public class FixedBufferBuilder<T>: ValuesBufferBuilder<T>, ArrowBufferBuilder {
       return Float(0) as! T  // swiftlint:disable:this force_cast
     } else if type == Double.self {
       return Double(0) as! T  // swiftlint:disable:this force_cast
+    } else if type == Decimal.self {
+      return Decimal(0) as! T  // swiftlint:disable:this force_cast
     }
 
     throw ArrowError.unknownType("Unable to determine default value")

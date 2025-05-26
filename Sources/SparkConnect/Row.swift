@@ -69,6 +69,8 @@ public struct Row: Sendable, Equatable {
         return a == b
       } else if let a = x as? Double, let b = y as? Double {
         return a == b
+      } else if let a = x as? Decimal, let b = y as? Decimal {
+        return a == b
       } else if let a = x as? String, let b = y as? String {
         return a == b
       } else {

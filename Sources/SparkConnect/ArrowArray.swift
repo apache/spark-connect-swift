@@ -101,6 +101,8 @@ public class ArrowArrayHolderImpl: ArrowArrayHolder {
       return try ArrowArrayHolderImpl(FixedArray<Double>(with))
     case .float:
       return try ArrowArrayHolderImpl(FixedArray<Float>(with))
+    case .decimal128:
+      return try ArrowArrayHolderImpl(FixedArray<Decimal>(with))
     case .date32:
       return try ArrowArrayHolderImpl(Date32Array(with))
     case .date64:
@@ -246,6 +248,25 @@ public class Date64Array: ArrowArray<Date> {
 public class Time32Array: FixedArray<Time32> {}
 /// @nodoc
 public class Time64Array: FixedArray<Time64> {}
+
+/// @nodoc
+public class Decimal128Array: FixedArray<Decimal> {
+  public override subscript(_ index: UInt) -> Decimal? {
+    if self.arrowData.isNull(index) {
+      return nil
+    }
+    let scale: Int32 = switch self.arrowData.type.id {
+    case .decimal128(_, let scale):
+      scale
+    default:
+      18
+    }
+    let byteOffset = self.arrowData.stride * Int(index)
+    let value = self.arrowData.buffers[1].rawPointer.advanced(by: byteOffset).load(
+      as: UInt64.self)
+    return Decimal(value) / pow(10, Int(scale))
+  }
+}
 
 /// @nodoc
 public class BinaryArray: ArrowArray<Data> {

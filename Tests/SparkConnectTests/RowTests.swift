@@ -38,6 +38,7 @@ struct RowTests {
     #expect(Row(nil).size == 1)
     #expect(Row(1).size == 1)
     #expect(Row(1.1).size == 1)
+    #expect(Row(Decimal(1.1)).size == 1)
     #expect(Row("a").size == 1)
     #expect(Row(nil, 1, 1.1, "a", true).size == 5)
     #expect(Row(valueArray: [nil, 1, 1.1, "a", true]).size == 5)
@@ -50,11 +51,12 @@ struct RowTests {
 
   @Test
   func get() throws {
-    let row = Row(1, 1.1, "a", true)
+    let row = Row(1, 1.1, "a", true, Decimal(1.2))
     #expect(try row.get(0) as! Int == 1)
     #expect(try row.get(1) as! Double == 1.1)
     #expect(try row.get(2) as! String == "a")
     #expect(try row.get(3) as! Bool == true)
+    #expect(try row.get(4) as! Decimal == Decimal(1.2))
     #expect(throws: SparkConnectError.InvalidArgumentException) {
       try Row.empty.get(-1)
     }
@@ -72,6 +74,9 @@ struct RowTests {
 
     #expect(Row(1.0) == Row(1.0))
     #expect(Row(1.0) != Row(2.0))
+
+    #expect(Row(Decimal(1.0)) == Row(Decimal(1.0)))
+    #expect(Row(Decimal(1.0)) != Row(Decimal(2.0)))
 
     #expect(Row("a") == Row("a"))
     #expect(Row("a") != Row("b"))

@@ -893,6 +893,25 @@ struct DataFrameTests {
     }
     await spark.stop()
   }
+
+  @Test
+  func decimal() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(
+      """
+      SELECT * FROM VALUES
+      (1.0, 3.4, CAST(NULL AS DECIMAL), CAST(0 AS DECIMAL)),
+      (2.0, 34.56, CAST(0 AS DECIMAL), CAST(NULL AS DECIMAL))
+      """)
+    #expect(try await df.dtypes.map { $0.1 } ==
+      ["decimal(2,1)", "decimal(4,2)", "decimal(10,0)", "decimal(10,0)"])
+    let expected = [
+      Row(Decimal(1.0), Decimal(3.40), nil, Decimal(0)),
+      Row(Decimal(2.0), Decimal(34.56), Decimal(0), nil)
+    ]
+    #expect(try await df.collect() == expected)
+    await spark.stop()
+  }
 #endif
 
   @Test
