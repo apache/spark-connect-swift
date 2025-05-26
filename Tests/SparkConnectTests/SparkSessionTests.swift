@@ -68,11 +68,13 @@ struct SparkSessionTests {
   func closedSessionID() async throws {
     await SparkSession.builder.clear()
     let spark1 = try await SparkSession.builder.getOrCreate()
-    let sessionID = spark1.sessionID
-    await spark1.stop()
-    let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost"
-    try await #require(throws: Error.self) {
-      try await SparkSession.builder.remote("\(remote)/;session_id=\(sessionID)").getOrCreate()
+    if await spark1.version >= "4.0.0" {
+      let sessionID = spark1.sessionID
+      await spark1.stop()
+      let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost"
+      try await #require(throws: Error.self) {
+        try await SparkSession.builder.remote("\(remote)/;session_id=\(sessionID)").getOrCreate()
+      }
     }
   }
 
