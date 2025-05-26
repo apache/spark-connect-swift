@@ -82,8 +82,17 @@ public actor SparkConnectClient {
     self.userContext = userName.toUserContext
   }
 
-  /// Stop the connection. Currently, this API is no-op because we don't reuse the connection yet.
-  func stop() {
+  /// Stop the connection.
+  func stop() async {
+    guard self.sessionID != nil else { return }
+    try? await withGPRC { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      var request = Spark_Connect_ReleaseSessionRequest()
+      request.sessionID = self.sessionID!
+      request.userContext = self.userContext
+      request.clientType = self.clientType
+      _ = try await service.releaseSession(request)
+    }
   }
 
   /// Connect to the `Spark Connect` server with the given session ID string.
