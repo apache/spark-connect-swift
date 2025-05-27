@@ -83,7 +83,7 @@ public actor SparkSession {
       // SQLSTATE: 0A000
       // [UNSUPPORTED_CONNECT_FEATURE.SESSION_SPARK_CONTEXT]
       // Feature is not supported in Spark Connect: Access to the SparkContext.
-      throw SparkConnectError.UnsupportedOperationException
+      throw SparkConnectError.UnsupportedOperation
     }
   }
 

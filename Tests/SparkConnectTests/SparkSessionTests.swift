@@ -29,7 +29,7 @@ struct SparkSessionTests {
   func sparkContext() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    await #expect(throws: SparkConnectError.UnsupportedOperationException) {
+    await #expect(throws: SparkConnectError.UnsupportedOperation) {
       try await spark.sparkContext
     }
     await spark.stop()
@@ -186,10 +186,10 @@ struct SparkSessionTests {
   func invalidTags() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    await #expect(throws: SparkConnectError.InvalidArgumentException) {
+    await #expect(throws: SparkConnectError.InvalidArgument) {
       try await spark.addTag("")
     }
-    await #expect(throws: SparkConnectError.InvalidArgumentException) {
+    await #expect(throws: SparkConnectError.InvalidArgument) {
       try await spark.addTag(",")
     }
     await spark.stop()

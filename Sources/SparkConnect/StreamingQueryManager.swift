@@ -135,7 +135,7 @@ public actor StreamingQueryManager {
     let response = try await self.sparkSession.client.executeStreamingQueryManagerCommand(command)
     let query = response.first!.streamingQueryManagerCommandResult.query
     guard query.hasID else {
-      throw SparkConnectError.InvalidArgumentException
+      throw SparkConnectError.InvalidArgument
     }
     return StreamingQuery(
       UUID(uuidString: query.id.id)!,
@@ -154,7 +154,7 @@ public actor StreamingQueryManager {
     var awaitAnyTerminationCommand = StreamingQueryManagerCommand.AwaitAnyTerminationCommand()
     if let timeoutMs {
       guard timeoutMs > 0 else {
-        throw SparkConnectError.InvalidArgumentException
+        throw SparkConnectError.InvalidArgument
       }
       awaitAnyTerminationCommand.timeoutMs = timeoutMs
     }

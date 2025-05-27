@@ -35,10 +35,10 @@ struct StreamingQueryManagerTests {
   @Test
   func get() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    await #expect(throws: SparkConnectError.InvalidArgumentException) {
+    await #expect(throws: SparkConnectError.InvalidArgument) {
       try await spark.streams.get(UUID())
     }
-    await #expect(throws: SparkConnectError.InvalidArgumentException) {
+    await #expect(throws: SparkConnectError.InvalidArgument) {
       try await spark.streams.get(UUID().uuidString)
     }
     await spark.stop()
@@ -48,7 +48,7 @@ struct StreamingQueryManagerTests {
   func awaitAnyTermination() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.streams.awaitAnyTermination(1)
-    await #expect(throws: SparkConnectError.InvalidArgumentException) {
+    await #expect(throws: SparkConnectError.InvalidArgument) {
       try await spark.streams.awaitAnyTermination(-1)
     }
     await spark.stop()

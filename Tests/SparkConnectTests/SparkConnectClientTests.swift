@@ -47,7 +47,7 @@ struct SparkConnectClientTests {
   @Test
   func connectWithInvalidUUID() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
-    try await #require(throws: SparkConnectError.InvalidSessionIDException) {
+    try await #require(throws: SparkConnectError.InvalidSessionID) {
       try await client.connect("not-a-uuid-format")
     }
     await client.stop()

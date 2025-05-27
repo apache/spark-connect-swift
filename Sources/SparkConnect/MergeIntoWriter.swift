@@ -187,7 +187,7 @@ public actor MergeIntoWriter {
       && self.mergeIntoTableCommand.notMatchedActions.count == 0
       && self.mergeIntoTableCommand.notMatchedBySourceActions.count == 0
     {
-      throw SparkConnectError.InvalidArgumentException
+      throw SparkConnectError.InvalidArgument
     }
     self.mergeIntoTableCommand.sourceTablePlan = await (self.df.getPlan() as! Plan).root
     self.mergeIntoTableCommand.withSchemaEvolution = self.schemaEvolution

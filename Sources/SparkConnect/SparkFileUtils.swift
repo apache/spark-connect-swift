@@ -106,7 +106,7 @@ public enum SparkFileUtils {
     if fileManager.fileExists(atPath: url.path) {
       try fileManager.removeItem(at: url)
     } else {
-      throw SparkConnectError.InvalidArgumentException
+      throw SparkConnectError.InvalidArgument
     }
   }
 }

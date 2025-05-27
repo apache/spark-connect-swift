@@ -45,7 +45,7 @@ public struct Row: Sendable, Equatable {
 
   public func get(_ i: Int) throws -> Sendable {
     if i < 0 || i >= self.length {
-      throw SparkConnectError.InvalidArgumentException
+      throw SparkConnectError.InvalidArgument
     }
     return values[i]
   }

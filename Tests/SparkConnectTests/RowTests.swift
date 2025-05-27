@@ -28,7 +28,7 @@ struct RowTests {
   func empty() {
     #expect(Row.empty.size == 0)
     #expect(Row.empty.length == 0)
-    #expect(throws: SparkConnectError.InvalidArgumentException) {
+    #expect(throws: SparkConnectError.InvalidArgument) {
       try Row.empty.get(0)
     }
   }
@@ -57,7 +57,7 @@ struct RowTests {
     #expect(try row.get(2) as! String == "a")
     #expect(try row.get(3) as! Bool == true)
     #expect(try row.get(4) as! Decimal == Decimal(1.2))
-    #expect(throws: SparkConnectError.InvalidArgumentException) {
+    #expect(throws: SparkConnectError.InvalidArgument) {
       try Row.empty.get(-1)
     }
   }

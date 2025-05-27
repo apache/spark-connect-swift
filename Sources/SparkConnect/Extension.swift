@@ -213,7 +213,7 @@ extension YearMonthInterval {
     case 0: "year"
     case 1: "month"
     default:
-      throw SparkConnectError.InvalidTypeException
+      throw SparkConnectError.InvalidType
     }
   }
 
@@ -225,7 +225,7 @@ extension YearMonthInterval {
     } else if startFieldName < endFieldName {
       "interval \(startFieldName) to \(endFieldName)"
     } else {
-      throw SparkConnectError.InvalidTypeException
+      throw SparkConnectError.InvalidType
     }
     return interval
   }
@@ -239,7 +239,7 @@ extension DayTimeInterval {
     case 2: "minute"
     case 3: "second"
     default:
-      throw SparkConnectError.InvalidTypeException
+      throw SparkConnectError.InvalidType
     }
   }
 
@@ -251,7 +251,7 @@ extension DayTimeInterval {
     } else if startFieldName < endFieldName {
       "interval \(startFieldName) to \(endFieldName)"
     } else {
-      throw SparkConnectError.InvalidTypeException
+      throw SparkConnectError.InvalidType
     }
     return interval
   }
@@ -325,7 +325,7 @@ extension DataType {
       case .unparsed:
         self.unparsed.dataTypeString
       default:
-        throw SparkConnectError.InvalidTypeException
+        throw SparkConnectError.InvalidType
       }
     }
   }

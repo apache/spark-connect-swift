@@ -103,10 +103,10 @@ struct DataFrameReaderTests {
   @Test
   func invalidSchema() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    await #expect(throws: SparkConnectError.InvalidTypeException) {
+    await #expect(throws: SparkConnectError.InvalidType) {
       try await spark.read.schema("invalid-name SHORT")
     }
-    await #expect(throws: SparkConnectError.InvalidTypeException) {
+    await #expect(throws: SparkConnectError.InvalidType) {
       try await spark.read.schema("age UNKNOWN_TYPE")
     }
     await spark.stop()

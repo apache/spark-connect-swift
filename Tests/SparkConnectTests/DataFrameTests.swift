@@ -49,7 +49,7 @@ struct DataFrameTests {
   @Test
   func rdd() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    await #expect(throws: SparkConnectError.UnsupportedOperationException) {
+    await #expect(throws: SparkConnectError.UnsupportedOperation) {
       try await spark.range(1).rdd()
     }
     await spark.stop()

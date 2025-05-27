@@ -30,10 +30,10 @@ public enum ProtoUtils {
     // because the Spark Connect job tag is also used as part of SparkContext job tag.
     // See SparkContext.throwIfInvalidTag and ExecuteHolderSessionTag
     if tag.isEmpty {
-      throw SparkConnectError.InvalidArgumentException
+      throw SparkConnectError.InvalidArgument
     }
     if tag.contains(SPARK_JOB_TAGS_SEP) {
-      throw SparkConnectError.InvalidArgumentException
+      throw SparkConnectError.InvalidArgument
     }
   }
 }

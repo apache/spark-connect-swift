@@ -104,7 +104,7 @@ public actor SparkConnectClient {
     try await withGPRC { client in
       // To prevent server-side `INVALID_HANDLE.FORMAT (SQLSTATE: HY000)` exception.
       if UUID(uuidString: sessionID) == nil {
-        throw SparkConnectError.InvalidSessionIDException
+        throw SparkConnectError.InvalidSessionID
       }
 
       self.sessionID = sessionID
@@ -787,7 +787,7 @@ public actor SparkConnectClient {
       } catch let error as RPCError where error.code == .internalError {
         switch error.message {
         case let m where m.contains("UNSUPPORTED_DATATYPE") || m.contains("INVALID_IDENTIFIER"):
-          throw SparkConnectError.InvalidTypeException
+          throw SparkConnectError.InvalidType
         default:
           throw error
         }

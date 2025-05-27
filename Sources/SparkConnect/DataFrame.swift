@@ -258,7 +258,7 @@ public actor DataFrame: Sendable {
     // SQLSTATE: 0A000
     // [UNSUPPORTED_CONNECT_FEATURE.RDD]
     // Feature is not supported in Spark Connect: Resilient Distributed Datasets (RDDs).
-    throw SparkConnectError.UnsupportedOperationException
+    throw SparkConnectError.UnsupportedOperation
   }
 
   /// Return an array of column name strings
