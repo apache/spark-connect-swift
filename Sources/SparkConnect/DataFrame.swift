@@ -299,7 +299,20 @@ public actor DataFrame: Sendable {
       ),
       interceptors: spark.client.getIntercepters()
     ) { client in
-      return try await f(client)
+      do {
+        return try await f(client)
+      } catch let error as RPCError where error.code == .internalError {
+        switch error.message {
+        case let m where m.contains("CATALOG_NOT_FOUND"):
+          throw SparkConnectError.CatalogNotFound
+        case let m where m.contains("SCHEMA_NOT_FOUND"):
+          throw SparkConnectError.SchemaNotFound
+        case let m where m.contains("TABLE_OR_VIEW_NOT_FOUND"):
+          throw SparkConnectError.TableOrViewNotFound
+        default:
+          throw error
+        }
+      }
     }
   }
 

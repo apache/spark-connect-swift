@@ -37,7 +37,7 @@ struct CatalogTests {
   func setCurrentCatalog() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.catalog.setCurrentCatalog("spark_catalog")
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.CatalogNotFound) {
       try await spark.catalog.setCurrentCatalog("not_exist_catalog")
     }
     await spark.stop()
@@ -63,7 +63,7 @@ struct CatalogTests {
   func setCurrentDatabase() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.catalog.setCurrentDatabase("default")
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.SchemaNotFound) {
       try await spark.catalog.setCurrentDatabase("not_exist_database")
     }
     await spark.stop()
@@ -91,7 +91,7 @@ struct CatalogTests {
     #expect(db.catalog == "spark_catalog")
     #expect(db.description == "default database")
     #expect(db.locationUri.hasSuffix("spark-warehouse"))
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.SchemaNotFound) {
       try await spark.catalog.getDatabase("not_exist_database")
     }
     await spark.stop()
@@ -313,7 +313,7 @@ struct CatalogTests {
       try await spark.catalog.cacheTable(tableName, StorageLevel.MEMORY_ONLY)
     })
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.TableOrViewNotFound) {
       try await spark.catalog.cacheTable("not_exist_table")
     }
     await spark.stop()
@@ -330,7 +330,7 @@ struct CatalogTests {
       #expect(try await spark.catalog.isCached(tableName))
     })
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.TableOrViewNotFound) {
       try await spark.catalog.isCached("not_exist_table")
     }
     await spark.stop()
@@ -351,7 +351,7 @@ struct CatalogTests {
       #expect(try await spark.catalog.isCached(tableName))
     })
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.TableOrViewNotFound) {
       try await spark.catalog.refreshTable("not_exist_table")
     }
     await spark.stop()
@@ -386,7 +386,7 @@ struct CatalogTests {
       #expect(try await spark.catalog.isCached(tableName) == false)
     })
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.TableOrViewNotFound) {
       try await spark.catalog.uncacheTable("not_exist_table")
     }
     await spark.stop()
