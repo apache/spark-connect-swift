@@ -131,6 +131,10 @@ public actor SparkConnectClient {
         return try await f(client)
       } catch let error as RPCError where error.code == .internalError {
         switch error.message {
+        case let m where m.contains("INVALID_HANDLE.SESSION_CLOSED"):
+          throw SparkConnectError.SessionClosed
+        case let m where m.contains("SQL_CONF_NOT_FOUND"):
+          throw SparkConnectError.SqlConfNotFound
         case let m where m.contains("TABLE_OR_VIEW_ALREADY_EXISTS"):
           throw SparkConnectError.TableOrViewAlreadyExists
         case let m where m.contains("TABLE_OR_VIEW_NOT_FOUND"):

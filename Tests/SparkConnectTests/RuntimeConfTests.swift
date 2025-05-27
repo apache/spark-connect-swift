@@ -35,7 +35,7 @@ struct RuntimeConfTests {
 
     #expect(try await !conf.get("spark.app.name").isEmpty)
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.SqlConfNotFound) {
       try await conf.get("spark.test.non-exist")
     }
 
@@ -86,7 +86,7 @@ struct RuntimeConfTests {
     #expect(try await conf.get("spark.test.key1") == "value1")
 
     try await conf.unset("spark.test.key1")
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.SqlConfNotFound) {
       try await conf.get("spark.test.key1")
     }
 

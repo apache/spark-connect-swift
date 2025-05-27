@@ -25,7 +25,10 @@ public enum SparkConnectError: Error {
   case InvalidSessionID
   case InvalidType
   case InvalidViewName
+  case ParseSyntaxError
   case SchemaNotFound
+  case SessionClosed
+  case SqlConfNotFound
   case TableOrViewAlreadyExists
   case TableOrViewNotFound
   case UnsupportedOperation

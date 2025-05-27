@@ -72,7 +72,7 @@ struct SparkSessionTests {
       let sessionID = spark1.sessionID
       await spark1.stop()
       let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost"
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.SessionClosed) {
         try await SparkSession.builder.remote("\(remote)/;session_id=\(sessionID)").getOrCreate()
       }
     }

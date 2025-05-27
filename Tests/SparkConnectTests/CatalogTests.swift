@@ -144,7 +144,7 @@ struct CatalogTests {
     })
     #expect(try await spark.catalog.tableExists(tableName) == false)
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.ParseSyntaxError) {
       try await spark.catalog.tableExists("invalid table name")
     }
     await spark.stop()
@@ -190,7 +190,7 @@ struct CatalogTests {
     #expect(try await spark.catalog.functionExists("base64"))
     #expect(try await spark.catalog.functionExists("non_exist_function") == false)
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.ParseSyntaxError) {
       try await spark.catalog.functionExists("invalid function name")
     }
     await spark.stop()

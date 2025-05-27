@@ -311,6 +311,8 @@ public actor DataFrame: Sendable {
           throw SparkConnectError.TableOrViewNotFound
         case let m where m.contains("UNRESOLVED_COLUMN.WITH_SUGGESTION"):
           throw SparkConnectError.ColumnNotFound
+        case let m where m.contains("PARSE_SYNTAX_ERROR"):
+          throw SparkConnectError.ParseSyntaxError
         default:
           throw error
         }
