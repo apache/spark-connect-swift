@@ -205,12 +205,12 @@ struct CatalogTests {
       try await spark.range(1).createTempView(viewName)
       #expect(try await spark.catalog.tableExists(viewName))
 
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewAlreadyExists) {
         try await spark.range(1).createTempView(viewName)
       }
     })
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.InvalidViewName) {
       try await spark.range(1).createTempView("invalid view name")
     }
 
@@ -228,7 +228,7 @@ struct CatalogTests {
       try await spark.range(1).createOrReplaceTempView(viewName)
     })
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.InvalidViewName) {
       try await spark.range(1).createOrReplaceTempView("invalid view name")
     }
 
@@ -244,13 +244,13 @@ struct CatalogTests {
       try await spark.range(1).createGlobalTempView(viewName)
       #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
 
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewAlreadyExists) {
         try await spark.range(1).createGlobalTempView(viewName)
       }
     })
     #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.InvalidViewName) {
       try await spark.range(1).createGlobalTempView("invalid view name")
     }
 
@@ -269,7 +269,7 @@ struct CatalogTests {
     })
     #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
 
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.InvalidViewName) {
       try await spark.range(1).createOrReplaceGlobalTempView("invalid view name")
     }
 

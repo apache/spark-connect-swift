@@ -20,10 +20,13 @@
 /// A enum for ``SparkConnect`` package errors
 public enum SparkConnectError: Error {
   case CatalogNotFound
+  case ColumnNotFound
   case InvalidArgument
   case InvalidSessionID
   case InvalidType
+  case InvalidViewName
   case SchemaNotFound
+  case TableOrViewAlreadyExists
   case TableOrViewNotFound
   case UnsupportedOperation
 }

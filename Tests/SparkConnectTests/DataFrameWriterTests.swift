@@ -112,7 +112,7 @@ struct DataFrameWriterTests {
       try await spark.range(1).write.saveAsTable(tableName)
       #expect(try await spark.read.table(tableName).count() == 1)
 
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewAlreadyExists) {
         try await spark.range(1).write.saveAsTable(tableName)
       }
 
@@ -130,8 +130,7 @@ struct DataFrameWriterTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     try await SQLHelper.withTable(spark, tableName)({
-      // Table doesn't exist.
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
         try await spark.range(1).write.insertInto(tableName)
       }
 

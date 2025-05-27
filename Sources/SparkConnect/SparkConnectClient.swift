@@ -127,7 +127,20 @@ public actor SparkConnectClient {
       ),
       interceptors: self.intercepters
     ) { client in
-      return try await f(client)
+      do {
+        return try await f(client)
+      } catch let error as RPCError where error.code == .internalError {
+        switch error.message {
+        case let m where m.contains("TABLE_OR_VIEW_ALREADY_EXISTS"):
+          throw SparkConnectError.TableOrViewAlreadyExists
+        case let m where m.contains("TABLE_OR_VIEW_NOT_FOUND"):
+          throw SparkConnectError.TableOrViewNotFound
+        case let m where m.contains("Invalid view name:"):
+          throw SparkConnectError.InvalidViewName
+        default:
+          throw error
+        }
+      }
     }
   }
 

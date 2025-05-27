@@ -309,6 +309,8 @@ public actor DataFrame: Sendable {
           throw SparkConnectError.SchemaNotFound
         case let m where m.contains("TABLE_OR_VIEW_NOT_FOUND"):
           throw SparkConnectError.TableOrViewNotFound
+        case let m where m.contains("UNRESOLVED_COLUMN.WITH_SUGGESTION"):
+          throw SparkConnectError.ColumnNotFound
         default:
           throw error
         }

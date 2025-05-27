@@ -235,10 +235,10 @@ struct DataFrameTests {
   @Test
   func selectInvalidColumn() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.ColumnNotFound) {
       try await spark.range(1).select("invalid").schema
     }
-    try await #require(throws: Error.self) {
+    try await #require(throws: SparkConnectError.ColumnNotFound) {
       try await spark.range(1).select("id + 1").schema
     }
     await spark.stop()

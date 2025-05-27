@@ -31,10 +31,10 @@ struct MergeIntoWriterTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     try await SQLHelper.withTable(spark, tableName)({
       let mergeInto = try await spark.range(1).mergeInto(tableName, "true")
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
         try await mergeInto.whenMatched().delete().merge()
       }
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
         try await mergeInto.whenMatched("true").delete().merge()
       }
     })
@@ -47,10 +47,10 @@ struct MergeIntoWriterTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     try await SQLHelper.withTable(spark, tableName)({
       let mergeInto = try await spark.range(1).mergeInto(tableName, "true")
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
         try await mergeInto.whenNotMatched().insertAll().merge()
       }
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
         try await mergeInto.whenNotMatched("true").insertAll().merge()
       }
     })
@@ -63,10 +63,10 @@ struct MergeIntoWriterTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     try await SQLHelper.withTable(spark, tableName)({
       let mergeInto = try await spark.range(1).mergeInto(tableName, "true")
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
         try await mergeInto.whenNotMatchedBySource().delete().merge()
       }
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
         try await mergeInto.whenNotMatchedBySource("true").delete().merge()
       }
     })

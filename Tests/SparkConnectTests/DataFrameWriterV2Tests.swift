@@ -34,7 +34,7 @@ struct DataFrameWriterV2Tests {
       let write = try await spark.range(2).writeTo(tableName).using("orc")
       try await write.create()
       #expect(try await spark.table(tableName).count() == 2)
-      try await #require(throws: Error.self) {
+      try await #require(throws: SparkConnectError.TableOrViewAlreadyExists) {
         try await write.create()
       }
     })
