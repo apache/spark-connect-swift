@@ -37,8 +37,14 @@ struct CatalogTests {
   func setCurrentCatalog() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.catalog.setCurrentCatalog("spark_catalog")
-    try await #require(throws: SparkConnectError.CatalogNotFound) {
-      try await spark.catalog.setCurrentCatalog("not_exist_catalog")
+    if await spark.version >= "4.0.0" {
+      try await #require(throws: SparkConnectError.CatalogNotFound) {
+        try await spark.catalog.setCurrentCatalog("not_exist_catalog")
+      }
+    } else {
+      try await #require(throws: Error.self) {
+        try await spark.catalog.setCurrentCatalog("not_exist_catalog")
+      }
     }
     await spark.stop()
   }
