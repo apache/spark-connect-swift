@@ -87,7 +87,7 @@ jobs:
         swift-version: "6.1"
     - name: Test
       run: |
-        curl -LO https://dist.apache.org/repos/dist/release/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz?action=download
         tar xvfz spark-4.0.0-bin-hadoop3.tgz
         mv spark-4.0.0-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
@@ -106,7 +106,7 @@ jobs:
         swift-version: "6.1"
     - name: Test
       run: |
-        curl -LO https://dist.apache.org/repos/dist/release/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz?action=download
         tar xvfz spark-4.0.0-bin-hadoop3.tgz
         mv spark-4.0.0-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
@@ -128,7 +128,7 @@ jobs:
         java-version: 17
     - name: Test
       run: |
-        curl -LO https://downloads.apache.org/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz?action=download
         tar xvfz spark-3.5.5-bin-hadoop3.tgz
         mv spark-3.5.5-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
@@ -152,7 +152,7 @@ jobs:
         java-version: 17
     - name: Test
       run: |
-        curl -LO https://downloads.apache.org/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz?action=download
         tar xvfz spark-3.5.5-bin-hadoop3.tgz
         mv spark-3.5.5-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
