@@ -128,11 +128,11 @@ jobs:
         java-version: 17
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz?action=download
-        tar xvfz spark-3.5.5-bin-hadoop3.tgz
-        mv spark-3.5.5-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.6/spark-3.5.6-bin-hadoop3.tgz?action=download
+        tar xvfz spark-3.5.6-bin-hadoop3.tgz
+        mv spark-3.5.6-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.6
         cd -
         swift test --no-parallel -c release
 
@@ -152,11 +152,11 @@ jobs:
         java-version: 17
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.5/spark-3.5.5-bin-hadoop3.tgz?action=download
-        tar xvfz spark-3.5.5-bin-hadoop3.tgz
-        mv spark-3.5.5-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.6/spark-3.5.6-bin-hadoop3.tgz?action=download
+        tar xvfz spark-3.5.6-bin-hadoop3.tgz
+        mv spark-3.5.6-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.5,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.9.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.6,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.9.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         cd -
         swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release
