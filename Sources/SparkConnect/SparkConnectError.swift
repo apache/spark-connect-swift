@@ -21,6 +21,7 @@
 public enum SparkConnectError: Error {
   case CatalogNotFound
   case ColumnNotFound
+  case DataSourceNotFound
   case InvalidArgument
   case InvalidSessionID
   case InvalidType

@@ -267,6 +267,13 @@ public actor SparkSession {
     return await read.table(tableName)
   }
 
+  public func executeCommand(_ runner: String, _ command: String, _ options: [String: String])
+    async throws -> DataFrame
+  {
+    let plan = try await self.client.getExecuteExternalCommand(runner, command, options)
+    return DataFrame(spark: self, plan: plan)
+  }
+
   /// Executes a code block and prints the execution time.
   ///
   /// This utility method is useful for performance testing and optimization.

@@ -141,6 +141,8 @@ public actor SparkConnectClient {
           throw SparkConnectError.TableOrViewNotFound
         case let m where m.contains("Invalid view name:"):
           throw SparkConnectError.InvalidViewName
+        case let m where m.contains("DATA_SOURCE_NOT_FOUND"):
+          throw SparkConnectError.DataSourceNotFound
         default:
           throw error
         }
@@ -713,6 +715,24 @@ public actor SparkConnectClient {
       }
     }
     return result
+  }
+
+  func getExecuteExternalCommand(
+    _ runner: String,
+    _ command: String,
+    _ options: [String: String]
+  ) async throws -> Plan {
+    var executeExternalCommand = Spark_Connect_ExecuteExternalCommand()
+    executeExternalCommand.runner = runner
+    executeExternalCommand.command = command
+    executeExternalCommand.options = options
+    var command = Command()
+    command.commandType = .executeExternalCommand(executeExternalCommand)
+    let response = try await execute(self.sessionID!, command)
+    let relation = response.first!.sqlCommandResult.relation
+    var plan = Plan()
+    plan.opType = .root(relation)
+    return plan
   }
 
   /// Add a tag to be assigned to all the operations started by this thread in this session.

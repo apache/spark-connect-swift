@@ -141,6 +141,18 @@ struct SparkSessionTests {
     }
     await spark.stop()
   }
+
+  @Test
+  func executeCommand() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version.starts(with: "4.") {
+      await #expect(throws: SparkConnectError.DataSourceNotFound) {
+        try await spark.executeCommand("runner", "command", [:]).show()
+      }
+    }
+    await spark.stop()
+  }
 #endif
 
   @Test
