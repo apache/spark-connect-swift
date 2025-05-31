@@ -44,9 +44,9 @@ public actor SparkSession {
     self.client = SparkConnectClient(remote: connection)
     // Since `Session ID` belongs to `SparkSession`, we handle this here.
     if connection.contains(regexSessionID) {
-      self.sessionID = connection.firstMatch(of: regexSessionID)!.1.uppercased()
+      self.sessionID = connection.firstMatch(of: regexSessionID)!.1.lowercased()
     } else {
-      self.sessionID = UUID().uuidString
+      self.sessionID = UUID().uuidString.lowercased()
     }
     self.conf = RuntimeConf(self.client)
   }
