@@ -161,8 +161,10 @@ struct SparkSessionTests {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
-    try await spark.addArtifact(path)
-    try await spark.addArtifact(url)
+    if await spark.version.starts(with: "4.") {
+      try await spark.addArtifact(path)
+      try await spark.addArtifact(url)
+    }
     try fm.removeItem(atPath: path)
     await spark.stop()
   }
@@ -176,7 +178,9 @@ struct SparkSessionTests {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
-    try await spark.addArtifacts(url, url)
+    if await spark.version.starts(with: "4.") {
+      try await spark.addArtifacts(url, url)
+    }
     try fm.removeItem(atPath: path)
     await spark.stop()
   }
