@@ -9,6 +9,7 @@ from their Swift applications.
 
 ## Releases
 
+- [0.3.0-rc.1 (2025-06-01)](https://github.com/apache/spark-connect-swift/releases/tag/0.3.0-rc.1)
 - [0.2.0 (2025-05-20)](https://github.com/apache/spark-connect-swift/releases/tag/0.2.0)
 - [0.1.0 (2025-05-07)](https://github.com/apache/spark-connect-swift/releases/tag/v0.1.0)
 
