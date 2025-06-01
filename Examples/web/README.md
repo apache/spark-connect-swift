@@ -16,7 +16,7 @@ vapor new spark-connect-swift-web -n
 ```bash
 $ git diff HEAD
 diff --git a/Package.swift b/Package.swift
-index 477bcbd..3e7bb06 100644
+index 2edcc8f..dd918a9 100644
 --- a/Package.swift
 +++ b/Package.swift
 @@ -4,13 +4,14 @@ import PackageDescription
@@ -28,7 +28,7 @@ index 477bcbd..3e7bb06 100644
      ],
      dependencies: [
          // 💧 A server-side Swift web framework.
-         .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
+         .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
          // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
          .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
 +        .package(url: "https://github.com/apache/spark-connect-swift.git", branch: "main"),
@@ -43,17 +43,30 @@ index 477bcbd..3e7bb06 100644
              ],
              swiftSettings: swiftSettings
          ),
-diff --git a/Sources/SparkConnectSwiftWebapp/routes.swift b/Sources/SparkConnectSwiftWebapp/routes.swift
-index 2edcc8f..22313c8 100644
---- a/Sources/SparkConnectSwiftWebapp/routes.swift
-+++ b/Sources/SparkConnectSwiftWebapp/routes.swift
-@@ -1,4 +1,5 @@
+diff --git a/Sources/SparkConnectSwiftWeb/configure.swift b/Sources/SparkConnectSwiftWeb/configure.swift
+index 7715d7c..eea2f95 100644
+--- a/Sources/SparkConnectSwiftWeb/configure.swift
++++ b/Sources/SparkConnectSwiftWeb/configure.swift
+@@ -2,6 +2,7 @@ import Vapor
+
+ // configures your application
+ public func configure(_ app: Application) async throws {
++    app.http.server.configuration.hostname = "0.0.0.0"
+     // uncomment to serve files from /Public folder
+     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+
+diff --git a/Sources/SparkConnectSwiftWeb/routes.swift b/Sources/SparkConnectSwiftWeb/routes.swift
+index 2edcc8f..dd918a9 100644
+--- a/Sources/SparkConnectSwiftWeb/routes.swift
++++ b/Sources/SparkConnectSwiftWeb/routes.swift
+@@ -1,11 +1,21 @@
  import Vapor
 +import SparkConnect
 
  func routes(_ app: Application) throws {
      app.get { req async in
-@@ -6,6 +7,15 @@ func routes(_ app: Application) throws {
+-        "It works!"
++        "Welcome to the Swift world. Say hello!"
      }
 
      app.get("hello") { req async -> String in
