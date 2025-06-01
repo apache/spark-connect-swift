@@ -735,6 +735,39 @@ public actor SparkConnectClient {
     return plan
   }
 
+  func addArtifact(_ url: URL) async throws {
+    guard url.lastPathComponent.hasSuffix(".jar") else {
+      throw SparkConnectError.InvalidArgument
+    }
+
+    let JAR_PREFIX = "jars"
+    let name = "\(JAR_PREFIX)/" + url.lastPathComponent
+
+    try await withGPRC { client in
+      let service = SparkConnectService.Client(wrapping: client)
+
+      var chunk = Spark_Connect_AddArtifactsRequest.ArtifactChunk()
+      chunk.data = try Data(contentsOf: url)
+      chunk.crc = Int64(CRC32.checksum(data: chunk.data))
+
+      var singleChunk = Spark_Connect_AddArtifactsRequest.SingleChunkArtifact()
+      singleChunk.name = name
+      singleChunk.data = chunk
+      var batch = Spark_Connect_AddArtifactsRequest.Batch()
+      batch.artifacts.append(singleChunk)
+
+      var addArtifactsRequest = Spark_Connect_AddArtifactsRequest()
+      addArtifactsRequest.sessionID = self.sessionID!
+      addArtifactsRequest.userContext = self.userContext
+      addArtifactsRequest.clientType = self.clientType
+      addArtifactsRequest.batch = batch
+      let request = addArtifactsRequest
+      _ = try await service.addArtifacts(request: StreamingClientRequest<Spark_Connect_AddArtifactsRequest> { x in
+        try await x.write(contentsOf: [request])
+      })
+    }
+  }
+
   /// Add a tag to be assigned to all the operations started by this thread in this session.
   /// - Parameter tag: The tag to be added. Cannot contain ',' (comma) character or be an empty string.
   public func addTag(tag: String) throws {

@@ -267,6 +267,36 @@ public actor SparkSession {
     return await read.table(tableName)
   }
 
+  /// Add a single artifact to the current session.
+  /// Currently only local files with extensions .jar supported.
+  /// - Parameter url: A url to the artifact
+  public func addArtifact(_ url: URL) async throws {
+    try await self.client.addArtifact(url)
+  }
+
+  /// Add a single artifact to the current session.
+  /// Currently only local files with extensions .jar are supported.
+  /// - Parameter path: A path to the file.
+  public func addArtifact(_ path: String) async throws {
+    try await self.client.addArtifact(URL(fileURLWithPath: path))
+  }
+
+  /// Add one or more artifacts to the session.
+  /// - Parameter url: One or more URLs
+  public func addArtifacts(_ url: URL...) async throws {
+    for u in url {
+      try await self.client.addArtifact(u)
+    }
+  }
+
+  /// Execute an arbitrary string command inside an external execution engine rather than Spark.
+  /// This could be useful when user wants to execute some commands out of Spark. For example,
+  /// executing custom DDL/DML command for JDBC, creating index for ElasticSearch, creating cores
+  /// for Solr and so on.
+  /// - Parameters:
+  ///   - runner: The class name of the runner that implements `ExternalCommandRunner`.
+  ///   - command: The target command to be executed
+  ///   - options: The options for the runner.
   public func executeCommand(_ runner: String, _ command: String, _ options: [String: String])
     async throws -> DataFrame
   {

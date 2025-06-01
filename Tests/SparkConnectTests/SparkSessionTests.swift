@@ -143,6 +143,45 @@ struct SparkSessionTests {
   }
 
   @Test
+  func addInvalidArtifact() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    await #expect(throws: SparkConnectError.InvalidArgument) {
+      try await spark.addArtifact("x.txt")
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func addArtifact() async throws {
+    let fm = FileManager()
+    let path = "my.jar"
+    let url = URL(fileURLWithPath: path)
+
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
+    try await spark.addArtifact(path)
+    try await spark.addArtifact(url)
+    try fm.removeItem(atPath: path)
+    await spark.stop()
+  }
+
+  @Test
+  func addArtifacts() async throws {
+    let fm = FileManager()
+    let path = "my.jar"
+    let url = URL(fileURLWithPath: path)
+
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
+    try await spark.addArtifacts(url, url)
+    try fm.removeItem(atPath: path)
+    await spark.stop()
+  }
+
+  @Test
   func executeCommand() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
