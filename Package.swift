@@ -34,16 +34,16 @@ let package = Package(
       targets: ["SparkConnect"])
   ],
   dependencies: [
-    .package(url: "https://github.com/grpc/grpc-swift.git", exact: "2.2.2"),
-    .package(url: "https://github.com/grpc/grpc-swift-protobuf.git", exact: "1.3.0"),
-    .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", exact: "1.2.2"),
+    .package(url: "https://github.com/grpc/grpc-swift-2.git", exact: "2.0.0"),
+    .package(url: "https://github.com/grpc/grpc-swift-protobuf.git", exact: "2.0.0"),
+    .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", exact: "2.0.0"),
     .package(url: "https://github.com/google/flatbuffers.git", branch: "v25.2.10"),
   ],
   targets: [
     .target(
       name: "SparkConnect",
       dependencies: [
-        .product(name: "GRPCCore", package: "grpc-swift"),
+        .product(name: "GRPCCore", package: "grpc-swift-2"),
         .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
         .product(name: "GRPCNIOTransportHTTP2", package: "grpc-swift-nio-transport"),
         .product(name: "FlatBuffers", package: "flatbuffers"),
