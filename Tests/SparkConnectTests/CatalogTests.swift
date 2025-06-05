@@ -25,7 +25,6 @@ import Testing
 /// A test suite for `Catalog`
 @Suite(.serialized)
 struct CatalogTests {
-#if !os(Linux)
   @Test
   func currentCatalog() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -306,7 +305,6 @@ struct CatalogTests {
     #expect(try await spark.catalog.dropGlobalTempView("invalid view name") == false)
     await spark.stop()
   }
-#endif
 
   @Test
   func cacheTable() async throws {

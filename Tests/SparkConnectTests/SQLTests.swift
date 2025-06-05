@@ -90,7 +90,6 @@ struct SQLTests {
     "variant.sql",
   ]
 
-#if !os(Linux)
   @Test
   func runAll() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
@@ -120,5 +119,4 @@ struct SQLTests {
     }
     await spark.stop()
   }
-#endif
 }

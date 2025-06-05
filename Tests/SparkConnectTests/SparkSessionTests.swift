@@ -129,7 +129,6 @@ struct SparkSessionTests {
     await spark.stop()
   }
 
-#if !os(Linux)
   @Test
   func sql() async throws {
     await SparkSession.builder.clear()
@@ -196,7 +195,6 @@ struct SparkSessionTests {
     }
     await spark.stop()
   }
-#endif
 
   @Test
   func table() async throws {
@@ -215,10 +213,8 @@ struct SparkSessionTests {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.time(spark.range(1000).count) == 1000)
-#if !os(Linux)
     #expect(try await spark.time(spark.range(1).collect) == [Row(0)])
     try await spark.time(spark.range(10).show)
-#endif
     await spark.stop()
   }
 
