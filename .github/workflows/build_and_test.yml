@@ -184,6 +184,7 @@ jobs:
         image: apache/spark:4.0.0
         env:
           SPARK_NO_DAEMONIZE: 1
+          SPARK_USER: 185
         ports:
           - 15003:15002
         options: --entrypoint /opt/spark/sbin/start-connect-server.sh
