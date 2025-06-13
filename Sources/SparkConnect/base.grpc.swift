@@ -31,6 +31,7 @@ import SwiftProtobuf
 // MARK: - spark.connect.SparkConnectService
 
 /// Namespace containing generated types for the "spark.connect.SparkConnectService" service.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 internal enum Spark_Connect_SparkConnectService {
     /// Service descriptor for the "spark.connect.SparkConnectService" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService")
@@ -172,6 +173,7 @@ internal enum Spark_Connect_SparkConnectService {
     }
 }
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension GRPCCore.ServiceDescriptor {
     /// Service descriptor for the "spark.connect.SparkConnectService" service.
     internal static let spark_connect_SparkConnectService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService")
@@ -179,6 +181,7 @@ extension GRPCCore.ServiceDescriptor {
 
 // MARK: spark.connect.SparkConnectService (server)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Spark_Connect_SparkConnectService {
     /// Streaming variant of the service protocol for the "spark.connect.SparkConnectService" service.
     ///
@@ -800,6 +803,7 @@ extension Spark_Connect_SparkConnectService {
 }
 
 // Default implementation of 'registerMethods(with:)'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Spark_Connect_SparkConnectService.StreamingServiceProtocol {
     internal func registerMethods<Transport>(with router: inout GRPCCore.RPCRouter<Transport>) where Transport: GRPCCore.ServerTransport {
         router.registerHandler(
@@ -916,6 +920,7 @@ extension Spark_Connect_SparkConnectService.StreamingServiceProtocol {
 }
 
 // Default implementation of streaming methods from 'StreamingServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Spark_Connect_SparkConnectService.ServiceProtocol {
     internal func executePlan(
         request: GRPCCore.StreamingServerRequest<Spark_Connect_ExecutePlanRequest>,
@@ -1029,6 +1034,7 @@ extension Spark_Connect_SparkConnectService.ServiceProtocol {
 }
 
 // Default implementation of methods from 'ServiceProtocol'.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Spark_Connect_SparkConnectService.SimpleServiceProtocol {
     internal func executePlan(
         request: GRPCCore.ServerRequest<Spark_Connect_ExecutePlanRequest>,
@@ -1171,6 +1177,7 @@ extension Spark_Connect_SparkConnectService.SimpleServiceProtocol {
 
 // MARK: spark.connect.SparkConnectService (client)
 
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Spark_Connect_SparkConnectService {
     /// Generated client protocol for the "spark.connect.SparkConnectService" service.
     ///
@@ -1795,6 +1802,7 @@ extension Spark_Connect_SparkConnectService {
 }
 
 // Helpers providing default arguments to 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Spark_Connect_SparkConnectService.ClientProtocol {
     /// Call the "ExecutePlan" method.
     ///
@@ -2096,6 +2104,7 @@ extension Spark_Connect_SparkConnectService.ClientProtocol {
 }
 
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Spark_Connect_SparkConnectService.ClientProtocol {
     /// Call the "ExecutePlan" method.
     ///

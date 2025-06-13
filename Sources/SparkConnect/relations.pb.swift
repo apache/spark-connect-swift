@@ -3704,15 +3704,11 @@ extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     var _common: Spark_Connect_RelationCommon? = nil
     var _relType: Spark_Connect_Relation.OneOf_RelType?
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -4772,15 +4768,11 @@ extension Spark_Connect_MlRelation: SwiftProtobuf.Message, SwiftProtobuf._Messag
   fileprivate class _StorageClass {
     var _mlType: Spark_Connect_MlRelation.OneOf_MlType?
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -4886,15 +4878,11 @@ extension Spark_Connect_MlRelation.Transform: SwiftProtobuf.Message, SwiftProtob
     var _input: Spark_Connect_Relation? = nil
     var _params: Spark_Connect_MlParams? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -5282,15 +5270,11 @@ extension Spark_Connect_WithRelations: SwiftProtobuf.Message, SwiftProtobuf._Mes
     var _root: Spark_Connect_Relation? = nil
     var _references: [Spark_Connect_Relation] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -5540,15 +5524,11 @@ extension Spark_Connect_Project: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     var _input: Spark_Connect_Relation? = nil
     var _expressions: [Spark_Connect_Expression] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -5624,15 +5604,11 @@ extension Spark_Connect_Filter: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     var _input: Spark_Connect_Relation? = nil
     var _condition: Spark_Connect_Expression? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -5716,15 +5692,11 @@ extension Spark_Connect_Join: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     var _usingColumns: [String] = []
     var _joinDataType: Spark_Connect_Join.JoinDataType? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -5883,15 +5855,11 @@ extension Spark_Connect_SetOperation: SwiftProtobuf.Message, SwiftProtobuf._Mess
     var _byName: Bool? = nil
     var _allowMissingColumns: Bool? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -6000,15 +5968,11 @@ extension Spark_Connect_Limit: SwiftProtobuf.Message, SwiftProtobuf._MessageImpl
     var _input: Spark_Connect_Relation? = nil
     var _limit: Int32 = 0
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -6084,15 +6048,11 @@ extension Spark_Connect_Offset: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     var _input: Spark_Connect_Relation? = nil
     var _offset: Int32 = 0
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -6168,15 +6128,11 @@ extension Spark_Connect_Tail: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     var _input: Spark_Connect_Relation? = nil
     var _limit: Int32 = 0
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -6260,15 +6216,11 @@ extension Spark_Connect_Aggregate: SwiftProtobuf.Message, SwiftProtobuf._Message
     var _pivot: Spark_Connect_Aggregate.Pivot? = nil
     var _groupingSets: [Spark_Connect_Aggregate.GroupingSets] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -6455,15 +6407,11 @@ extension Spark_Connect_Sort: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     var _order: [Spark_Connect_Expression.SortOrder] = []
     var _isGlobal: Bool? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -6547,15 +6495,11 @@ extension Spark_Connect_Drop: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     var _columns: [Spark_Connect_Expression] = []
     var _columnNames: [String] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -6641,15 +6585,11 @@ extension Spark_Connect_Deduplicate: SwiftProtobuf.Message, SwiftProtobuf._Messa
     var _allColumnsAsKeys: Bool? = nil
     var _withinWatermark: Bool? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -6770,9 +6710,12 @@ extension Spark_Connect_LocalRelation: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_CachedLocalRelation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CachedLocalRelation"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    3: .same(proto: "hash"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(
+      reservedNames: ["userId", "sessionId"],
+      reservedRanges: [1..<3],
+      numberNameMappings: [
+        3: .same(proto: "hash"),
+  ])
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6851,15 +6794,11 @@ extension Spark_Connect_Sample: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     var _seed: Int64? = nil
     var _deterministicOrder: Bool = false
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7015,15 +6954,11 @@ extension Spark_Connect_SubqueryAlias: SwiftProtobuf.Message, SwiftProtobuf._Mes
     var _alias: String = String()
     var _qualifier: [String] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7107,15 +7042,11 @@ extension Spark_Connect_Repartition: SwiftProtobuf.Message, SwiftProtobuf._Messa
     var _numPartitions: Int32 = 0
     var _shuffle: Bool? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7201,15 +7132,11 @@ extension Spark_Connect_ShowString: SwiftProtobuf.Message, SwiftProtobuf._Messag
     var _truncate: Int32 = 0
     var _vertical: Bool = false
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7299,15 +7226,11 @@ extension Spark_Connect_HtmlString: SwiftProtobuf.Message, SwiftProtobuf._Messag
     var _numRows: Int32 = 0
     var _truncate: Int32 = 0
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7389,15 +7312,11 @@ extension Spark_Connect_StatSummary: SwiftProtobuf.Message, SwiftProtobuf._Messa
     var _input: Spark_Connect_Relation? = nil
     var _statistics: [String] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7473,15 +7392,11 @@ extension Spark_Connect_StatDescribe: SwiftProtobuf.Message, SwiftProtobuf._Mess
     var _input: Spark_Connect_Relation? = nil
     var _cols: [String] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7559,15 +7474,11 @@ extension Spark_Connect_StatCrosstab: SwiftProtobuf.Message, SwiftProtobuf._Mess
     var _col1: String = String()
     var _col2: String = String()
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7651,15 +7562,11 @@ extension Spark_Connect_StatCov: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     var _col1: String = String()
     var _col2: String = String()
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7745,15 +7652,11 @@ extension Spark_Connect_StatCorr: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     var _col2: String = String()
     var _method: String? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7845,15 +7748,11 @@ extension Spark_Connect_StatApproxQuantile: SwiftProtobuf.Message, SwiftProtobuf
     var _probabilities: [Double] = []
     var _relativeError: Double = 0
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -7943,15 +7842,11 @@ extension Spark_Connect_StatFreqItems: SwiftProtobuf.Message, SwiftProtobuf._Mes
     var _cols: [String] = []
     var _support: Double? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8037,15 +7932,11 @@ extension Spark_Connect_StatSampleBy: SwiftProtobuf.Message, SwiftProtobuf._Mess
     var _fractions: [Spark_Connect_StatSampleBy.Fraction] = []
     var _seed: Int64? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8177,15 +8068,11 @@ extension Spark_Connect_NAFill: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     var _cols: [String] = []
     var _values: [Spark_Connect_Expression.Literal] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8269,15 +8156,11 @@ extension Spark_Connect_NADrop: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     var _cols: [String] = []
     var _minNonNulls: Int32? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8361,15 +8244,11 @@ extension Spark_Connect_NAReplace: SwiftProtobuf.Message, SwiftProtobuf._Message
     var _cols: [String] = []
     var _replacements: [Spark_Connect_NAReplace.Replacement] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8493,15 +8372,11 @@ extension Spark_Connect_ToDF: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     var _input: Spark_Connect_Relation? = nil
     var _columnNames: [String] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8579,15 +8454,11 @@ extension Spark_Connect_WithColumnsRenamed: SwiftProtobuf.Message, SwiftProtobuf
     var _renameColumnsMap: Dictionary<String,String> = [:]
     var _renames: [Spark_Connect_WithColumnsRenamed.Rename] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8707,15 +8578,11 @@ extension Spark_Connect_WithColumns: SwiftProtobuf.Message, SwiftProtobuf._Messa
     var _input: Spark_Connect_Relation? = nil
     var _aliases: [Spark_Connect_Expression.Alias] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8793,15 +8660,11 @@ extension Spark_Connect_WithWatermark: SwiftProtobuf.Message, SwiftProtobuf._Mes
     var _eventTime: String = String()
     var _delayThreshold: String = String()
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8885,15 +8748,11 @@ extension Spark_Connect_Hint: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     var _name: String = String()
     var _parameters: [Spark_Connect_Expression] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -8981,15 +8840,11 @@ extension Spark_Connect_Unpivot: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     var _variableColumnName: String = String()
     var _valueColumnName: String = String()
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -9115,15 +8970,11 @@ extension Spark_Connect_Transpose: SwiftProtobuf.Message, SwiftProtobuf._Message
     var _input: Spark_Connect_Relation? = nil
     var _indexColumns: [Spark_Connect_Expression] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -9237,15 +9088,11 @@ extension Spark_Connect_ToSchema: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     var _input: Spark_Connect_Relation? = nil
     var _schema: Spark_Connect_DataType? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -9323,15 +9170,11 @@ extension Spark_Connect_RepartitionByExpression: SwiftProtobuf.Message, SwiftPro
     var _partitionExprs: [Spark_Connect_Expression] = []
     var _numPartitions: Int32? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -9417,15 +9260,11 @@ extension Spark_Connect_MapPartitions: SwiftProtobuf.Message, SwiftProtobuf._Mes
     var _isBarrier: Bool? = nil
     var _profileID: Int32? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -9529,15 +9368,11 @@ extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     var _timeoutConf: String? = nil
     var _stateSchema: Spark_Connect_DataType? = nil
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -9671,15 +9506,11 @@ extension Spark_Connect_CoGroupMap: SwiftProtobuf.Message, SwiftProtobuf._Messag
     var _inputSortingExpressions: [Spark_Connect_Expression] = []
     var _otherSortingExpressions: [Spark_Connect_Expression] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -9795,15 +9626,11 @@ extension Spark_Connect_ApplyInPandasWithState: SwiftProtobuf.Message, SwiftProt
     var _outputMode: String = String()
     var _timeoutConf: String = String()
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -10123,15 +9950,11 @@ extension Spark_Connect_CollectMetrics: SwiftProtobuf.Message, SwiftProtobuf._Me
     var _name: String = String()
     var _metrics: [Spark_Connect_Expression] = []
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -10217,15 +10040,11 @@ extension Spark_Connect_Parse: SwiftProtobuf.Message, SwiftProtobuf._MessageImpl
     var _schema: Spark_Connect_DataType? = nil
     var _options: Dictionary<String,String> = [:]
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -10337,15 +10156,11 @@ extension Spark_Connect_AsOfJoin: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     var _allowExactMatches: Bool = false
     var _direction: String = String()
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
@@ -10473,15 +10288,11 @@ extension Spark_Connect_LateralJoin: SwiftProtobuf.Message, SwiftProtobuf._Messa
     var _joinCondition: Spark_Connect_Expression? = nil
     var _joinType: Spark_Connect_Join.JoinType = .unspecified
 
-    #if swift(>=5.10)
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
       // This will force a copy to be made of this reference when the first mutation occurs;
       // hence, it is safe to mark this as `nonisolated(unsafe)`.
       static nonisolated(unsafe) let defaultInstance = _StorageClass()
-    #else
-      static let defaultInstance = _StorageClass()
-    #endif
 
     private init() {}
 
