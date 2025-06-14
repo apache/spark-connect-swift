@@ -29,6 +29,7 @@ jobs:
   license-check:
     name: "License Check"
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -41,6 +42,7 @@ jobs:
 
   build-macos-15-swift60:
     runs-on: macos-15
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
@@ -51,6 +53,7 @@ jobs:
 
   build-macos-15-swift61:
     runs-on: macos-15
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
@@ -61,6 +64,7 @@ jobs:
 
   build-ubuntu-latest:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
     - name: Build
@@ -71,6 +75,7 @@ jobs:
   # setup-swift doesn't support ARM linux yet.
   build-ubuntu-arm:
     runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
     - name: Build
@@ -80,6 +85,7 @@ jobs:
 
   integration-test-mac:
     runs-on: macos-15
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
@@ -97,6 +103,7 @@ jobs:
 
   integration-test-token:
     runs-on: macos-15
+    timeout-minutes: 20
     env:
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
@@ -116,6 +123,7 @@ jobs:
 
   integration-test-mac-spark3:
     runs-on: macos-15
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
@@ -138,6 +146,7 @@ jobs:
 
   integration-test-mac-iceberg:
     runs-on: macos-15
+    timeout-minutes: 20
     env:
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
@@ -163,6 +172,7 @@ jobs:
 
   linter:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
