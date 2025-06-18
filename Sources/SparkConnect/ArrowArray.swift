@@ -111,6 +111,8 @@ public class ArrowArrayHolderImpl: ArrowArrayHolder {
       return try ArrowArrayHolderImpl(Time32Array(with))
     case .time64:
       return try ArrowArrayHolderImpl(Time64Array(with))
+    case .timestamp:
+      return try ArrowArrayHolderImpl(TimestampArray(with))
     case .string:
       return try ArrowArrayHolderImpl(StringArray(with))
     case .boolean:
@@ -266,6 +268,86 @@ public class Decimal128Array: FixedArray<Decimal> {
     let value = self.arrowData.buffers[1].rawPointer.advanced(by: byteOffset).load(
       as: UInt64.self)
     return Decimal(value) / pow(10, Int(scale))
+  }
+}
+
+public class TimestampArray: FixedArray<Timestamp> {
+
+  public struct FormattingOptions: Equatable {
+    public var dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS"
+    public var locale: Locale = .current
+    public var includeTimezone: Bool = true
+    public var fallbackToRaw: Bool = true
+
+    public init(
+      dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS",
+      locale: Locale = .current,
+      includeTimezone: Bool = true,
+      fallbackToRaw: Bool = true
+    ) {
+      self.dateFormat = dateFormat
+      self.locale = locale
+      self.includeTimezone = includeTimezone
+      self.fallbackToRaw = fallbackToRaw
+    }
+
+    public static func == (lhs: FormattingOptions, rhs: FormattingOptions) -> Bool {
+      return lhs.dateFormat == rhs.dateFormat && lhs.locale.identifier == rhs.locale.identifier
+        && lhs.includeTimezone == rhs.includeTimezone && lhs.fallbackToRaw == rhs.fallbackToRaw
+    }
+  }
+
+  private var cachedFormatter: DateFormatter?
+  private var cachedOptions: FormattingOptions?
+
+  public func formattedDate(at index: UInt, options: FormattingOptions = FormattingOptions())
+    -> String?
+  {
+    guard let timestamp = self[index] else { return nil }
+
+    guard let timestampType = self.arrowData.type as? ArrowTypeTimestamp else {
+      return options.fallbackToRaw ? "\(timestamp)" : nil
+    }
+
+    let date = dateFromTimestamp(timestamp, unit: timestampType.unit)
+
+    if cachedFormatter == nil || cachedOptions != options {
+      let formatter = DateFormatter()
+      formatter.dateFormat = options.dateFormat
+      formatter.locale = options.locale
+      if options.includeTimezone, let timezone = timestampType.timezone {
+        formatter.timeZone = TimeZone(identifier: timezone)
+      }
+      cachedFormatter = formatter
+      cachedOptions = options
+    }
+
+    return cachedFormatter?.string(from: date)
+  }
+
+  private func dateFromTimestamp(_ timestamp: Int64, unit: ArrowTimestampUnit) -> Date {
+    let timeInterval: TimeInterval
+
+    switch unit {
+    case .seconds:
+      timeInterval = TimeInterval(timestamp)
+    case .milliseconds:
+      timeInterval = TimeInterval(timestamp) / 1_000
+    case .microseconds:
+      timeInterval = TimeInterval(timestamp) / 1_000_000
+    case .nanoseconds:
+      timeInterval = TimeInterval(timestamp) / 1_000_000_000
+    }
+
+    return Date(timeIntervalSince1970: timeInterval)
+  }
+
+  public override func asString(_ index: UInt) -> String {
+    if let formatted = formattedDate(at: index) {
+      return formatted
+    }
+
+    return super.asString(index)
   }
 }
 

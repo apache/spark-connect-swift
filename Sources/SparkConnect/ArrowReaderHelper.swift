@@ -112,6 +112,25 @@ private func makeTimeHolder(
   }
 }
 
+private func makeTimestampHolder(
+  _ field: ArrowField,
+  buffers: [ArrowBuffer],
+  nullCount: UInt
+) -> Result<ArrowArrayHolder, ArrowError> {
+  do {
+    if let arrowType = field.type as? ArrowTypeTimestamp {
+      let arrowData = try ArrowData(arrowType, buffers: buffers, nullCount: nullCount)
+      return .success(ArrowArrayHolderImpl(try TimestampArray(arrowData)))
+    } else {
+      return .failure(.invalid("Incorrect field type for timestamp: \(field.type)"))
+    }
+  } catch let error as ArrowError {
+    return .failure(error)
+  } catch {
+    return .failure(.unknownError("\(error)"))
+  }
+}
+
 private func makeBoolHolder(
   _ buffers: [ArrowBuffer],
   nullCount: UInt
@@ -214,6 +233,8 @@ func makeArrayHolder(  // swiftlint:disable:this cyclomatic_complexity
     return makeDateHolder(field, buffers: buffers, nullCount: nullCount)
   case .time32, .time64:
     return makeTimeHolder(field, buffers: buffers, nullCount: nullCount)
+  case .timestamp:
+    return makeTimestampHolder(field, buffers: buffers, nullCount: nullCount)
   case .strct:
     return makeStructHolder(
       field, buffers: buffers, nullCount: nullCount, children: children!, rbLength: rbLength)
@@ -234,7 +255,7 @@ func makeBuffer(
 
 func isFixedPrimitive(_ type: org_apache_arrow_flatbuf_Type_) -> Bool {
   switch type {
-  case .int, .bool, .floatingpoint, .date, .time, .decimal:
+  case .int, .bool, .floatingpoint, .date, .time, .timestamp, .decimal:
     return true
   default:
     return false
@@ -307,6 +328,22 @@ func findArrowType(  // swiftlint:disable:this cyclomatic_complexity function_bo
     }
 
     return ArrowTypeTime64(timeType.unit == .microsecond ? .microseconds : .nanoseconds)
+  case .timestamp:
+    let timestampType = field.type(type: org_apache_arrow_flatbuf_Timestamp.self)!
+    let arrowUnit: ArrowTimestampUnit
+    switch timestampType.unit {
+    case .second:
+      arrowUnit = .seconds
+    case .millisecond:
+      arrowUnit = .milliseconds
+    case .microsecond:
+      arrowUnit = .microseconds
+    case .nanosecond:
+      arrowUnit = .nanoseconds
+    }
+
+    let timezone = timestampType.timezone
+    return ArrowTypeTimestamp(arrowUnit, timezone: timezone)
   case .struct_:
     _ = field.type(type: org_apache_arrow_flatbuf_Struct_.self)!
     var fields = [ArrowField]()
