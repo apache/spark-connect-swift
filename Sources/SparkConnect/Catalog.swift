@@ -40,15 +40,13 @@ public struct SparkTable: Sendable, Equatable {
   public var tableType: String
   public var isTemporary: Bool
   public var database: String? {
-    get {
-      guard let namespace else {
-        return nil
-      }
-      if namespace.count == 1 {
-        return namespace[0]
-      } else {
-        return nil
-      }
+    guard let namespace else {
+      return nil
+    }
+    if namespace.count == 1 {
+      return namespace[0]
+    } else {
+      return nil
     }
   }
 }
@@ -173,7 +171,9 @@ public actor Catalog: Sendable {
       return catalog
     })
     return try await df.collect().map {
-      try Database(name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String, locationUri: $0[3] as! String)
+      try Database(
+        name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String,
+        locationUri: $0[3] as! String)
     }
   }
 
@@ -189,7 +189,9 @@ public actor Catalog: Sendable {
       return catalog
     })
     return try await df.collect().map {
-      try Database(name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String, locationUri: $0[3] as! String)
+      try Database(
+        name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String,
+        locationUri: $0[3] as! String)
     }.first!
   }
 

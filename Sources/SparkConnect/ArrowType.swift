@@ -294,7 +294,7 @@ public class ArrowType {
     case .double:
       return MemoryLayout<Double>.stride
     case .decimal128:
-      return 16 // Decimal 128 (= 16 * 8) bits
+      return 16  // Decimal 128 (= 16 * 8) bits
     case .boolean:
       return MemoryLayout<Bool>.stride
     case .date32:
@@ -429,7 +429,7 @@ extension ArrowType.Info: Equatable {
     case (.timeInfo(let lhsId), .timeInfo(let rhsId)):
       return lhsId == rhsId
     case (.complexInfo(let lhsId), .complexInfo(let rhsId)):
-        return lhsId == rhsId
+      return lhsId == rhsId
     default:
       return false
     }

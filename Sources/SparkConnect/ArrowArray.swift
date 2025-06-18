@@ -255,12 +255,13 @@ public class Decimal128Array: FixedArray<Decimal> {
     if self.arrowData.isNull(index) {
       return nil
     }
-    let scale: Int32 = switch self.arrowData.type.id {
-    case .decimal128(_, let scale):
-      scale
-    default:
-      18
-    }
+    let scale: Int32 =
+      switch self.arrowData.type.id {
+      case .decimal128(_, let scale):
+        scale
+      default:
+        18
+      }
     let byteOffset = self.arrowData.stride * Int(index)
     let value = self.arrowData.buffers[1].rawPointer.advanced(by: byteOffset).load(
       as: UInt64.self)

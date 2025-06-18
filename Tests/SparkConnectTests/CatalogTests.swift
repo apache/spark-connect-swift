@@ -25,288 +25,297 @@ import Testing
 /// A test suite for `Catalog`
 @Suite(.serialized)
 struct CatalogTests {
-#if !os(Linux)
-  @Test
-  func currentCatalog() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.catalog.currentCatalog() == "spark_catalog")
-    await spark.stop()
-  }
+  #if !os(Linux)
+    @Test
+    func currentCatalog() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      #expect(try await spark.catalog.currentCatalog() == "spark_catalog")
+      await spark.stop()
+    }
 
-  @Test
-  func setCurrentCatalog() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    try await spark.catalog.setCurrentCatalog("spark_catalog")
-    if await spark.version >= "4.0.0" {
-      try await #require(throws: SparkConnectError.CatalogNotFound) {
-        try await spark.catalog.setCurrentCatalog("not_exist_catalog")
+    @Test
+    func setCurrentCatalog() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      try await spark.catalog.setCurrentCatalog("spark_catalog")
+      if await spark.version >= "4.0.0" {
+        try await #require(throws: SparkConnectError.CatalogNotFound) {
+          try await spark.catalog.setCurrentCatalog("not_exist_catalog")
+        }
+      } else {
+        try await #require(throws: Error.self) {
+          try await spark.catalog.setCurrentCatalog("not_exist_catalog")
+        }
       }
-    } else {
-      try await #require(throws: Error.self) {
-        try await spark.catalog.setCurrentCatalog("not_exist_catalog")
+      await spark.stop()
+    }
+
+    @Test
+    func listCatalogs() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      #expect(try await spark.catalog.listCatalogs() == [CatalogMetadata(name: "spark_catalog")])
+      #expect(
+        try await spark.catalog.listCatalogs(pattern: "*") == [
+          CatalogMetadata(name: "spark_catalog")
+        ])
+      #expect(try await spark.catalog.listCatalogs(pattern: "non_exist").count == 0)
+      await spark.stop()
+    }
+
+    @Test
+    func currentDatabase() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      #expect(try await spark.catalog.currentDatabase() == "default")
+      await spark.stop()
+    }
+
+    @Test
+    func setCurrentDatabase() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      try await spark.catalog.setCurrentDatabase("default")
+      try await #require(throws: SparkConnectError.SchemaNotFound) {
+        try await spark.catalog.setCurrentDatabase("not_exist_database")
       }
+      await spark.stop()
     }
-    await spark.stop()
-  }
 
-  @Test
-  func listCatalogs() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.catalog.listCatalogs() == [CatalogMetadata(name: "spark_catalog")])
-    #expect(try await spark.catalog.listCatalogs(pattern: "*") == [CatalogMetadata(name: "spark_catalog")])
-    #expect(try await spark.catalog.listCatalogs(pattern: "non_exist").count == 0)
-    await spark.stop()
-  }
-
-  @Test
-  func currentDatabase() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.catalog.currentDatabase() == "default")
-    await spark.stop()
-  }
-
-  @Test
-  func setCurrentDatabase() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    try await spark.catalog.setCurrentDatabase("default")
-    try await #require(throws: SparkConnectError.SchemaNotFound) {
-      try await spark.catalog.setCurrentDatabase("not_exist_database")
+    @Test
+    func listDatabases() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let dbs = try await spark.catalog.listDatabases()
+      #expect(dbs.count == 1)
+      #expect(dbs[0].name == "default")
+      #expect(dbs[0].catalog == "spark_catalog")
+      #expect(dbs[0].description == "default database")
+      #expect(dbs[0].locationUri.hasSuffix("spark-warehouse"))
+      #expect(try await spark.catalog.listDatabases(pattern: "*") == dbs)
+      #expect(try await spark.catalog.listDatabases(pattern: "non_exist").count == 0)
+      await spark.stop()
     }
-    await spark.stop()
-  }
 
-  @Test
-  func listDatabases() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let dbs = try await spark.catalog.listDatabases()
-    #expect(dbs.count == 1)
-    #expect(dbs[0].name == "default")
-    #expect(dbs[0].catalog == "spark_catalog")
-    #expect(dbs[0].description == "default database")
-    #expect(dbs[0].locationUri.hasSuffix("spark-warehouse"))
-    #expect(try await spark.catalog.listDatabases(pattern: "*") == dbs)
-    #expect(try await spark.catalog.listDatabases(pattern: "non_exist").count == 0)
-    await spark.stop()
-  }
-
-  @Test
-  func getDatabase() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let db = try await spark.catalog.getDatabase("default")
-    #expect(db.name == "default")
-    #expect(db.catalog == "spark_catalog")
-    #expect(db.description == "default database")
-    #expect(db.locationUri.hasSuffix("spark-warehouse"))
-    try await #require(throws: SparkConnectError.SchemaNotFound) {
-      try await spark.catalog.getDatabase("not_exist_database")
+    @Test
+    func getDatabase() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let db = try await spark.catalog.getDatabase("default")
+      #expect(db.name == "default")
+      #expect(db.catalog == "spark_catalog")
+      #expect(db.description == "default database")
+      #expect(db.locationUri.hasSuffix("spark-warehouse"))
+      try await #require(throws: SparkConnectError.SchemaNotFound) {
+        try await spark.catalog.getDatabase("not_exist_database")
+      }
+      await spark.stop()
     }
-    await spark.stop()
-  }
 
-  @Test
-  func databaseExists() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.catalog.databaseExists("default"))
+    @Test
+    func databaseExists() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      #expect(try await spark.catalog.databaseExists("default"))
 
-    let dbName = "DB_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    #expect(try await spark.catalog.databaseExists(dbName) == false)
-    try await SQLHelper.withDatabase(spark, dbName) ({
-      try await spark.sql("CREATE DATABASE \(dbName)").count()
-      #expect(try await spark.catalog.databaseExists(dbName))
-    })
-    #expect(try await spark.catalog.databaseExists(dbName) == false)
-    await spark.stop()
-  }
+      let dbName = "DB_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      #expect(try await spark.catalog.databaseExists(dbName) == false)
+      try await SQLHelper.withDatabase(spark, dbName)({
+        try await spark.sql("CREATE DATABASE \(dbName)").count()
+        #expect(try await spark.catalog.databaseExists(dbName))
+      })
+      #expect(try await spark.catalog.databaseExists(dbName) == false)
+      await spark.stop()
+    }
 
-  @Test
-  func createTable() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withTable(spark, tableName)({
-      try await spark.range(1).write.orc("/tmp/\(tableName)")
-      #expect(try await spark.catalog.createTable(tableName, "/tmp/\(tableName)", source: "orc").count() == 1)
-      #expect(try await spark.catalog.tableExists(tableName))
-    })
-    await spark.stop()
-  }
+    @Test
+    func createTable() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.range(1).write.orc("/tmp/\(tableName)")
+        #expect(
+          try await spark.catalog.createTable(tableName, "/tmp/\(tableName)", source: "orc").count()
+            == 1)
+        #expect(try await spark.catalog.tableExists(tableName))
+      })
+      await spark.stop()
+    }
 
-  @Test
-  func tableExists() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withTable(spark, tableName)({
-      try await spark.range(1).write.parquet("/tmp/\(tableName)")
+    @Test
+    func tableExists() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.range(1).write.parquet("/tmp/\(tableName)")
+        #expect(try await spark.catalog.tableExists(tableName) == false)
+        #expect(try await spark.catalog.createTable(tableName, "/tmp/\(tableName)").count() == 1)
+        #expect(try await spark.catalog.tableExists(tableName))
+        #expect(try await spark.catalog.tableExists("default", tableName))
+        #expect(try await spark.catalog.tableExists("default2", tableName) == false)
+      })
       #expect(try await spark.catalog.tableExists(tableName) == false)
-      #expect(try await spark.catalog.createTable(tableName, "/tmp/\(tableName)").count() == 1)
-      #expect(try await spark.catalog.tableExists(tableName))
-      #expect(try await spark.catalog.tableExists("default", tableName))
-      #expect(try await spark.catalog.tableExists("default2", tableName) == false)
-    })
-    #expect(try await spark.catalog.tableExists(tableName) == false)
 
-    try await #require(throws: SparkConnectError.ParseSyntaxError) {
-      try await spark.catalog.tableExists("invalid table name")
-    }
-    await spark.stop()
-  }
-
-  @Test
-  func listColumns() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-
-    // Table
-    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    let path = "/tmp/\(tableName)"
-    try await SQLHelper.withTable(spark, tableName)({
-      try await spark.range(2).write.orc(path)
-      let expected = if await spark.version.starts(with: "4.") {
-        [Row("id", nil, "bigint", true, false, false, false)]
-      } else {
-        [Row("id", nil, "bigint", true, false, false)]
+      try await #require(throws: SparkConnectError.ParseSyntaxError) {
+        try await spark.catalog.tableExists("invalid table name")
       }
-      #expect(try await spark.catalog.createTable(tableName, path, source: "orc").count() == 2)
-      #expect(try await spark.catalog.listColumns(tableName).collect() == expected)
-      #expect(try await spark.catalog.listColumns("default.\(tableName)").collect() == expected)
-    })
-
-    // View
-    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withTempView(spark, viewName)({
-      try await spark.range(1).createTempView(viewName)
-      let expected = if await spark.version.starts(with: "4.") {
-        [Row("id", nil, "bigint", false, false, false, false)]
-      } else {
-        [Row("id", nil, "bigint", false, false, false)]
-      }
-      #expect(try await spark.catalog.listColumns(viewName).collect() == expected)
-    })
-
-    await spark.stop()
-  }
-
-  @Test
-  func functionExists() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.catalog.functionExists("base64"))
-    #expect(try await spark.catalog.functionExists("non_exist_function") == false)
-
-    try await #require(throws: SparkConnectError.ParseSyntaxError) {
-      try await spark.catalog.functionExists("invalid function name")
+      await spark.stop()
     }
-    await spark.stop()
-  }
 
-  @Test
-  func createTempView() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withTempView(spark, viewName)({
-      #expect(try await spark.catalog.tableExists(viewName) == false)
-      try await spark.range(1).createTempView(viewName)
-      #expect(try await spark.catalog.tableExists(viewName))
+    @Test
+    func listColumns() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
 
-      try await #require(throws: SparkConnectError.TableOrViewAlreadyExists) {
+      // Table
+      let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      let path = "/tmp/\(tableName)"
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.range(2).write.orc(path)
+        let expected =
+          if await spark.version.starts(with: "4.") {
+            [Row("id", nil, "bigint", true, false, false, false)]
+          } else {
+            [Row("id", nil, "bigint", true, false, false)]
+          }
+        #expect(try await spark.catalog.createTable(tableName, path, source: "orc").count() == 2)
+        #expect(try await spark.catalog.listColumns(tableName).collect() == expected)
+        #expect(try await spark.catalog.listColumns("default.\(tableName)").collect() == expected)
+      })
+
+      // View
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTempView(spark, viewName)({
         try await spark.range(1).createTempView(viewName)
+        let expected =
+          if await spark.version.starts(with: "4.") {
+            [Row("id", nil, "bigint", false, false, false, false)]
+          } else {
+            [Row("id", nil, "bigint", false, false, false)]
+          }
+        #expect(try await spark.catalog.listColumns(viewName).collect() == expected)
+      })
+
+      await spark.stop()
+    }
+
+    @Test
+    func functionExists() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      #expect(try await spark.catalog.functionExists("base64"))
+      #expect(try await spark.catalog.functionExists("non_exist_function") == false)
+
+      try await #require(throws: SparkConnectError.ParseSyntaxError) {
+        try await spark.catalog.functionExists("invalid function name")
       }
-    })
-
-    try await #require(throws: SparkConnectError.InvalidViewName) {
-      try await spark.range(1).createTempView("invalid view name")
+      await spark.stop()
     }
 
-    await spark.stop()
-  }
+    @Test
+    func createTempView() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTempView(spark, viewName)({
+        #expect(try await spark.catalog.tableExists(viewName) == false)
+        try await spark.range(1).createTempView(viewName)
+        #expect(try await spark.catalog.tableExists(viewName))
 
-  @Test
-  func createOrReplaceTempView() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withTempView(spark, viewName)({
-      #expect(try await spark.catalog.tableExists(viewName) == false)
-      try await spark.range(1).createOrReplaceTempView(viewName)
-      #expect(try await spark.catalog.tableExists(viewName))
-      try await spark.range(1).createOrReplaceTempView(viewName)
-    })
+        try await #require(throws: SparkConnectError.TableOrViewAlreadyExists) {
+          try await spark.range(1).createTempView(viewName)
+        }
+      })
 
-    try await #require(throws: SparkConnectError.InvalidViewName) {
-      try await spark.range(1).createOrReplaceTempView("invalid view name")
+      try await #require(throws: SparkConnectError.InvalidViewName) {
+        try await spark.range(1).createTempView("invalid view name")
+      }
+
+      await spark.stop()
     }
 
-    await spark.stop()
-  }
+    @Test
+    func createOrReplaceTempView() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTempView(spark, viewName)({
+        #expect(try await spark.catalog.tableExists(viewName) == false)
+        try await spark.range(1).createOrReplaceTempView(viewName)
+        #expect(try await spark.catalog.tableExists(viewName))
+        try await spark.range(1).createOrReplaceTempView(viewName)
+      })
 
-  @Test
-  func createGlobalTempView() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withGlobalTempView(spark, viewName)({
-      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
-      try await spark.range(1).createGlobalTempView(viewName)
-      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
+      try await #require(throws: SparkConnectError.InvalidViewName) {
+        try await spark.range(1).createOrReplaceTempView("invalid view name")
+      }
 
-      try await #require(throws: SparkConnectError.TableOrViewAlreadyExists) {
+      await spark.stop()
+    }
+
+    @Test
+    func createGlobalTempView() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withGlobalTempView(spark, viewName)({
+        #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
         try await spark.range(1).createGlobalTempView(viewName)
+        #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
+
+        try await #require(throws: SparkConnectError.TableOrViewAlreadyExists) {
+          try await spark.range(1).createGlobalTempView(viewName)
+        }
+      })
+      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
+
+      try await #require(throws: SparkConnectError.InvalidViewName) {
+        try await spark.range(1).createGlobalTempView("invalid view name")
       }
-    })
-    #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
 
-    try await #require(throws: SparkConnectError.InvalidViewName) {
-      try await spark.range(1).createGlobalTempView("invalid view name")
+      await spark.stop()
     }
 
-    await spark.stop()
-  }
-
-  @Test
-  func createOrReplaceGlobalTempView() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withGlobalTempView(spark, viewName)({
+    @Test
+    func createOrReplaceGlobalTempView() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withGlobalTempView(spark, viewName)({
+        #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
+        try await spark.range(1).createOrReplaceGlobalTempView(viewName)
+        #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
+        try await spark.range(1).createOrReplaceGlobalTempView(viewName)
+      })
       #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
-      try await spark.range(1).createOrReplaceGlobalTempView(viewName)
-      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
-      try await spark.range(1).createOrReplaceGlobalTempView(viewName)
-    })
-    #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
 
-    try await #require(throws: SparkConnectError.InvalidViewName) {
-      try await spark.range(1).createOrReplaceGlobalTempView("invalid view name")
+      try await #require(throws: SparkConnectError.InvalidViewName) {
+        try await spark.range(1).createOrReplaceGlobalTempView("invalid view name")
+      }
+
+      await spark.stop()
     }
 
-    await spark.stop()
-  }
+    @Test
+    func dropTempView() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTempView(spark, viewName)({
+        #expect(try await spark.catalog.tableExists(viewName) == false)
+        try await spark.range(1).createTempView(viewName)
+        try await spark.catalog.dropTempView(viewName)
+        #expect(try await spark.catalog.tableExists(viewName) == false)
+      })
 
-  @Test
-  func dropTempView() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withTempView(spark, viewName)({      #expect(try await spark.catalog.tableExists(viewName) == false)
-      try await spark.range(1).createTempView(viewName)
-      try await spark.catalog.dropTempView(viewName)
-      #expect(try await spark.catalog.tableExists(viewName) == false)
-    })
+      #expect(try await spark.catalog.dropTempView("non_exist_view") == false)
+      #expect(try await spark.catalog.dropTempView("invalid view name") == false)
+      await spark.stop()
+    }
 
-    #expect(try await spark.catalog.dropTempView("non_exist_view") == false)
-    #expect(try await spark.catalog.dropTempView("invalid view name") == false)
-    await spark.stop()
-  }
+    @Test
+    func dropGlobalTempView() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTempView(spark, viewName)({
+        #expect(try await spark.catalog.tableExists(viewName) == false)
+        try await spark.range(1).createGlobalTempView(viewName)
+        #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
+        try await spark.catalog.dropGlobalTempView(viewName)
+        #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
+      })
 
-  @Test
-  func dropGlobalTempView() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
-    try await SQLHelper.withTempView(spark, viewName)({      #expect(try await spark.catalog.tableExists(viewName) == false)
-      try await spark.range(1).createGlobalTempView(viewName)
-      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)"))
-      try await spark.catalog.dropGlobalTempView(viewName)
-      #expect(try await spark.catalog.tableExists("global_temp.\(viewName)") == false)
-    })
-
-    #expect(try await spark.catalog.dropGlobalTempView("non_exist_view") == false)
-    #expect(try await spark.catalog.dropGlobalTempView("invalid view name") == false)
-    await spark.stop()
-  }
-#endif
+      #expect(try await spark.catalog.dropGlobalTempView("non_exist_view") == false)
+      #expect(try await spark.catalog.dropGlobalTempView("invalid view name") == false)
+      await spark.stop()
+    }
+  #endif
 
   @Test
   func cacheTable() async throws {

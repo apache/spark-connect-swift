@@ -236,7 +236,9 @@ public actor DataFrameWriter: Sendable {
   ///   - url: The JDBC URL of the form `jdbc:subprotocol:subname` to connect to.
   ///   - table: Name of the table in the external database.
   ///   - properties:JDBC database connection arguments, a list of arbitrary string tag/value.
-  public func jdbc(_ url: String, _ table: String, _ properties: [String: String] = [:]) async throws {
+  public func jdbc(_ url: String, _ table: String, _ properties: [String: String] = [:])
+    async throws
+  {
     for (key, value) in properties {
       self.extraOptions[key] = value
     }

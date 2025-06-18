@@ -18,9 +18,8 @@
 //
 
 import Foundation
-import Testing
-
 import SparkConnect
+import Testing
 
 /// A test suite for `DataFrameWriter`
 @Suite(.serialized)

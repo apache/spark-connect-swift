@@ -494,11 +494,12 @@ public actor DataFrame: Sendable {
   /// - Parameter cols: Column names
   /// - Returns: A ``DataFrame`` with subset of columns.
   public func toDF(_ cols: String...) -> DataFrame {
-    let df = if cols.isEmpty {
-      DataFrame(spark: self.spark, plan: self.plan)
-    } else {
-      DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
-    }
+    let df =
+      if cols.isEmpty {
+        DataFrame(spark: self.spark, plan: self.plan)
+      } else {
+        DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
+      }
     return df
   }
 
@@ -507,7 +508,8 @@ public actor DataFrame: Sendable {
   /// - Returns: A ``DataFrame`` with the given schema.
   public func to(_ schema: String) async throws -> DataFrame {
     let dataType = try await sparkSession.client.ddlParse(schema)
-    return DataFrame(spark: self.spark, plan: SparkConnectClient.getToSchema(self.plan.root, dataType))
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getToSchema(self.plan.root, dataType))
   }
 
   /// Returns the content of the Dataset as a Dataset of JSON strings.
@@ -520,7 +522,8 @@ public actor DataFrame: Sendable {
   /// - Parameter exprs: Expression strings
   /// - Returns: A ``DataFrame`` with subset of columns.
   public func selectExpr(_ exprs: String...) -> DataFrame {
-    return DataFrame(spark: self.spark, plan: SparkConnectClient.getProjectExprs(self.plan.root, exprs))
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getProjectExprs(self.plan.root, exprs))
   }
 
   /// Returns a new Dataset with a column dropped. This is a no-op if schema doesn't contain column name.
@@ -564,7 +567,8 @@ public actor DataFrame: Sendable {
   /// - Parameter statistics: Statistics names.
   /// - Returns: A ``DataFrame`` containing specified statistics.
   public func summary(_ statistics: String...) -> DataFrame {
-    return DataFrame(spark: self.spark, plan: SparkConnectClient.getSummary(self.plan.root, statistics))
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getSummary(self.plan.root, statistics))
   }
 
   /// Returns a new Dataset with a column renamed. This is a no-op if schema doesn't contain existingName.
@@ -583,14 +587,16 @@ public actor DataFrame: Sendable {
   /// - Returns: A ``DataFrame`` with the renamed columns.
   public func withColumnRenamed(_ colNames: [String], _ newColNames: [String]) -> DataFrame {
     let dic = Dictionary(uniqueKeysWithValues: zip(colNames, newColNames))
-    return DataFrame(spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, dic))
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, dic))
   }
 
   /// Returns a new Dataset with columns renamed. This is a no-op if schema doesn't contain existingName.
   /// - Parameter colsMap: A dictionary of existing column name and new column name.
   /// - Returns: A ``DataFrame`` with the renamed columns.
   public func withColumnRenamed(_ colsMap: [String: String]) -> DataFrame {
-    return DataFrame(spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, colsMap))
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, colsMap))
   }
 
   /// Filters rows using the given condition.
@@ -611,7 +617,8 @@ public actor DataFrame: Sendable {
   /// - Parameter conditionExpr: A SQL expression string for filtering
   /// - Returns: A new DataFrame containing only rows that match the condition
   public func filter(_ conditionExpr: String) -> DataFrame {
-    return DataFrame(spark: self.spark, plan: SparkConnectClient.getFilter(self.plan.root, conditionExpr))
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getFilter(self.plan.root, conditionExpr))
   }
 
   /// Filters rows using the given condition (alias for filter).
@@ -691,7 +698,9 @@ public actor DataFrame: Sendable {
   ///   - seed: Seed for sampling.
   /// - Returns: A subset of the records.
   public func sample(_ withReplacement: Bool, _ fraction: Double, _ seed: Int64) -> DataFrame {
-    return DataFrame(spark: self.spark, plan: SparkConnectClient.getSample(self.plan.root, withReplacement, fraction, seed))
+    return DataFrame(
+      spark: self.spark,
+      plan: SparkConnectClient.getSample(self.plan.root, withReplacement, fraction, seed))
   }
 
   /// Returns a new ``Dataset`` by sampling a fraction of rows, using a random seed.
@@ -765,7 +774,7 @@ public actor DataFrame: Sendable {
   /// - Parameter n: The number of rows.
   /// - Returns: ``[Row]``
   public func tail(_ n: Int32) async throws -> [Row] {
-    let lastN = DataFrame(spark:spark, plan: SparkConnectClient.getTail(self.plan.root, n))
+    let lastN = DataFrame(spark: spark, plan: SparkConnectClient.getTail(self.plan.root, n))
     return try await lastN.collect()
   }
 
@@ -786,7 +795,8 @@ public actor DataFrame: Sendable {
   public func isStreaming() async throws -> Bool {
     try await withGPRC { client in
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-      let response = try await service.analyzePlan(spark.client.getIsStreaming(spark.sessionID, plan))
+      let response = try await service.analyzePlan(
+        spark.client.getIsStreaming(spark.sessionID, plan))
       return response.isStreaming.isStreaming
     }
   }
@@ -850,8 +860,10 @@ public actor DataFrame: Sendable {
     get async throws {
       try await withGPRC { client in
         let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-        return try await service
-          .analyzePlan(spark.client.getStorageLevel(spark.sessionID, plan)).getStorageLevel.storageLevel.toStorageLevel
+        return
+          try await service
+          .analyzePlan(spark.client.getStorageLevel(spark.sessionID, plan)).getStorageLevel
+          .storageLevel.toStorageLevel
       }
     }
   }
@@ -878,7 +890,7 @@ public actor DataFrame: Sendable {
   /// Prints the plans (logical and physical) to the console for debugging purposes.
   /// - Parameter extended: If `false`, prints only the physical plan.
   public func explain(_ extended: Bool) async throws {
-    if (extended) {
+    if extended {
       try await explain("extended")
     } else {
       try await explain("simple")
@@ -891,7 +903,8 @@ public actor DataFrame: Sendable {
   public func explain(_ mode: String) async throws {
     try await withGPRC { client in
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-      let response = try await service.analyzePlan(spark.client.getExplain(spark.sessionID, plan, mode))
+      let response = try await service.analyzePlan(
+        spark.client.getExplain(spark.sessionID, plan, mode))
       print(response.explain.explainString)
     }
   }
@@ -903,7 +916,8 @@ public actor DataFrame: Sendable {
   public func inputFiles() async throws -> [String] {
     try await withGPRC { client in
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-      let response = try await service.analyzePlan(spark.client.getInputFiles(spark.sessionID, plan))
+      let response = try await service.analyzePlan(
+        spark.client.getInputFiles(spark.sessionID, plan))
       return response.inputFiles.files
     }
   }
@@ -918,7 +932,8 @@ public actor DataFrame: Sendable {
   public func printSchema(_ level: Int32) async throws {
     try await withGPRC { client in
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-      let response = try await service.analyzePlan(spark.client.getTreeString(spark.sessionID, plan, level))
+      let response = try await service.analyzePlan(
+        spark.client.getTreeString(spark.sessionID, plan, level))
       print(response.treeString.treeString)
     }
   }
@@ -964,7 +979,9 @@ public actor DataFrame: Sendable {
   ///   - usingColumn: Column name that exists in both DataFrames
   ///   - joinType: Type of join (default: "inner")
   /// - Returns: A new DataFrame with the join result
-  public func join(_ right: DataFrame, _ usingColumn: String, _ joinType: String = "inner") async -> DataFrame {
+  public func join(_ right: DataFrame, _ usingColumn: String, _ joinType: String = "inner") async
+    -> DataFrame
+  {
     await join(right, [usingColumn], joinType)
   }
 
@@ -974,7 +991,9 @@ public actor DataFrame: Sendable {
   ///   - usingColumn: Names of the columns to join on. These columns must exist on both sides.
   ///   - joinType: A join type name.
   /// - Returns: A `DataFrame`.
-  public func join(_ other: DataFrame, _ usingColumns: [String], _ joinType: String = "inner") async -> DataFrame {
+  public func join(_ other: DataFrame, _ usingColumns: [String], _ joinType: String = "inner") async
+    -> DataFrame
+  {
     let right = await (other.getPlan() as! Plan).root
     let plan = SparkConnectClient.getJoin(
       self.plan.root,
@@ -1112,7 +1131,8 @@ public actor DataFrame: Sendable {
   /// - Returns: A `DataFrame`.
   public func exceptAll(_ other: DataFrame) async -> DataFrame {
     let right = await (other.getPlan() as! Plan).root
-    let plan = SparkConnectClient.getSetOperation(self.plan.root, right, SetOpType.except, isAll: true)
+    let plan = SparkConnectClient.getSetOperation(
+      self.plan.root, right, SetOpType.except, isAll: true)
     return DataFrame(spark: self.spark, plan: plan)
   }
 
@@ -1132,7 +1152,8 @@ public actor DataFrame: Sendable {
   /// - Returns: A `DataFrame`.
   public func intersectAll(_ other: DataFrame) async -> DataFrame {
     let right = await (other.getPlan() as! Plan).root
-    let plan = SparkConnectClient.getSetOperation(self.plan.root, right, SetOpType.intersect, isAll: true)
+    let plan = SparkConnectClient.getSetOperation(
+      self.plan.root, right, SetOpType.intersect, isAll: true)
     return DataFrame(spark: self.spark, plan: plan)
   }
 
@@ -1144,7 +1165,8 @@ public actor DataFrame: Sendable {
   /// - Returns: A `DataFrame`.
   public func union(_ other: DataFrame) async -> DataFrame {
     let right = await (other.getPlan() as! Plan).root
-    let plan = SparkConnectClient.getSetOperation(self.plan.root, right, SetOpType.union, isAll: true)
+    let plan = SparkConnectClient.getSetOperation(
+      self.plan.root, right, SetOpType.union, isAll: true)
     return DataFrame(spark: self.spark, plan: plan)
   }
 
@@ -1164,7 +1186,9 @@ public actor DataFrame: Sendable {
   /// of this `DataFrame` will be added at the end in the schema of the union result
   /// - Parameter other: A `DataFrame` to union with.
   /// - Returns: A `DataFrame`.
-  public func unionByName(_ other: DataFrame, _ allowMissingColumns: Bool = false) async -> DataFrame {
+  public func unionByName(_ other: DataFrame, _ allowMissingColumns: Bool = false) async
+    -> DataFrame
+  {
     let right = await (other.getPlan() as! Plan).root
     let plan = SparkConnectClient.getSetOperation(
       self.plan.root,
@@ -1182,8 +1206,11 @@ public actor DataFrame: Sendable {
     return DataFrame(spark: self.spark, plan: plan)
   }
 
-  private func buildRepartitionByExpression(numPartitions: Int32?, partitionExprs: [String]) -> DataFrame {
-    let plan = SparkConnectClient.getRepartitionByExpression(self.plan.root, partitionExprs, numPartitions)
+  private func buildRepartitionByExpression(numPartitions: Int32?, partitionExprs: [String])
+    -> DataFrame
+  {
+    let plan = SparkConnectClient.getRepartitionByExpression(
+      self.plan.root, partitionExprs, numPartitions)
     return DataFrame(spark: self.spark, plan: plan)
   }
 
@@ -1211,7 +1238,8 @@ public actor DataFrame: Sendable {
   ///   - partitionExprs: The partition expression strings.
   /// - Returns: A `DataFrame`.
   public func repartition(_ numPartitions: Int32, _ partitionExprs: String...) -> DataFrame {
-    return buildRepartitionByExpression(numPartitions: numPartitions, partitionExprs: partitionExprs)
+    return buildRepartitionByExpression(
+      numPartitions: numPartitions, partitionExprs: partitionExprs)
   }
 
   /// Returns a new ``DataFrame`` partitioned by the given partitioning expressions, using
@@ -1219,8 +1247,11 @@ public actor DataFrame: Sendable {
   /// partitioned.
   /// - Parameter partitionExprs: The partition expression strings.
   /// - Returns: A `DataFrame`.
-  public func repartitionByExpression(_ numPartitions: Int32?, _ partitionExprs: String...) -> DataFrame {
-    return buildRepartitionByExpression(numPartitions: numPartitions, partitionExprs: partitionExprs)
+  public func repartitionByExpression(_ numPartitions: Int32?, _ partitionExprs: String...)
+    -> DataFrame
+  {
+    return buildRepartitionByExpression(
+      numPartitions: numPartitions, partitionExprs: partitionExprs)
   }
 
   /// Returns a new ``DataFrame`` that has exactly `numPartitions` partitions, when the fewer partitions
@@ -1322,7 +1353,8 @@ public actor DataFrame: Sendable {
     _ variableColumnName: String,
     _ valueColumnName: String
   ) -> DataFrame {
-    let plan = SparkConnectClient.getUnpivot(self.plan.root, ids, values, variableColumnName, valueColumnName)
+    let plan = SparkConnectClient.getUnpivot(
+      self.plan.root, ids, values, variableColumnName, valueColumnName)
     return DataFrame(spark: self.spark, plan: plan)
   }
 
@@ -1421,7 +1453,8 @@ public actor DataFrame: Sendable {
   }
 
   func createTempView(_ viewName: String, replace: Bool, global: Bool) async throws {
-    try await spark.client.createTempView(self.plan.root, viewName, replace: replace, isGlobal: global)
+    try await spark.client.createTempView(
+      self.plan.root, viewName, replace: replace, isGlobal: global)
   }
 
   /// Eagerly checkpoint a ``DataFrame`` and return the new ``DataFrame``.
@@ -1439,7 +1472,8 @@ public actor DataFrame: Sendable {
     _ reliableCheckpoint: Bool = true,
     _ storageLevel: StorageLevel? = nil
   ) async throws -> DataFrame {
-    let plan = try await spark.client.getCheckpoint(self.plan.root, eager, reliableCheckpoint, storageLevel)
+    let plan = try await spark.client.getCheckpoint(
+      self.plan.root, eager, reliableCheckpoint, storageLevel)
     return DataFrame(spark: self.spark, plan: plan)
   }
 
@@ -1474,9 +1508,7 @@ public actor DataFrame: Sendable {
 
   /// Returns a ``DataFrameWriter`` that can be used to write non-streaming data.
   public var write: DataFrameWriter {
-    get {
-      DataFrameWriter(df: self)
-    }
+    DataFrameWriter(df: self)
   }
 
   /// Create a write configuration builder for v2 sources.
@@ -1485,7 +1517,7 @@ public actor DataFrame: Sendable {
   public func writeTo(_ table: String) -> DataFrameWriterV2 {
     return DataFrameWriterV2(table, self)
   }
-  
+
   /// Merges a set of updates, insertions, and deletions based on a source table into a target table.
   /// - Parameters:
   ///   - table: A target table name.
@@ -1497,8 +1529,6 @@ public actor DataFrame: Sendable {
 
   /// Returns a ``DataStreamWriter`` that can be used to write streaming data.
   public var writeStream: DataStreamWriter {
-    get {
-      DataStreamWriter(df: self)
-    }
+    DataStreamWriter(df: self)
   }
 }

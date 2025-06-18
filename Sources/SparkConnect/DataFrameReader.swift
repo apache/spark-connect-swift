@@ -261,7 +261,9 @@ public actor DataFrameReader: Sendable {
   ///   - table: The JDBC table that should be read from or written into.
   ///   - properties: A string-string dictionary for connection properties.
   /// - Returns: A `DataFrame`.
-  public func jdbc(_ url: String, _ table: String, _ properties: [String: String] = [:]) -> DataFrame {
+  public func jdbc(_ url: String, _ table: String, _ properties: [String: String] = [:])
+    -> DataFrame
+  {
     for (key, value) in properties {
       self.extraOptions[key] = value
     }

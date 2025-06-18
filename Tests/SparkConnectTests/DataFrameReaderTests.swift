@@ -18,9 +18,8 @@
 //
 
 import Foundation
-import Testing
-
 import SparkConnect
+import Testing
 
 /// A test suite for `DataFrameReader`
 @Suite(.serialized)
@@ -95,8 +94,14 @@ struct DataFrameReaderTests {
     let path = "../examples/src/main/resources/people.json"
     #expect(try await spark.read.schema("age SHORT").json(path).dtypes.count == 1)
     #expect(try await spark.read.schema("age SHORT").json(path).dtypes[0] == ("age", "smallint"))
-    #expect(try await spark.read.schema("age SHORT, name STRING").json(path).dtypes[0] == ("age", "smallint"))
-    #expect(try await spark.read.schema("age SHORT, name STRING").json(path).dtypes[1] == ("name", "string"))
+    #expect(
+      try await spark.read.schema("age SHORT, name STRING").json(path).dtypes[0] == (
+        "age", "smallint"
+      ))
+    #expect(
+      try await spark.read.schema("age SHORT, name STRING").json(path).dtypes[1] == (
+        "name", "string"
+      ))
     await spark.stop()
   }
 

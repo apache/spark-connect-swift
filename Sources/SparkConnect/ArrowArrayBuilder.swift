@@ -122,7 +122,8 @@ public class Time64ArrayBuilder: ArrowArrayBuilder<FixedBufferBuilder<Time64>, T
   }
 }
 
-public class Decimal128ArrayBuilder: ArrowArrayBuilder<FixedBufferBuilder<Decimal>, Decimal128Array> {
+public class Decimal128ArrayBuilder: ArrowArrayBuilder<FixedBufferBuilder<Decimal>, Decimal128Array>
+{
   fileprivate convenience init(precision: Int32, scale: Int32) throws {
     try self.init(ArrowTypeDecimal128(precision: precision, scale: scale))
   }

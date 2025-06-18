@@ -44,11 +44,11 @@ public actor SparkConnectClient {
     self.port = self.url.port ?? 15002
     var token: String? = nil
     let processInfo = ProcessInfo.processInfo
-#if os(macOS) || os(Linux)
-    var userName = processInfo.environment["SPARK_USER"] ?? processInfo.userName
-#else
-    var userName = processInfo.environment["SPARK_USER"] ?? ""
-#endif
+    #if os(macOS) || os(Linux)
+      var userName = processInfo.environment["SPARK_USER"] ?? processInfo.userName
+    #else
+      var userName = processInfo.environment["SPARK_USER"] ?? ""
+    #endif
     for param in self.url.path.split(separator: ";").dropFirst().filter({ !$0.isEmpty }) {
       let kv = param.split(separator: "=")
       switch String(kv[0]).lowercased() {
@@ -109,9 +109,11 @@ public actor SparkConnectClient {
 
       self.sessionID = sessionID
       let service = SparkConnectService.Client(wrapping: client)
-      let request = analyze(self.sessionID!, {
-        return OneOf_Analyze.sparkVersion(AnalyzePlanRequest.SparkVersion())
-      })
+      let request = analyze(
+        self.sessionID!,
+        {
+          return OneOf_Analyze.sparkVersion(AnalyzePlanRequest.SparkVersion())
+        })
       let response = try await service.analyzePlan(request)
       return response
     }
@@ -193,7 +195,7 @@ public actor SparkConnectClient {
     request.operation.opType = .unset(unset)
     return request
   }
-  
+
   /// Request the server to unset keys
   /// - Parameter keys: An array of keys
   /// - Returns: Always return true
@@ -263,11 +265,12 @@ public actor SparkConnectClient {
       request.userContext = userContext
       request.sessionID = self.sessionID!
       let response = try await service.config(request)
-      let result = if response.pairs[0].hasValue {
-        response.pairs[0].value
-      } else {
-        value
-      }
+      let result =
+        if response.pairs[0].hasValue {
+          response.pairs[0].value
+        } else {
+          value
+        }
       return result
     }
   }
@@ -295,11 +298,12 @@ public actor SparkConnectClient {
       request.userContext = userContext
       request.sessionID = self.sessionID!
       let response = try await service.config(request)
-      let result: String? = if response.pairs[0].hasValue {
-        response.pairs[0].value
-      } else {
-        nil
-      }
+      let result: String? =
+        if response.pairs[0].hasValue {
+          response.pairs[0].value
+        } else {
+          nil
+        }
       return result
     }
   }
@@ -414,11 +418,13 @@ public actor SparkConnectClient {
   func getAnalyzePlanRequest(_ sessionID: String, _ plan: Plan) async
     -> AnalyzePlanRequest
   {
-    return analyze(sessionID, {
-      var schema = AnalyzePlanRequest.Schema()
-      schema.plan = plan
-      return OneOf_Analyze.schema(schema)
-    })
+    return analyze(
+      sessionID,
+      {
+        var schema = AnalyzePlanRequest.Schema()
+        schema.plan = plan
+        return OneOf_Analyze.schema(schema)
+      })
   }
 
   private func analyze(_ sessionID: String, _ f: () -> OneOf_Analyze) -> AnalyzePlanRequest {
@@ -456,8 +462,7 @@ public actor SparkConnectClient {
       })
   }
 
-  func getStorageLevel(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest
-  {
+  func getStorageLevel(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest {
     return analyze(
       sessionID,
       {
@@ -467,8 +472,7 @@ public actor SparkConnectClient {
       })
   }
 
-  func getExplain(_ sessionID: String, _ plan: Plan, _ mode: String) async -> AnalyzePlanRequest
-  {
+  func getExplain(_ sessionID: String, _ plan: Plan, _ mode: String) async -> AnalyzePlanRequest {
     return analyze(
       sessionID,
       {
@@ -479,8 +483,7 @@ public actor SparkConnectClient {
       })
   }
 
-  func getInputFiles(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest
-  {
+  func getInputFiles(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest {
     return analyze(
       sessionID,
       {
@@ -670,7 +673,9 @@ public actor SparkConnectClient {
     return plan
   }
 
-  static func getSample(_ child: Relation, _ withReplacement: Bool, _ fraction: Double, _ seed: Int64) -> Plan {
+  static func getSample(
+    _ child: Relation, _ withReplacement: Bool, _ fraction: Double, _ seed: Int64
+  ) -> Plan {
     var sample = Sample()
     sample.input = child
     sample.withReplacement = withReplacement
@@ -762,9 +767,10 @@ public actor SparkConnectClient {
       addArtifactsRequest.clientType = self.clientType
       addArtifactsRequest.batch = batch
       let request = addArtifactsRequest
-      _ = try await service.addArtifacts(request: StreamingClientRequest<Spark_Connect_AddArtifactsRequest> { x in
-        try await x.write(contentsOf: [request])
-      })
+      _ = try await service.addArtifacts(
+        request: StreamingClientRequest<Spark_Connect_AddArtifactsRequest> { x in
+          try await x.write(contentsOf: [request])
+        })
     }
   }
 
@@ -846,11 +852,13 @@ public actor SparkConnectClient {
   func ddlParse(_ ddlString: String) async throws -> Spark_Connect_DataType {
     try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
-      let request = analyze(self.sessionID!, {
-        var ddlParse = AnalyzePlanRequest.DDLParse()
-        ddlParse.ddlString = ddlString
-        return OneOf_Analyze.ddlParse(ddlParse)
-      })
+      let request = analyze(
+        self.sessionID!,
+        {
+          var ddlParse = AnalyzePlanRequest.DDLParse()
+          ddlParse.ddlString = ddlString
+          return OneOf_Analyze.ddlParse(ddlParse)
+        })
       do {
         let response = try await service.analyzePlan(request)
         return response.ddlParse.parsed
@@ -871,11 +879,13 @@ public actor SparkConnectClient {
   func jsonToDdl(_ jsonString: String) async throws -> String {
     try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
-      let request = analyze(self.sessionID!, {
-        var jsonToDDL = AnalyzePlanRequest.JsonToDDL()
-        jsonToDDL.jsonString = jsonString
-        return OneOf_Analyze.jsonToDdl(jsonToDDL)
-      })
+      let request = analyze(
+        self.sessionID!,
+        {
+          var jsonToDDL = AnalyzePlanRequest.JsonToDDL()
+          jsonToDDL.jsonString = jsonString
+          return OneOf_Analyze.jsonToDdl(jsonToDDL)
+        })
       let response = try await service.analyzePlan(request)
       return response.jsonToDdl.ddlString
     }
@@ -884,12 +894,14 @@ public actor SparkConnectClient {
   func sameSemantics(_ plan: Plan, _ otherPlan: Plan) async throws -> Bool {
     try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
-      let request = analyze(self.sessionID!, {
-        var sameSemantics = AnalyzePlanRequest.SameSemantics()
-        sameSemantics.targetPlan = plan
-        sameSemantics.otherPlan = otherPlan
-        return OneOf_Analyze.sameSemantics(sameSemantics)
-      })
+      let request = analyze(
+        self.sessionID!,
+        {
+          var sameSemantics = AnalyzePlanRequest.SameSemantics()
+          sameSemantics.targetPlan = plan
+          sameSemantics.otherPlan = otherPlan
+          return OneOf_Analyze.sameSemantics(sameSemantics)
+        })
       let response = try await service.analyzePlan(request)
       return response.sameSemantics.result
     }
@@ -898,11 +910,13 @@ public actor SparkConnectClient {
   func semanticHash(_ plan: Plan) async throws -> Int32 {
     try await withGPRC { client in
       let service = SparkConnectService.Client(wrapping: client)
-      let request = analyze(self.sessionID!, {
-        var semanticHash = AnalyzePlanRequest.SemanticHash()
-        semanticHash.plan = plan
-        return OneOf_Analyze.semanticHash(semanticHash)
-      })
+      let request = analyze(
+        self.sessionID!,
+        {
+          var semanticHash = AnalyzePlanRequest.SemanticHash()
+          semanticHash.plan = plan
+          return OneOf_Analyze.semanticHash(semanticHash)
+        })
       let response = try await service.analyzePlan(request)
       return response.semanticHash.result
     }
@@ -986,7 +1000,9 @@ public actor SparkConnectClient {
       })
   }
 
-  static func getRepartition(_ child: Relation, _ numPartitions: Int32, _ shuffle: Bool = false) -> Plan {
+  static func getRepartition(_ child: Relation, _ numPartitions: Int32, _ shuffle: Bool = false)
+    -> Plan
+  {
     var repartition = Repartition()
     repartition.input = child
     repartition.numPartitions = numPartitions
@@ -1064,7 +1080,7 @@ public actor SparkConnectClient {
         literal.short = Int32(value)
       case let value as Int32:
         literal.integer = value
-      case let value as Int64: // Hint parameter raises exceptions for Int64
+      case let value as Int64:  // Hint parameter raises exceptions for Int64
         literal.integer = Int32(value)
       case let value as Int:
         literal.integer = Int32(value)

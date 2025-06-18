@@ -27,7 +27,8 @@ import Testing
 struct SQLTests {
   let fm = FileManager.default
   let path = Bundle.module.path(forResource: "queries", ofType: "")!
-  let regenerateGoldenFiles = ProcessInfo.processInfo.environment["SPARK_GENERATE_GOLDEN_FILES"] == "1"
+  let regenerateGoldenFiles =
+    ProcessInfo.processInfo.environment["SPARK_GENERATE_GOLDEN_FILES"] == "1"
 
   let regexID = /#\d+L?/
   let regexPlanId = /plan_id=\d+/
@@ -90,35 +91,39 @@ struct SQLTests {
     "variant.sql",
   ]
 
-#if !os(Linux)
-  @Test
-  func runAll() async throws {
-    let spark = try await SparkSession.builder.getOrCreate()
-    let MAX = Int32.max
-    for name in try! fm.contentsOfDirectory(atPath: path).sorted() {
-      guard name.hasSuffix(".sql") else { continue }
-      print(name)
-      if await !spark.version.starts(with: "4.") && queriesForSpark4Only.contains(name) {
-        print("Skip query \(name) due to the difference between Spark 3 and 4.")
-        continue
-      }
+  #if !os(Linux)
+    @Test
+    func runAll() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let MAX = Int32.max
+      for name in try! fm.contentsOfDirectory(atPath: path).sorted() {
+        guard name.hasSuffix(".sql") else { continue }
+        print(name)
+        if await !spark.version.starts(with: "4.") && queriesForSpark4Only.contains(name) {
+          print("Skip query \(name) due to the difference between Spark 3 and 4.")
+          continue
+        }
 
-      let sql = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name)"), encoding: .utf8)
-      let result = try await spark.sql(sql).showString(MAX, MAX, false).collect()[0].get(0) as! String
-      let answer = cleanUp(result.trimmingCharacters(in: .whitespacesAndNewlines))
-      if (regenerateGoldenFiles) {
-        let path = "\(FileManager.default.currentDirectoryPath)/Tests/SparkConnectTests/Resources/queries/\(name).answer"
-        fm.createFile(atPath: path, contents: answer.data(using: .utf8)!, attributes: nil)
-      } else {
-        let expected = cleanUp(try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).answer"), encoding: .utf8))
+        let sql = try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name)"), encoding: .utf8)
+        let result =
+          try await spark.sql(sql).showString(MAX, MAX, false).collect()[0].get(0) as! String
+        let answer = cleanUp(result.trimmingCharacters(in: .whitespacesAndNewlines))
+        if regenerateGoldenFiles {
+          let path =
+            "\(FileManager.default.currentDirectoryPath)/Tests/SparkConnectTests/Resources/queries/\(name).answer"
+          fm.createFile(atPath: path, contents: answer.data(using: .utf8)!, attributes: nil)
+        } else {
+          let expected = cleanUp(
+            try String(contentsOf: URL(fileURLWithPath: "\(path)/\(name).answer"), encoding: .utf8)
+          )
           .trimmingCharacters(in: .whitespacesAndNewlines)
-        if (answer != expected) {
-          print("Try to compare normalized result.")
-          #expect(normalize(answer) == normalize(expected))
+          if answer != expected {
+            print("Try to compare normalized result.")
+            #expect(normalize(answer) == normalize(expected))
+          }
         }
       }
+      await spark.stop()
     }
-    await spark.stop()
-  }
-#endif
+  #endif
 }

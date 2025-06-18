@@ -89,16 +89,14 @@ public actor SparkSession {
 
   /// Interface through which the user may create, drop, alter or query underlying databases, tables, functions etc.
   public var catalog: Catalog {
-    get {
-      return Catalog(spark: self)
-    }
+    return Catalog(spark: self)
   }
 
   /// Stop the current client.
   public func stop() async {
     await client.stop()
   }
-  
+
   /// Returns a ``DataFrame`` with no rows or columns.
   public var emptyDataFrame: DataFrame {
     get async {
@@ -222,9 +220,7 @@ public actor SparkSession {
   ///
   /// - Returns: A ``DataFrameReader`` instance configured for this session
   public var read: DataFrameReader {
-    get {
-      DataFrameReader(sparkSession: self)
-    }
+    DataFrameReader(sparkSession: self)
   }
 
   /// Returns a ``DataStreamReader`` that can be used to read streaming data in as a ``DataFrame``.
@@ -239,9 +235,7 @@ public actor SparkSession {
   ///
   /// - Returns: A ``DataFrameReader`` instance configured for this session
   public var readStream: DataStreamReader {
-    get {
-      DataStreamReader(sparkSession: self)
-    }
+    DataStreamReader(sparkSession: self)
   }
 
   /// Returns a ``DataFrame`` representing the specified table or view.
@@ -337,11 +331,11 @@ public actor SparkSession {
   /// ```swift
   /// // Add a tag for a specific operation
   /// try await spark.addTag("etl_job_2024")
-  /// 
+  ///
   /// // Perform operations that will be tagged
   /// let df = try await spark.sql("SELECT * FROM source_table")
   /// try await df.write.saveAsTable("processed_table")
-  /// 
+  ///
   /// // Remove the tag when done
   /// try await spark.removeTag("etl_job_2024")
   /// ```
@@ -422,9 +416,7 @@ public actor SparkSession {
   /// Returns a `StreamingQueryManager` that allows managing all the `StreamingQuery`s active on
   /// `this`.
   public var streams: StreamingQueryManager {
-    get {
-      StreamingQueryManager(self)
-    }
+    StreamingQueryManager(self)
   }
 
   /// This is defined as the return type of `SparkSession.sparkContext` method.

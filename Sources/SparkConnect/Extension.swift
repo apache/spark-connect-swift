@@ -135,14 +135,15 @@ extension String {
   }
 
   var toExplainMode: ExplainMode {
-    let mode = switch self {
-    case "codegen": ExplainMode.codegen
-    case "cost": ExplainMode.cost
-    case "extended": ExplainMode.extended
-    case "formatted": ExplainMode.formatted
-    case "simple": ExplainMode.simple
-    default: ExplainMode.simple
-    }
+    let mode =
+      switch self {
+      case "codegen": ExplainMode.codegen
+      case "cost": ExplainMode.cost
+      case "extended": ExplainMode.extended
+      case "formatted": ExplainMode.formatted
+      case "simple": ExplainMode.simple
+      default: ExplainMode.simple
+      }
     return mode
   }
 
@@ -220,13 +221,14 @@ extension YearMonthInterval {
   func toString() throws -> String {
     let startFieldName = try fieldToString(self.startField)
     let endFieldName = try fieldToString(self.endField)
-    let interval = if startFieldName == endFieldName {
-      "interval \(startFieldName)"
-    } else if startFieldName < endFieldName {
-      "interval \(startFieldName) to \(endFieldName)"
-    } else {
-      throw SparkConnectError.InvalidType
-    }
+    let interval =
+      if startFieldName == endFieldName {
+        "interval \(startFieldName)"
+      } else if startFieldName < endFieldName {
+        "interval \(startFieldName) to \(endFieldName)"
+      } else {
+        throw SparkConnectError.InvalidType
+      }
     return interval
   }
 }
@@ -246,13 +248,14 @@ extension DayTimeInterval {
   func toString() throws -> String {
     let startFieldName = try fieldToString(self.startField)
     let endFieldName = try fieldToString(self.endField)
-    let interval = if startFieldName == endFieldName {
-      "interval \(startFieldName)"
-    } else if startFieldName < endFieldName {
-      "interval \(startFieldName) to \(endFieldName)"
-    } else {
-      throw SparkConnectError.InvalidType
-    }
+    let interval =
+      if startFieldName == endFieldName {
+        "interval \(startFieldName)"
+      } else if startFieldName < endFieldName {
+        "interval \(startFieldName) to \(endFieldName)"
+      } else {
+        throw SparkConnectError.InvalidType
+      }
     return interval
   }
 }
