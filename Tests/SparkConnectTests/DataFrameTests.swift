@@ -932,6 +932,19 @@ struct DataFrameTests {
       #expect(try await df.collect() == expected)
       await spark.stop()
     }
+
+    @Test
+    func timestamp() async throws {
+      let spark = try await SparkSession.builder.getOrCreate()
+      let df = try await spark.sql(
+        "SELECT TIMESTAMP '2025-05-01 16:23:40', TIMESTAMP '2025-05-01 16:23:40.123456'")
+      let expected = [
+        Row(
+          Date(timeIntervalSince1970: 1746116620.0), Date(timeIntervalSince1970: 1746116620.123456))
+      ]
+      #expect(try await df.collect() == expected)
+      await spark.stop()
+    }
   #endif
 
   @Test

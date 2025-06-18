@@ -429,6 +429,22 @@ public actor DataFrame: Sendable {
               values.append(array.asAny(i) as? Decimal)
             case .primitiveInfo(.date32):
               values.append(array.asAny(i) as! Date)
+            case .timeInfo(.timestamp):
+              let timestampType = column.data.type as! ArrowTypeTimestamp
+              assert(timestampType.timezone == "Etc/UTC")
+              let timestamp = array.asAny(i) as! Int64
+              let timeInterval =
+                switch timestampType.unit {
+                case .seconds:
+                  TimeInterval(timestamp)
+                case .milliseconds:
+                  TimeInterval(timestamp) / 1_000
+                case .microseconds:
+                  TimeInterval(timestamp) / 1_000_000
+                case .nanoseconds:
+                  TimeInterval(timestamp) / 1_000_000_000
+                }
+              values.append(Date(timeIntervalSince1970: timeInterval))
             case ArrowType.ArrowBinary:
               values.append((array as! AsString).asString(i).utf8)
             case .complexInfo(.strct):
