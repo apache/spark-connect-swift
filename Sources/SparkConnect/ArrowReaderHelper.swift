@@ -262,15 +262,6 @@ func isFixedPrimitive(_ type: org_apache_arrow_flatbuf_Type_) -> Bool {
   }
 }
 
-func isNestedType(_ type: org_apache_arrow_flatbuf_Type_) -> Bool {
-  switch type {
-  case .struct_:
-    return true
-  default:
-    return false
-  }
-}
-
 func findArrowType(  // swiftlint:disable:this cyclomatic_complexity function_body_length
   _ field: org_apache_arrow_flatbuf_Field
 ) -> ArrowType {

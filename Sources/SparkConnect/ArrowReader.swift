@@ -201,12 +201,15 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
   )
     -> Result<ArrowArrayHolder, ArrowError>
   {
-    if isNestedType(field.typeType) {
+    switch field.typeType {
+    case .struct_:
       return loadStructData(loadInfo, field: field)
-    } else if isFixedPrimitive(field.typeType) {
-      return loadPrimitiveData(loadInfo, field: field)
-    } else {
-      return loadVariableData(loadInfo, field: field)
+    default:
+      if isFixedPrimitive(field.typeType) {
+        return loadPrimitiveData(loadInfo, field: field)
+      } else {
+        return loadVariableData(loadInfo, field: field)
+      }
     }
   }
 
