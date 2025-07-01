@@ -92,6 +92,30 @@ struct Spark_Connect_MlCommand: Sendable {
     set {command = .evaluate(newValue)}
   }
 
+  var cleanCache: Spark_Connect_MlCommand.CleanCache {
+    get {
+      if case .cleanCache(let v)? = command {return v}
+      return Spark_Connect_MlCommand.CleanCache()
+    }
+    set {command = .cleanCache(newValue)}
+  }
+
+  var getCacheInfo: Spark_Connect_MlCommand.GetCacheInfo {
+    get {
+      if case .getCacheInfo(let v)? = command {return v}
+      return Spark_Connect_MlCommand.GetCacheInfo()
+    }
+    set {command = .getCacheInfo(newValue)}
+  }
+
+  var createSummary: Spark_Connect_MlCommand.CreateSummary {
+    get {
+      if case .createSummary(let v)? = command {return v}
+      return Spark_Connect_MlCommand.CreateSummary()
+    }
+    set {command = .createSummary(newValue)}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   enum OneOf_Command: Equatable, Sendable {
@@ -101,6 +125,9 @@ struct Spark_Connect_MlCommand: Sendable {
     case write(Spark_Connect_MlCommand.Write)
     case read(Spark_Connect_MlCommand.Read)
     case evaluate(Spark_Connect_MlCommand.Evaluate)
+    case cleanCache(Spark_Connect_MlCommand.CleanCache)
+    case getCacheInfo(Spark_Connect_MlCommand.GetCacheInfo)
+    case createSummary(Spark_Connect_MlCommand.CreateSummary)
 
   }
 
@@ -157,6 +184,41 @@ struct Spark_Connect_MlCommand: Sendable {
     // methods supported on all messages.
 
     var objRefs: [Spark_Connect_ObjectRef] = []
+
+    /// if set `evict_only` to true, only evict the cached model from memory,
+    /// but keep the offloaded model in Spark driver local disk.
+    var evictOnly: Bool {
+      get {return _evictOnly ?? false}
+      set {_evictOnly = newValue}
+    }
+    /// Returns true if `evictOnly` has been explicitly set.
+    var hasEvictOnly: Bool {return self._evictOnly != nil}
+    /// Clears the value of `evictOnly`. Subsequent reads from it will return its default value.
+    mutating func clearEvictOnly() {self._evictOnly = nil}
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _evictOnly: Bool? = nil
+  }
+
+  /// Force to clean up all the ML cached objects
+  struct CleanCache: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+  }
+
+  /// Get the information of all the ML cached objects
+  struct GetCacheInfo: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -304,6 +366,39 @@ struct Spark_Connect_MlCommand: Sendable {
     fileprivate var _dataset: Spark_Connect_Relation? = nil
   }
 
+  /// This is for re-creating the model summary when the model summary is lost
+  /// (model summary is lost when the model is offloaded and then loaded back)
+  struct CreateSummary: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    var modelRef: Spark_Connect_ObjectRef {
+      get {return _modelRef ?? Spark_Connect_ObjectRef()}
+      set {_modelRef = newValue}
+    }
+    /// Returns true if `modelRef` has been explicitly set.
+    var hasModelRef: Bool {return self._modelRef != nil}
+    /// Clears the value of `modelRef`. Subsequent reads from it will return its default value.
+    mutating func clearModelRef() {self._modelRef = nil}
+
+    var dataset: Spark_Connect_Relation {
+      get {return _dataset ?? Spark_Connect_Relation()}
+      set {_dataset = newValue}
+    }
+    /// Returns true if `dataset` has been explicitly set.
+    var hasDataset: Bool {return self._dataset != nil}
+    /// Clears the value of `dataset`. Subsequent reads from it will return its default value.
+    mutating func clearDataset() {self._dataset = nil}
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _modelRef: Spark_Connect_ObjectRef? = nil
+    fileprivate var _dataset: Spark_Connect_Relation? = nil
+  }
+
   init() {}
 }
 
@@ -401,6 +496,16 @@ struct Spark_Connect_MlCommandResult: Sendable {
     /// Clears the value of `params`. Subsequent reads from it will return its default value.
     mutating func clearParams() {self._params = nil}
 
+    /// (Optional) warning message generated during the ML command execution
+    var warningMessage: String {
+      get {return _warningMessage ?? String()}
+      set {_warningMessage = newValue}
+    }
+    /// Returns true if `warningMessage` has been explicitly set.
+    var hasWarningMessage: Bool {return self._warningMessage != nil}
+    /// Clears the value of `warningMessage`. Subsequent reads from it will return its default value.
+    mutating func clearWarningMessage() {self._warningMessage = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     enum OneOf_Type: Equatable, Sendable {
@@ -415,6 +520,7 @@ struct Spark_Connect_MlCommandResult: Sendable {
 
     fileprivate var _uid: String? = nil
     fileprivate var _params: Spark_Connect_MlParams? = nil
+    fileprivate var _warningMessage: String? = nil
   }
 
   init() {}
@@ -433,6 +539,9 @@ extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._Message
     4: .same(proto: "write"),
     5: .same(proto: "read"),
     6: .same(proto: "evaluate"),
+    7: .standard(proto: "clean_cache"),
+    8: .standard(proto: "get_cache_info"),
+    9: .standard(proto: "create_summary"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -519,6 +628,45 @@ extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._Message
           self.command = .evaluate(v)
         }
       }()
+      case 7: try {
+        var v: Spark_Connect_MlCommand.CleanCache?
+        var hadOneofValue = false
+        if let current = self.command {
+          hadOneofValue = true
+          if case .cleanCache(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.command = .cleanCache(v)
+        }
+      }()
+      case 8: try {
+        var v: Spark_Connect_MlCommand.GetCacheInfo?
+        var hadOneofValue = false
+        if let current = self.command {
+          hadOneofValue = true
+          if case .getCacheInfo(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.command = .getCacheInfo(v)
+        }
+      }()
+      case 9: try {
+        var v: Spark_Connect_MlCommand.CreateSummary?
+        var hadOneofValue = false
+        if let current = self.command {
+          hadOneofValue = true
+          if case .createSummary(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.command = .createSummary(v)
+        }
+      }()
       default: break
       }
     }
@@ -553,6 +701,18 @@ extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._Message
     case .evaluate?: try {
       guard case .evaluate(let v)? = self.command else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
+    }()
+    case .cleanCache?: try {
+      guard case .cleanCache(let v)? = self.command else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
+    }()
+    case .getCacheInfo?: try {
+      guard case .getCacheInfo(let v)? = self.command else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
+    }()
+    case .createSummary?: try {
+      guard case .createSummary(let v)? = self.command else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 9)
     }()
     case nil: break
     }
@@ -618,6 +778,7 @@ extension Spark_Connect_MlCommand.Delete: SwiftProtobuf.Message, SwiftProtobuf._
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".Delete"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .standard(proto: "obj_refs"),
+    2: .standard(proto: "evict_only"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -627,20 +788,67 @@ extension Spark_Connect_MlCommand.Delete: SwiftProtobuf.Message, SwiftProtobuf._
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeRepeatedMessageField(value: &self.objRefs) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self._evictOnly) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.objRefs.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.objRefs, fieldNumber: 1)
     }
+    try { if let v = self._evictOnly {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 2)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Spark_Connect_MlCommand.Delete, rhs: Spark_Connect_MlCommand.Delete) -> Bool {
     if lhs.objRefs != rhs.objRefs {return false}
+    if lhs._evictOnly != rhs._evictOnly {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_MlCommand.CleanCache: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".CleanCache"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_MlCommand.CleanCache, rhs: Spark_Connect_MlCommand.CleanCache) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_MlCommand.GetCacheInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".GetCacheInfo"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_MlCommand.GetCacheInfo, rhs: Spark_Connect_MlCommand.GetCacheInfo) -> Bool {
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -830,6 +1038,48 @@ extension Spark_Connect_MlCommand.Evaluate: SwiftProtobuf.Message, SwiftProtobuf
   }
 }
 
+extension Spark_Connect_MlCommand.CreateSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".CreateSummary"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "model_ref"),
+    2: .same(proto: "dataset"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._modelRef) }()
+      case 2: try { try decoder.decodeSingularMessageField(value: &self._dataset) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._modelRef {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try { if let v = self._dataset {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_MlCommand.CreateSummary, rhs: Spark_Connect_MlCommand.CreateSummary) -> Bool {
+    if lhs._modelRef != rhs._modelRef {return false}
+    if lhs._dataset != rhs._dataset {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Spark_Connect_MlCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlCommandResult"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -920,6 +1170,7 @@ extension Spark_Connect_MlCommandResult.MlOperatorInfo: SwiftProtobuf.Message, S
     2: .same(proto: "name"),
     3: .same(proto: "uid"),
     4: .same(proto: "params"),
+    5: .standard(proto: "warning_message"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -951,6 +1202,7 @@ extension Spark_Connect_MlCommandResult.MlOperatorInfo: SwiftProtobuf.Message, S
       }()
       case 3: try { try decoder.decodeSingularStringField(value: &self._uid) }()
       case 4: try { try decoder.decodeSingularMessageField(value: &self._params) }()
+      case 5: try { try decoder.decodeSingularStringField(value: &self._warningMessage) }()
       default: break
       }
     }
@@ -978,6 +1230,9 @@ extension Spark_Connect_MlCommandResult.MlOperatorInfo: SwiftProtobuf.Message, S
     try { if let v = self._params {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
     } }()
+    try { if let v = self._warningMessage {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 5)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -985,6 +1240,7 @@ extension Spark_Connect_MlCommandResult.MlOperatorInfo: SwiftProtobuf.Message, S
     if lhs.type != rhs.type {return false}
     if lhs._uid != rhs._uid {return false}
     if lhs._params != rhs._params {return false}
+    if lhs._warningMessage != rhs._warningMessage {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

@@ -235,6 +235,14 @@ struct Spark_Connect_Command: Sendable {
     set {commandType = .executeExternalCommand(newValue)}
   }
 
+  var pipelineCommand: Spark_Connect_PipelineCommand {
+    get {
+      if case .pipelineCommand(let v)? = commandType {return v}
+      return Spark_Connect_PipelineCommand()
+    }
+    set {commandType = .pipelineCommand(newValue)}
+  }
+
   /// This field is used to mark extensions to the protocol. When plugins generate arbitrary
   /// Commands they can add them here. During the planning the correct resolution is done.
   var `extension`: SwiftProtobuf.Google_Protobuf_Any {
@@ -266,6 +274,7 @@ struct Spark_Connect_Command: Sendable {
     case mergeIntoTableCommand(Spark_Connect_MergeIntoTableCommand)
     case mlCommand(Spark_Connect_MlCommand)
     case executeExternalCommand(Spark_Connect_ExecuteExternalCommand)
+    case pipelineCommand(Spark_Connect_PipelineCommand)
     /// This field is used to mark extensions to the protocol. When plugins generate arbitrary
     /// Commands they can add them here. During the planning the correct resolution is done.
     case `extension`(SwiftProtobuf.Google_Protobuf_Any)
@@ -1873,6 +1882,7 @@ extension Spark_Connect_Command: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     16: .standard(proto: "merge_into_table_command"),
     17: .standard(proto: "ml_command"),
     18: .standard(proto: "execute_external_command"),
+    19: .standard(proto: "pipeline_command"),
     999: .same(proto: "extension"),
   ]
 
@@ -2116,6 +2126,19 @@ extension Spark_Connect_Command: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
           self.commandType = .executeExternalCommand(v)
         }
       }()
+      case 19: try {
+        var v: Spark_Connect_PipelineCommand?
+        var hadOneofValue = false
+        if let current = self.commandType {
+          hadOneofValue = true
+          if case .pipelineCommand(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.commandType = .pipelineCommand(v)
+        }
+      }()
       case 999: try {
         var v: SwiftProtobuf.Google_Protobuf_Any?
         var hadOneofValue = false
@@ -2211,6 +2234,10 @@ extension Spark_Connect_Command: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     case .executeExternalCommand?: try {
       guard case .executeExternalCommand(let v)? = self.commandType else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 18)
+    }()
+    case .pipelineCommand?: try {
+      guard case .pipelineCommand(let v)? = self.commandType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 19)
     }()
     case .extension?: try {
       guard case .extension(let v)? = self.commandType else { preconditionFailure() }

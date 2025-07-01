@@ -1774,6 +1774,9 @@ struct Spark_Connect_SubqueryExpression: Sendable {
   /// Clears the value of `tableArgOptions`. Subsequent reads from it will return its default value.
   mutating func clearTableArgOptions() {self._tableArgOptions = nil}
 
+  /// (Optional) IN subquery values.
+  var inSubqueryValues: [Spark_Connect_Expression] = []
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   enum SubqueryType: SwiftProtobuf.Enum, Swift.CaseIterable {
@@ -1782,6 +1785,7 @@ struct Spark_Connect_SubqueryExpression: Sendable {
     case scalar // = 1
     case exists // = 2
     case tableArg // = 3
+    case `in` // = 4
     case UNRECOGNIZED(Int)
 
     init() {
@@ -1794,6 +1798,7 @@ struct Spark_Connect_SubqueryExpression: Sendable {
       case 1: self = .scalar
       case 2: self = .exists
       case 3: self = .tableArg
+      case 4: self = .in
       default: self = .UNRECOGNIZED(rawValue)
       }
     }
@@ -1804,6 +1809,7 @@ struct Spark_Connect_SubqueryExpression: Sendable {
       case .scalar: return 1
       case .exists: return 2
       case .tableArg: return 3
+      case .in: return 4
       case .UNRECOGNIZED(let i): return i
       }
     }
@@ -1814,6 +1820,7 @@ struct Spark_Connect_SubqueryExpression: Sendable {
       .scalar,
       .exists,
       .tableArg,
+      .in,
     ]
 
   }
@@ -4774,6 +4781,7 @@ extension Spark_Connect_SubqueryExpression: SwiftProtobuf.Message, SwiftProtobuf
     1: .standard(proto: "plan_id"),
     2: .standard(proto: "subquery_type"),
     3: .standard(proto: "table_arg_options"),
+    4: .standard(proto: "in_subquery_values"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -4785,6 +4793,7 @@ extension Spark_Connect_SubqueryExpression: SwiftProtobuf.Message, SwiftProtobuf
       case 1: try { try decoder.decodeSingularInt64Field(value: &self.planID) }()
       case 2: try { try decoder.decodeSingularEnumField(value: &self.subqueryType) }()
       case 3: try { try decoder.decodeSingularMessageField(value: &self._tableArgOptions) }()
+      case 4: try { try decoder.decodeRepeatedMessageField(value: &self.inSubqueryValues) }()
       default: break
       }
     }
@@ -4804,6 +4813,9 @@ extension Spark_Connect_SubqueryExpression: SwiftProtobuf.Message, SwiftProtobuf
     try { if let v = self._tableArgOptions {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
     } }()
+    if !self.inSubqueryValues.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.inSubqueryValues, fieldNumber: 4)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -4811,6 +4823,7 @@ extension Spark_Connect_SubqueryExpression: SwiftProtobuf.Message, SwiftProtobuf
     if lhs.planID != rhs.planID {return false}
     if lhs.subqueryType != rhs.subqueryType {return false}
     if lhs._tableArgOptions != rhs._tableArgOptions {return false}
+    if lhs.inSubqueryValues != rhs.inSubqueryValues {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -4822,6 +4835,7 @@ extension Spark_Connect_SubqueryExpression.SubqueryType: SwiftProtobuf._ProtoNam
     1: .same(proto: "SUBQUERY_TYPE_SCALAR"),
     2: .same(proto: "SUBQUERY_TYPE_EXISTS"),
     3: .same(proto: "SUBQUERY_TYPE_TABLE_ARG"),
+    4: .same(proto: "SUBQUERY_TYPE_IN"),
   ]
 }
 

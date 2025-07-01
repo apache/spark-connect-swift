@@ -632,6 +632,16 @@ struct Spark_Connect_MlRelation: @unchecked Sendable {
     set {_uniqueStorage()._mlType = .fetch(newValue)}
   }
 
+  /// (Optional) the dataset for restoring the model summary
+  var modelSummaryDataset: Spark_Connect_Relation {
+    get {return _storage._modelSummaryDataset ?? Spark_Connect_Relation()}
+    set {_uniqueStorage()._modelSummaryDataset = newValue}
+  }
+  /// Returns true if `modelSummaryDataset` has been explicitly set.
+  var hasModelSummaryDataset: Bool {return _storage._modelSummaryDataset != nil}
+  /// Clears the value of `modelSummaryDataset`. Subsequent reads from it will return its default value.
+  mutating func clearModelSummaryDataset() {_uniqueStorage()._modelSummaryDataset = nil}
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   enum OneOf_MlType: Equatable, Sendable {
@@ -3111,11 +3121,60 @@ struct Spark_Connect_GroupMap: @unchecked Sendable {
   /// Clears the value of `stateSchema`. Subsequent reads from it will return its default value.
   mutating func clearStateSchema() {_uniqueStorage()._stateSchema = nil}
 
+  /// Below fields are used by TransformWithState and TransformWithStateInPandas
+  /// (Optional) TransformWithState related parameters.
+  var transformWithStateInfo: Spark_Connect_TransformWithStateInfo {
+    get {return _storage._transformWithStateInfo ?? Spark_Connect_TransformWithStateInfo()}
+    set {_uniqueStorage()._transformWithStateInfo = newValue}
+  }
+  /// Returns true if `transformWithStateInfo` has been explicitly set.
+  var hasTransformWithStateInfo: Bool {return _storage._transformWithStateInfo != nil}
+  /// Clears the value of `transformWithStateInfo`. Subsequent reads from it will return its default value.
+  mutating func clearTransformWithStateInfo() {_uniqueStorage()._transformWithStateInfo = nil}
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 
   fileprivate var _storage = _StorageClass.defaultInstance
+}
+
+/// Additional input parameters used for TransformWithState operator.
+struct Spark_Connect_TransformWithStateInfo: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required) Time mode string for transformWithState.
+  var timeMode: String = String()
+
+  /// (Optional) Event time column name.
+  var eventTimeColumnName: String {
+    get {return _eventTimeColumnName ?? String()}
+    set {_eventTimeColumnName = newValue}
+  }
+  /// Returns true if `eventTimeColumnName` has been explicitly set.
+  var hasEventTimeColumnName: Bool {return self._eventTimeColumnName != nil}
+  /// Clears the value of `eventTimeColumnName`. Subsequent reads from it will return its default value.
+  mutating func clearEventTimeColumnName() {self._eventTimeColumnName = nil}
+
+  /// (Optional) Schema for the output DataFrame.
+  /// Only required used for TransformWithStateInPandas.
+  var outputSchema: Spark_Connect_DataType {
+    get {return _outputSchema ?? Spark_Connect_DataType()}
+    set {_outputSchema = newValue}
+  }
+  /// Returns true if `outputSchema` has been explicitly set.
+  var hasOutputSchema: Bool {return self._outputSchema != nil}
+  /// Clears the value of `outputSchema`. Subsequent reads from it will return its default value.
+  mutating func clearOutputSchema() {self._outputSchema = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _eventTimeColumnName: String? = nil
+  fileprivate var _outputSchema: Spark_Connect_DataType? = nil
 }
 
 struct Spark_Connect_CoGroupMap: @unchecked Sendable {
@@ -4763,10 +4822,12 @@ extension Spark_Connect_MlRelation: SwiftProtobuf.Message, SwiftProtobuf._Messag
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "transform"),
     2: .same(proto: "fetch"),
+    3: .standard(proto: "model_summary_dataset"),
   ]
 
   fileprivate class _StorageClass {
     var _mlType: Spark_Connect_MlRelation.OneOf_MlType?
+    var _modelSummaryDataset: Spark_Connect_Relation? = nil
 
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
@@ -4778,6 +4839,7 @@ extension Spark_Connect_MlRelation: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
     init(copying source: _StorageClass) {
       _mlType = source._mlType
+      _modelSummaryDataset = source._modelSummaryDataset
     }
   }
 
@@ -4822,6 +4884,7 @@ extension Spark_Connect_MlRelation: SwiftProtobuf.Message, SwiftProtobuf._Messag
             _storage._mlType = .fetch(v)
           }
         }()
+        case 3: try { try decoder.decodeSingularMessageField(value: &_storage._modelSummaryDataset) }()
         default: break
         }
       }
@@ -4845,6 +4908,9 @@ extension Spark_Connect_MlRelation: SwiftProtobuf.Message, SwiftProtobuf._Messag
       }()
       case nil: break
       }
+      try { if let v = _storage._modelSummaryDataset {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+      } }()
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -4855,6 +4921,7 @@ extension Spark_Connect_MlRelation: SwiftProtobuf.Message, SwiftProtobuf._Messag
         let _storage = _args.0
         let rhs_storage = _args.1
         if _storage._mlType != rhs_storage._mlType {return false}
+        if _storage._modelSummaryDataset != rhs_storage._modelSummaryDataset {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -9354,6 +9421,7 @@ extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     8: .standard(proto: "output_mode"),
     9: .standard(proto: "timeout_conf"),
     10: .standard(proto: "state_schema"),
+    11: .standard(proto: "transform_with_state_info"),
   ]
 
   fileprivate class _StorageClass {
@@ -9367,6 +9435,7 @@ extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageI
     var _outputMode: String? = nil
     var _timeoutConf: String? = nil
     var _stateSchema: Spark_Connect_DataType? = nil
+    var _transformWithStateInfo: Spark_Connect_TransformWithStateInfo? = nil
 
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
@@ -9387,6 +9456,7 @@ extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageI
       _outputMode = source._outputMode
       _timeoutConf = source._timeoutConf
       _stateSchema = source._stateSchema
+      _transformWithStateInfo = source._transformWithStateInfo
     }
   }
 
@@ -9415,6 +9485,7 @@ extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageI
         case 8: try { try decoder.decodeSingularStringField(value: &_storage._outputMode) }()
         case 9: try { try decoder.decodeSingularStringField(value: &_storage._timeoutConf) }()
         case 10: try { try decoder.decodeSingularMessageField(value: &_storage._stateSchema) }()
+        case 11: try { try decoder.decodeSingularMessageField(value: &_storage._transformWithStateInfo) }()
         default: break
         }
       }
@@ -9457,6 +9528,9 @@ extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageI
       try { if let v = _storage._stateSchema {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 10)
       } }()
+      try { if let v = _storage._transformWithStateInfo {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 11)
+      } }()
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -9476,10 +9550,59 @@ extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageI
         if _storage._outputMode != rhs_storage._outputMode {return false}
         if _storage._timeoutConf != rhs_storage._timeoutConf {return false}
         if _storage._stateSchema != rhs_storage._stateSchema {return false}
+        if _storage._transformWithStateInfo != rhs_storage._transformWithStateInfo {return false}
         return true
       }
       if !storagesAreEqual {return false}
     }
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_TransformWithStateInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".TransformWithStateInfo"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "time_mode"),
+    2: .standard(proto: "event_time_column_name"),
+    3: .standard(proto: "output_schema"),
+  ]
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.timeMode) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self._eventTimeColumnName) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._outputSchema) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.timeMode.isEmpty {
+      try visitor.visitSingularStringField(value: self.timeMode, fieldNumber: 1)
+    }
+    try { if let v = self._eventTimeColumnName {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 2)
+    } }()
+    try { if let v = self._outputSchema {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_TransformWithStateInfo, rhs: Spark_Connect_TransformWithStateInfo) -> Bool {
+    if lhs.timeMode != rhs.timeMode {return false}
+    if lhs._eventTimeColumnName != rhs._eventTimeColumnName {return false}
+    if lhs._outputSchema != rhs._outputSchema {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

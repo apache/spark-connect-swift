@@ -1296,6 +1296,24 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     set {responseType = .mlCommandResult(newValue)}
   }
 
+  /// Response containing pipeline event that is streamed back to the client during a pipeline run
+  var pipelineEventResult: Spark_Connect_PipelineEventResult {
+    get {
+      if case .pipelineEventResult(let v)? = responseType {return v}
+      return Spark_Connect_PipelineEventResult()
+    }
+    set {responseType = .pipelineEventResult(newValue)}
+  }
+
+  /// Pipeline command response
+  var pipelineCommandResult: Spark_Connect_PipelineCommandResult {
+    get {
+      if case .pipelineCommandResult(let v)? = responseType {return v}
+      return Spark_Connect_PipelineCommandResult()
+    }
+    set {responseType = .pipelineCommandResult(newValue)}
+  }
+
   /// Support arbitrary result objects.
   var `extension`: SwiftProtobuf.Google_Protobuf_Any {
     get {
@@ -1356,6 +1374,10 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     case checkpointCommandResult(Spark_Connect_CheckpointCommandResult)
     /// ML command response
     case mlCommandResult(Spark_Connect_MlCommandResult)
+    /// Response containing pipeline event that is streamed back to the client during a pipeline run
+    case pipelineEventResult(Spark_Connect_PipelineEventResult)
+    /// Pipeline command response
+    case pipelineCommandResult(Spark_Connect_PipelineCommandResult)
     /// Support arbitrary result objects.
     case `extension`(SwiftProtobuf.Google_Protobuf_Any)
 
@@ -4952,6 +4974,8 @@ extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobu
     18: .standard(proto: "execution_progress"),
     19: .standard(proto: "checkpoint_command_result"),
     20: .standard(proto: "ml_command_result"),
+    21: .standard(proto: "pipeline_event_result"),
+    22: .standard(proto: "pipeline_command_result"),
     999: .same(proto: "extension"),
     4: .same(proto: "metrics"),
     6: .standard(proto: "observed_metrics"),
@@ -5127,6 +5151,32 @@ extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobu
           self.responseType = .mlCommandResult(v)
         }
       }()
+      case 21: try {
+        var v: Spark_Connect_PipelineEventResult?
+        var hadOneofValue = false
+        if let current = self.responseType {
+          hadOneofValue = true
+          if case .pipelineEventResult(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.responseType = .pipelineEventResult(v)
+        }
+      }()
+      case 22: try {
+        var v: Spark_Connect_PipelineCommandResult?
+        var hadOneofValue = false
+        if let current = self.responseType {
+          hadOneofValue = true
+          if case .pipelineCommandResult(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.responseType = .pipelineCommandResult(v)
+        }
+      }()
       case 999: try {
         var v: SwiftProtobuf.Google_Protobuf_Any?
         var hadOneofValue = false
@@ -5219,6 +5269,14 @@ extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobu
     case .mlCommandResult?: try {
       guard case .mlCommandResult(let v)? = self.responseType else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 20)
+    }()
+    case .pipelineEventResult?: try {
+      guard case .pipelineEventResult(let v)? = self.responseType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 21)
+    }()
+    case .pipelineCommandResult?: try {
+      guard case .pipelineCommandResult(let v)? = self.responseType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 22)
     }()
     case .extension?: try {
       guard case .extension(let v)? = self.responseType else { preconditionFailure() }

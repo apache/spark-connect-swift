@@ -804,33 +804,36 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_DataType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DataType"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "null"),
-    2: .same(proto: "binary"),
-    3: .same(proto: "boolean"),
-    4: .same(proto: "byte"),
-    5: .same(proto: "short"),
-    6: .same(proto: "integer"),
-    7: .same(proto: "long"),
-    8: .same(proto: "float"),
-    9: .same(proto: "double"),
-    10: .same(proto: "decimal"),
-    11: .same(proto: "string"),
-    12: .same(proto: "char"),
-    13: .standard(proto: "var_char"),
-    14: .same(proto: "date"),
-    15: .same(proto: "timestamp"),
-    16: .standard(proto: "timestamp_ntz"),
-    17: .standard(proto: "calendar_interval"),
-    18: .standard(proto: "year_month_interval"),
-    19: .standard(proto: "day_time_interval"),
-    20: .same(proto: "array"),
-    21: .same(proto: "struct"),
-    22: .same(proto: "map"),
-    25: .same(proto: "variant"),
-    23: .same(proto: "udt"),
-    24: .same(proto: "unparsed"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(
+      reservedNames: [],
+      reservedRanges: [26..<28],
+      numberNameMappings: [
+        1: .same(proto: "null"),
+        2: .same(proto: "binary"),
+        3: .same(proto: "boolean"),
+        4: .same(proto: "byte"),
+        5: .same(proto: "short"),
+        6: .same(proto: "integer"),
+        7: .same(proto: "long"),
+        8: .same(proto: "float"),
+        9: .same(proto: "double"),
+        10: .same(proto: "decimal"),
+        11: .same(proto: "string"),
+        12: .same(proto: "char"),
+        13: .standard(proto: "var_char"),
+        14: .same(proto: "date"),
+        15: .same(proto: "timestamp"),
+        16: .standard(proto: "timestamp_ntz"),
+        17: .standard(proto: "calendar_interval"),
+        18: .standard(proto: "year_month_interval"),
+        19: .standard(proto: "day_time_interval"),
+        20: .same(proto: "array"),
+        21: .same(proto: "struct"),
+        22: .same(proto: "map"),
+        25: .same(proto: "variant"),
+        23: .same(proto: "udt"),
+        24: .same(proto: "unparsed"),
+  ])
 
   fileprivate class _StorageClass {
     var _kind: Spark_Connect_DataType.OneOf_Kind?
