@@ -36,7 +36,7 @@ struct SQLTests {
   let regexOwner = /(runner|185)/
 
   private func cleanUp(_ str: String) -> String {
-    return removeOwner(removeID(removeLocation(str)))
+    return removeOwner(removeID(removeLocation(replaceUserName(str))))
   }
 
   private func removeID(_ str: String) -> String {
@@ -49,6 +49,14 @@ struct SQLTests {
 
   private func removeOwner(_ str: String) -> String {
     return str.replacing(regexOwner, with: "*")
+  }
+
+  private func replaceUserName(_ str: String) -> String {
+    #if os(macOS) || os(Linux)
+      return str.replacing(ProcessInfo.processInfo.userName, with: "spark")
+    #else
+      return str
+    #endif
   }
 
   private func normalize(_ str: String) -> String {
