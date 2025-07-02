@@ -83,6 +83,16 @@ jobs:
         docker run swift:6.1 uname -a
         docker run -v $PWD:/spark -w /spark swift:6.1 swift build -c release
 
+  build-ubuntu-swift62:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: |
+        docker run swiftlang/swift:nightly-6.2-noble uname -a
+        docker run -v $PWD:/spark -w /spark swiftlang/swift:nightly-6.2-noble swift build -c release
+
   integration-test-mac:
     runs-on: macos-15
     timeout-minutes: 20
