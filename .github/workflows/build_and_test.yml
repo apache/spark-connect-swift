@@ -91,7 +91,7 @@ jobs:
     - name: Build
       run: |
         docker run swiftlang/swift:nightly-6.2-noble uname -a
-        docker run -v $PWD:/spark -w /spark swiftlang/swift:nightly-6.2-noble swift build -c release
+        docker run -v $PWD:/spark -w /spark swiftlang/swift:nightly-6.2-noble swift build
 
   integration-test-mac:
     runs-on: macos-15
