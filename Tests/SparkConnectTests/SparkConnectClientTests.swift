@@ -164,4 +164,22 @@ struct SparkConnectClientTests {
     }
     await client.stop()
   }
+
+  @Test
+  func defineSqlGraphElements() async throws {
+    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let response = try await client.connect(UUID().uuidString)
+
+    try await #require(throws: SparkConnectError.InvalidArgument) {
+      try await client.defineSqlGraphElements("not-a-uuid-format", "path", "sql")
+    }
+
+    if response.sparkVersion.version.starts(with: "4.1") {
+      let dataflowGraphID = try await client.createDataflowGraph()
+      let sqlText = "CREATE MATERIALIZED VIEW mv1 AS SELECT 1"
+      #expect(UUID(uuidString: dataflowGraphID) != nil)
+      #expect(try await client.defineSqlGraphElements(dataflowGraphID, "path", sqlText))
+    }
+    await client.stop()
+  }
 }

@@ -1303,6 +1303,35 @@ public actor SparkConnectClient {
     }
   }
 
+  @discardableResult
+  func defineSqlGraphElements(
+    _ dataflowGraphID: String,
+    _ sqlFilePath: String,
+    _ sqlText: String
+  ) async throws -> Bool {
+    try await withGPRC { client in
+      if UUID(uuidString: dataflowGraphID) == nil {
+        throw SparkConnectError.InvalidArgument
+      }
+
+      var elements = Spark_Connect_PipelineCommand.DefineSqlGraphElements()
+      elements.dataflowGraphID = dataflowGraphID
+      elements.sqlFilePath = sqlFilePath
+      elements.sqlText = sqlText
+
+      var pipelineCommand = Spark_Connect_PipelineCommand()
+      pipelineCommand.commandType = .defineSqlGraphElements(elements)
+
+      var command = Spark_Connect_Command()
+      command.commandType = .pipelineCommand(pipelineCommand)
+
+      let responses = try await execute(self.sessionID!, command)
+      return responses.contains {
+        $0.responseType == .pipelineCommandResult(Spark_Connect_PipelineCommandResult())
+      }
+    }
+  }
+
   private enum URIParams {
     static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpc_max_message_size"
     static let PARAM_SESSION_ID = "session_id"
