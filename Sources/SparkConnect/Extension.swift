@@ -181,6 +181,18 @@ extension String {
     default: .UNRECOGNIZED(-1)
     }
   }
+
+  var toDatasetType: DatasetType {
+    let mode =
+      switch self {
+      case "unspecified": DatasetType.unspecified
+      case "materializedView": DatasetType.materializedView
+      case "table": DatasetType.table
+      case "temporaryView": DatasetType.temporaryView
+      default: DatasetType.UNRECOGNIZED(-1)
+      }
+    return mode
+  }
 }
 
 extension [String: String] {

@@ -23,6 +23,7 @@ typealias AnalyzePlanResponse = Spark_Connect_AnalyzePlanResponse
 typealias Command = Spark_Connect_Command
 typealias ConfigRequest = Spark_Connect_ConfigRequest
 typealias DataSource = Spark_Connect_Read.DataSource
+typealias DatasetType = Spark_Connect_DatasetType
 typealias DataType = Spark_Connect_DataType
 typealias DayTimeInterval = Spark_Connect_DataType.DayTimeInterval
 typealias Drop = Spark_Connect_Drop

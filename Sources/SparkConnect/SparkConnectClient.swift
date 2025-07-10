@@ -145,6 +145,8 @@ public actor SparkConnectClient {
           throw SparkConnectError.InvalidViewName
         case let m where m.contains("DATA_SOURCE_NOT_FOUND"):
           throw SparkConnectError.DataSourceNotFound
+        case let m where m.contains("DATASET_TYPE_UNSPECIFIED"):
+          throw SparkConnectError.DatasetTypeUnspecified
         default:
           throw error
         }
@@ -1226,6 +1228,39 @@ public actor SparkConnectClient {
 
       var pipelineCommand = Spark_Connect_PipelineCommand()
       pipelineCommand.commandType = .startRun(startRun)
+
+      var command = Spark_Connect_Command()
+      command.commandType = .pipelineCommand(pipelineCommand)
+
+      let responses = try await execute(self.sessionID!, command)
+      return responses.contains {
+        $0.responseType == .pipelineCommandResult(Spark_Connect_PipelineCommandResult())
+      }
+    }
+  }
+
+  @discardableResult
+  func defineDataset(
+    _ dataflowGraphID: String,
+    _ datasetName: String,
+    _ datasetType: String,
+    _ comment: String? = nil
+  ) async throws -> Bool {
+    try await withGPRC { client in
+      if UUID(uuidString: dataflowGraphID) == nil {
+        throw SparkConnectError.InvalidArgument
+      }
+
+      var defineDataset = Spark_Connect_PipelineCommand.DefineDataset()
+      defineDataset.dataflowGraphID = dataflowGraphID
+      defineDataset.datasetName = datasetName
+      defineDataset.datasetType = datasetType.toDatasetType
+      if let comment {
+        defineDataset.comment = comment
+      }
+
+      var pipelineCommand = Spark_Connect_PipelineCommand()
+      pipelineCommand.commandType = .defineDataset(defineDataset)
 
       var command = Spark_Connect_Command()
       command.commandType = .pipelineCommand(pipelineCommand)

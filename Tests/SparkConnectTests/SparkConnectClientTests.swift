@@ -124,4 +124,26 @@ struct SparkConnectClientTests {
     }
     await client.stop()
   }
+
+  @Test
+  func defineDataset() async throws {
+    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let response = try await client.connect(UUID().uuidString)
+
+    try await #require(throws: SparkConnectError.InvalidArgument) {
+      try await client.defineDataset("not-a-uuid-format", "ds1", "table")
+    }
+
+    if response.sparkVersion.version.starts(with: "4.1") {
+      let dataflowGraphID = try await client.createDataflowGraph()
+      #expect(UUID(uuidString: dataflowGraphID) != nil)
+      try await #require(throws: SparkConnectError.DatasetTypeUnspecified) {
+        try await client.defineDataset(dataflowGraphID, "ds1", "unspecified")
+      }
+      #expect(try await client.defineDataset(dataflowGraphID, "ds2", "materializedView"))
+      #expect(try await client.defineDataset(dataflowGraphID, "ds3", "table"))
+      #expect(try await client.defineDataset(dataflowGraphID, "ds4", "temporaryView"))
+    }
+    await client.stop()
+  }
 }
