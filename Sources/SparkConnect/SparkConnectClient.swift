@@ -1272,6 +1272,37 @@ public actor SparkConnectClient {
     }
   }
 
+  @discardableResult
+  func defineFlow(
+    _ dataflowGraphID: String,
+    _ flowName: String,
+    _ targetDatasetName: String,
+    _ relation: Relation
+  ) async throws -> Bool {
+    try await withGPRC { client in
+      if UUID(uuidString: dataflowGraphID) == nil {
+        throw SparkConnectError.InvalidArgument
+      }
+
+      var defineFlow = Spark_Connect_PipelineCommand.DefineFlow()
+      defineFlow.dataflowGraphID = dataflowGraphID
+      defineFlow.flowName = flowName
+      defineFlow.targetDatasetName = targetDatasetName
+      defineFlow.plan = relation
+
+      var pipelineCommand = Spark_Connect_PipelineCommand()
+      pipelineCommand.commandType = .defineFlow(defineFlow)
+
+      var command = Spark_Connect_Command()
+      command.commandType = .pipelineCommand(pipelineCommand)
+
+      let responses = try await execute(self.sessionID!, command)
+      return responses.contains {
+        $0.responseType == .pipelineCommandResult(Spark_Connect_PipelineCommandResult())
+      }
+    }
+  }
+
   private enum URIParams {
     static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpc_max_message_size"
     static let PARAM_SESSION_ID = "session_id"

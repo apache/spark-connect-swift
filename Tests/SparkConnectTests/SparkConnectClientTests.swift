@@ -146,4 +146,22 @@ struct SparkConnectClientTests {
     }
     await client.stop()
   }
+
+  @Test
+  func defineFlow() async throws {
+    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let response = try await client.connect(UUID().uuidString)
+
+    try await #require(throws: SparkConnectError.InvalidArgument) {
+      try await client.defineFlow("not-a-uuid-format", "f1", "ds1", Relation())
+    }
+
+    if response.sparkVersion.version.starts(with: "4.1") {
+      let dataflowGraphID = try await client.createDataflowGraph()
+      #expect(UUID(uuidString: dataflowGraphID) != nil)
+      let relation = await client.getLocalRelation().root
+      #expect(try await client.defineFlow(dataflowGraphID, "f1", "ds1", relation))
+    }
+    await client.stop()
+  }
 }
