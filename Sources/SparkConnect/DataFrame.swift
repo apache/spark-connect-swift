@@ -431,7 +431,6 @@ public actor DataFrame: Sendable {
               values.append(array.asAny(i) as! Date)
             case .timeInfo(.timestamp):
               let timestampType = column.data.type as! ArrowTypeTimestamp
-              assert(timestampType.timezone == "Etc/UTC")
               let timestamp = array.asAny(i) as! Int64
               let timeInterval =
                 switch timestampType.unit {

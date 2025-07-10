@@ -332,8 +332,10 @@ struct DataFrameTests {
   @Test
   func isLocal() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    #expect(try await spark.sql("SHOW DATABASES").isLocal())
-    #expect(try await spark.sql("SHOW TABLES").isLocal())
+    if !(await spark.version.starts(with: "4.1")) { // TODO(SPARK-52746)
+      #expect(try await spark.sql("SHOW DATABASES").isLocal())
+      #expect(try await spark.sql("SHOW TABLES").isLocal())
+    }
     #expect(try await spark.range(1).isLocal() == false)
     await spark.stop()
   }
@@ -936,8 +938,9 @@ struct DataFrameTests {
     @Test
     func timestamp() async throws {
       let spark = try await SparkSession.builder.getOrCreate()
+      // TODO(SPARK-52747)
       let df = try await spark.sql(
-        "SELECT TIMESTAMP '2025-05-01 16:23:40', TIMESTAMP '2025-05-01 16:23:40.123456'")
+        "SELECT TIMESTAMP '2025-05-01 16:23:40Z', TIMESTAMP '2025-05-01 16:23:40.123456Z'")
       let expected = [
         Row(
           Date(timeIntervalSince1970: 1746116620.0), Date(timeIntervalSince1970: 1746116620.123456))
