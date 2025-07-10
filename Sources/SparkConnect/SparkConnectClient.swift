@@ -1183,6 +1183,37 @@ public actor SparkConnectClient {
     return try await execute(self.sessionID!, command)
   }
 
+  @discardableResult
+  func createDataflowGraph(
+    _ defaultCatalog: String? = nil,
+    _ defaultDatabase: String? = nil,
+    _ sqlConf: [String: String]? = nil
+  ) async throws -> String {
+    try await withGPRC { client in
+      var graph = Spark_Connect_PipelineCommand.CreateDataflowGraph()
+      if let defaultCatalog {
+        graph.defaultCatalog = defaultCatalog
+      }
+      if let defaultDatabase {
+        graph.defaultDatabase = defaultDatabase
+      }
+      if let sqlConf {
+        graph.sqlConf = sqlConf
+      }
+
+      var pipelineCommand = Spark_Connect_PipelineCommand()
+      pipelineCommand.commandType = .createDataflowGraph(graph)
+
+      var command = Spark_Connect_Command()
+      command.commandType = .pipelineCommand(pipelineCommand)
+
+      let response = try await execute(self.sessionID!, command)
+      let result = response.first!.pipelineCommandResult.createDataflowGraphResult
+
+      return result.dataflowGraphID
+    }
+  }
+
   private enum URIParams {
     static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpc_max_message_size"
     static let PARAM_SESSION_ID = "session_id"

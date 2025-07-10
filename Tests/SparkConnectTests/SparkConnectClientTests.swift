@@ -96,4 +96,15 @@ struct SparkConnectClientTests {
     }
     await client.stop()
   }
+
+  @Test
+  func createDataflowGraph() async throws {
+    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let response = try await client.connect(UUID().uuidString)
+    if response.sparkVersion.version.starts(with: "4.1") {
+      let dataflowGraphID = try await client.createDataflowGraph()
+      #expect(UUID(uuidString: dataflowGraphID) != nil)
+    }
+    await client.stop()
+  }
 }
