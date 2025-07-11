@@ -99,6 +99,10 @@ struct SQLTests {
     "variant.sql",
   ]
 
+  let queriesForSpark41Only: [String] = [
+    "time.sql",
+  ]
+
   #if !os(Linux)
     @Test
     func runAll() async throws {
@@ -109,6 +113,10 @@ struct SQLTests {
         print(name)
         if await !spark.version.starts(with: "4.") && queriesForSpark4Only.contains(name) {
           print("Skip query \(name) due to the difference between Spark 3 and 4.")
+          continue
+        }
+        if await !spark.version.starts(with: "4.1") && queriesForSpark41Only.contains(name) {
+          print("Skip query \(name) due to the difference between Spark 4.0 and 4.1")
           continue
         }
 
