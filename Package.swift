@@ -50,7 +50,10 @@ let package = Package(
       ],
       resources: [
         .process("Documentation.docc")
-      ]
+      ],
+      swiftSettings: [
+        .swiftLanguageMode(.v6),
+      ],
     ),
     .testTarget(
       name: "SparkConnectTests",
