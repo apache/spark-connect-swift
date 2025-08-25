@@ -45,7 +45,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
-    - uses: SwiftyLab/setup-swift@v1.11.0
+    - uses: SwiftyLab/setup-swift@02bb2ebadf20b33a938207e25ab788a1d4b01adc
       with:
         swift-version: "6.0"
     - name: Build
@@ -56,7 +56,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
-    - uses: SwiftyLab/setup-swift@v1.11.0
+    - uses: SwiftyLab/setup-swift@02bb2ebadf20b33a938207e25ab788a1d4b01adc
       with:
         swift-version: "6.1"
     - name: Build
@@ -98,7 +98,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
-    - uses: SwiftyLab/setup-swift@v1.11.0
+    - uses: SwiftyLab/setup-swift@02bb2ebadf20b33a938207e25ab788a1d4b01adc
       with:
         swift-version: "6.1"
     - name: Build
@@ -118,7 +118,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
-    - uses: SwiftyLab/setup-swift@v1.11.0
+    - uses: SwiftyLab/setup-swift@02bb2ebadf20b33a938207e25ab788a1d4b01adc
       with:
         swift-version: "6.1"
     - name: Build
@@ -140,7 +140,7 @@ jobs:
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
     - uses: actions/checkout@v4
-    - uses: SwiftyLab/setup-swift@v1.11.0
+    - uses: SwiftyLab/setup-swift@02bb2ebadf20b33a938207e25ab788a1d4b01adc
       with:
         swift-version: "6.1"
     - name: Build
@@ -160,7 +160,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
-    - uses: SwiftyLab/setup-swift@v1.11.0
+    - uses: SwiftyLab/setup-swift@02bb2ebadf20b33a938207e25ab788a1d4b01adc
       with:
         swift-version: "6.1"
     - name: Install Java
@@ -187,7 +187,7 @@ jobs:
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
     - uses: actions/checkout@v4
-    - uses: SwiftyLab/setup-swift@v1.11.0
+    - uses: SwiftyLab/setup-swift@02bb2ebadf20b33a938207e25ab788a1d4b01adc
       with:
         swift-version: "6.1"
     - name: Install Java
