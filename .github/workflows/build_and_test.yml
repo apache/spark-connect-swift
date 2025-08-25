@@ -109,7 +109,7 @@ jobs:
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
-        swift test --no-parallel
+        swift test --no-parallel -c release
 
   integration-test-mac:
     runs-on: macos-15
