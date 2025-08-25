@@ -123,6 +123,8 @@ jobs:
         swift-version: "6.1"
     - name: Build
       run: swift build -c release
+    - name: Check free disk space
+      run: df -h
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz?action=download
