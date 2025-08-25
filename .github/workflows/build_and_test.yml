@@ -104,7 +104,7 @@ jobs:
     - name: Test
       run: |
         curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.1.0-preview1-rc1-bin/spark-4.1.0-preview1-bin-hadoop3.tgz
-        tar xvfz spark-4.1.0-preview1-bin-hadoop3.tgz
+        tar xvfz spark-4.1.0-preview1-bin-hadoop3.tgz && rm spark-4.1.0-preview1-bin-hadoop3.tgz
         mv spark-4.1.0-preview1-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
@@ -122,7 +122,7 @@ jobs:
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.0-bin-hadoop3.tgz
+        tar xvfz spark-4.0.0-bin-hadoop3.tgz && rm spark-4.0.0-bin-hadoop3.tgz
         mv spark-4.0.0-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
@@ -142,7 +142,7 @@ jobs:
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.0-bin-hadoop3.tgz
+        tar xvfz spark-4.0.0-bin-hadoop3.tgz && rm spark-4.0.0-bin-hadoop3.tgz
         mv spark-4.0.0-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
@@ -165,7 +165,7 @@ jobs:
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.6/spark-3.5.6-bin-hadoop3.tgz?action=download
-        tar xvfz spark-3.5.6-bin-hadoop3.tgz
+        tar xvfz spark-3.5.6-bin-hadoop3.tgz && rm spark-3.5.6-bin-hadoop3.tgz
         mv spark-3.5.6-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.6
@@ -190,7 +190,7 @@ jobs:
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.6/spark-3.5.6-bin-hadoop3.tgz?action=download
-        tar xvfz spark-3.5.6-bin-hadoop3.tgz
+        tar xvfz spark-3.5.6-bin-hadoop3.tgz && rm spark-3.5.6-bin-hadoop3.tgz
         mv spark-3.5.6-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.6,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.9.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
