@@ -101,6 +101,8 @@ jobs:
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
         swift-version: "6.1"
+    - name: Build
+      run: swift build -c release
     - name: Test
       run: |
         curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.1.0-preview1-rc1-bin/spark-4.1.0-preview1-bin-hadoop3.tgz
@@ -119,6 +121,8 @@ jobs:
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
         swift-version: "6.1"
+    - name: Build
+      run: swift build -c release
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz?action=download
@@ -139,6 +143,8 @@ jobs:
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
         swift-version: "6.1"
+    - name: Build
+      run: swift build -c release
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz?action=download
@@ -162,6 +168,8 @@ jobs:
       with:
         distribution: zulu
         java-version: 17
+    - name: Build
+      run: swift build -c release
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.6/spark-3.5.6-bin-hadoop3.tgz?action=download
@@ -187,6 +195,8 @@ jobs:
       with:
         distribution: zulu
         java-version: 17
+    - name: Build
+      run: swift build -c release
     - name: Test
       run: |
         curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-3.5.6/spark-3.5.6-bin-hadoop3.tgz?action=download
