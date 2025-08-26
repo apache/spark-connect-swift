@@ -94,7 +94,7 @@ jobs:
         docker run -v $PWD:/spark -w /spark swiftlang/swift:nightly-6.2-amazonlinux2 swift build
 
   integration-test-mac-spark41:
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
@@ -114,7 +114,7 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac:
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
@@ -134,7 +134,7 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-token:
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 20
     env:
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
@@ -156,7 +156,7 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac-spark3:
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
@@ -181,7 +181,7 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac-iceberg:
-    runs-on: macos-15
+    runs-on: macos-14
     timeout-minutes: 20
     env:
       SPARK_ICEBERG_TEST_ENABLED: "true"
