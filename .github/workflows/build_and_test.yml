@@ -97,6 +97,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 20
     steps:
+    - run: sudo xcode-select -s "/Applications/Xcode_16.app"
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
@@ -117,6 +118,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 20
     steps:
+    - run: sudo xcode-select -s "/Applications/Xcode_16.app"
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
@@ -139,6 +141,7 @@ jobs:
     env:
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
+    - run: sudo xcode-select -s "/Applications/Xcode_16.app"
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
@@ -159,6 +162,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 20
     steps:
+    - run: sudo xcode-select -s "/Applications/Xcode_16.app"
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
@@ -186,6 +190,7 @@ jobs:
     env:
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
+    - run: sudo xcode-select -s "/Applications/Xcode_16.app"
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
