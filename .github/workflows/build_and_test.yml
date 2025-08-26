@@ -93,6 +93,25 @@ jobs:
         docker run swiftlang/swift:nightly-6.2-amazonlinux2 uname -a
         docker run -v $PWD:/spark -w /spark swiftlang/swift:nightly-6.2-amazonlinux2 swift build
 
+  integration-test-ubuntu:
+    runs-on: ubuntu-latest
+    env:
+      SPARK_REMOTE: "sc://localhost:15003"
+    services:
+      spark:
+        image: apache/spark:4.0.0
+        env:
+          SPARK_NO_DAEMONIZE: 1
+        ports:
+          - 15003:15002
+        options: --entrypoint /opt/spark/sbin/start-connect-server.sh
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: |
+        docker run swift:6.1 uname -a
+        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.1 swift test --no-parallel -c release
+
   integration-test-mac-spark41:
     runs-on: macos-15
     timeout-minutes: 20
