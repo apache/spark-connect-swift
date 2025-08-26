@@ -120,15 +120,13 @@ jobs:
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
       with:
         swift-version: "6.1"
-    - name: Build
-      run: swift build -c release
     - name: Test
       run: |
         curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.1.0-preview1-rc1-bin/spark-4.1.0-preview1-bin-hadoop3.tgz
         tar xvfz spark-4.1.0-preview1-bin-hadoop3.tgz && rm spark-4.1.0-preview1-bin-hadoop3.tgz
         mv spark-4.1.0-preview1-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh
+        ./start-connect-server.sh --wait
         cd -
         swift test --no-parallel -c release
 
