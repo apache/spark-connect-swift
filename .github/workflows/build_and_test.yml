@@ -115,6 +115,8 @@ jobs:
   integration-test-mac-spark41:
     runs-on: macos-15
     timeout-minutes: 20
+    env:
+      SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
