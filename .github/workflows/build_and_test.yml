@@ -115,6 +115,8 @@ jobs:
   integration-test-mac-spark41:
     runs-on: macos-15
     timeout-minutes: 20
+    env:
+      SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
@@ -135,6 +137,8 @@ jobs:
   integration-test-mac:
     runs-on: macos-15
     timeout-minutes: 20
+    env:
+      SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
@@ -156,6 +160,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 20
     env:
+      SPARK_LOCAL_IP: localhost
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
     - uses: actions/checkout@v4
@@ -177,6 +182,8 @@ jobs:
   integration-test-mac-spark3:
     runs-on: macos-15
     timeout-minutes: 20
+    env:
+      SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
@@ -203,6 +210,7 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 20
     env:
+      SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
     - uses: actions/checkout@v4
