@@ -38,7 +38,7 @@ jobs:
           - 15003:15002
         options: --entrypoint /opt/spark/sbin/start-connect-server.sh
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Build
       run: |
         docker run swift:6.1 uname -a
