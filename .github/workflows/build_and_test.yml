@@ -190,9 +190,9 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.0/spark-4.0.0-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.0-bin-hadoop3.tgz && rm spark-4.0.0-bin-hadoop3.tgz
-        mv spark-4.0.0-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.0-preview1/spark-4.1.0-preview1-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.1.0-preview1-bin-hadoop3.tgz && rm spark-4.1.0-preview1-bin-hadoop3.tgz
+        mv spark-4.1.0-preview1-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
