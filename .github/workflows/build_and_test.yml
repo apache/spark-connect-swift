@@ -90,8 +90,8 @@ jobs:
     - uses: actions/checkout@v5
     - name: Build
       run: |
-        docker run swiftlang/swift:nightly-6.2-amazonlinux2 uname -a
-        docker run -v $PWD:/spark -w /spark swiftlang/swift:nightly-6.2-amazonlinux2 swift build
+        docker run swift:6.2 uname -a
+        docker run -v $PWD:/spark -w /spark swift:6.2 swift build -c release
 
   integration-test-ubuntu:
     runs-on: ubuntu-latest
