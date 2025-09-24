@@ -62,6 +62,14 @@ jobs:
     - name: Build
       run: swift build -c release
 
+  build-macos-26-swift62:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v5
+    - name: Build
+      run: swift build -c release
+
   build-ubuntu-latest:
     runs-on: ubuntu-latest
     timeout-minutes: 20
