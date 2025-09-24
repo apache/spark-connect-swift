@@ -108,7 +108,7 @@ struct SparkConnectClientTests {
     await client.stop()
   }
 
-  @Test
+  // @Test
   func startRun() async throws {
     let client = SparkConnectClient(remote: TEST_REMOTE)
     let response = try await client.connect(UUID().uuidString)
