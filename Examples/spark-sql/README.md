@@ -7,7 +7,7 @@ This is an example Swift application to show how to develop a Spark SQL REPL(Rea
 Prepare `Spark Connect Server` via running Docker image.
 
 ```bash
-docker run -it --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
+docker run -it --rm -p 15002:15002 apache/spark:4.0.1 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
 ```
 
 Build an application Docker image.
@@ -23,7 +23,7 @@ Run `spark-sql` docker image.
 
 ```bash
 $ docker run -it --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 apache/spark-connect-swift:spark-sql
-Connected to Apache Spark 4.0.0 Server
+Connected to Apache Spark 4.0.1 Server
 spark-sql (default)> SHOW DATABASES;
 +---------+
 |namespace|
@@ -85,13 +85,13 @@ spark-sql (default)> DROP DATABASE db1 CASCADE;
 spark-sql (default)> exit;
 ```
 
-Apache Spark 4 supports [SQL Pipe Syntax](https://spark.apache.org/docs/4.0.0/sql-pipe-syntax.html).
+Apache Spark 4 supports [SQL Pipe Syntax](https://spark.apache.org/docs/4.0.1/sql-pipe-syntax.html).
 
 ```bash
 $ swift run
 ...
 Build of product 'SparkSQLRepl' complete! (2.33s)
-Connected to Apache Spark 4.0.0 Server
+Connected to Apache Spark 4.0.1 Server
 spark-sql (default)>
 FROM ORC.`/opt/spark/examples/src/main/resources/users.orc`
 |> AGGREGATE COUNT(*) cnt
@@ -113,6 +113,6 @@ Run from source code.
 ```bash
 $ swift run
 ...
-Connected to Apache Spark 4.0.0 Server
+Connected to Apache Spark 4.0.1 Server
 spark-sql (default)>
 ```

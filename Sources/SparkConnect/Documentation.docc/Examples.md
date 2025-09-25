@@ -7,7 +7,7 @@ This document provides an overview of the example applications inside [Examples]
 Start a Spark Connect Server:
 
 ```bash
-docker run -it --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
+docker run -it --rm -p 15002:15002 apache/spark:4.0.1 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
 ```
 
 ## Basic Application Example
@@ -154,7 +154,7 @@ Welcome to the Swift world. Say hello!%
 
 # Spark-powered endpoint
 curl http://127.0.0.1:8080/hello
-Hi, this is powered by the Apache Spark 4.0.0.%
+Hi, this is powered by the Apache Spark 4.0.1.%
 ```
 
 ## Development Environment
@@ -166,4 +166,4 @@ All examples include:
 - A README.md with detailed instructions
 - Source code in the Sources directory
 
-These examples are designed to be used with Apache Spark 4.0.0 or newer, using the Spark Connect protocol for client-server interaction.
+These examples are designed to be used with Apache Spark 4.0 or newer, using the Spark Connect protocol for client-server interaction.

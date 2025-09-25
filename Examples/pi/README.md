@@ -7,7 +7,7 @@ This is an example Swift application to show how to use Apache Spark Connect Swi
 Prepare `Spark Connect Server` via running Docker image.
 
 ```bash
-docker run --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
+docker run --rm -p 15002:15002 apache/spark:4.0.1 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
 ```
 
 Build an application Docker image.

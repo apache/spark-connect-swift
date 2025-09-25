@@ -7,7 +7,7 @@ This is an example Swift application to show how to use Apache Spark Connect Swi
 Prepare `Spark Connect Server` via running Docker image.
 
 ```bash
-docker run --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
+docker run --rm -p 15002:15002 apache/spark:4.0.1 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
 ```
 
 Build an application Docker image.
@@ -23,7 +23,7 @@ Run `app` docker image.
 
 ```bash
 $ docker run --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 apache/spark-connect-swift:app
-Connected to Apache Spark 4.0.0 Server
+Connected to Apache Spark 4.0.1 Server
 EXECUTE: DROP TABLE IF EXISTS t
 EXECUTE: CREATE TABLE IF NOT EXISTS t(a INT) USING ORC
 EXECUTE: INSERT INTO t VALUES (1), (2), (3)
@@ -52,7 +52,7 @@ Run from source code.
 ```bash
 $ swift run
 ...
-Connected to Apache Spark 4.0.0 Server
+Connected to Apache Spark 4.0.1 Server
 EXECUTE: DROP TABLE IF EXISTS t
 EXECUTE: CREATE TABLE IF NOT EXISTS t(a INT) USING ORC
 EXECUTE: INSERT INTO t VALUES (1), (2), (3)

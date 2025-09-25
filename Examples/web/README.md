@@ -90,7 +90,7 @@ index 2edcc8f..dd918a9 100644
 Prepare `Spark Connect Server` via running Docker image.
 
 ```bash
-docker run --rm -p 15002:15002 apache/spark:4.0.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
+docker run --rm -p 15002:15002 apache/spark:4.0.1 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
 ```
 
 Build an application Docker image.
@@ -116,7 +116,7 @@ $ curl http://127.0.0.1:8080/
 Welcome to the Swift world. Say hello!%
 
 $ curl http://127.0.0.1:8080/hello
-Hi, this is powered by the Apache Spark 4.0.0.%
+Hi, this is powered by the Apache Spark 4.0.1.%
 ```
 
 Run from source code.
