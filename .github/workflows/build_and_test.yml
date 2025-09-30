@@ -126,7 +126,7 @@ jobs:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
       spark:
-        image: apache/spark:4.1.0-preview1
+        image: apache/spark:4.1.0-preview2
         env:
           SPARK_NO_DAEMONIZE: 1
         ports:
