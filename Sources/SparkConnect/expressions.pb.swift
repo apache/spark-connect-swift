@@ -218,6 +218,14 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     set {_uniqueStorage()._exprType = .subqueryExpression(newValue)}
   }
 
+  var directShufflePartitionID: Spark_Connect_Expression.DirectShufflePartitionID {
+    get {
+      if case .directShufflePartitionID(let v)? = _storage._exprType {return v}
+      return Spark_Connect_Expression.DirectShufflePartitionID()
+    }
+    set {_uniqueStorage()._exprType = .directShufflePartitionID(newValue)}
+  }
+
   /// This field is used to mark extensions to the protocol. When plugins generate arbitrary
   /// relations they can add them here. During the planning the correct resolution is done.
   var `extension`: SwiftProtobuf.Google_Protobuf_Any {
@@ -251,6 +259,7 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     case mergeAction(Spark_Connect_MergeAction)
     case typedAggregateExpression(Spark_Connect_TypedAggregateExpression)
     case subqueryExpression(Spark_Connect_SubqueryExpression)
+    case directShufflePartitionID(Spark_Connect_Expression.DirectShufflePartitionID)
     /// This field is used to mark extensions to the protocol. When plugins generate arbitrary
     /// relations they can add them here. During the planning the correct resolution is done.
     case `extension`(SwiftProtobuf.Google_Protobuf_Any)
@@ -556,6 +565,31 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     fileprivate var _storage = _StorageClass.defaultInstance
   }
 
+  /// Expression that takes a partition ID value and passes it through directly for use in
+  /// shuffle partitioning. This is used with RepartitionByExpression to allow users to
+  /// directly specify target partition IDs.
+  struct DirectShufflePartitionID: @unchecked Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    /// (Required) The expression that evaluates to the partition ID.
+    var child: Spark_Connect_Expression {
+      get {return _storage._child ?? Spark_Connect_Expression()}
+      set {_uniqueStorage()._child = newValue}
+    }
+    /// Returns true if `child` has been explicitly set.
+    var hasChild: Bool {return _storage._child != nil}
+    /// Clears the value of `child`. Subsequent reads from it will return its default value.
+    mutating func clearChild() {_uniqueStorage()._child = nil}
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _storage = _StorageClass.defaultInstance
+  }
+
   struct Cast: @unchecked Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -835,6 +869,28 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       set {literalType = .specializedArray(newValue)}
     }
 
+    var time: Spark_Connect_Expression.Literal.Time {
+      get {
+        if case .time(let v)? = literalType {return v}
+        return Spark_Connect_Expression.Literal.Time()
+      }
+      set {literalType = .time(newValue)}
+    }
+
+    /// Data type information for the literal.
+    /// This field is required only in the root literal message for null values or
+    /// for data types (e.g., array, map, or struct) with non-trivial information.
+    /// If the data_type field is not set at the root level, the data type will be
+    /// inferred or retrieved from the deprecated data type fields using best efforts.
+    var dataType: Spark_Connect_DataType {
+      get {return _dataType ?? Spark_Connect_DataType()}
+      set {_dataType = newValue}
+    }
+    /// Returns true if `dataType` has been explicitly set.
+    var hasDataType: Bool {return self._dataType != nil}
+    /// Clears the value of `dataType`. Subsequent reads from it will return its default value.
+    mutating func clearDataType() {self._dataType = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     enum OneOf_LiteralType: Equatable, Sendable {
@@ -862,6 +918,7 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       case map(Spark_Connect_Expression.Literal.Map)
       case `struct`(Spark_Connect_Expression.Literal.Struct)
       case specializedArray(Spark_Connect_Expression.Literal.SpecializedArray)
+      case time(Spark_Connect_Expression.Literal.Time)
 
     }
 
@@ -923,6 +980,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
 
+      /// (Deprecated) The element type of the array.
+      ///
+      /// This field is deprecated since Spark 4.1+. Use data_type field instead.
+      ///
+      /// NOTE: This field was marked as deprecated in the .proto file.
       var elementType: Spark_Connect_DataType {
         get {return _elementType ?? Spark_Connect_DataType()}
         set {_elementType = newValue}
@@ -932,6 +994,7 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       /// Clears the value of `elementType`. Subsequent reads from it will return its default value.
       mutating func clearElementType() {self._elementType = nil}
 
+      /// The literal values that make up the array elements.
       var elements: [Spark_Connect_Expression.Literal] = []
 
       var unknownFields = SwiftProtobuf.UnknownStorage()
@@ -946,6 +1009,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
 
+      /// (Deprecated) The key type of the map.
+      ///
+      /// This field is deprecated since Spark 4.1+. Use data_type field instead.
+      ///
+      /// NOTE: This field was marked as deprecated in the .proto file.
       var keyType: Spark_Connect_DataType {
         get {return _keyType ?? Spark_Connect_DataType()}
         set {_keyType = newValue}
@@ -955,6 +1023,12 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       /// Clears the value of `keyType`. Subsequent reads from it will return its default value.
       mutating func clearKeyType() {self._keyType = nil}
 
+      /// (Deprecated) The value type of the map.
+      ///
+      /// This field is deprecated since Spark 4.1+ and should only be set
+      /// if the data_type field is not set. Use data_type field instead.
+      ///
+      /// NOTE: This field was marked as deprecated in the .proto file.
       var valueType: Spark_Connect_DataType {
         get {return _valueType ?? Spark_Connect_DataType()}
         set {_valueType = newValue}
@@ -964,8 +1038,10 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       /// Clears the value of `valueType`. Subsequent reads from it will return its default value.
       mutating func clearValueType() {self._valueType = nil}
 
+      /// The literal keys that make up the map.
       var keys: [Spark_Connect_Expression.Literal] = []
 
+      /// The literal values that make up the map.
       var values: [Spark_Connect_Expression.Literal] = []
 
       var unknownFields = SwiftProtobuf.UnknownStorage()
@@ -981,6 +1057,12 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
 
+      /// (Deprecated) The type of the struct.
+      ///
+      /// This field is deprecated since Spark 4.1+ because using DataType as the type of a struct
+      /// is ambiguous. Use data_type field instead.
+      ///
+      /// NOTE: This field was marked as deprecated in the .proto file.
       var structType: Spark_Connect_DataType {
         get {return _structType ?? Spark_Connect_DataType()}
         set {_structType = newValue}
@@ -990,6 +1072,7 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       /// Clears the value of `structType`. Subsequent reads from it will return its default value.
       mutating func clearStructType() {self._structType = nil}
 
+      /// The literal values that make up the struct elements.
       var elements: [Spark_Connect_Expression.Literal] = []
 
       var unknownFields = SwiftProtobuf.UnknownStorage()
@@ -1069,7 +1152,33 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       init() {}
     }
 
+    struct Time: Sendable {
+      // SwiftProtobuf.Message conformance is added in an extension below. See the
+      // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+      // methods supported on all messages.
+
+      var nano: Int64 = 0
+
+      /// The precision of this time, if omitted, uses the default value of MICROS_PRECISION.
+      var precision: Int32 {
+        get {return _precision ?? 0}
+        set {_precision = newValue}
+      }
+      /// Returns true if `precision` has been explicitly set.
+      var hasPrecision: Bool {return self._precision != nil}
+      /// Clears the value of `precision`. Subsequent reads from it will return its default value.
+      mutating func clearPrecision() {self._precision = nil}
+
+      var unknownFields = SwiftProtobuf.UnknownStorage()
+
+      init() {}
+
+      fileprivate var _precision: Int32? = nil
+    }
+
     init() {}
+
+    fileprivate var _dataType: Spark_Connect_DataType? = nil
   }
 
   /// An unresolved attribute that is not explicitly bound to a specific column, but the column
@@ -1865,7 +1974,7 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_Expression: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Expression"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}literal\0\u{3}unresolved_attribute\0\u{3}unresolved_function\0\u{3}expression_string\0\u{3}unresolved_star\0\u{1}alias\0\u{1}cast\0\u{3}unresolved_regex\0\u{3}sort_order\0\u{3}lambda_function\0\u{1}window\0\u{3}unresolved_extract_value\0\u{3}update_fields\0\u{3}unresolved_named_lambda_variable\0\u{3}common_inline_user_defined_function\0\u{3}call_function\0\u{3}named_argument_expression\0\u{1}common\0\u{3}merge_action\0\u{3}typed_aggregate_expression\0\u{3}subquery_expression\0\u{2}R\u{f}extension\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}literal\0\u{3}unresolved_attribute\0\u{3}unresolved_function\0\u{3}expression_string\0\u{3}unresolved_star\0\u{1}alias\0\u{1}cast\0\u{3}unresolved_regex\0\u{3}sort_order\0\u{3}lambda_function\0\u{1}window\0\u{3}unresolved_extract_value\0\u{3}update_fields\0\u{3}unresolved_named_lambda_variable\0\u{3}common_inline_user_defined_function\0\u{3}call_function\0\u{3}named_argument_expression\0\u{1}common\0\u{3}merge_action\0\u{3}typed_aggregate_expression\0\u{3}subquery_expression\0\u{3}direct_shuffle_partition_id\0\u{2}Q\u{f}extension\0")
 
   fileprivate class _StorageClass {
     var _common: Spark_Connect_ExpressionCommon? = nil
@@ -2161,6 +2270,19 @@ extension Spark_Connect_Expression: SwiftProtobuf.Message, SwiftProtobuf._Messag
             _storage._exprType = .subqueryExpression(v)
           }
         }()
+        case 22: try {
+          var v: Spark_Connect_Expression.DirectShufflePartitionID?
+          var hadOneofValue = false
+          if let current = _storage._exprType {
+            hadOneofValue = true
+            if case .directShufflePartitionID(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._exprType = .directShufflePartitionID(v)
+          }
+        }()
         case 999: try {
           var v: SwiftProtobuf.Google_Protobuf_Any?
           var hadOneofValue = false
@@ -2272,6 +2394,10 @@ extension Spark_Connect_Expression: SwiftProtobuf.Message, SwiftProtobuf._Messag
       case .subqueryExpression?: try {
         guard case .subqueryExpression(let v)? = _storage._exprType else { preconditionFailure() }
         try visitor.visitSingularMessageField(value: v, fieldNumber: 21)
+      }()
+      case .directShufflePartitionID?: try {
+        guard case .directShufflePartitionID(let v)? = _storage._exprType else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 22)
       }()
       case .extension?: try {
         guard case .extension(let v)? = _storage._exprType else { preconditionFailure() }
@@ -2680,6 +2806,76 @@ extension Spark_Connect_Expression.SortOrder.NullOrdering: SwiftProtobuf._ProtoN
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0SORT_NULLS_UNSPECIFIED\0\u{1}SORT_NULLS_FIRST\0\u{1}SORT_NULLS_LAST\0")
 }
 
+extension Spark_Connect_Expression.DirectShufflePartitionID: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_Expression.protoMessageName + ".DirectShufflePartitionID"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}child\0")
+
+  fileprivate class _StorageClass {
+    var _child: Spark_Connect_Expression? = nil
+
+      // This property is used as the initial default value for new instances of the type.
+      // The type itself is protecting the reference to its storage via CoW semantics.
+      // This will force a copy to be made of this reference when the first mutation occurs;
+      // hence, it is safe to mark this as `nonisolated(unsafe)`.
+      static nonisolated(unsafe) let defaultInstance = _StorageClass()
+
+    private init() {}
+
+    init(copying source: _StorageClass) {
+      _child = source._child
+    }
+  }
+
+  fileprivate mutating func _uniqueStorage() -> _StorageClass {
+    if !isKnownUniquelyReferenced(&_storage) {
+      _storage = _StorageClass(copying: _storage)
+    }
+    return _storage
+  }
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    _ = _uniqueStorage()
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      while let fieldNumber = try decoder.nextFieldNumber() {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every case branch when no optimizations are
+        // enabled. https://github.com/apple/swift-protobuf/issues/1034
+        switch fieldNumber {
+        case 1: try { try decoder.decodeSingularMessageField(value: &_storage._child) }()
+        default: break
+        }
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every if/case branch local when no optimizations
+      // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+      // https://github.com/apple/swift-protobuf/issues/1182
+      try { if let v = _storage._child {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+      } }()
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_Expression.DirectShufflePartitionID, rhs: Spark_Connect_Expression.DirectShufflePartitionID) -> Bool {
+    if lhs._storage !== rhs._storage {
+      let storagesAreEqual: Bool = withExtendedLifetime((lhs._storage, rhs._storage)) { (_args: (_StorageClass, _StorageClass)) in
+        let _storage = _args.0
+        let rhs_storage = _args.1
+        if _storage._child != rhs_storage._child {return false}
+        return true
+      }
+      if !storagesAreEqual {return false}
+    }
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Spark_Connect_Expression.Cast: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Expression.protoMessageName + ".Cast"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}expr\0\u{1}type\0\u{3}type_str\0\u{3}eval_mode\0")
@@ -2798,7 +2994,7 @@ extension Spark_Connect_Expression.Cast.EvalMode: SwiftProtobuf._ProtoNameProvid
 
 extension Spark_Connect_Expression.Literal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Expression.protoMessageName + ".Literal"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}null\0\u{1}binary\0\u{1}boolean\0\u{1}byte\0\u{1}short\0\u{1}integer\0\u{1}long\0\u{2}\u{3}float\0\u{1}double\0\u{1}decimal\0\u{1}string\0\u{2}\u{3}date\0\u{1}timestamp\0\u{3}timestamp_ntz\0\u{3}calendar_interval\0\u{3}year_month_interval\0\u{3}day_time_interval\0\u{1}array\0\u{1}map\0\u{1}struct\0\u{3}specialized_array\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}null\0\u{1}binary\0\u{1}boolean\0\u{1}byte\0\u{1}short\0\u{1}integer\0\u{1}long\0\u{2}\u{3}float\0\u{1}double\0\u{1}decimal\0\u{1}string\0\u{2}\u{3}date\0\u{1}timestamp\0\u{3}timestamp_ntz\0\u{3}calendar_interval\0\u{3}year_month_interval\0\u{3}day_time_interval\0\u{1}array\0\u{1}map\0\u{1}struct\0\u{3}specialized_array\0\u{1}time\0\u{4}J\u{1}data_type\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3009,6 +3205,20 @@ extension Spark_Connect_Expression.Literal: SwiftProtobuf.Message, SwiftProtobuf
           self.literalType = .specializedArray(v)
         }
       }()
+      case 26: try {
+        var v: Spark_Connect_Expression.Literal.Time?
+        var hadOneofValue = false
+        if let current = self.literalType {
+          hadOneofValue = true
+          if case .time(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.literalType = .time(v)
+        }
+      }()
+      case 100: try { try decoder.decodeSingularMessageField(value: &self._dataType) }()
       default: break
       }
     }
@@ -3104,13 +3314,21 @@ extension Spark_Connect_Expression.Literal: SwiftProtobuf.Message, SwiftProtobuf
       guard case .specializedArray(let v)? = self.literalType else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 25)
     }()
+    case .time?: try {
+      guard case .time(let v)? = self.literalType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 26)
+    }()
     case nil: break
     }
+    try { if let v = self._dataType {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 100)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Spark_Connect_Expression.Literal, rhs: Spark_Connect_Expression.Literal) -> Bool {
     if lhs.literalType != rhs.literalType {return false}
+    if lhs._dataType != rhs._dataType {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -3457,6 +3675,45 @@ extension Spark_Connect_Expression.Literal.SpecializedArray: SwiftProtobuf.Messa
 
   static func ==(lhs: Spark_Connect_Expression.Literal.SpecializedArray, rhs: Spark_Connect_Expression.Literal.SpecializedArray) -> Bool {
     if lhs.valueType != rhs.valueType {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_Expression.Literal.Time: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_Expression.Literal.protoMessageName + ".Time"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}nano\0\u{1}precision\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt64Field(value: &self.nano) }()
+      case 2: try { try decoder.decodeSingularInt32Field(value: &self._precision) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if self.nano != 0 {
+      try visitor.visitSingularInt64Field(value: self.nano, fieldNumber: 1)
+    }
+    try { if let v = self._precision {
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 2)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_Expression.Literal.Time, rhs: Spark_Connect_Expression.Literal.Time) -> Bool {
+    if lhs.nano != rhs.nano {return false}
+    if lhs._precision != rhs._precision {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

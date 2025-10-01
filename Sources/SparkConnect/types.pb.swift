@@ -255,6 +255,14 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     set {_uniqueStorage()._kind = .unparsed(newValue)}
   }
 
+  var time: Spark_Connect_DataType.Time {
+    get {
+      if case .time(let v)? = _storage._kind {return v}
+      return Spark_Connect_DataType.Time()
+    }
+    set {_uniqueStorage()._kind = .time(newValue)}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   enum OneOf_Kind: Equatable, Sendable {
@@ -290,6 +298,7 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     case udt(Spark_Connect_DataType.UDT)
     /// UnparsedDataType
     case unparsed(Spark_Connect_DataType.Unparsed)
+    case time(Spark_Connect_DataType.Time)
 
   }
 
@@ -449,6 +458,29 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
+  }
+
+  struct Time: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    var precision: Int32 {
+      get {return _precision ?? 0}
+      set {_precision = newValue}
+    }
+    /// Returns true if `precision` has been explicitly set.
+    var hasPrecision: Bool {return self._precision != nil}
+    /// Clears the value of `precision`. Subsequent reads from it will return its default value.
+    mutating func clearPrecision() {self._precision = nil}
+
+    var typeVariationReference: UInt32 = 0
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _precision: Int32? = nil
   }
 
   struct CalendarInterval: Sendable {
@@ -804,7 +836,7 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_DataType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DataType"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}null\0\u{1}binary\0\u{1}boolean\0\u{1}byte\0\u{1}short\0\u{1}integer\0\u{1}long\0\u{1}float\0\u{1}double\0\u{1}decimal\0\u{1}string\0\u{1}char\0\u{3}var_char\0\u{1}date\0\u{1}timestamp\0\u{3}timestamp_ntz\0\u{3}calendar_interval\0\u{3}year_month_interval\0\u{3}day_time_interval\0\u{1}array\0\u{1}struct\0\u{1}map\0\u{1}udt\0\u{1}unparsed\0\u{1}variant\0\u{c}\u{1a}\u{1}\u{c}\u{1b}\u{1}")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}null\0\u{1}binary\0\u{1}boolean\0\u{1}byte\0\u{1}short\0\u{1}integer\0\u{1}long\0\u{1}float\0\u{1}double\0\u{1}decimal\0\u{1}string\0\u{1}char\0\u{3}var_char\0\u{1}date\0\u{1}timestamp\0\u{3}timestamp_ntz\0\u{3}calendar_interval\0\u{3}year_month_interval\0\u{3}day_time_interval\0\u{1}array\0\u{1}struct\0\u{1}map\0\u{1}udt\0\u{1}unparsed\0\u{1}variant\0\u{2}\u{3}time\0\u{c}\u{1a}\u{1}\u{c}\u{1b}\u{1}")
 
   fileprivate class _StorageClass {
     var _kind: Spark_Connect_DataType.OneOf_Kind?
@@ -1162,6 +1194,19 @@ extension Spark_Connect_DataType: SwiftProtobuf.Message, SwiftProtobuf._MessageI
             _storage._kind = .variant(v)
           }
         }()
+        case 28: try {
+          var v: Spark_Connect_DataType.Time?
+          var hadOneofValue = false
+          if let current = _storage._kind {
+            hadOneofValue = true
+            if case .time(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._kind = .time(v)
+          }
+        }()
         default: break
         }
       }
@@ -1274,6 +1319,10 @@ extension Spark_Connect_DataType: SwiftProtobuf.Message, SwiftProtobuf._MessageI
       case .variant?: try {
         guard case .variant(let v)? = _storage._kind else { preconditionFailure() }
         try visitor.visitSingularMessageField(value: v, fieldNumber: 25)
+      }()
+      case .time?: try {
+        guard case .time(let v)? = _storage._kind else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 28)
       }()
       case nil: break
       }
@@ -1685,6 +1734,45 @@ extension Spark_Connect_DataType.TimestampNTZ: SwiftProtobuf.Message, SwiftProto
   }
 
   static func ==(lhs: Spark_Connect_DataType.TimestampNTZ, rhs: Spark_Connect_DataType.TimestampNTZ) -> Bool {
+    if lhs.typeVariationReference != rhs.typeVariationReference {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_DataType.Time: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_DataType.protoMessageName + ".Time"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}precision\0\u{3}type_variation_reference\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self._precision) }()
+      case 2: try { try decoder.decodeSingularUInt32Field(value: &self.typeVariationReference) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._precision {
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 1)
+    } }()
+    if self.typeVariationReference != 0 {
+      try visitor.visitSingularUInt32Field(value: self.typeVariationReference, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_DataType.Time, rhs: Spark_Connect_DataType.Time) -> Bool {
+    if lhs._precision != rhs._precision {return false}
     if lhs.typeVariationReference != rhs.typeVariationReference {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true

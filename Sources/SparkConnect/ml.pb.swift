@@ -116,6 +116,14 @@ struct Spark_Connect_MlCommand: Sendable {
     set {command = .createSummary(newValue)}
   }
 
+  var getModelSize: Spark_Connect_MlCommand.GetModelSize {
+    get {
+      if case .getModelSize(let v)? = command {return v}
+      return Spark_Connect_MlCommand.GetModelSize()
+    }
+    set {command = .getModelSize(newValue)}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   enum OneOf_Command: Equatable, Sendable {
@@ -128,6 +136,7 @@ struct Spark_Connect_MlCommand: Sendable {
     case cleanCache(Spark_Connect_MlCommand.CleanCache)
     case getCacheInfo(Spark_Connect_MlCommand.GetCacheInfo)
     case createSummary(Spark_Connect_MlCommand.CreateSummary)
+    case getModelSize(Spark_Connect_MlCommand.GetModelSize)
 
   }
 
@@ -399,6 +408,28 @@ struct Spark_Connect_MlCommand: Sendable {
     fileprivate var _dataset: Spark_Connect_Relation? = nil
   }
 
+  /// This is for query the model estimated in-memory size
+  struct GetModelSize: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    var modelRef: Spark_Connect_ObjectRef {
+      get {return _modelRef ?? Spark_Connect_ObjectRef()}
+      set {_modelRef = newValue}
+    }
+    /// Returns true if `modelRef` has been explicitly set.
+    var hasModelRef: Bool {return self._modelRef != nil}
+    /// Clears the value of `modelRef`. Subsequent reads from it will return its default value.
+    mutating func clearModelRef() {self._modelRef = nil}
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _modelRef: Spark_Connect_ObjectRef? = nil
+  }
+
   init() {}
 }
 
@@ -532,7 +563,7 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlCommand"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}fit\0\u{1}fetch\0\u{1}delete\0\u{1}write\0\u{1}read\0\u{1}evaluate\0\u{3}clean_cache\0\u{3}get_cache_info\0\u{3}create_summary\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}fit\0\u{1}fetch\0\u{1}delete\0\u{1}write\0\u{1}read\0\u{1}evaluate\0\u{3}clean_cache\0\u{3}get_cache_info\0\u{3}create_summary\0\u{3}get_model_size\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -657,6 +688,19 @@ extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._Message
           self.command = .createSummary(v)
         }
       }()
+      case 10: try {
+        var v: Spark_Connect_MlCommand.GetModelSize?
+        var hadOneofValue = false
+        if let current = self.command {
+          hadOneofValue = true
+          if case .getModelSize(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.command = .getModelSize(v)
+        }
+      }()
       default: break
       }
     }
@@ -703,6 +747,10 @@ extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._Message
     case .createSummary?: try {
       guard case .createSummary(let v)? = self.command else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 9)
+    }()
+    case .getModelSize?: try {
+      guard case .getModelSize(let v)? = self.command else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 10)
     }()
     case nil: break
     }
@@ -1041,6 +1089,40 @@ extension Spark_Connect_MlCommand.CreateSummary: SwiftProtobuf.Message, SwiftPro
   static func ==(lhs: Spark_Connect_MlCommand.CreateSummary, rhs: Spark_Connect_MlCommand.CreateSummary) -> Bool {
     if lhs._modelRef != rhs._modelRef {return false}
     if lhs._dataset != rhs._dataset {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_MlCommand.GetModelSize: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".GetModelSize"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}model_ref\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._modelRef) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._modelRef {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_MlCommand.GetModelSize, rhs: Spark_Connect_MlCommand.GetModelSize) -> Bool {
+    if lhs._modelRef != rhs._modelRef {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

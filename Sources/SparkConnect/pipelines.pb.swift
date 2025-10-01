@@ -360,27 +360,17 @@ struct Spark_Connect_PipelineCommand: Sendable {
     mutating func clearTargetDatasetName() {self._targetDatasetName = nil}
 
     /// An unresolved relation that defines the dataset's flow.
-    var plan: Spark_Connect_Relation {
-      get {return _plan ?? Spark_Connect_Relation()}
-      set {_plan = newValue}
+    var relation: Spark_Connect_Relation {
+      get {return _relation ?? Spark_Connect_Relation()}
+      set {_relation = newValue}
     }
-    /// Returns true if `plan` has been explicitly set.
-    var hasPlan: Bool {return self._plan != nil}
-    /// Clears the value of `plan`. Subsequent reads from it will return its default value.
-    mutating func clearPlan() {self._plan = nil}
+    /// Returns true if `relation` has been explicitly set.
+    var hasRelation: Bool {return self._relation != nil}
+    /// Clears the value of `relation`. Subsequent reads from it will return its default value.
+    mutating func clearRelation() {self._relation = nil}
 
     /// SQL configurations set when running this flow.
     var sqlConf: Dictionary<String,String> = [:]
-
-    /// If true, this flow will only be run once per full refresh.
-    var once: Bool {
-      get {return _once ?? false}
-      set {_once = newValue}
-    }
-    /// Returns true if `once` has been explicitly set.
-    var hasOnce: Bool {return self._once != nil}
-    /// Clears the value of `once`. Subsequent reads from it will return its default value.
-    mutating func clearOnce() {self._once = nil}
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -389,8 +379,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
     fileprivate var _dataflowGraphID: String? = nil
     fileprivate var _flowName: String? = nil
     fileprivate var _targetDatasetName: String? = nil
-    fileprivate var _plan: Spark_Connect_Relation? = nil
-    fileprivate var _once: Bool? = nil
+    fileprivate var _relation: Spark_Connect_Relation? = nil
   }
 
   /// Resolves all datasets and flows and start a pipeline update. Should be called after all
@@ -410,11 +399,40 @@ struct Spark_Connect_PipelineCommand: Sendable {
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
+    /// List of dataset to reset and recompute.
+    var fullRefreshSelection: [String] = []
+
+    /// Perform a full graph reset and recompute.
+    var fullRefreshAll: Bool {
+      get {return _fullRefreshAll ?? false}
+      set {_fullRefreshAll = newValue}
+    }
+    /// Returns true if `fullRefreshAll` has been explicitly set.
+    var hasFullRefreshAll: Bool {return self._fullRefreshAll != nil}
+    /// Clears the value of `fullRefreshAll`. Subsequent reads from it will return its default value.
+    mutating func clearFullRefreshAll() {self._fullRefreshAll = nil}
+
+    /// List of dataset to update.
+    var refreshSelection: [String] = []
+
+    /// If true, the run will not actually execute any flows, but will only validate the graph and
+    /// check for any errors. This is useful for testing and validation purposes.
+    var dry: Bool {
+      get {return _dry ?? false}
+      set {_dry = newValue}
+    }
+    /// Returns true if `dry` has been explicitly set.
+    var hasDry: Bool {return self._dry != nil}
+    /// Clears the value of `dry`. Subsequent reads from it will return its default value.
+    mutating func clearDry() {self._dry = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
 
     fileprivate var _dataflowGraphID: String? = nil
+    fileprivate var _fullRefreshAll: Bool? = nil
+    fileprivate var _dry: Bool? = nil
   }
 
   /// Parses the SQL file and registers all datasets and flows.
@@ -894,7 +912,7 @@ extension Spark_Connect_PipelineCommand.DefineDataset: SwiftProtobuf.Message, Sw
 
 extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineFlow"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}flow_name\0\u{3}target_dataset_name\0\u{1}plan\0\u{3}sql_conf\0\u{1}once\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}flow_name\0\u{3}target_dataset_name\0\u{1}relation\0\u{3}sql_conf\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -905,9 +923,8 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
       case 1: try { try decoder.decodeSingularStringField(value: &self._dataflowGraphID) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self._flowName) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self._targetDatasetName) }()
-      case 4: try { try decoder.decodeSingularMessageField(value: &self._plan) }()
+      case 4: try { try decoder.decodeSingularMessageField(value: &self._relation) }()
       case 5: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.sqlConf) }()
-      case 6: try { try decoder.decodeSingularBoolField(value: &self._once) }()
       default: break
       }
     }
@@ -927,15 +944,12 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
     try { if let v = self._targetDatasetName {
       try visitor.visitSingularStringField(value: v, fieldNumber: 3)
     } }()
-    try { if let v = self._plan {
+    try { if let v = self._relation {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
     } }()
     if !self.sqlConf.isEmpty {
       try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: self.sqlConf, fieldNumber: 5)
     }
-    try { if let v = self._once {
-      try visitor.visitSingularBoolField(value: v, fieldNumber: 6)
-    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -943,9 +957,8 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
     if lhs._dataflowGraphID != rhs._dataflowGraphID {return false}
     if lhs._flowName != rhs._flowName {return false}
     if lhs._targetDatasetName != rhs._targetDatasetName {return false}
-    if lhs._plan != rhs._plan {return false}
+    if lhs._relation != rhs._relation {return false}
     if lhs.sqlConf != rhs.sqlConf {return false}
-    if lhs._once != rhs._once {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -953,7 +966,7 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
 
 extension Spark_Connect_PipelineCommand.StartRun: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".StartRun"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}full_refresh_selection\0\u{3}full_refresh_all\0\u{3}refresh_selection\0\u{1}dry\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -962,6 +975,10 @@ extension Spark_Connect_PipelineCommand.StartRun: SwiftProtobuf.Message, SwiftPr
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self._dataflowGraphID) }()
+      case 2: try { try decoder.decodeRepeatedStringField(value: &self.fullRefreshSelection) }()
+      case 3: try { try decoder.decodeSingularBoolField(value: &self._fullRefreshAll) }()
+      case 4: try { try decoder.decodeRepeatedStringField(value: &self.refreshSelection) }()
+      case 5: try { try decoder.decodeSingularBoolField(value: &self._dry) }()
       default: break
       }
     }
@@ -975,11 +992,27 @@ extension Spark_Connect_PipelineCommand.StartRun: SwiftProtobuf.Message, SwiftPr
     try { if let v = self._dataflowGraphID {
       try visitor.visitSingularStringField(value: v, fieldNumber: 1)
     } }()
+    if !self.fullRefreshSelection.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.fullRefreshSelection, fieldNumber: 2)
+    }
+    try { if let v = self._fullRefreshAll {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 3)
+    } }()
+    if !self.refreshSelection.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.refreshSelection, fieldNumber: 4)
+    }
+    try { if let v = self._dry {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 5)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Spark_Connect_PipelineCommand.StartRun, rhs: Spark_Connect_PipelineCommand.StartRun) -> Bool {
     if lhs._dataflowGraphID != rhs._dataflowGraphID {return false}
+    if lhs.fullRefreshSelection != rhs.fullRefreshSelection {return false}
+    if lhs._fullRefreshAll != rhs._fullRefreshAll {return false}
+    if lhs.refreshSelection != rhs.refreshSelection {return false}
+    if lhs._dry != rhs._dry {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

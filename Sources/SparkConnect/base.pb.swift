@@ -1136,6 +1136,14 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
       set {requestOption = .reattachOptions(newValue)}
     }
 
+    var resultChunkingOptions: Spark_Connect_ResultChunkingOptions {
+      get {
+        if case .resultChunkingOptions(let v)? = requestOption {return v}
+        return Spark_Connect_ResultChunkingOptions()
+      }
+      set {requestOption = .resultChunkingOptions(newValue)}
+    }
+
     /// Extension type for request options
     var `extension`: SwiftProtobuf.Google_Protobuf_Any {
       get {
@@ -1149,6 +1157,7 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
 
     enum OneOf_RequestOption: Equatable, Sendable {
       case reattachOptions(Spark_Connect_ReattachOptions)
+      case resultChunkingOptions(Spark_Connect_ResultChunkingOptions)
       /// Extension type for request options
       case `extension`(SwiftProtobuf.Google_Protobuf_Any)
 
@@ -1428,11 +1437,35 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     /// Clears the value of `startOffset`. Subsequent reads from it will return its default value.
     mutating func clearStartOffset() {self._startOffset = nil}
 
+    /// Index of this chunk in the batch if chunking is enabled. The index starts from 0.
+    var chunkIndex: Int64 {
+      get {return _chunkIndex ?? 0}
+      set {_chunkIndex = newValue}
+    }
+    /// Returns true if `chunkIndex` has been explicitly set.
+    var hasChunkIndex: Bool {return self._chunkIndex != nil}
+    /// Clears the value of `chunkIndex`. Subsequent reads from it will return its default value.
+    mutating func clearChunkIndex() {self._chunkIndex = nil}
+
+    /// Total number of chunks in this batch if chunking is enabled.
+    /// It is missing when chunking is disabled - the batch is returned whole
+    /// and client will treat this response as the batch.
+    var numChunksInBatch: Int64 {
+      get {return _numChunksInBatch ?? 0}
+      set {_numChunksInBatch = newValue}
+    }
+    /// Returns true if `numChunksInBatch` has been explicitly set.
+    var hasNumChunksInBatch: Bool {return self._numChunksInBatch != nil}
+    /// Clears the value of `numChunksInBatch`. Subsequent reads from it will return its default value.
+    mutating func clearNumChunksInBatch() {self._numChunksInBatch = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
 
     fileprivate var _startOffset: Int64? = nil
+    fileprivate var _chunkIndex: Int64? = nil
+    fileprivate var _numChunksInBatch: Int64? = nil
   }
 
   struct Metrics: Sendable {
@@ -2390,6 +2423,41 @@ struct Spark_Connect_ReattachOptions: Sendable {
   init() {}
 }
 
+struct Spark_Connect_ResultChunkingOptions: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// Although Arrow results are split into batches with a size limit according to estimation, the
+  /// size of the batches is not guaranteed to be less than the limit, especially when a single row
+  /// is larger than the limit, in which case the server will fail to split it further into smaller
+  /// batches. As a result, the client may encounter a gRPC error stating “Received message larger
+  /// than max” when a batch is too large.
+  /// If allow_arrow_batch_chunking=true, the server will split large Arrow batches into smaller chunks,
+  /// and the client is expected to handle the chunked Arrow batches.
+  ///
+  /// If false, the server will not chunk large Arrow batches.
+  var allowArrowBatchChunking: Bool = false
+
+  /// Optional preferred Arrow batch size in bytes for the server to use when sending Arrow results.
+  /// The server will attempt to use this size if it is set and within the valid range
+  /// ([1KB, max batch size on server]). Otherwise, the server's maximum batch size is used.
+  var preferredArrowChunkSize: Int64 {
+    get {return _preferredArrowChunkSize ?? 0}
+    set {_preferredArrowChunkSize = newValue}
+  }
+  /// Returns true if `preferredArrowChunkSize` has been explicitly set.
+  var hasPreferredArrowChunkSize: Bool {return self._preferredArrowChunkSize != nil}
+  /// Clears the value of `preferredArrowChunkSize`. Subsequent reads from it will return its default value.
+  mutating func clearPreferredArrowChunkSize() {self._preferredArrowChunkSize = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _preferredArrowChunkSize: Int64? = nil
+}
+
 struct Spark_Connect_ReattachExecuteRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -2918,12 +2986,79 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
     /// Clears the value of `sqlState`. Subsequent reads from it will return its default value.
     mutating func clearSqlState() {self._sqlState = nil}
 
+    /// Additional information if the error was caused by a breaking change.
+    var breakingChangeInfo: Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo {
+      get {return _breakingChangeInfo ?? Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo()}
+      set {_breakingChangeInfo = newValue}
+    }
+    /// Returns true if `breakingChangeInfo` has been explicitly set.
+    var hasBreakingChangeInfo: Bool {return self._breakingChangeInfo != nil}
+    /// Clears the value of `breakingChangeInfo`. Subsequent reads from it will return its default value.
+    mutating func clearBreakingChangeInfo() {self._breakingChangeInfo = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
 
     fileprivate var _errorClass: String? = nil
     fileprivate var _sqlState: String? = nil
+    fileprivate var _breakingChangeInfo: Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo? = nil
+  }
+
+  /// BreakingChangeInfo defines the schema for breaking change information.
+  struct BreakingChangeInfo: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    /// A message explaining how the user can migrate their job to work
+    /// with the breaking change.
+    var migrationMessage: [String] = []
+
+    /// A spark config flag that can be used to mitigate the breaking change.
+    var mitigationConfig: Spark_Connect_FetchErrorDetailsResponse.MitigationConfig {
+      get {return _mitigationConfig ?? Spark_Connect_FetchErrorDetailsResponse.MitigationConfig()}
+      set {_mitigationConfig = newValue}
+    }
+    /// Returns true if `mitigationConfig` has been explicitly set.
+    var hasMitigationConfig: Bool {return self._mitigationConfig != nil}
+    /// Clears the value of `mitigationConfig`. Subsequent reads from it will return its default value.
+    mutating func clearMitigationConfig() {self._mitigationConfig = nil}
+
+    /// If true, the breaking change should be inspected manually.
+    /// If false, the spark job should be retried by setting the mitigationConfig.
+    var needsAudit: Bool {
+      get {return _needsAudit ?? false}
+      set {_needsAudit = newValue}
+    }
+    /// Returns true if `needsAudit` has been explicitly set.
+    var hasNeedsAudit: Bool {return self._needsAudit != nil}
+    /// Clears the value of `needsAudit`. Subsequent reads from it will return its default value.
+    mutating func clearNeedsAudit() {self._needsAudit = nil}
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _mitigationConfig: Spark_Connect_FetchErrorDetailsResponse.MitigationConfig? = nil
+    fileprivate var _needsAudit: Bool? = nil
+  }
+
+  /// MitigationConfig defines a spark config flag that can be used to mitigate a breaking change.
+  struct MitigationConfig: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    /// The spark config key.
+    var key: String = String()
+
+    /// The spark config value that mitigates the breaking change.
+    var value: String = String()
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
   }
 
   /// Error defines the schema for the representing exception.
@@ -4773,7 +4908,7 @@ extension Spark_Connect_ExecutePlanRequest: SwiftProtobuf.Message, SwiftProtobuf
 
 extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanRequest.protoMessageName + ".RequestOption"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}reattach_options\0\u{2}f\u{f}extension\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}reattach_options\0\u{3}result_chunking_options\0\u{2}e\u{f}extension\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4792,6 +4927,19 @@ extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message,
         if let v = v {
           if hadOneofValue {try decoder.handleConflictingOneOf()}
           self.requestOption = .reattachOptions(v)
+        }
+      }()
+      case 2: try {
+        var v: Spark_Connect_ResultChunkingOptions?
+        var hadOneofValue = false
+        if let current = self.requestOption {
+          hadOneofValue = true
+          if case .resultChunkingOptions(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.requestOption = .resultChunkingOptions(v)
         }
       }()
       case 999: try {
@@ -4821,6 +4969,10 @@ extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message,
     case .reattachOptions?: try {
       guard case .reattachOptions(let v)? = self.requestOption else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    }()
+    case .resultChunkingOptions?: try {
+      guard case .resultChunkingOptions(let v)? = self.requestOption else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
     }()
     case .extension?: try {
       guard case .extension(let v)? = self.requestOption else { preconditionFailure() }
@@ -5197,7 +5349,7 @@ extension Spark_Connect_ExecutePlanResponse.SqlCommandResult: SwiftProtobuf.Mess
 
 extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ArrowBatch"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}row_count\0\u{1}data\0\u{3}start_offset\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}row_count\0\u{1}data\0\u{3}start_offset\0\u{3}chunk_index\0\u{3}num_chunks_in_batch\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5208,6 +5360,8 @@ extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, S
       case 1: try { try decoder.decodeSingularInt64Field(value: &self.rowCount) }()
       case 2: try { try decoder.decodeSingularBytesField(value: &self.data) }()
       case 3: try { try decoder.decodeSingularInt64Field(value: &self._startOffset) }()
+      case 4: try { try decoder.decodeSingularInt64Field(value: &self._chunkIndex) }()
+      case 5: try { try decoder.decodeSingularInt64Field(value: &self._numChunksInBatch) }()
       default: break
       }
     }
@@ -5227,6 +5381,12 @@ extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, S
     try { if let v = self._startOffset {
       try visitor.visitSingularInt64Field(value: v, fieldNumber: 3)
     } }()
+    try { if let v = self._chunkIndex {
+      try visitor.visitSingularInt64Field(value: v, fieldNumber: 4)
+    } }()
+    try { if let v = self._numChunksInBatch {
+      try visitor.visitSingularInt64Field(value: v, fieldNumber: 5)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -5234,6 +5394,8 @@ extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, S
     if lhs.rowCount != rhs.rowCount {return false}
     if lhs.data != rhs.data {return false}
     if lhs._startOffset != rhs._startOffset {return false}
+    if lhs._chunkIndex != rhs._chunkIndex {return false}
+    if lhs._numChunksInBatch != rhs._numChunksInBatch {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -6628,6 +6790,45 @@ extension Spark_Connect_ReattachOptions: SwiftProtobuf.Message, SwiftProtobuf._M
   }
 }
 
+extension Spark_Connect_ResultChunkingOptions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".ResultChunkingOptions"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}allow_arrow_batch_chunking\0\u{3}preferred_arrow_chunk_size\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularBoolField(value: &self.allowArrowBatchChunking) }()
+      case 2: try { try decoder.decodeSingularInt64Field(value: &self._preferredArrowChunkSize) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if self.allowArrowBatchChunking != false {
+      try visitor.visitSingularBoolField(value: self.allowArrowBatchChunking, fieldNumber: 1)
+    }
+    try { if let v = self._preferredArrowChunkSize {
+      try visitor.visitSingularInt64Field(value: v, fieldNumber: 2)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_ResultChunkingOptions, rhs: Spark_Connect_ResultChunkingOptions) -> Bool {
+    if lhs.allowArrowBatchChunking != rhs.allowArrowBatchChunking {return false}
+    if lhs._preferredArrowChunkSize != rhs._preferredArrowChunkSize {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Spark_Connect_ReattachExecuteRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReattachExecuteRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}operation_id\0\u{3}client_type\0\u{3}last_response_id\0\u{3}client_observed_server_side_session_id\0")
@@ -7179,7 +7380,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.QueryContext.ContextType: Swif
 
 extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".SparkThrowable"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}error_class\0\u{3}message_parameters\0\u{3}query_contexts\0\u{3}sql_state\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}error_class\0\u{3}message_parameters\0\u{3}query_contexts\0\u{3}sql_state\0\u{3}breaking_change_info\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7191,6 +7392,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.
       case 2: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.messageParameters) }()
       case 3: try { try decoder.decodeRepeatedMessageField(value: &self.queryContexts) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self._sqlState) }()
+      case 5: try { try decoder.decodeSingularMessageField(value: &self._breakingChangeInfo) }()
       default: break
       }
     }
@@ -7213,6 +7415,9 @@ extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.
     try { if let v = self._sqlState {
       try visitor.visitSingularStringField(value: v, fieldNumber: 4)
     } }()
+    try { if let v = self._breakingChangeInfo {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -7221,6 +7426,86 @@ extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.
     if lhs.messageParameters != rhs.messageParameters {return false}
     if lhs.queryContexts != rhs.queryContexts {return false}
     if lhs._sqlState != rhs._sqlState {return false}
+    if lhs._breakingChangeInfo != rhs._breakingChangeInfo {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".BreakingChangeInfo"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}migration_message\0\u{3}mitigation_config\0\u{3}needs_audit\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedStringField(value: &self.migrationMessage) }()
+      case 2: try { try decoder.decodeSingularMessageField(value: &self._mitigationConfig) }()
+      case 3: try { try decoder.decodeSingularBoolField(value: &self._needsAudit) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.migrationMessage.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.migrationMessage, fieldNumber: 1)
+    }
+    try { if let v = self._mitigationConfig {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    } }()
+    try { if let v = self._needsAudit {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 3)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo, rhs: Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo) -> Bool {
+    if lhs.migrationMessage != rhs.migrationMessage {return false}
+    if lhs._mitigationConfig != rhs._mitigationConfig {return false}
+    if lhs._needsAudit != rhs._needsAudit {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_FetchErrorDetailsResponse.MitigationConfig: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".MitigationConfig"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}key\0\u{1}value\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.key) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.value) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.key.isEmpty {
+      try visitor.visitSingularStringField(value: self.key, fieldNumber: 1)
+    }
+    if !self.value.isEmpty {
+      try visitor.visitSingularStringField(value: self.value, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_FetchErrorDetailsResponse.MitigationConfig, rhs: Spark_Connect_FetchErrorDetailsResponse.MitigationConfig) -> Bool {
+    if lhs.key != rhs.key {return false}
+    if lhs.value != rhs.value {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
