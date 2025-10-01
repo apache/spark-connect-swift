@@ -1723,7 +1723,7 @@ struct Spark_Connect_Deduplicate: @unchecked Sendable {
 }
 
 /// A relation that does not need to be qualified by name.
-struct Spark_Connect_LocalRelation: @unchecked Sendable {
+struct Spark_Connect_LocalRelation: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -3341,7 +3341,7 @@ struct Spark_Connect_CommonInlineUserDefinedTableFunction: Sendable {
   init() {}
 }
 
-struct Spark_Connect_PythonUDTF: @unchecked Sendable {
+struct Spark_Connect_PythonUDTF: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -3402,7 +3402,7 @@ struct Spark_Connect_CommonInlineUserDefinedDataSource: Sendable {
   init() {}
 }
 
-struct Spark_Connect_PythonDataSource: @unchecked Sendable {
+struct Spark_Connect_PythonDataSource: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -3697,67 +3697,7 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Relation"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "common"),
-    2: .same(proto: "read"),
-    3: .same(proto: "project"),
-    4: .same(proto: "filter"),
-    5: .same(proto: "join"),
-    6: .standard(proto: "set_op"),
-    7: .same(proto: "sort"),
-    8: .same(proto: "limit"),
-    9: .same(proto: "aggregate"),
-    10: .same(proto: "sql"),
-    11: .standard(proto: "local_relation"),
-    12: .same(proto: "sample"),
-    13: .same(proto: "offset"),
-    14: .same(proto: "deduplicate"),
-    15: .same(proto: "range"),
-    16: .standard(proto: "subquery_alias"),
-    17: .same(proto: "repartition"),
-    18: .standard(proto: "to_df"),
-    19: .standard(proto: "with_columns_renamed"),
-    20: .standard(proto: "show_string"),
-    21: .same(proto: "drop"),
-    22: .same(proto: "tail"),
-    23: .standard(proto: "with_columns"),
-    24: .same(proto: "hint"),
-    25: .same(proto: "unpivot"),
-    26: .standard(proto: "to_schema"),
-    27: .standard(proto: "repartition_by_expression"),
-    28: .standard(proto: "map_partitions"),
-    29: .standard(proto: "collect_metrics"),
-    30: .same(proto: "parse"),
-    31: .standard(proto: "group_map"),
-    32: .standard(proto: "co_group_map"),
-    33: .standard(proto: "with_watermark"),
-    34: .standard(proto: "apply_in_pandas_with_state"),
-    35: .standard(proto: "html_string"),
-    36: .standard(proto: "cached_local_relation"),
-    37: .standard(proto: "cached_remote_relation"),
-    38: .standard(proto: "common_inline_user_defined_table_function"),
-    39: .standard(proto: "as_of_join"),
-    40: .standard(proto: "common_inline_user_defined_data_source"),
-    41: .standard(proto: "with_relations"),
-    42: .same(proto: "transpose"),
-    43: .standard(proto: "unresolved_table_valued_function"),
-    44: .standard(proto: "lateral_join"),
-    90: .standard(proto: "fill_na"),
-    91: .standard(proto: "drop_na"),
-    92: .same(proto: "replace"),
-    100: .same(proto: "summary"),
-    101: .same(proto: "crosstab"),
-    102: .same(proto: "describe"),
-    103: .same(proto: "cov"),
-    104: .same(proto: "corr"),
-    105: .standard(proto: "approx_quantile"),
-    106: .standard(proto: "freq_items"),
-    107: .standard(proto: "sample_by"),
-    200: .same(proto: "catalog"),
-    300: .standard(proto: "ml_relation"),
-    998: .same(proto: "extension"),
-    999: .same(proto: "unknown"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}common\0\u{1}read\0\u{1}project\0\u{1}filter\0\u{1}join\0\u{3}set_op\0\u{1}sort\0\u{1}limit\0\u{1}aggregate\0\u{1}sql\0\u{3}local_relation\0\u{1}sample\0\u{1}offset\0\u{1}deduplicate\0\u{1}range\0\u{3}subquery_alias\0\u{1}repartition\0\u{3}to_df\0\u{3}with_columns_renamed\0\u{3}show_string\0\u{1}drop\0\u{1}tail\0\u{3}with_columns\0\u{1}hint\0\u{1}unpivot\0\u{3}to_schema\0\u{3}repartition_by_expression\0\u{3}map_partitions\0\u{3}collect_metrics\0\u{1}parse\0\u{3}group_map\0\u{3}co_group_map\0\u{3}with_watermark\0\u{3}apply_in_pandas_with_state\0\u{3}html_string\0\u{3}cached_local_relation\0\u{3}cached_remote_relation\0\u{3}common_inline_user_defined_table_function\0\u{3}as_of_join\0\u{3}common_inline_user_defined_data_source\0\u{3}with_relations\0\u{1}transpose\0\u{3}unresolved_table_valued_function\0\u{3}lateral_join\0\u{4}.fill_na\0\u{3}drop_na\0\u{1}replace\0\u{2}\u{8}summary\0\u{1}crosstab\0\u{1}describe\0\u{1}cov\0\u{1}corr\0\u{3}approx_quantile\0\u{3}freq_items\0\u{3}sample_by\0\u{2}]\u{1}catalog\0\u{4}d\u{1}ml_relation\0\u{2}z\u{a}extension\0\u{1}unknown\0")
 
   fileprivate class _StorageClass {
     var _common: Spark_Connect_RelationCommon? = nil
@@ -4819,11 +4759,7 @@ extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_MlRelation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlRelation"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "transform"),
-    2: .same(proto: "fetch"),
-    3: .standard(proto: "model_summary_dataset"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}transform\0\u{1}fetch\0\u{3}model_summary_dataset\0")
 
   fileprivate class _StorageClass {
     var _mlType: Spark_Connect_MlRelation.OneOf_MlType?
@@ -4933,12 +4869,7 @@ extension Spark_Connect_MlRelation: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Spark_Connect_MlRelation.Transform: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlRelation.protoMessageName + ".Transform"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "obj_ref"),
-    2: .same(proto: "transformer"),
-    3: .same(proto: "input"),
-    4: .same(proto: "params"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}obj_ref\0\u{1}transformer\0\u{1}input\0\u{1}params\0")
 
   fileprivate class _StorageClass {
     var _operator: Spark_Connect_MlRelation.Transform.OneOf_Operator?
@@ -5055,10 +4986,7 @@ extension Spark_Connect_MlRelation.Transform: SwiftProtobuf.Message, SwiftProtob
 
 extension Spark_Connect_Fetch: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Fetch"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "obj_ref"),
-    2: .same(proto: "methods"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}obj_ref\0\u{1}methods\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5097,10 +5025,7 @@ extension Spark_Connect_Fetch: SwiftProtobuf.Message, SwiftProtobuf._MessageImpl
 
 extension Spark_Connect_Fetch.Method: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Fetch.protoMessageName + ".Method"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "method"),
-    2: .same(proto: "args"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}method\0\u{1}args\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5135,10 +5060,7 @@ extension Spark_Connect_Fetch.Method: SwiftProtobuf.Message, SwiftProtobuf._Mess
 
 extension Spark_Connect_Fetch.Method.Args: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Fetch.Method.protoMessageName + ".Args"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "param"),
-    2: .same(proto: "input"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}param\0\u{1}input\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5224,11 +5146,7 @@ extension Spark_Connect_Unknown: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
 
 extension Spark_Connect_RelationCommon: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RelationCommon"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "source_info"),
-    2: .standard(proto: "plan_id"),
-    3: .same(proto: "origin"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}source_info\0\u{3}plan_id\0\u{1}origin\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5272,13 +5190,7 @@ extension Spark_Connect_RelationCommon: SwiftProtobuf.Message, SwiftProtobuf._Me
 
 extension Spark_Connect_SQL: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SQL"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "query"),
-    2: .same(proto: "args"),
-    3: .standard(proto: "pos_args"),
-    4: .standard(proto: "named_arguments"),
-    5: .standard(proto: "pos_arguments"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}query\0\u{1}args\0\u{3}pos_args\0\u{3}named_arguments\0\u{3}pos_arguments\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5328,10 +5240,7 @@ extension Spark_Connect_SQL: SwiftProtobuf.Message, SwiftProtobuf._MessageImplem
 
 extension Spark_Connect_WithRelations: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WithRelations"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "root"),
-    2: .same(proto: "references"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}root\0\u{1}references\0")
 
   fileprivate class _StorageClass {
     var _root: Spark_Connect_Relation? = nil
@@ -5408,11 +5317,7 @@ extension Spark_Connect_WithRelations: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_Read: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Read"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "named_table"),
-    2: .standard(proto: "data_source"),
-    3: .standard(proto: "is_streaming"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}named_table\0\u{3}data_source\0\u{3}is_streaming\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5484,10 +5389,7 @@ extension Spark_Connect_Read: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
 
 extension Spark_Connect_Read.NamedTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Read.protoMessageName + ".NamedTable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "unparsed_identifier"),
-    2: .same(proto: "options"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}unparsed_identifier\0\u{1}options\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5522,13 +5424,7 @@ extension Spark_Connect_Read.NamedTable: SwiftProtobuf.Message, SwiftProtobuf._M
 
 extension Spark_Connect_Read.DataSource: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Read.protoMessageName + ".DataSource"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "format"),
-    2: .same(proto: "schema"),
-    3: .same(proto: "options"),
-    4: .same(proto: "paths"),
-    5: .same(proto: "predicates"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{1}schema\0\u{1}options\0\u{1}paths\0\u{1}predicates\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5582,10 +5478,7 @@ extension Spark_Connect_Read.DataSource: SwiftProtobuf.Message, SwiftProtobuf._M
 
 extension Spark_Connect_Project: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Project"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    3: .same(proto: "expressions"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{2}\u{2}expressions\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -5662,10 +5555,7 @@ extension Spark_Connect_Project: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
 
 extension Spark_Connect_Filter: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Filter"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "condition"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}condition\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -5742,14 +5632,7 @@ extension Spark_Connect_Filter: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
 
 extension Spark_Connect_Join: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Join"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "left"),
-    2: .same(proto: "right"),
-    3: .standard(proto: "join_condition"),
-    4: .standard(proto: "join_type"),
-    5: .standard(proto: "using_columns"),
-    6: .standard(proto: "join_data_type"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}left\0\u{1}right\0\u{3}join_condition\0\u{3}join_type\0\u{3}using_columns\0\u{3}join_data_type\0")
 
   fileprivate class _StorageClass {
     var _left: Spark_Connect_Relation? = nil
@@ -5853,24 +5736,12 @@ extension Spark_Connect_Join: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
 }
 
 extension Spark_Connect_Join.JoinType: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "JOIN_TYPE_UNSPECIFIED"),
-    1: .same(proto: "JOIN_TYPE_INNER"),
-    2: .same(proto: "JOIN_TYPE_FULL_OUTER"),
-    3: .same(proto: "JOIN_TYPE_LEFT_OUTER"),
-    4: .same(proto: "JOIN_TYPE_RIGHT_OUTER"),
-    5: .same(proto: "JOIN_TYPE_LEFT_ANTI"),
-    6: .same(proto: "JOIN_TYPE_LEFT_SEMI"),
-    7: .same(proto: "JOIN_TYPE_CROSS"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0JOIN_TYPE_UNSPECIFIED\0\u{1}JOIN_TYPE_INNER\0\u{1}JOIN_TYPE_FULL_OUTER\0\u{1}JOIN_TYPE_LEFT_OUTER\0\u{1}JOIN_TYPE_RIGHT_OUTER\0\u{1}JOIN_TYPE_LEFT_ANTI\0\u{1}JOIN_TYPE_LEFT_SEMI\0\u{1}JOIN_TYPE_CROSS\0")
 }
 
 extension Spark_Connect_Join.JoinDataType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Join.protoMessageName + ".JoinDataType"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "is_left_struct"),
-    2: .standard(proto: "is_right_struct"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}is_left_struct\0\u{3}is_right_struct\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5905,14 +5776,7 @@ extension Spark_Connect_Join.JoinDataType: SwiftProtobuf.Message, SwiftProtobuf.
 
 extension Spark_Connect_SetOperation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SetOperation"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "left_input"),
-    2: .standard(proto: "right_input"),
-    3: .standard(proto: "set_op_type"),
-    4: .standard(proto: "is_all"),
-    5: .standard(proto: "by_name"),
-    6: .standard(proto: "allow_missing_columns"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}left_input\0\u{3}right_input\0\u{3}set_op_type\0\u{3}is_all\0\u{3}by_name\0\u{3}allow_missing_columns\0")
 
   fileprivate class _StorageClass {
     var _leftInput: Spark_Connect_Relation? = nil
@@ -6016,20 +5880,12 @@ extension Spark_Connect_SetOperation: SwiftProtobuf.Message, SwiftProtobuf._Mess
 }
 
 extension Spark_Connect_SetOperation.SetOpType: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "SET_OP_TYPE_UNSPECIFIED"),
-    1: .same(proto: "SET_OP_TYPE_INTERSECT"),
-    2: .same(proto: "SET_OP_TYPE_UNION"),
-    3: .same(proto: "SET_OP_TYPE_EXCEPT"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0SET_OP_TYPE_UNSPECIFIED\0\u{1}SET_OP_TYPE_INTERSECT\0\u{1}SET_OP_TYPE_UNION\0\u{1}SET_OP_TYPE_EXCEPT\0")
 }
 
 extension Spark_Connect_Limit: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Limit"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "limit"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}limit\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -6106,10 +5962,7 @@ extension Spark_Connect_Limit: SwiftProtobuf.Message, SwiftProtobuf._MessageImpl
 
 extension Spark_Connect_Offset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Offset"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "offset"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}offset\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -6186,10 +6039,7 @@ extension Spark_Connect_Offset: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
 
 extension Spark_Connect_Tail: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Tail"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "limit"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}limit\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -6266,14 +6116,7 @@ extension Spark_Connect_Tail: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
 
 extension Spark_Connect_Aggregate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Aggregate"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "group_type"),
-    3: .standard(proto: "grouping_expressions"),
-    4: .standard(proto: "aggregate_expressions"),
-    5: .same(proto: "pivot"),
-    6: .standard(proto: "grouping_sets"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}group_type\0\u{3}grouping_expressions\0\u{3}aggregate_expressions\0\u{1}pivot\0\u{3}grouping_sets\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -6377,22 +6220,12 @@ extension Spark_Connect_Aggregate: SwiftProtobuf.Message, SwiftProtobuf._Message
 }
 
 extension Spark_Connect_Aggregate.GroupType: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "GROUP_TYPE_UNSPECIFIED"),
-    1: .same(proto: "GROUP_TYPE_GROUPBY"),
-    2: .same(proto: "GROUP_TYPE_ROLLUP"),
-    3: .same(proto: "GROUP_TYPE_CUBE"),
-    4: .same(proto: "GROUP_TYPE_PIVOT"),
-    5: .same(proto: "GROUP_TYPE_GROUPING_SETS"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0GROUP_TYPE_UNSPECIFIED\0\u{1}GROUP_TYPE_GROUPBY\0\u{1}GROUP_TYPE_ROLLUP\0\u{1}GROUP_TYPE_CUBE\0\u{1}GROUP_TYPE_PIVOT\0\u{1}GROUP_TYPE_GROUPING_SETS\0")
 }
 
 extension Spark_Connect_Aggregate.Pivot: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Aggregate.protoMessageName + ".Pivot"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "col"),
-    2: .same(proto: "values"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}col\0\u{1}values\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6431,9 +6264,7 @@ extension Spark_Connect_Aggregate.Pivot: SwiftProtobuf.Message, SwiftProtobuf._M
 
 extension Spark_Connect_Aggregate.GroupingSets: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Aggregate.protoMessageName + ".GroupingSets"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "grouping_set"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}grouping_set\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6463,11 +6294,7 @@ extension Spark_Connect_Aggregate.GroupingSets: SwiftProtobuf.Message, SwiftProt
 
 extension Spark_Connect_Sort: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Sort"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "order"),
-    3: .standard(proto: "is_global"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}order\0\u{3}is_global\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -6551,11 +6378,7 @@ extension Spark_Connect_Sort: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
 
 extension Spark_Connect_Drop: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Drop"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "columns"),
-    3: .standard(proto: "column_names"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}columns\0\u{3}column_names\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -6639,12 +6462,7 @@ extension Spark_Connect_Drop: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
 
 extension Spark_Connect_Deduplicate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Deduplicate"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "column_names"),
-    3: .standard(proto: "all_columns_as_keys"),
-    4: .standard(proto: "within_watermark"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}column_names\0\u{3}all_columns_as_keys\0\u{3}within_watermark\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -6735,10 +6553,7 @@ extension Spark_Connect_Deduplicate: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_LocalRelation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".LocalRelation"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "data"),
-    2: .same(proto: "schema"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}data\0\u{1}schema\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6777,12 +6592,7 @@ extension Spark_Connect_LocalRelation: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_CachedLocalRelation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CachedLocalRelation"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(
-      reservedNames: ["userId", "sessionId"],
-      reservedRanges: [1..<3],
-      numberNameMappings: [
-        3: .same(proto: "hash"),
-  ])
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\u{3}hash\0\u{b}userId\0\u{b}sessionId\0\u{c}\u{1}\u{1}\u{c}\u{2}\u{1}")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6812,9 +6622,7 @@ extension Spark_Connect_CachedLocalRelation: SwiftProtobuf.Message, SwiftProtobu
 
 extension Spark_Connect_CachedRemoteRelation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CachedRemoteRelation"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "relation_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}relation_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6844,14 +6652,7 @@ extension Spark_Connect_CachedRemoteRelation: SwiftProtobuf.Message, SwiftProtob
 
 extension Spark_Connect_Sample: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Sample"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "lower_bound"),
-    3: .standard(proto: "upper_bound"),
-    4: .standard(proto: "with_replacement"),
-    5: .same(proto: "seed"),
-    6: .standard(proto: "deterministic_order"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}lower_bound\0\u{3}upper_bound\0\u{3}with_replacement\0\u{1}seed\0\u{3}deterministic_order\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -6956,12 +6757,7 @@ extension Spark_Connect_Sample: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
 
 extension Spark_Connect_Range: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Range"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "start"),
-    2: .same(proto: "end"),
-    3: .same(proto: "step"),
-    4: .standard(proto: "num_partitions"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}start\0\u{1}end\0\u{1}step\0\u{3}num_partitions\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7010,11 +6806,7 @@ extension Spark_Connect_Range: SwiftProtobuf.Message, SwiftProtobuf._MessageImpl
 
 extension Spark_Connect_SubqueryAlias: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SubqueryAlias"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "alias"),
-    3: .same(proto: "qualifier"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}alias\0\u{1}qualifier\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7098,11 +6890,7 @@ extension Spark_Connect_SubqueryAlias: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_Repartition: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Repartition"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "num_partitions"),
-    3: .same(proto: "shuffle"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}num_partitions\0\u{1}shuffle\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7186,12 +6974,7 @@ extension Spark_Connect_Repartition: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_ShowString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ShowString"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "num_rows"),
-    3: .same(proto: "truncate"),
-    4: .same(proto: "vertical"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}num_rows\0\u{1}truncate\0\u{1}vertical\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7282,11 +7065,7 @@ extension Spark_Connect_ShowString: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Spark_Connect_HtmlString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".HtmlString"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "num_rows"),
-    3: .same(proto: "truncate"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}num_rows\0\u{1}truncate\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7370,10 +7149,7 @@ extension Spark_Connect_HtmlString: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Spark_Connect_StatSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StatSummary"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "statistics"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}statistics\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7450,10 +7226,7 @@ extension Spark_Connect_StatSummary: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_StatDescribe: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StatDescribe"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "cols"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}cols\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7530,11 +7303,7 @@ extension Spark_Connect_StatDescribe: SwiftProtobuf.Message, SwiftProtobuf._Mess
 
 extension Spark_Connect_StatCrosstab: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StatCrosstab"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "col1"),
-    3: .same(proto: "col2"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}col1\0\u{1}col2\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7618,11 +7387,7 @@ extension Spark_Connect_StatCrosstab: SwiftProtobuf.Message, SwiftProtobuf._Mess
 
 extension Spark_Connect_StatCov: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StatCov"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "col1"),
-    3: .same(proto: "col2"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}col1\0\u{1}col2\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7706,12 +7471,7 @@ extension Spark_Connect_StatCov: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
 
 extension Spark_Connect_StatCorr: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StatCorr"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "col1"),
-    3: .same(proto: "col2"),
-    4: .same(proto: "method"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}col1\0\u{1}col2\0\u{1}method\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7802,12 +7562,7 @@ extension Spark_Connect_StatCorr: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_StatApproxQuantile: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StatApproxQuantile"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "cols"),
-    3: .same(proto: "probabilities"),
-    4: .standard(proto: "relative_error"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}cols\0\u{1}probabilities\0\u{3}relative_error\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7898,11 +7653,7 @@ extension Spark_Connect_StatApproxQuantile: SwiftProtobuf.Message, SwiftProtobuf
 
 extension Spark_Connect_StatFreqItems: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StatFreqItems"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "cols"),
-    3: .same(proto: "support"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}cols\0\u{1}support\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -7986,12 +7737,7 @@ extension Spark_Connect_StatFreqItems: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_StatSampleBy: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StatSampleBy"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "col"),
-    3: .same(proto: "fractions"),
-    5: .same(proto: "seed"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}col\0\u{1}fractions\0\u{2}\u{2}seed\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8082,10 +7828,7 @@ extension Spark_Connect_StatSampleBy: SwiftProtobuf.Message, SwiftProtobuf._Mess
 
 extension Spark_Connect_StatSampleBy.Fraction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StatSampleBy.protoMessageName + ".Fraction"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "stratum"),
-    2: .same(proto: "fraction"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}stratum\0\u{1}fraction\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -8124,11 +7867,7 @@ extension Spark_Connect_StatSampleBy.Fraction: SwiftProtobuf.Message, SwiftProto
 
 extension Spark_Connect_NAFill: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".NAFill"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "cols"),
-    3: .same(proto: "values"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}cols\0\u{1}values\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8212,11 +7951,7 @@ extension Spark_Connect_NAFill: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
 
 extension Spark_Connect_NADrop: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".NADrop"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "cols"),
-    3: .standard(proto: "min_non_nulls"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}cols\0\u{3}min_non_nulls\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8300,11 +8035,7 @@ extension Spark_Connect_NADrop: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
 
 extension Spark_Connect_NAReplace: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".NAReplace"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "cols"),
-    3: .same(proto: "replacements"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}cols\0\u{1}replacements\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8388,10 +8119,7 @@ extension Spark_Connect_NAReplace: SwiftProtobuf.Message, SwiftProtobuf._Message
 
 extension Spark_Connect_NAReplace.Replacement: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_NAReplace.protoMessageName + ".Replacement"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "old_value"),
-    2: .standard(proto: "new_value"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}old_value\0\u{3}new_value\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -8430,10 +8158,7 @@ extension Spark_Connect_NAReplace.Replacement: SwiftProtobuf.Message, SwiftProto
 
 extension Spark_Connect_ToDF: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ToDF"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "column_names"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}column_names\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8510,11 +8235,7 @@ extension Spark_Connect_ToDF: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
 
 extension Spark_Connect_WithColumnsRenamed: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WithColumnsRenamed"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "rename_columns_map"),
-    3: .same(proto: "renames"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}rename_columns_map\0\u{1}renames\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8598,10 +8319,7 @@ extension Spark_Connect_WithColumnsRenamed: SwiftProtobuf.Message, SwiftProtobuf
 
 extension Spark_Connect_WithColumnsRenamed.Rename: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_WithColumnsRenamed.protoMessageName + ".Rename"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "col_name"),
-    2: .standard(proto: "new_col_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}col_name\0\u{3}new_col_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -8636,10 +8354,7 @@ extension Spark_Connect_WithColumnsRenamed.Rename: SwiftProtobuf.Message, SwiftP
 
 extension Spark_Connect_WithColumns: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WithColumns"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "aliases"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}aliases\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8716,11 +8431,7 @@ extension Spark_Connect_WithColumns: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_WithWatermark: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WithWatermark"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "event_time"),
-    3: .standard(proto: "delay_threshold"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}event_time\0\u{3}delay_threshold\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8804,11 +8515,7 @@ extension Spark_Connect_WithWatermark: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_Hint: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Hint"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "name"),
-    3: .same(proto: "parameters"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}name\0\u{1}parameters\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8892,13 +8599,7 @@ extension Spark_Connect_Hint: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
 
 extension Spark_Connect_Unpivot: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Unpivot"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "ids"),
-    3: .same(proto: "values"),
-    4: .standard(proto: "variable_column_name"),
-    5: .standard(proto: "value_column_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}ids\0\u{1}values\0\u{3}variable_column_name\0\u{3}value_column_name\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -8996,9 +8697,7 @@ extension Spark_Connect_Unpivot: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
 
 extension Spark_Connect_Unpivot.Values: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Unpivot.protoMessageName + ".Values"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "values"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}values\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -9028,10 +8727,7 @@ extension Spark_Connect_Unpivot.Values: SwiftProtobuf.Message, SwiftProtobuf._Me
 
 extension Spark_Connect_Transpose: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Transpose"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "index_columns"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}index_columns\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -9108,10 +8804,7 @@ extension Spark_Connect_Transpose: SwiftProtobuf.Message, SwiftProtobuf._Message
 
 extension Spark_Connect_UnresolvedTableValuedFunction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".UnresolvedTableValuedFunction"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "function_name"),
-    2: .same(proto: "arguments"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}function_name\0\u{1}arguments\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -9146,10 +8839,7 @@ extension Spark_Connect_UnresolvedTableValuedFunction: SwiftProtobuf.Message, Sw
 
 extension Spark_Connect_ToSchema: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ToSchema"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "schema"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}schema\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -9226,11 +8916,7 @@ extension Spark_Connect_ToSchema: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_RepartitionByExpression: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RepartitionByExpression"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "partition_exprs"),
-    3: .standard(proto: "num_partitions"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}partition_exprs\0\u{3}num_partitions\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -9314,12 +9000,7 @@ extension Spark_Connect_RepartitionByExpression: SwiftProtobuf.Message, SwiftPro
 
 extension Spark_Connect_MapPartitions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MapPartitions"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "func"),
-    3: .standard(proto: "is_barrier"),
-    4: .standard(proto: "profile_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}func\0\u{3}is_barrier\0\u{3}profile_id\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -9410,19 +9091,7 @@ extension Spark_Connect_MapPartitions: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GroupMap"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "grouping_expressions"),
-    3: .same(proto: "func"),
-    4: .standard(proto: "sorting_expressions"),
-    5: .standard(proto: "initial_input"),
-    6: .standard(proto: "initial_grouping_expressions"),
-    7: .standard(proto: "is_map_groups_with_state"),
-    8: .standard(proto: "output_mode"),
-    9: .standard(proto: "timeout_conf"),
-    10: .standard(proto: "state_schema"),
-    11: .standard(proto: "transform_with_state_info"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}grouping_expressions\0\u{1}func\0\u{3}sorting_expressions\0\u{3}initial_input\0\u{3}initial_grouping_expressions\0\u{3}is_map_groups_with_state\0\u{3}output_mode\0\u{3}timeout_conf\0\u{3}state_schema\0\u{3}transform_with_state_info\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -9562,11 +9231,7 @@ extension Spark_Connect_GroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_TransformWithStateInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".TransformWithStateInfo"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "time_mode"),
-    2: .standard(proto: "event_time_column_name"),
-    3: .standard(proto: "output_schema"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}time_mode\0\u{3}event_time_column_name\0\u{3}output_schema\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -9610,15 +9275,7 @@ extension Spark_Connect_TransformWithStateInfo: SwiftProtobuf.Message, SwiftProt
 
 extension Spark_Connect_CoGroupMap: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CoGroupMap"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "input_grouping_expressions"),
-    3: .same(proto: "other"),
-    4: .standard(proto: "other_grouping_expressions"),
-    5: .same(proto: "func"),
-    6: .standard(proto: "input_sorting_expressions"),
-    7: .standard(proto: "other_sorting_expressions"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}input_grouping_expressions\0\u{1}other\0\u{3}other_grouping_expressions\0\u{1}func\0\u{3}input_sorting_expressions\0\u{3}other_sorting_expressions\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -9730,15 +9387,7 @@ extension Spark_Connect_CoGroupMap: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Spark_Connect_ApplyInPandasWithState: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ApplyInPandasWithState"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .standard(proto: "grouping_expressions"),
-    3: .same(proto: "func"),
-    4: .standard(proto: "output_schema"),
-    5: .standard(proto: "state_schema"),
-    6: .standard(proto: "output_mode"),
-    7: .standard(proto: "timeout_conf"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}grouping_expressions\0\u{1}func\0\u{3}output_schema\0\u{3}state_schema\0\u{3}output_mode\0\u{3}timeout_conf\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -9850,12 +9499,7 @@ extension Spark_Connect_ApplyInPandasWithState: SwiftProtobuf.Message, SwiftProt
 
 extension Spark_Connect_CommonInlineUserDefinedTableFunction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CommonInlineUserDefinedTableFunction"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "function_name"),
-    2: .same(proto: "deterministic"),
-    3: .same(proto: "arguments"),
-    4: .standard(proto: "python_udtf"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}function_name\0\u{1}deterministic\0\u{1}arguments\0\u{3}python_udtf\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -9916,12 +9560,7 @@ extension Spark_Connect_CommonInlineUserDefinedTableFunction: SwiftProtobuf.Mess
 
 extension Spark_Connect_PythonUDTF: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PythonUDTF"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "return_type"),
-    2: .standard(proto: "eval_type"),
-    3: .same(proto: "command"),
-    4: .standard(proto: "python_ver"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}return_type\0\u{3}eval_type\0\u{1}command\0\u{3}python_ver\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -9970,10 +9609,7 @@ extension Spark_Connect_PythonUDTF: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Spark_Connect_CommonInlineUserDefinedDataSource: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CommonInlineUserDefinedDataSource"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .standard(proto: "python_data_source"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{3}python_data_source\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -10024,10 +9660,7 @@ extension Spark_Connect_CommonInlineUserDefinedDataSource: SwiftProtobuf.Message
 
 extension Spark_Connect_PythonDataSource: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PythonDataSource"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "command"),
-    2: .standard(proto: "python_ver"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}command\0\u{3}python_ver\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -10062,11 +9695,7 @@ extension Spark_Connect_PythonDataSource: SwiftProtobuf.Message, SwiftProtobuf._
 
 extension Spark_Connect_CollectMetrics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CollectMetrics"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "name"),
-    3: .same(proto: "metrics"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}name\0\u{1}metrics\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -10150,12 +9779,7 @@ extension Spark_Connect_CollectMetrics: SwiftProtobuf.Message, SwiftProtobuf._Me
 
 extension Spark_Connect_Parse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Parse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "input"),
-    2: .same(proto: "format"),
-    3: .same(proto: "schema"),
-    4: .same(proto: "options"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}format\0\u{1}schema\0\u{1}options\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -10245,27 +9869,12 @@ extension Spark_Connect_Parse: SwiftProtobuf.Message, SwiftProtobuf._MessageImpl
 }
 
 extension Spark_Connect_Parse.ParseFormat: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "PARSE_FORMAT_UNSPECIFIED"),
-    1: .same(proto: "PARSE_FORMAT_CSV"),
-    2: .same(proto: "PARSE_FORMAT_JSON"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0PARSE_FORMAT_UNSPECIFIED\0\u{1}PARSE_FORMAT_CSV\0\u{1}PARSE_FORMAT_JSON\0")
 }
 
 extension Spark_Connect_AsOfJoin: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AsOfJoin"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "left"),
-    2: .same(proto: "right"),
-    3: .standard(proto: "left_as_of"),
-    4: .standard(proto: "right_as_of"),
-    5: .standard(proto: "join_expr"),
-    6: .standard(proto: "using_columns"),
-    7: .standard(proto: "join_type"),
-    8: .same(proto: "tolerance"),
-    9: .standard(proto: "allow_exact_matches"),
-    10: .same(proto: "direction"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}left\0\u{1}right\0\u{3}left_as_of\0\u{3}right_as_of\0\u{3}join_expr\0\u{3}using_columns\0\u{3}join_type\0\u{1}tolerance\0\u{3}allow_exact_matches\0\u{1}direction\0")
 
   fileprivate class _StorageClass {
     var _left: Spark_Connect_Relation? = nil
@@ -10398,12 +10007,7 @@ extension Spark_Connect_AsOfJoin: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_LateralJoin: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".LateralJoin"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "left"),
-    2: .same(proto: "right"),
-    3: .standard(proto: "join_condition"),
-    4: .standard(proto: "join_type"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}left\0\u{1}right\0\u{3}join_condition\0\u{3}join_type\0")
 
   fileprivate class _StorageClass {
     var _left: Spark_Connect_Relation? = nil

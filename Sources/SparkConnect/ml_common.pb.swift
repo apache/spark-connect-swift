@@ -146,9 +146,7 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_MlParams: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlParams"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "params"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}params\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -178,11 +176,7 @@ extension Spark_Connect_MlParams: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_MlOperator: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlOperator"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .same(proto: "uid"),
-    3: .same(proto: "type"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}uid\0\u{1}type\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -221,20 +215,12 @@ extension Spark_Connect_MlOperator: SwiftProtobuf.Message, SwiftProtobuf._Messag
 }
 
 extension Spark_Connect_MlOperator.OperatorType: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "OPERATOR_TYPE_UNSPECIFIED"),
-    1: .same(proto: "OPERATOR_TYPE_ESTIMATOR"),
-    2: .same(proto: "OPERATOR_TYPE_TRANSFORMER"),
-    3: .same(proto: "OPERATOR_TYPE_EVALUATOR"),
-    4: .same(proto: "OPERATOR_TYPE_MODEL"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0OPERATOR_TYPE_UNSPECIFIED\0\u{1}OPERATOR_TYPE_ESTIMATOR\0\u{1}OPERATOR_TYPE_TRANSFORMER\0\u{1}OPERATOR_TYPE_EVALUATOR\0\u{1}OPERATOR_TYPE_MODEL\0")
 }
 
 extension Spark_Connect_ObjectRef: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ObjectRef"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {

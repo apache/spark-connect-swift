@@ -1407,7 +1407,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
   }
 
   /// Batch results of metrics.
-  struct ArrowBatch: @unchecked Sendable {
+  struct ArrowBatch: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1967,7 +1967,7 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
   }
 
   /// A chunk of an Artifact.
-  struct ArtifactChunk: @unchecked Sendable {
+  struct ArtifactChunk: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3003,10 +3003,7 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Plan"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "root"),
-    2: .same(proto: "command"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}root\0\u{1}command\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3073,11 +3070,7 @@ extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
 
 extension Spark_Connect_UserContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".UserContext"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "user_id"),
-    2: .standard(proto: "user_name"),
-    999: .same(proto: "extensions"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}user_id\0\u{3}user_name\0\u{2}e\u{f}extensions\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3117,26 +3110,7 @@ extension Spark_Connect_UserContext: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_AnalyzePlanRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AnalyzePlanRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    17: .standard(proto: "client_observed_server_side_session_id"),
-    2: .standard(proto: "user_context"),
-    3: .standard(proto: "client_type"),
-    4: .same(proto: "schema"),
-    5: .same(proto: "explain"),
-    6: .standard(proto: "tree_string"),
-    7: .standard(proto: "is_local"),
-    8: .standard(proto: "is_streaming"),
-    9: .standard(proto: "input_files"),
-    10: .standard(proto: "spark_version"),
-    11: .standard(proto: "ddl_parse"),
-    12: .standard(proto: "same_semantics"),
-    13: .standard(proto: "semantic_hash"),
-    14: .same(proto: "persist"),
-    15: .same(proto: "unpersist"),
-    16: .standard(proto: "get_storage_level"),
-    18: .standard(proto: "json_to_ddl"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{1}schema\0\u{1}explain\0\u{3}tree_string\0\u{3}is_local\0\u{3}is_streaming\0\u{3}input_files\0\u{3}spark_version\0\u{3}ddl_parse\0\u{3}same_semantics\0\u{3}semantic_hash\0\u{1}persist\0\u{1}unpersist\0\u{3}get_storage_level\0\u{3}client_observed_server_side_session_id\0\u{3}json_to_ddl\0")
 
   fileprivate class _StorageClass {
     var _sessionID: String = String()
@@ -3470,9 +3444,7 @@ extension Spark_Connect_AnalyzePlanRequest: SwiftProtobuf.Message, SwiftProtobuf
 
 extension Spark_Connect_AnalyzePlanRequest.Schema: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".Schema"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "plan"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3506,10 +3478,7 @@ extension Spark_Connect_AnalyzePlanRequest.Schema: SwiftProtobuf.Message, SwiftP
 
 extension Spark_Connect_AnalyzePlanRequest.Explain: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".Explain"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "plan"),
-    2: .standard(proto: "explain_mode"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0\u{3}explain_mode\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3547,22 +3516,12 @@ extension Spark_Connect_AnalyzePlanRequest.Explain: SwiftProtobuf.Message, Swift
 }
 
 extension Spark_Connect_AnalyzePlanRequest.Explain.ExplainMode: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "EXPLAIN_MODE_UNSPECIFIED"),
-    1: .same(proto: "EXPLAIN_MODE_SIMPLE"),
-    2: .same(proto: "EXPLAIN_MODE_EXTENDED"),
-    3: .same(proto: "EXPLAIN_MODE_CODEGEN"),
-    4: .same(proto: "EXPLAIN_MODE_COST"),
-    5: .same(proto: "EXPLAIN_MODE_FORMATTED"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0EXPLAIN_MODE_UNSPECIFIED\0\u{1}EXPLAIN_MODE_SIMPLE\0\u{1}EXPLAIN_MODE_EXTENDED\0\u{1}EXPLAIN_MODE_CODEGEN\0\u{1}EXPLAIN_MODE_COST\0\u{1}EXPLAIN_MODE_FORMATTED\0")
 }
 
 extension Spark_Connect_AnalyzePlanRequest.TreeString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".TreeString"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "plan"),
-    2: .same(proto: "level"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0\u{1}level\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3601,9 +3560,7 @@ extension Spark_Connect_AnalyzePlanRequest.TreeString: SwiftProtobuf.Message, Sw
 
 extension Spark_Connect_AnalyzePlanRequest.IsLocal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".IsLocal"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "plan"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3637,9 +3594,7 @@ extension Spark_Connect_AnalyzePlanRequest.IsLocal: SwiftProtobuf.Message, Swift
 
 extension Spark_Connect_AnalyzePlanRequest.IsStreaming: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".IsStreaming"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "plan"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3673,9 +3628,7 @@ extension Spark_Connect_AnalyzePlanRequest.IsStreaming: SwiftProtobuf.Message, S
 
 extension Spark_Connect_AnalyzePlanRequest.InputFiles: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".InputFiles"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "plan"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3728,9 +3681,7 @@ extension Spark_Connect_AnalyzePlanRequest.SparkVersion: SwiftProtobuf.Message, 
 
 extension Spark_Connect_AnalyzePlanRequest.DDLParse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".DDLParse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "ddl_string"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}ddl_string\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3760,10 +3711,7 @@ extension Spark_Connect_AnalyzePlanRequest.DDLParse: SwiftProtobuf.Message, Swif
 
 extension Spark_Connect_AnalyzePlanRequest.SameSemantics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".SameSemantics"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "target_plan"),
-    2: .standard(proto: "other_plan"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}target_plan\0\u{3}other_plan\0")
 
   fileprivate class _StorageClass {
     var _targetPlan: Spark_Connect_Plan? = nil
@@ -3840,9 +3788,7 @@ extension Spark_Connect_AnalyzePlanRequest.SameSemantics: SwiftProtobuf.Message,
 
 extension Spark_Connect_AnalyzePlanRequest.SemanticHash: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".SemanticHash"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "plan"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3876,10 +3822,7 @@ extension Spark_Connect_AnalyzePlanRequest.SemanticHash: SwiftProtobuf.Message, 
 
 extension Spark_Connect_AnalyzePlanRequest.Persist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".Persist"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "relation"),
-    2: .standard(proto: "storage_level"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0\u{3}storage_level\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3918,10 +3861,7 @@ extension Spark_Connect_AnalyzePlanRequest.Persist: SwiftProtobuf.Message, Swift
 
 extension Spark_Connect_AnalyzePlanRequest.Unpersist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".Unpersist"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "relation"),
-    2: .same(proto: "blocking"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0\u{1}blocking\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3960,9 +3900,7 @@ extension Spark_Connect_AnalyzePlanRequest.Unpersist: SwiftProtobuf.Message, Swi
 
 extension Spark_Connect_AnalyzePlanRequest.GetStorageLevel: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".GetStorageLevel"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "relation"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3996,9 +3934,7 @@ extension Spark_Connect_AnalyzePlanRequest.GetStorageLevel: SwiftProtobuf.Messag
 
 extension Spark_Connect_AnalyzePlanRequest.JsonToDDL: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".JsonToDDL"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "json_string"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}json_string\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4028,24 +3964,7 @@ extension Spark_Connect_AnalyzePlanRequest.JsonToDDL: SwiftProtobuf.Message, Swi
 
 extension Spark_Connect_AnalyzePlanResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AnalyzePlanResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    15: .standard(proto: "server_side_session_id"),
-    2: .same(proto: "schema"),
-    3: .same(proto: "explain"),
-    4: .standard(proto: "tree_string"),
-    5: .standard(proto: "is_local"),
-    6: .standard(proto: "is_streaming"),
-    7: .standard(proto: "input_files"),
-    8: .standard(proto: "spark_version"),
-    9: .standard(proto: "ddl_parse"),
-    10: .standard(proto: "same_semantics"),
-    11: .standard(proto: "semantic_hash"),
-    12: .same(proto: "persist"),
-    13: .same(proto: "unpersist"),
-    14: .standard(proto: "get_storage_level"),
-    16: .standard(proto: "json_to_ddl"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{1}schema\0\u{1}explain\0\u{3}tree_string\0\u{3}is_local\0\u{3}is_streaming\0\u{3}input_files\0\u{3}spark_version\0\u{3}ddl_parse\0\u{3}same_semantics\0\u{3}semantic_hash\0\u{1}persist\0\u{1}unpersist\0\u{3}get_storage_level\0\u{3}server_side_session_id\0\u{3}json_to_ddl\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4325,9 +4244,7 @@ extension Spark_Connect_AnalyzePlanResponse: SwiftProtobuf.Message, SwiftProtobu
 
 extension Spark_Connect_AnalyzePlanResponse.Schema: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".Schema"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "schema"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}schema\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4361,9 +4278,7 @@ extension Spark_Connect_AnalyzePlanResponse.Schema: SwiftProtobuf.Message, Swift
 
 extension Spark_Connect_AnalyzePlanResponse.Explain: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".Explain"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "explain_string"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}explain_string\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4393,9 +4308,7 @@ extension Spark_Connect_AnalyzePlanResponse.Explain: SwiftProtobuf.Message, Swif
 
 extension Spark_Connect_AnalyzePlanResponse.TreeString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".TreeString"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "tree_string"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}tree_string\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4425,9 +4338,7 @@ extension Spark_Connect_AnalyzePlanResponse.TreeString: SwiftProtobuf.Message, S
 
 extension Spark_Connect_AnalyzePlanResponse.IsLocal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".IsLocal"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "is_local"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}is_local\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4457,9 +4368,7 @@ extension Spark_Connect_AnalyzePlanResponse.IsLocal: SwiftProtobuf.Message, Swif
 
 extension Spark_Connect_AnalyzePlanResponse.IsStreaming: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".IsStreaming"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "is_streaming"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}is_streaming\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4489,9 +4398,7 @@ extension Spark_Connect_AnalyzePlanResponse.IsStreaming: SwiftProtobuf.Message, 
 
 extension Spark_Connect_AnalyzePlanResponse.InputFiles: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".InputFiles"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "files"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}files\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4521,9 +4428,7 @@ extension Spark_Connect_AnalyzePlanResponse.InputFiles: SwiftProtobuf.Message, S
 
 extension Spark_Connect_AnalyzePlanResponse.SparkVersion: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".SparkVersion"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "version"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}version\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4553,9 +4458,7 @@ extension Spark_Connect_AnalyzePlanResponse.SparkVersion: SwiftProtobuf.Message,
 
 extension Spark_Connect_AnalyzePlanResponse.DDLParse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".DDLParse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "parsed"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}parsed\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4589,9 +4492,7 @@ extension Spark_Connect_AnalyzePlanResponse.DDLParse: SwiftProtobuf.Message, Swi
 
 extension Spark_Connect_AnalyzePlanResponse.SameSemantics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".SameSemantics"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "result"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}result\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4621,9 +4522,7 @@ extension Spark_Connect_AnalyzePlanResponse.SameSemantics: SwiftProtobuf.Message
 
 extension Spark_Connect_AnalyzePlanResponse.SemanticHash: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".SemanticHash"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "result"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}result\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4691,9 +4590,7 @@ extension Spark_Connect_AnalyzePlanResponse.Unpersist: SwiftProtobuf.Message, Sw
 
 extension Spark_Connect_AnalyzePlanResponse.GetStorageLevel: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".GetStorageLevel"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "storage_level"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}storage_level\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4727,9 +4624,7 @@ extension Spark_Connect_AnalyzePlanResponse.GetStorageLevel: SwiftProtobuf.Messa
 
 extension Spark_Connect_AnalyzePlanResponse.JsonToDDL: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".JsonToDDL"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "ddl_string"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}ddl_string\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4759,16 +4654,7 @@ extension Spark_Connect_AnalyzePlanResponse.JsonToDDL: SwiftProtobuf.Message, Sw
 
 extension Spark_Connect_ExecutePlanRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExecutePlanRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    8: .standard(proto: "client_observed_server_side_session_id"),
-    2: .standard(proto: "user_context"),
-    6: .standard(proto: "operation_id"),
-    3: .same(proto: "plan"),
-    4: .standard(proto: "client_type"),
-    5: .standard(proto: "request_options"),
-    7: .same(proto: "tags"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{1}plan\0\u{3}client_type\0\u{3}request_options\0\u{3}operation_id\0\u{1}tags\0\u{3}client_observed_server_side_session_id\0")
 
   fileprivate class _StorageClass {
     var _sessionID: String = String()
@@ -4887,10 +4773,7 @@ extension Spark_Connect_ExecutePlanRequest: SwiftProtobuf.Message, SwiftProtobuf
 
 extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanRequest.protoMessageName + ".RequestOption"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "reattach_options"),
-    999: .same(proto: "extension"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}reattach_options\0\u{2}f\u{f}extension\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -4957,30 +4840,7 @@ extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message,
 
 extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExecutePlanResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    15: .standard(proto: "server_side_session_id"),
-    12: .standard(proto: "operation_id"),
-    13: .standard(proto: "response_id"),
-    2: .standard(proto: "arrow_batch"),
-    5: .standard(proto: "sql_command_result"),
-    8: .standard(proto: "write_stream_operation_start_result"),
-    9: .standard(proto: "streaming_query_command_result"),
-    10: .standard(proto: "get_resources_command_result"),
-    11: .standard(proto: "streaming_query_manager_command_result"),
-    16: .standard(proto: "streaming_query_listener_events_result"),
-    14: .standard(proto: "result_complete"),
-    17: .standard(proto: "create_resource_profile_command_result"),
-    18: .standard(proto: "execution_progress"),
-    19: .standard(proto: "checkpoint_command_result"),
-    20: .standard(proto: "ml_command_result"),
-    21: .standard(proto: "pipeline_event_result"),
-    22: .standard(proto: "pipeline_command_result"),
-    999: .same(proto: "extension"),
-    4: .same(proto: "metrics"),
-    6: .standard(proto: "observed_metrics"),
-    7: .same(proto: "schema"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}arrow_batch\0\u{2}\u{2}metrics\0\u{3}sql_command_result\0\u{3}observed_metrics\0\u{1}schema\0\u{3}write_stream_operation_start_result\0\u{3}streaming_query_command_result\0\u{3}get_resources_command_result\0\u{3}streaming_query_manager_command_result\0\u{3}operation_id\0\u{3}response_id\0\u{3}result_complete\0\u{3}server_side_session_id\0\u{3}streaming_query_listener_events_result\0\u{3}create_resource_profile_command_result\0\u{3}execution_progress\0\u{3}checkpoint_command_result\0\u{3}ml_command_result\0\u{3}pipeline_event_result\0\u{3}pipeline_command_result\0\u{2}Q\u{f}extension\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5303,9 +5163,7 @@ extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobu
 
 extension Spark_Connect_ExecutePlanResponse.SqlCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".SqlCommandResult"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "relation"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5339,11 +5197,7 @@ extension Spark_Connect_ExecutePlanResponse.SqlCommandResult: SwiftProtobuf.Mess
 
 extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ArrowBatch"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "row_count"),
-    2: .same(proto: "data"),
-    3: .standard(proto: "start_offset"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}row_count\0\u{1}data\0\u{3}start_offset\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5387,9 +5241,7 @@ extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, S
 
 extension Spark_Connect_ExecutePlanResponse.Metrics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".Metrics"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "metrics"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}metrics\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5419,12 +5271,7 @@ extension Spark_Connect_ExecutePlanResponse.Metrics: SwiftProtobuf.Message, Swif
 
 extension Spark_Connect_ExecutePlanResponse.Metrics.MetricObject: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.Metrics.protoMessageName + ".MetricObject"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .standard(proto: "plan_id"),
-    3: .same(proto: "parent"),
-    4: .standard(proto: "execution_metrics"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{3}plan_id\0\u{1}parent\0\u{3}execution_metrics\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5469,11 +5316,7 @@ extension Spark_Connect_ExecutePlanResponse.Metrics.MetricObject: SwiftProtobuf.
 
 extension Spark_Connect_ExecutePlanResponse.Metrics.MetricValue: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.Metrics.protoMessageName + ".MetricValue"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .same(proto: "value"),
-    3: .standard(proto: "metric_type"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}value\0\u{3}metric_type\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5513,12 +5356,7 @@ extension Spark_Connect_ExecutePlanResponse.Metrics.MetricValue: SwiftProtobuf.M
 
 extension Spark_Connect_ExecutePlanResponse.ObservedMetrics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ObservedMetrics"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .same(proto: "values"),
-    3: .same(proto: "keys"),
-    4: .standard(proto: "plan_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}values\0\u{1}keys\0\u{3}plan_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5582,10 +5420,7 @@ extension Spark_Connect_ExecutePlanResponse.ResultComplete: SwiftProtobuf.Messag
 
 extension Spark_Connect_ExecutePlanResponse.ExecutionProgress: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ExecutionProgress"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "stages"),
-    2: .standard(proto: "num_inflight_tasks"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}stages\0\u{3}num_inflight_tasks\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5620,13 +5455,7 @@ extension Spark_Connect_ExecutePlanResponse.ExecutionProgress: SwiftProtobuf.Mes
 
 extension Spark_Connect_ExecutePlanResponse.ExecutionProgress.StageInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.ExecutionProgress.protoMessageName + ".StageInfo"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "stage_id"),
-    2: .standard(proto: "num_tasks"),
-    3: .standard(proto: "num_completed_tasks"),
-    4: .standard(proto: "input_bytes_read"),
-    5: .same(proto: "done"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}stage_id\0\u{3}num_tasks\0\u{3}num_completed_tasks\0\u{3}input_bytes_read\0\u{1}done\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5676,10 +5505,7 @@ extension Spark_Connect_ExecutePlanResponse.ExecutionProgress.StageInfo: SwiftPr
 
 extension Spark_Connect_KeyValue: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".KeyValue"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "key"),
-    2: .same(proto: "value"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}key\0\u{1}value\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5718,13 +5544,7 @@ extension Spark_Connect_KeyValue: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_ConfigRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ConfigRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    8: .standard(proto: "client_observed_server_side_session_id"),
-    2: .standard(proto: "user_context"),
-    3: .same(proto: "operation"),
-    4: .standard(proto: "client_type"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{1}operation\0\u{3}client_type\0\u{4}\u{4}client_observed_server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5778,15 +5598,7 @@ extension Spark_Connect_ConfigRequest: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_ConfigRequest.Operation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".Operation"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "set"),
-    2: .same(proto: "get"),
-    3: .standard(proto: "get_with_default"),
-    4: .standard(proto: "get_option"),
-    5: .standard(proto: "get_all"),
-    6: .same(proto: "unset"),
-    7: .standard(proto: "is_modifiable"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}set\0\u{1}get\0\u{3}get_with_default\0\u{3}get_option\0\u{3}get_all\0\u{1}unset\0\u{3}is_modifiable\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5938,10 +5750,7 @@ extension Spark_Connect_ConfigRequest.Operation: SwiftProtobuf.Message, SwiftPro
 
 extension Spark_Connect_ConfigRequest.Set: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".Set"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "pairs"),
-    2: .same(proto: "silent"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pairs\0\u{1}silent\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5980,9 +5789,7 @@ extension Spark_Connect_ConfigRequest.Set: SwiftProtobuf.Message, SwiftProtobuf.
 
 extension Spark_Connect_ConfigRequest.Get: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".Get"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "keys"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}keys\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6012,9 +5819,7 @@ extension Spark_Connect_ConfigRequest.Get: SwiftProtobuf.Message, SwiftProtobuf.
 
 extension Spark_Connect_ConfigRequest.GetWithDefault: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".GetWithDefault"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "pairs"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pairs\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6044,9 +5849,7 @@ extension Spark_Connect_ConfigRequest.GetWithDefault: SwiftProtobuf.Message, Swi
 
 extension Spark_Connect_ConfigRequest.GetOption: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".GetOption"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "keys"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}keys\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6076,9 +5879,7 @@ extension Spark_Connect_ConfigRequest.GetOption: SwiftProtobuf.Message, SwiftPro
 
 extension Spark_Connect_ConfigRequest.GetAll: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".GetAll"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "prefix"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}prefix\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6112,9 +5913,7 @@ extension Spark_Connect_ConfigRequest.GetAll: SwiftProtobuf.Message, SwiftProtob
 
 extension Spark_Connect_ConfigRequest.Unset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".Unset"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "keys"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}keys\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6144,9 +5943,7 @@ extension Spark_Connect_ConfigRequest.Unset: SwiftProtobuf.Message, SwiftProtobu
 
 extension Spark_Connect_ConfigRequest.IsModifiable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".IsModifiable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "keys"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}keys\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6176,12 +5973,7 @@ extension Spark_Connect_ConfigRequest.IsModifiable: SwiftProtobuf.Message, Swift
 
 extension Spark_Connect_ConfigResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ConfigResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    4: .standard(proto: "server_side_session_id"),
-    2: .same(proto: "pairs"),
-    3: .same(proto: "warnings"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{1}pairs\0\u{1}warnings\0\u{3}server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6226,15 +6018,7 @@ extension Spark_Connect_ConfigResponse: SwiftProtobuf.Message, SwiftProtobuf._Me
 
 extension Spark_Connect_AddArtifactsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AddArtifactsRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    2: .standard(proto: "user_context"),
-    7: .standard(proto: "client_observed_server_side_session_id"),
-    6: .standard(proto: "client_type"),
-    3: .same(proto: "batch"),
-    4: .standard(proto: "begin_chunk"),
-    5: .same(proto: "chunk"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{1}batch\0\u{3}begin_chunk\0\u{1}chunk\0\u{3}client_type\0\u{3}client_observed_server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6338,10 +6122,7 @@ extension Spark_Connect_AddArtifactsRequest: SwiftProtobuf.Message, SwiftProtobu
 
 extension Spark_Connect_AddArtifactsRequest.ArtifactChunk: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsRequest.protoMessageName + ".ArtifactChunk"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "data"),
-    2: .same(proto: "crc"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}data\0\u{1}crc\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6376,10 +6157,7 @@ extension Spark_Connect_AddArtifactsRequest.ArtifactChunk: SwiftProtobuf.Message
 
 extension Spark_Connect_AddArtifactsRequest.SingleChunkArtifact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsRequest.protoMessageName + ".SingleChunkArtifact"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .same(proto: "data"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}data\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6418,9 +6196,7 @@ extension Spark_Connect_AddArtifactsRequest.SingleChunkArtifact: SwiftProtobuf.M
 
 extension Spark_Connect_AddArtifactsRequest.Batch: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsRequest.protoMessageName + ".Batch"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "artifacts"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}artifacts\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6450,12 +6226,7 @@ extension Spark_Connect_AddArtifactsRequest.Batch: SwiftProtobuf.Message, SwiftP
 
 extension Spark_Connect_AddArtifactsRequest.BeginChunkedArtifact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsRequest.protoMessageName + ".BeginChunkedArtifact"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .standard(proto: "total_bytes"),
-    3: .standard(proto: "num_chunks"),
-    4: .standard(proto: "initial_chunk"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{3}total_bytes\0\u{3}num_chunks\0\u{3}initial_chunk\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6504,11 +6275,7 @@ extension Spark_Connect_AddArtifactsRequest.BeginChunkedArtifact: SwiftProtobuf.
 
 extension Spark_Connect_AddArtifactsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AddArtifactsResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    2: .standard(proto: "session_id"),
-    3: .standard(proto: "server_side_session_id"),
-    1: .same(proto: "artifacts"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}artifacts\0\u{3}session_id\0\u{3}server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6548,10 +6315,7 @@ extension Spark_Connect_AddArtifactsResponse: SwiftProtobuf.Message, SwiftProtob
 
 extension Spark_Connect_AddArtifactsResponse.ArtifactSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsResponse.protoMessageName + ".ArtifactSummary"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .standard(proto: "is_crc_successful"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{3}is_crc_successful\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6586,13 +6350,7 @@ extension Spark_Connect_AddArtifactsResponse.ArtifactSummary: SwiftProtobuf.Mess
 
 extension Spark_Connect_ArtifactStatusesRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ArtifactStatusesRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    5: .standard(proto: "client_observed_server_side_session_id"),
-    2: .standard(proto: "user_context"),
-    3: .standard(proto: "client_type"),
-    4: .same(proto: "names"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{1}names\0\u{3}client_observed_server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6646,11 +6404,7 @@ extension Spark_Connect_ArtifactStatusesRequest: SwiftProtobuf.Message, SwiftPro
 
 extension Spark_Connect_ArtifactStatusesResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ArtifactStatusesResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    2: .standard(proto: "session_id"),
-    3: .standard(proto: "server_side_session_id"),
-    1: .same(proto: "statuses"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}statuses\0\u{3}session_id\0\u{3}server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6690,9 +6444,7 @@ extension Spark_Connect_ArtifactStatusesResponse: SwiftProtobuf.Message, SwiftPr
 
 extension Spark_Connect_ArtifactStatusesResponse.ArtifactStatus: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ArtifactStatusesResponse.protoMessageName + ".ArtifactStatus"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "exists"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}exists\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6722,15 +6474,7 @@ extension Spark_Connect_ArtifactStatusesResponse.ArtifactStatus: SwiftProtobuf.M
 
 extension Spark_Connect_InterruptRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".InterruptRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    7: .standard(proto: "client_observed_server_side_session_id"),
-    2: .standard(proto: "user_context"),
-    3: .standard(proto: "client_type"),
-    4: .standard(proto: "interrupt_type"),
-    5: .standard(proto: "operation_tag"),
-    6: .standard(proto: "operation_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{3}interrupt_type\0\u{3}operation_tag\0\u{3}operation_id\0\u{3}client_observed_server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6811,21 +6555,12 @@ extension Spark_Connect_InterruptRequest: SwiftProtobuf.Message, SwiftProtobuf._
 }
 
 extension Spark_Connect_InterruptRequest.InterruptType: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "INTERRUPT_TYPE_UNSPECIFIED"),
-    1: .same(proto: "INTERRUPT_TYPE_ALL"),
-    2: .same(proto: "INTERRUPT_TYPE_TAG"),
-    3: .same(proto: "INTERRUPT_TYPE_OPERATION_ID"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0INTERRUPT_TYPE_UNSPECIFIED\0\u{1}INTERRUPT_TYPE_ALL\0\u{1}INTERRUPT_TYPE_TAG\0\u{1}INTERRUPT_TYPE_OPERATION_ID\0")
 }
 
 extension Spark_Connect_InterruptResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".InterruptResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    3: .standard(proto: "server_side_session_id"),
-    2: .standard(proto: "interrupted_ids"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}interrupted_ids\0\u{3}server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6865,9 +6600,7 @@ extension Spark_Connect_InterruptResponse: SwiftProtobuf.Message, SwiftProtobuf.
 
 extension Spark_Connect_ReattachOptions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReattachOptions"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "reattachable"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}reattachable\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6897,14 +6630,7 @@ extension Spark_Connect_ReattachOptions: SwiftProtobuf.Message, SwiftProtobuf._M
 
 extension Spark_Connect_ReattachExecuteRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReattachExecuteRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    6: .standard(proto: "client_observed_server_side_session_id"),
-    2: .standard(proto: "user_context"),
-    3: .standard(proto: "operation_id"),
-    4: .standard(proto: "client_type"),
-    5: .standard(proto: "last_response_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}operation_id\0\u{3}client_type\0\u{3}last_response_id\0\u{3}client_observed_server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -6963,15 +6689,7 @@ extension Spark_Connect_ReattachExecuteRequest: SwiftProtobuf.Message, SwiftProt
 
 extension Spark_Connect_ReleaseExecuteRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReleaseExecuteRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    7: .standard(proto: "client_observed_server_side_session_id"),
-    2: .standard(proto: "user_context"),
-    3: .standard(proto: "operation_id"),
-    4: .standard(proto: "client_type"),
-    5: .standard(proto: "release_all"),
-    6: .standard(proto: "release_until"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}operation_id\0\u{3}client_type\0\u{3}release_all\0\u{3}release_until\0\u{3}client_observed_server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7082,9 +6800,7 @@ extension Spark_Connect_ReleaseExecuteRequest.ReleaseAll: SwiftProtobuf.Message,
 
 extension Spark_Connect_ReleaseExecuteRequest.ReleaseUntil: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ReleaseExecuteRequest.protoMessageName + ".ReleaseUntil"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "response_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}response_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7114,11 +6830,7 @@ extension Spark_Connect_ReleaseExecuteRequest.ReleaseUntil: SwiftProtobuf.Messag
 
 extension Spark_Connect_ReleaseExecuteResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReleaseExecuteResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    3: .standard(proto: "server_side_session_id"),
-    2: .standard(proto: "operation_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}operation_id\0\u{3}server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7162,12 +6874,7 @@ extension Spark_Connect_ReleaseExecuteResponse: SwiftProtobuf.Message, SwiftProt
 
 extension Spark_Connect_ReleaseSessionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReleaseSessionRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    2: .standard(proto: "user_context"),
-    3: .standard(proto: "client_type"),
-    4: .standard(proto: "allow_reconnect"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{3}allow_reconnect\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7216,10 +6923,7 @@ extension Spark_Connect_ReleaseSessionRequest: SwiftProtobuf.Message, SwiftProto
 
 extension Spark_Connect_ReleaseSessionResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReleaseSessionResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    2: .standard(proto: "server_side_session_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7254,13 +6958,7 @@ extension Spark_Connect_ReleaseSessionResponse: SwiftProtobuf.Message, SwiftProt
 
 extension Spark_Connect_FetchErrorDetailsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".FetchErrorDetailsRequest"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "session_id"),
-    5: .standard(proto: "client_observed_server_side_session_id"),
-    2: .standard(proto: "user_context"),
-    3: .standard(proto: "error_id"),
-    4: .standard(proto: "client_type"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}error_id\0\u{3}client_type\0\u{3}client_observed_server_side_session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7314,12 +7012,7 @@ extension Spark_Connect_FetchErrorDetailsRequest: SwiftProtobuf.Message, SwiftPr
 
 extension Spark_Connect_FetchErrorDetailsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".FetchErrorDetailsResponse"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    3: .standard(proto: "server_side_session_id"),
-    4: .standard(proto: "session_id"),
-    1: .standard(proto: "root_error_idx"),
-    2: .same(proto: "errors"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}root_error_idx\0\u{1}errors\0\u{3}server_side_session_id\0\u{3}session_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7368,12 +7061,7 @@ extension Spark_Connect_FetchErrorDetailsResponse: SwiftProtobuf.Message, SwiftP
 
 extension Spark_Connect_FetchErrorDetailsResponse.StackTraceElement: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".StackTraceElement"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "declaring_class"),
-    2: .standard(proto: "method_name"),
-    3: .standard(proto: "file_name"),
-    4: .standard(proto: "line_number"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}declaring_class\0\u{3}method_name\0\u{3}file_name\0\u{3}line_number\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7422,16 +7110,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.StackTraceElement: SwiftProtob
 
 extension Spark_Connect_FetchErrorDetailsResponse.QueryContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".QueryContext"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    10: .standard(proto: "context_type"),
-    1: .standard(proto: "object_type"),
-    2: .standard(proto: "object_name"),
-    3: .standard(proto: "start_index"),
-    4: .standard(proto: "stop_index"),
-    5: .same(proto: "fragment"),
-    6: .standard(proto: "call_site"),
-    7: .same(proto: "summary"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}object_type\0\u{3}object_name\0\u{3}start_index\0\u{3}stop_index\0\u{1}fragment\0\u{3}call_site\0\u{1}summary\0\u{4}\u{3}context_type\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7495,20 +7174,12 @@ extension Spark_Connect_FetchErrorDetailsResponse.QueryContext: SwiftProtobuf.Me
 }
 
 extension Spark_Connect_FetchErrorDetailsResponse.QueryContext.ContextType: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "SQL"),
-    1: .same(proto: "DATAFRAME"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0SQL\0\u{1}DATAFRAME\0")
 }
 
 extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".SparkThrowable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "error_class"),
-    2: .standard(proto: "message_parameters"),
-    3: .standard(proto: "query_contexts"),
-    4: .standard(proto: "sql_state"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}error_class\0\u{3}message_parameters\0\u{3}query_contexts\0\u{3}sql_state\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7557,13 +7228,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.
 
 extension Spark_Connect_FetchErrorDetailsResponse.Error: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".Error"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "error_type_hierarchy"),
-    2: .same(proto: "message"),
-    3: .standard(proto: "stack_trace"),
-    4: .standard(proto: "cause_idx"),
-    5: .standard(proto: "spark_throwable"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}error_type_hierarchy\0\u{1}message\0\u{3}stack_trace\0\u{3}cause_idx\0\u{3}spark_throwable\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -7617,9 +7282,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.Error: SwiftProtobuf.Message, 
 
 extension Spark_Connect_CheckpointCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CheckpointCommandResult"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "relation"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {

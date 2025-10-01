@@ -573,24 +573,12 @@ struct Spark_Connect_PipelineEvent: Sendable {
 fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_DatasetType: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "DATASET_TYPE_UNSPECIFIED"),
-    1: .same(proto: "MATERIALIZED_VIEW"),
-    2: .same(proto: "TABLE"),
-    3: .same(proto: "TEMPORARY_VIEW"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0DATASET_TYPE_UNSPECIFIED\0\u{1}MATERIALIZED_VIEW\0\u{1}TABLE\0\u{1}TEMPORARY_VIEW\0")
 }
 
 extension Spark_Connect_PipelineCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineCommand"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "create_dataflow_graph"),
-    2: .standard(proto: "define_dataset"),
-    3: .standard(proto: "define_flow"),
-    4: .standard(proto: "drop_dataflow_graph"),
-    5: .standard(proto: "start_run"),
-    6: .standard(proto: "define_sql_graph_elements"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}create_dataflow_graph\0\u{3}define_dataset\0\u{3}define_flow\0\u{3}drop_dataflow_graph\0\u{3}start_run\0\u{3}define_sql_graph_elements\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -725,11 +713,7 @@ extension Spark_Connect_PipelineCommand: SwiftProtobuf.Message, SwiftProtobuf._M
 
 extension Spark_Connect_PipelineCommand.CreateDataflowGraph: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".CreateDataflowGraph"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "default_catalog"),
-    2: .standard(proto: "default_database"),
-    5: .standard(proto: "sql_conf"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}default_catalog\0\u{3}default_database\0\u{4}\u{3}sql_conf\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -773,9 +757,7 @@ extension Spark_Connect_PipelineCommand.CreateDataflowGraph: SwiftProtobuf.Messa
 
 extension Spark_Connect_PipelineCommand.CreateDataflowGraph.Response: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.CreateDataflowGraph.protoMessageName + ".Response"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "dataflow_graph_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -809,9 +791,7 @@ extension Spark_Connect_PipelineCommand.CreateDataflowGraph.Response: SwiftProto
 
 extension Spark_Connect_PipelineCommand.DropDataflowGraph: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DropDataflowGraph"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "dataflow_graph_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -845,16 +825,7 @@ extension Spark_Connect_PipelineCommand.DropDataflowGraph: SwiftProtobuf.Message
 
 extension Spark_Connect_PipelineCommand.DefineDataset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineDataset"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "dataflow_graph_id"),
-    2: .standard(proto: "dataset_name"),
-    3: .standard(proto: "dataset_type"),
-    4: .same(proto: "comment"),
-    5: .standard(proto: "table_properties"),
-    6: .standard(proto: "partition_cols"),
-    7: .same(proto: "schema"),
-    8: .same(proto: "format"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}dataset_name\0\u{3}dataset_type\0\u{1}comment\0\u{3}table_properties\0\u{3}partition_cols\0\u{1}schema\0\u{1}format\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -923,14 +894,7 @@ extension Spark_Connect_PipelineCommand.DefineDataset: SwiftProtobuf.Message, Sw
 
 extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineFlow"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "dataflow_graph_id"),
-    2: .standard(proto: "flow_name"),
-    3: .standard(proto: "target_dataset_name"),
-    4: .same(proto: "plan"),
-    5: .standard(proto: "sql_conf"),
-    6: .same(proto: "once"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}flow_name\0\u{3}target_dataset_name\0\u{1}plan\0\u{3}sql_conf\0\u{1}once\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -989,9 +953,7 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
 
 extension Spark_Connect_PipelineCommand.StartRun: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".StartRun"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "dataflow_graph_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1025,11 +987,7 @@ extension Spark_Connect_PipelineCommand.StartRun: SwiftProtobuf.Message, SwiftPr
 
 extension Spark_Connect_PipelineCommand.DefineSqlGraphElements: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineSqlGraphElements"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "dataflow_graph_id"),
-    2: .standard(proto: "sql_file_path"),
-    3: .standard(proto: "sql_text"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}sql_file_path\0\u{3}sql_text\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1073,9 +1031,7 @@ extension Spark_Connect_PipelineCommand.DefineSqlGraphElements: SwiftProtobuf.Me
 
 extension Spark_Connect_PipelineCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineCommandResult"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "create_dataflow_graph_result"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}create_dataflow_graph_result\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1121,9 +1077,7 @@ extension Spark_Connect_PipelineCommandResult: SwiftProtobuf.Message, SwiftProto
 
 extension Spark_Connect_PipelineCommandResult.CreateDataflowGraphResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommandResult.protoMessageName + ".CreateDataflowGraphResult"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "dataflow_graph_id"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1157,9 +1111,7 @@ extension Spark_Connect_PipelineCommandResult.CreateDataflowGraphResult: SwiftPr
 
 extension Spark_Connect_PipelineEventResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineEventResult"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "event"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}event\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1193,10 +1145,7 @@ extension Spark_Connect_PipelineEventResult: SwiftProtobuf.Message, SwiftProtobu
 
 extension Spark_Connect_PipelineEvent: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineEvent"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "timestamp"),
-    2: .same(proto: "message"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}timestamp\0\u{1}message\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {

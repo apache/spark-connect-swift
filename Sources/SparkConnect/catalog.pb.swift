@@ -865,34 +865,7 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_Catalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Catalog"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "current_database"),
-    2: .standard(proto: "set_current_database"),
-    3: .standard(proto: "list_databases"),
-    4: .standard(proto: "list_tables"),
-    5: .standard(proto: "list_functions"),
-    6: .standard(proto: "list_columns"),
-    7: .standard(proto: "get_database"),
-    8: .standard(proto: "get_table"),
-    9: .standard(proto: "get_function"),
-    10: .standard(proto: "database_exists"),
-    11: .standard(proto: "table_exists"),
-    12: .standard(proto: "function_exists"),
-    13: .standard(proto: "create_external_table"),
-    14: .standard(proto: "create_table"),
-    15: .standard(proto: "drop_temp_view"),
-    16: .standard(proto: "drop_global_temp_view"),
-    17: .standard(proto: "recover_partitions"),
-    18: .standard(proto: "is_cached"),
-    19: .standard(proto: "cache_table"),
-    20: .standard(proto: "uncache_table"),
-    21: .standard(proto: "clear_cache"),
-    22: .standard(proto: "refresh_table"),
-    23: .standard(proto: "refresh_by_path"),
-    24: .standard(proto: "current_catalog"),
-    25: .standard(proto: "set_current_catalog"),
-    26: .standard(proto: "list_catalogs"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}current_database\0\u{3}set_current_database\0\u{3}list_databases\0\u{3}list_tables\0\u{3}list_functions\0\u{3}list_columns\0\u{3}get_database\0\u{3}get_table\0\u{3}get_function\0\u{3}database_exists\0\u{3}table_exists\0\u{3}function_exists\0\u{3}create_external_table\0\u{3}create_table\0\u{3}drop_temp_view\0\u{3}drop_global_temp_view\0\u{3}recover_partitions\0\u{3}is_cached\0\u{3}cache_table\0\u{3}uncache_table\0\u{3}clear_cache\0\u{3}refresh_table\0\u{3}refresh_by_path\0\u{3}current_catalog\0\u{3}set_current_catalog\0\u{3}list_catalogs\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1386,9 +1359,7 @@ extension Spark_Connect_CurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf._M
 
 extension Spark_Connect_SetCurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SetCurrentDatabase"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "db_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1418,9 +1389,7 @@ extension Spark_Connect_SetCurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf
 
 extension Spark_Connect_ListDatabases: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListDatabases"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "pattern"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pattern\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1454,10 +1423,7 @@ extension Spark_Connect_ListDatabases: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_ListTables: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListTables"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "db_name"),
-    2: .same(proto: "pattern"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0\u{1}pattern\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1496,10 +1462,7 @@ extension Spark_Connect_ListTables: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Spark_Connect_ListFunctions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListFunctions"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "db_name"),
-    2: .same(proto: "pattern"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0\u{1}pattern\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1538,10 +1501,7 @@ extension Spark_Connect_ListFunctions: SwiftProtobuf.Message, SwiftProtobuf._Mes
 
 extension Spark_Connect_ListColumns: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListColumns"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-    2: .standard(proto: "db_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}db_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1580,9 +1540,7 @@ extension Spark_Connect_ListColumns: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_GetDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetDatabase"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "db_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1612,10 +1570,7 @@ extension Spark_Connect_GetDatabase: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_GetTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetTable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-    2: .standard(proto: "db_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}db_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1654,10 +1609,7 @@ extension Spark_Connect_GetTable: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_GetFunction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetFunction"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "function_name"),
-    2: .standard(proto: "db_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}function_name\0\u{3}db_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1696,9 +1648,7 @@ extension Spark_Connect_GetFunction: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_DatabaseExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DatabaseExists"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "db_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1728,10 +1678,7 @@ extension Spark_Connect_DatabaseExists: SwiftProtobuf.Message, SwiftProtobuf._Me
 
 extension Spark_Connect_TableExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".TableExists"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-    2: .standard(proto: "db_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}db_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1770,10 +1717,7 @@ extension Spark_Connect_TableExists: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_FunctionExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".FunctionExists"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "function_name"),
-    2: .standard(proto: "db_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}function_name\0\u{3}db_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1812,13 +1756,7 @@ extension Spark_Connect_FunctionExists: SwiftProtobuf.Message, SwiftProtobuf._Me
 
 extension Spark_Connect_CreateExternalTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CreateExternalTable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-    2: .same(proto: "path"),
-    3: .same(proto: "source"),
-    4: .same(proto: "schema"),
-    5: .same(proto: "options"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{1}path\0\u{1}source\0\u{1}schema\0\u{1}options\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1872,14 +1810,7 @@ extension Spark_Connect_CreateExternalTable: SwiftProtobuf.Message, SwiftProtobu
 
 extension Spark_Connect_CreateTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CreateTable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-    2: .same(proto: "path"),
-    3: .same(proto: "source"),
-    4: .same(proto: "description"),
-    5: .same(proto: "schema"),
-    6: .same(proto: "options"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{1}path\0\u{1}source\0\u{1}description\0\u{1}schema\0\u{1}options\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1938,9 +1869,7 @@ extension Spark_Connect_CreateTable: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Spark_Connect_DropTempView: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DropTempView"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "view_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}view_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1970,9 +1899,7 @@ extension Spark_Connect_DropTempView: SwiftProtobuf.Message, SwiftProtobuf._Mess
 
 extension Spark_Connect_DropGlobalTempView: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DropGlobalTempView"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "view_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}view_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2002,9 +1929,7 @@ extension Spark_Connect_DropGlobalTempView: SwiftProtobuf.Message, SwiftProtobuf
 
 extension Spark_Connect_RecoverPartitions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RecoverPartitions"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2034,9 +1959,7 @@ extension Spark_Connect_RecoverPartitions: SwiftProtobuf.Message, SwiftProtobuf.
 
 extension Spark_Connect_IsCached: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".IsCached"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2066,10 +1989,7 @@ extension Spark_Connect_IsCached: SwiftProtobuf.Message, SwiftProtobuf._MessageI
 
 extension Spark_Connect_CacheTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CacheTable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-    2: .standard(proto: "storage_level"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}storage_level\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2108,9 +2028,7 @@ extension Spark_Connect_CacheTable: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Spark_Connect_UncacheTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".UncacheTable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2159,9 +2077,7 @@ extension Spark_Connect_ClearCache: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Spark_Connect_RefreshTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RefreshTable"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "table_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2191,9 +2107,7 @@ extension Spark_Connect_RefreshTable: SwiftProtobuf.Message, SwiftProtobuf._Mess
 
 extension Spark_Connect_RefreshByPath: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RefreshByPath"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "path"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}path\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2242,9 +2156,7 @@ extension Spark_Connect_CurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf._Me
 
 extension Spark_Connect_SetCurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SetCurrentCatalog"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "catalog_name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}catalog_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2274,9 +2186,7 @@ extension Spark_Connect_SetCurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf.
 
 extension Spark_Connect_ListCatalogs: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListCatalogs"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "pattern"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pattern\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {

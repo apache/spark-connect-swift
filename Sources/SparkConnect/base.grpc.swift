@@ -26,7 +26,6 @@
 
 import GRPCCore
 import GRPCProtobuf
-import SwiftProtobuf
 
 // MARK: - spark.connect.SparkConnectService
 
