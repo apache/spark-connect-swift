@@ -1288,7 +1288,7 @@ public actor SparkConnectClient {
       defineFlow.dataflowGraphID = dataflowGraphID
       defineFlow.flowName = flowName
       defineFlow.targetDatasetName = targetDatasetName
-      defineFlow.plan = relation
+      defineFlow.relation = relation
 
       var pipelineCommand = Spark_Connect_PipelineCommand()
       pipelineCommand.commandType = .defineFlow(defineFlow)
