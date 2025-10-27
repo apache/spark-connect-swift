@@ -1323,6 +1323,16 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     set {responseType = .pipelineCommandResult(newValue)}
   }
 
+  /// A signal from the server to the client to execute the query function for a flow, and to
+  /// register its result with the server.
+  var pipelineQueryFunctionExecutionSignal: Spark_Connect_PipelineQueryFunctionExecutionSignal {
+    get {
+      if case .pipelineQueryFunctionExecutionSignal(let v)? = responseType {return v}
+      return Spark_Connect_PipelineQueryFunctionExecutionSignal()
+    }
+    set {responseType = .pipelineQueryFunctionExecutionSignal(newValue)}
+  }
+
   /// Support arbitrary result objects.
   var `extension`: SwiftProtobuf.Google_Protobuf_Any {
     get {
@@ -1387,6 +1397,9 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     case pipelineEventResult(Spark_Connect_PipelineEventResult)
     /// Pipeline command response
     case pipelineCommandResult(Spark_Connect_PipelineCommandResult)
+    /// A signal from the server to the client to execute the query function for a flow, and to
+    /// register its result with the server.
+    case pipelineQueryFunctionExecutionSignal(Spark_Connect_PipelineQueryFunctionExecutionSignal)
     /// Support arbitrary result objects.
     case `extension`(SwiftProtobuf.Google_Protobuf_Any)
 
@@ -3130,6 +3143,103 @@ struct Spark_Connect_CheckpointCommandResult: Sendable {
   init() {}
 
   fileprivate var _relation: Spark_Connect_CachedRemoteRelation? = nil
+}
+
+struct Spark_Connect_CloneSessionRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  ///
+  /// The session_id specifies a spark session for a user id (which is specified
+  /// by user_context.user_id). The session_id is set by the client to be able to
+  /// collate streaming responses from different queries within the dedicated session.
+  /// The id should be an UUID string of the format `00112233-4455-6677-8899-aabbccddeeff`
+  var sessionID: String = String()
+
+  /// (Optional)
+  ///
+  /// Server-side generated idempotency key from the previous responses (if any). Server
+  /// can use this to validate that the server side session has not changed.
+  var clientObservedServerSideSessionID: String {
+    get {return _clientObservedServerSideSessionID ?? String()}
+    set {_clientObservedServerSideSessionID = newValue}
+  }
+  /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
+  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
+  mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
+
+  /// (Required) User context
+  ///
+  /// user_context.user_id and session_id both identify a unique remote spark session on the
+  /// server side.
+  var userContext: Spark_Connect_UserContext {
+    get {return _userContext ?? Spark_Connect_UserContext()}
+    set {_userContext = newValue}
+  }
+  /// Returns true if `userContext` has been explicitly set.
+  var hasUserContext: Bool {return self._userContext != nil}
+  /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
+  mutating func clearUserContext() {self._userContext = nil}
+
+  /// Provides optional information about the client sending the request. This field
+  /// can be used for language or version specific information and is only intended for
+  /// logging purposes and will not be interpreted by the server.
+  var clientType: String {
+    get {return _clientType ?? String()}
+    set {_clientType = newValue}
+  }
+  /// Returns true if `clientType` has been explicitly set.
+  var hasClientType: Bool {return self._clientType != nil}
+  /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
+  mutating func clearClientType() {self._clientType = nil}
+
+  /// (Optional)
+  /// The session_id for the new cloned session. If not provided, a new UUID will be generated.
+  /// The id should be an UUID string of the format `00112233-4455-6677-8899-aabbccddeeff`
+  var newSessionID: String {
+    get {return _newSessionID ?? String()}
+    set {_newSessionID = newValue}
+  }
+  /// Returns true if `newSessionID` has been explicitly set.
+  var hasNewSessionID: Bool {return self._newSessionID != nil}
+  /// Clears the value of `newSessionID`. Subsequent reads from it will return its default value.
+  mutating func clearNewSessionID() {self._newSessionID = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _clientObservedServerSideSessionID: String? = nil
+  fileprivate var _userContext: Spark_Connect_UserContext? = nil
+  fileprivate var _clientType: String? = nil
+  fileprivate var _newSessionID: String? = nil
+}
+
+/// Next ID: 5
+struct Spark_Connect_CloneSessionResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// Session id of the original session that was cloned.
+  var sessionID: String = String()
+
+  /// Server-side generated idempotency key that the client can use to assert that the server side
+  /// session (parent of the cloned session) has not changed.
+  var serverSideSessionID: String = String()
+
+  /// Session id of the new cloned session.
+  var newSessionID: String = String()
+
+  /// Server-side session ID of the new cloned session.
+  var newServerSideSessionID: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -4992,7 +5102,7 @@ extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message,
 
 extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExecutePlanResponse"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}arrow_batch\0\u{2}\u{2}metrics\0\u{3}sql_command_result\0\u{3}observed_metrics\0\u{1}schema\0\u{3}write_stream_operation_start_result\0\u{3}streaming_query_command_result\0\u{3}get_resources_command_result\0\u{3}streaming_query_manager_command_result\0\u{3}operation_id\0\u{3}response_id\0\u{3}result_complete\0\u{3}server_side_session_id\0\u{3}streaming_query_listener_events_result\0\u{3}create_resource_profile_command_result\0\u{3}execution_progress\0\u{3}checkpoint_command_result\0\u{3}ml_command_result\0\u{3}pipeline_event_result\0\u{3}pipeline_command_result\0\u{2}Q\u{f}extension\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}arrow_batch\0\u{2}\u{2}metrics\0\u{3}sql_command_result\0\u{3}observed_metrics\0\u{1}schema\0\u{3}write_stream_operation_start_result\0\u{3}streaming_query_command_result\0\u{3}get_resources_command_result\0\u{3}streaming_query_manager_command_result\0\u{3}operation_id\0\u{3}response_id\0\u{3}result_complete\0\u{3}server_side_session_id\0\u{3}streaming_query_listener_events_result\0\u{3}create_resource_profile_command_result\0\u{3}execution_progress\0\u{3}checkpoint_command_result\0\u{3}ml_command_result\0\u{3}pipeline_event_result\0\u{3}pipeline_command_result\0\u{3}pipeline_query_function_execution_signal\0\u{2}P\u{f}extension\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5189,6 +5299,19 @@ extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobu
           self.responseType = .pipelineCommandResult(v)
         }
       }()
+      case 23: try {
+        var v: Spark_Connect_PipelineQueryFunctionExecutionSignal?
+        var hadOneofValue = false
+        if let current = self.responseType {
+          hadOneofValue = true
+          if case .pipelineQueryFunctionExecutionSignal(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.responseType = .pipelineQueryFunctionExecutionSignal(v)
+        }
+      }()
       case 999: try {
         var v: SwiftProtobuf.Google_Protobuf_Any?
         var hadOneofValue = false
@@ -5289,6 +5412,10 @@ extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobu
     case .pipelineCommandResult?: try {
       guard case .pipelineCommandResult(let v)? = self.responseType else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 22)
+    }()
+    case .pipelineQueryFunctionExecutionSignal?: try {
+      guard case .pipelineQueryFunctionExecutionSignal(let v)? = self.responseType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 23)
     }()
     case .extension?: try {
       guard case .extension(let v)? = self.responseType else { preconditionFailure() }
@@ -7594,6 +7721,105 @@ extension Spark_Connect_CheckpointCommandResult: SwiftProtobuf.Message, SwiftPro
 
   static func ==(lhs: Spark_Connect_CheckpointCommandResult, rhs: Spark_Connect_CheckpointCommandResult) -> Bool {
     if lhs._relation != rhs._relation {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_CloneSessionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CloneSessionRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{3}new_session_id\0\u{3}client_observed_server_side_session_id\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.sessionID) }()
+      case 2: try { try decoder.decodeSingularMessageField(value: &self._userContext) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self._clientType) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self._newSessionID) }()
+      case 5: try { try decoder.decodeSingularStringField(value: &self._clientObservedServerSideSessionID) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.sessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.sessionID, fieldNumber: 1)
+    }
+    try { if let v = self._userContext {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    } }()
+    try { if let v = self._clientType {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 3)
+    } }()
+    try { if let v = self._newSessionID {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 4)
+    } }()
+    try { if let v = self._clientObservedServerSideSessionID {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 5)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_CloneSessionRequest, rhs: Spark_Connect_CloneSessionRequest) -> Bool {
+    if lhs.sessionID != rhs.sessionID {return false}
+    if lhs._clientObservedServerSideSessionID != rhs._clientObservedServerSideSessionID {return false}
+    if lhs._userContext != rhs._userContext {return false}
+    if lhs._clientType != rhs._clientType {return false}
+    if lhs._newSessionID != rhs._newSessionID {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_CloneSessionResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CloneSessionResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}server_side_session_id\0\u{3}new_session_id\0\u{3}new_server_side_session_id\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.sessionID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.serverSideSessionID) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.newSessionID) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.newServerSideSessionID) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.sessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.sessionID, fieldNumber: 1)
+    }
+    if !self.serverSideSessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.serverSideSessionID, fieldNumber: 2)
+    }
+    if !self.newSessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.newSessionID, fieldNumber: 3)
+    }
+    if !self.newServerSideSessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.newServerSideSessionID, fieldNumber: 4)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_CloneSessionResponse, rhs: Spark_Connect_CloneSessionResponse) -> Bool {
+    if lhs.sessionID != rhs.sessionID {return false}
+    if lhs.serverSideSessionID != rhs.serverSideSessionID {return false}
+    if lhs.newSessionID != rhs.newSessionID {return false}
+    if lhs.newServerSideSessionID != rhs.newServerSideSessionID {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

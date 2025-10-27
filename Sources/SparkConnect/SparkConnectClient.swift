@@ -145,8 +145,8 @@ public actor SparkConnectClient {
           throw SparkConnectError.InvalidViewName
         case let m where m.contains("DATA_SOURCE_NOT_FOUND"):
           throw SparkConnectError.DataSourceNotFound
-        case let m where m.contains("DATASET_TYPE_UNSPECIFIED"):
-          throw SparkConnectError.DatasetTypeUnspecified
+        case let m where m.contains("OUTPUT_TYPE_UNSPECIFIED"):
+          throw SparkConnectError.OutputTypeUnspecified
         default:
           throw error
         }
@@ -1240,10 +1240,10 @@ public actor SparkConnectClient {
   }
 
   @discardableResult
-  func defineDataset(
+  func defineOutput(
     _ dataflowGraphID: String,
-    _ datasetName: String,
-    _ datasetType: String,
+    _ outputName: String,
+    _ outputType: String,
     _ comment: String? = nil
   ) async throws -> Bool {
     try await withGPRC { client in
@@ -1251,16 +1251,16 @@ public actor SparkConnectClient {
         throw SparkConnectError.InvalidArgument
       }
 
-      var defineDataset = Spark_Connect_PipelineCommand.DefineDataset()
-      defineDataset.dataflowGraphID = dataflowGraphID
-      defineDataset.datasetName = datasetName
-      defineDataset.datasetType = datasetType.toDatasetType
+      var defineOutput = Spark_Connect_PipelineCommand.DefineOutput()
+      defineOutput.dataflowGraphID = dataflowGraphID
+      defineOutput.outputName = outputName
+      defineOutput.outputType = outputType.toOutputType
       if let comment {
-        defineDataset.comment = comment
+        defineOutput.comment = comment
       }
 
       var pipelineCommand = Spark_Connect_PipelineCommand()
-      pipelineCommand.commandType = .defineDataset(defineDataset)
+      pipelineCommand.commandType = .defineOutput(defineOutput)
 
       var command = Spark_Connect_Command()
       command.commandType = .pipelineCommand(pipelineCommand)
@@ -1288,7 +1288,7 @@ public actor SparkConnectClient {
       defineFlow.dataflowGraphID = dataflowGraphID
       defineFlow.flowName = flowName
       defineFlow.targetDatasetName = targetDatasetName
-      defineFlow.relation = relation
+      // defineFlow.relation = relation
 
       var pipelineCommand = Spark_Connect_PipelineCommand()
       pipelineCommand.commandType = .defineFlow(defineFlow)

@@ -22,11 +22,11 @@ public enum SparkConnectError: Error {
   case CatalogNotFound
   case ColumnNotFound
   case DataSourceNotFound
-  case DatasetTypeUnspecified
   case InvalidArgument
   case InvalidSessionID
   case InvalidType
   case InvalidViewName
+  case OutputTypeUnspecified
   case ParseSyntaxError
   case SchemaNotFound
   case SessionClosed

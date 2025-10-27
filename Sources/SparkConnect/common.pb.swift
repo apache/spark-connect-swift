@@ -364,6 +364,22 @@ struct Spark_Connect_StackTraceElement: Sendable {
   fileprivate var _fileName: String? = nil
 }
 
+struct Spark_Connect_ResolvedIdentifier: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var catalogName: String = String()
+
+  var namespace: [String] = []
+
+  var tableName: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
 struct Spark_Connect_Bools: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -874,6 +890,46 @@ extension Spark_Connect_StackTraceElement: SwiftProtobuf.Message, SwiftProtobuf.
     if lhs.methodName != rhs.methodName {return false}
     if lhs._fileName != rhs._fileName {return false}
     if lhs.lineNumber != rhs.lineNumber {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_ResolvedIdentifier: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".ResolvedIdentifier"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}catalog_name\0\u{1}namespace\0\u{3}table_name\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.catalogName) }()
+      case 2: try { try decoder.decodeRepeatedStringField(value: &self.namespace) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.tableName) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.catalogName.isEmpty {
+      try visitor.visitSingularStringField(value: self.catalogName, fieldNumber: 1)
+    }
+    if !self.namespace.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.namespace, fieldNumber: 2)
+    }
+    if !self.tableName.isEmpty {
+      try visitor.visitSingularStringField(value: self.tableName, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_ResolvedIdentifier, rhs: Spark_Connect_ResolvedIdentifier) -> Bool {
+    if lhs.catalogName != rhs.catalogName {return false}
+    if lhs.namespace != rhs.namespace {return false}
+    if lhs.tableName != rhs.tableName {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
