@@ -20,6 +20,7 @@
 // swiftformat:disable all
 
 import FlatBuffers
+import Common
 
 /// @nodoc
 public enum org_apache_arrow_flatbuf_CompressionType: Int8, Enum, Verifiable {

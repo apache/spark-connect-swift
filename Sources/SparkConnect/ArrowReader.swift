@@ -268,9 +268,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
 
       offset += Int(MemoryLayout<UInt32>.size)
       streamData = input[offset...]
-      let dataBuffer = ByteBuffer(
-        data: streamData,
-        allowReadingUnalignedBuffers: true)
+      let dataBuffer = ByteBuffer(data: streamData)
       let message = org_apache_arrow_flatbuf_Message.getRootAsMessage(bb: dataBuffer)
       switch message.headerType {
       case .recordbatch:
@@ -324,9 +322,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
     let result = ArrowReaderResult()
     let footerStartOffset = fileData.count - Int(footerLength + 4)
     let footerData = fileData[footerStartOffset...]
-    let footerBuffer = ByteBuffer(
-      data: footerData,
-      allowReadingUnalignedBuffers: useUnalignedBuffers)
+    let footerBuffer = ByteBuffer(data: footerData)
     let footer = org_apache_arrow_flatbuf_Footer.getRootAsFooter(bb: footerBuffer)
     let schemaResult = loadSchema(footer.schema!)
     switch schemaResult {
@@ -356,9 +352,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
         recordBatch.offset + (Int64(MemoryLayout<Int32>.size) * messageOffset)
       let messageEndOffset = messageStartOffset + Int64(messageLength)
       let recordBatchData = fileData[messageStartOffset..<messageEndOffset]
-      let mbb = ByteBuffer(
-        data: recordBatchData,
-        allowReadingUnalignedBuffers: useUnalignedBuffers)
+      let mbb = ByteBuffer(data: recordBatchData)
       let message = org_apache_arrow_flatbuf_Message.getRootAsMessage(bb: mbb)
       switch message.headerType {
       case .recordbatch:
@@ -410,9 +404,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
     result: ArrowReaderResult,
     useUnalignedBuffers: Bool = false
   ) -> Result<Void, ArrowError> {
-    let mbb = ByteBuffer(
-      data: dataHeader,
-      allowReadingUnalignedBuffers: useUnalignedBuffers)
+    let mbb = ByteBuffer(data: dataHeader)
     let message = org_apache_arrow_flatbuf_Message.getRootAsMessage(bb: mbb)
     switch message.headerType {
     case .schema:
