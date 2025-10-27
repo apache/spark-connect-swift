@@ -156,6 +156,18 @@ internal enum Spark_Connect_SparkConnectService {
                 method: "FetchErrorDetails"
             )
         }
+        /// Namespace for "CloneSession" metadata.
+        internal enum CloneSession {
+            /// Request type for "CloneSession".
+            internal typealias Input = Spark_Connect_CloneSessionRequest
+            /// Response type for "CloneSession".
+            internal typealias Output = Spark_Connect_CloneSessionResponse
+            /// Descriptor for "CloneSession".
+            internal static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
+                method: "CloneSession"
+            )
+        }
         /// Descriptors for all methods in the "spark.connect.SparkConnectService" service.
         internal static let descriptors: [GRPCCore.MethodDescriptor] = [
             ExecutePlan.descriptor,
@@ -167,7 +179,8 @@ internal enum Spark_Connect_SparkConnectService {
             ReattachExecute.descriptor,
             ReleaseExecute.descriptor,
             ReleaseSession.descriptor,
-            FetchErrorDetails.descriptor
+            FetchErrorDetails.descriptor,
+            CloneSession.descriptor
         ]
     }
 }
@@ -388,6 +401,31 @@ extension Spark_Connect_SparkConnectService {
             request: GRPCCore.StreamingServerRequest<Spark_Connect_FetchErrorDetailsRequest>,
             context: GRPCCore.ServerContext
         ) async throws -> GRPCCore.StreamingServerResponse<Spark_Connect_FetchErrorDetailsResponse>
+
+        /// Handle the "CloneSession" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Create a clone of a Spark Connect session on the server side. The server-side session
+        /// > is cloned with all its current state (SQL configurations, temporary views, registered
+        /// > functions, catalog state) copied over to a new independent session. The cloned session
+        /// > is isolated from the source session - any subsequent changes to either session's
+        /// > server-side state will not be reflected in the other.
+        /// > 
+        /// > The request can optionally specify a custom session ID for the cloned session (must be
+        /// > a valid UUID). If not provided, a new UUID will be generated automatically.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Spark_Connect_CloneSessionRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Spark_Connect_CloneSessionResponse` messages.
+        func cloneSession(
+            request: GRPCCore.StreamingServerRequest<Spark_Connect_CloneSessionRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Spark_Connect_CloneSessionResponse>
     }
 
     /// Service protocol for the "spark.connect.SparkConnectService" service.
@@ -593,6 +631,31 @@ extension Spark_Connect_SparkConnectService {
             request: GRPCCore.ServerRequest<Spark_Connect_FetchErrorDetailsRequest>,
             context: GRPCCore.ServerContext
         ) async throws -> GRPCCore.ServerResponse<Spark_Connect_FetchErrorDetailsResponse>
+
+        /// Handle the "CloneSession" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Create a clone of a Spark Connect session on the server side. The server-side session
+        /// > is cloned with all its current state (SQL configurations, temporary views, registered
+        /// > functions, catalog state) copied over to a new independent session. The cloned session
+        /// > is isolated from the source session - any subsequent changes to either session's
+        /// > server-side state will not be reflected in the other.
+        /// > 
+        /// > The request can optionally specify a custom session ID for the cloned session (must be
+        /// > a valid UUID). If not provided, a new UUID will be generated automatically.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Spark_Connect_CloneSessionRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Spark_Connect_CloneSessionResponse` message.
+        func cloneSession(
+            request: GRPCCore.ServerRequest<Spark_Connect_CloneSessionRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Spark_Connect_CloneSessionResponse>
     }
 
     /// Simple service protocol for the "spark.connect.SparkConnectService" service.
@@ -798,6 +861,31 @@ extension Spark_Connect_SparkConnectService {
             request: Spark_Connect_FetchErrorDetailsRequest,
             context: GRPCCore.ServerContext
         ) async throws -> Spark_Connect_FetchErrorDetailsResponse
+
+        /// Handle the "CloneSession" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Create a clone of a Spark Connect session on the server side. The server-side session
+        /// > is cloned with all its current state (SQL configurations, temporary views, registered
+        /// > functions, catalog state) copied over to a new independent session. The cloned session
+        /// > is isolated from the source session - any subsequent changes to either session's
+        /// > server-side state will not be reflected in the other.
+        /// > 
+        /// > The request can optionally specify a custom session ID for the cloned session (must be
+        /// > a valid UUID). If not provided, a new UUID will be generated automatically.
+        ///
+        /// - Parameters:
+        ///   - request: A `Spark_Connect_CloneSessionRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Spark_Connect_CloneSessionResponse` to respond with.
+        func cloneSession(
+            request: Spark_Connect_CloneSessionRequest,
+            context: GRPCCore.ServerContext
+        ) async throws -> Spark_Connect_CloneSessionResponse
     }
 }
 
@@ -915,6 +1003,17 @@ extension Spark_Connect_SparkConnectService.StreamingServiceProtocol {
                 )
             }
         )
+        router.registerHandler(
+            forMethod: Spark_Connect_SparkConnectService.Method.CloneSession.descriptor,
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Spark_Connect_CloneSessionRequest>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Spark_Connect_CloneSessionResponse>(),
+            handler: { request, context in
+                try await self.cloneSession(
+                    request: request,
+                    context: context
+                )
+            }
+        )
     }
 }
 
@@ -1025,6 +1124,17 @@ extension Spark_Connect_SparkConnectService.ServiceProtocol {
         context: GRPCCore.ServerContext
     ) async throws -> GRPCCore.StreamingServerResponse<Spark_Connect_FetchErrorDetailsResponse> {
         let response = try await self.fetchErrorDetails(
+            request: GRPCCore.ServerRequest(stream: request),
+            context: context
+        )
+        return GRPCCore.StreamingServerResponse(single: response)
+    }
+
+    internal func cloneSession(
+        request: GRPCCore.StreamingServerRequest<Spark_Connect_CloneSessionRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.StreamingServerResponse<Spark_Connect_CloneSessionResponse> {
+        let response = try await self.cloneSession(
             request: GRPCCore.ServerRequest(stream: request),
             context: context
         )
@@ -1166,6 +1276,19 @@ extension Spark_Connect_SparkConnectService.SimpleServiceProtocol {
     ) async throws -> GRPCCore.ServerResponse<Spark_Connect_FetchErrorDetailsResponse> {
         return GRPCCore.ServerResponse<Spark_Connect_FetchErrorDetailsResponse>(
             message: try await self.fetchErrorDetails(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
+
+    internal func cloneSession(
+        request: GRPCCore.ServerRequest<Spark_Connect_CloneSessionRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Spark_Connect_CloneSessionResponse> {
+        return GRPCCore.ServerResponse<Spark_Connect_CloneSessionResponse>(
+            message: try await self.cloneSession(
                 request: request.message,
                 context: context
             ),
@@ -1427,6 +1550,36 @@ extension Spark_Connect_SparkConnectService {
             deserializer: some GRPCCore.MessageDeserializer<Spark_Connect_FetchErrorDetailsResponse>,
             options: GRPCCore.CallOptions,
             onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_FetchErrorDetailsResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "CloneSession" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Create a clone of a Spark Connect session on the server side. The server-side session
+        /// > is cloned with all its current state (SQL configurations, temporary views, registered
+        /// > functions, catalog state) copied over to a new independent session. The cloned session
+        /// > is isolated from the source session - any subsequent changes to either session's
+        /// > server-side state will not be reflected in the other.
+        /// > 
+        /// > The request can optionally specify a custom session ID for the cloned session (must be
+        /// > a valid UUID). If not provided, a new UUID will be generated automatically.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Spark_Connect_CloneSessionRequest` message.
+        ///   - serializer: A serializer for `Spark_Connect_CloneSessionRequest` messages.
+        ///   - deserializer: A deserializer for `Spark_Connect_CloneSessionResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func cloneSession<Result>(
+            request: GRPCCore.ClientRequest<Spark_Connect_CloneSessionRequest>,
+            serializer: some GRPCCore.MessageSerializer<Spark_Connect_CloneSessionRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Spark_Connect_CloneSessionResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_CloneSessionResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
     }
 
@@ -1797,6 +1950,47 @@ extension Spark_Connect_SparkConnectService {
                 onResponse: handleResponse
             )
         }
+
+        /// Call the "CloneSession" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Create a clone of a Spark Connect session on the server side. The server-side session
+        /// > is cloned with all its current state (SQL configurations, temporary views, registered
+        /// > functions, catalog state) copied over to a new independent session. The cloned session
+        /// > is isolated from the source session - any subsequent changes to either session's
+        /// > server-side state will not be reflected in the other.
+        /// > 
+        /// > The request can optionally specify a custom session ID for the cloned session (must be
+        /// > a valid UUID). If not provided, a new UUID will be generated automatically.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Spark_Connect_CloneSessionRequest` message.
+        ///   - serializer: A serializer for `Spark_Connect_CloneSessionRequest` messages.
+        ///   - deserializer: A deserializer for `Spark_Connect_CloneSessionResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        internal func cloneSession<Result>(
+            request: GRPCCore.ClientRequest<Spark_Connect_CloneSessionRequest>,
+            serializer: some GRPCCore.MessageSerializer<Spark_Connect_CloneSessionRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Spark_Connect_CloneSessionResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_CloneSessionResponse>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Spark_Connect_SparkConnectService.Method.CloneSession.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
     }
 }
 
@@ -2096,6 +2290,42 @@ extension Spark_Connect_SparkConnectService.ClientProtocol {
             request: request,
             serializer: GRPCProtobuf.ProtobufSerializer<Spark_Connect_FetchErrorDetailsRequest>(),
             deserializer: GRPCProtobuf.ProtobufDeserializer<Spark_Connect_FetchErrorDetailsResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "CloneSession" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > Create a clone of a Spark Connect session on the server side. The server-side session
+    /// > is cloned with all its current state (SQL configurations, temporary views, registered
+    /// > functions, catalog state) copied over to a new independent session. The cloned session
+    /// > is isolated from the source session - any subsequent changes to either session's
+    /// > server-side state will not be reflected in the other.
+    /// > 
+    /// > The request can optionally specify a custom session ID for the cloned session (must be
+    /// > a valid UUID). If not provided, a new UUID will be generated automatically.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Spark_Connect_CloneSessionRequest` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func cloneSession<Result>(
+        request: GRPCCore.ClientRequest<Spark_Connect_CloneSessionRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_CloneSessionResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.cloneSession(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Spark_Connect_CloneSessionRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Spark_Connect_CloneSessionResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -2438,6 +2668,46 @@ extension Spark_Connect_SparkConnectService.ClientProtocol {
             metadata: metadata
         )
         return try await self.fetchErrorDetails(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "CloneSession" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > Create a clone of a Spark Connect session on the server side. The server-side session
+    /// > is cloned with all its current state (SQL configurations, temporary views, registered
+    /// > functions, catalog state) copied over to a new independent session. The cloned session
+    /// > is isolated from the source session - any subsequent changes to either session's
+    /// > server-side state will not be reflected in the other.
+    /// > 
+    /// > The request can optionally specify a custom session ID for the cloned session (must be
+    /// > a valid UUID). If not provided, a new UUID will be generated automatically.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func cloneSession<Result>(
+        _ message: Spark_Connect_CloneSessionRequest,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_CloneSessionResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Spark_Connect_CloneSessionRequest>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.cloneSession(
             request: request,
             options: options,
             onResponse: handleResponse

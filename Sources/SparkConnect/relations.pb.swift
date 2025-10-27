@@ -404,6 +404,14 @@ struct Spark_Connect_Relation: @unchecked Sendable {
     set {_uniqueStorage()._relType = .lateralJoin(newValue)}
   }
 
+  var chunkedCachedLocalRelation: Spark_Connect_ChunkedCachedLocalRelation {
+    get {
+      if case .chunkedCachedLocalRelation(let v)? = _storage._relType {return v}
+      return Spark_Connect_ChunkedCachedLocalRelation()
+    }
+    set {_uniqueStorage()._relType = .chunkedCachedLocalRelation(newValue)}
+  }
+
   /// NA functions
   var fillNa: Spark_Connect_NAFill {
     get {
@@ -576,6 +584,7 @@ struct Spark_Connect_Relation: @unchecked Sendable {
     case transpose(Spark_Connect_Transpose)
     case unresolvedTableValuedFunction(Spark_Connect_UnresolvedTableValuedFunction)
     case lateralJoin(Spark_Connect_LateralJoin)
+    case chunkedCachedLocalRelation(Spark_Connect_ChunkedCachedLocalRelation)
     /// NA functions
     case fillNa(Spark_Connect_NAFill)
     case dropNa(Spark_Connect_NADrop)
@@ -1762,6 +1771,7 @@ struct Spark_Connect_LocalRelation: Sendable {
 }
 
 /// A local relation that has been cached already.
+/// CachedLocalRelation doesn't support LocalRelations of size over 2GB.
 struct Spark_Connect_CachedLocalRelation: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -1773,6 +1783,37 @@ struct Spark_Connect_CachedLocalRelation: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
+}
+
+/// A local relation that has been cached already.
+struct Spark_Connect_ChunkedCachedLocalRelation: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required) A list of sha-256 hashes for representing LocalRelation.data.
+  /// Data is serialized in Arrow IPC streaming format, each batch is cached on the server as
+  /// a separate artifact. Each hash represents one batch stored on the server.
+  /// Hashes are hex-encoded strings (e.g., "a3b2c1d4...").
+  var dataHashes: [String] = []
+
+  /// (Optional) A sha-256 hash of the serialized LocalRelation.schema.
+  /// Scala clients always provide the schema, Python clients can omit it.
+  /// Hash is a hex-encoded string (e.g., "a3b2c1d4...").
+  var schemaHash: String {
+    get {return _schemaHash ?? String()}
+    set {_schemaHash = newValue}
+  }
+  /// Returns true if `schemaHash` has been explicitly set.
+  var hasSchemaHash: Bool {return self._schemaHash != nil}
+  /// Clears the value of `schemaHash`. Subsequent reads from it will return its default value.
+  mutating func clearSchemaHash() {self._schemaHash = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _schemaHash: String? = nil
 }
 
 /// Represents a remote relation that has been cached on server.
@@ -3697,7 +3738,7 @@ fileprivate let _protobuf_package = "spark.connect"
 
 extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Relation"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}common\0\u{1}read\0\u{1}project\0\u{1}filter\0\u{1}join\0\u{3}set_op\0\u{1}sort\0\u{1}limit\0\u{1}aggregate\0\u{1}sql\0\u{3}local_relation\0\u{1}sample\0\u{1}offset\0\u{1}deduplicate\0\u{1}range\0\u{3}subquery_alias\0\u{1}repartition\0\u{3}to_df\0\u{3}with_columns_renamed\0\u{3}show_string\0\u{1}drop\0\u{1}tail\0\u{3}with_columns\0\u{1}hint\0\u{1}unpivot\0\u{3}to_schema\0\u{3}repartition_by_expression\0\u{3}map_partitions\0\u{3}collect_metrics\0\u{1}parse\0\u{3}group_map\0\u{3}co_group_map\0\u{3}with_watermark\0\u{3}apply_in_pandas_with_state\0\u{3}html_string\0\u{3}cached_local_relation\0\u{3}cached_remote_relation\0\u{3}common_inline_user_defined_table_function\0\u{3}as_of_join\0\u{3}common_inline_user_defined_data_source\0\u{3}with_relations\0\u{1}transpose\0\u{3}unresolved_table_valued_function\0\u{3}lateral_join\0\u{4}.fill_na\0\u{3}drop_na\0\u{1}replace\0\u{2}\u{8}summary\0\u{1}crosstab\0\u{1}describe\0\u{1}cov\0\u{1}corr\0\u{3}approx_quantile\0\u{3}freq_items\0\u{3}sample_by\0\u{2}]\u{1}catalog\0\u{4}d\u{1}ml_relation\0\u{2}z\u{a}extension\0\u{1}unknown\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}common\0\u{1}read\0\u{1}project\0\u{1}filter\0\u{1}join\0\u{3}set_op\0\u{1}sort\0\u{1}limit\0\u{1}aggregate\0\u{1}sql\0\u{3}local_relation\0\u{1}sample\0\u{1}offset\0\u{1}deduplicate\0\u{1}range\0\u{3}subquery_alias\0\u{1}repartition\0\u{3}to_df\0\u{3}with_columns_renamed\0\u{3}show_string\0\u{1}drop\0\u{1}tail\0\u{3}with_columns\0\u{1}hint\0\u{1}unpivot\0\u{3}to_schema\0\u{3}repartition_by_expression\0\u{3}map_partitions\0\u{3}collect_metrics\0\u{1}parse\0\u{3}group_map\0\u{3}co_group_map\0\u{3}with_watermark\0\u{3}apply_in_pandas_with_state\0\u{3}html_string\0\u{3}cached_local_relation\0\u{3}cached_remote_relation\0\u{3}common_inline_user_defined_table_function\0\u{3}as_of_join\0\u{3}common_inline_user_defined_data_source\0\u{3}with_relations\0\u{1}transpose\0\u{3}unresolved_table_valued_function\0\u{3}lateral_join\0\u{3}chunked_cached_local_relation\0\u{4}-fill_na\0\u{3}drop_na\0\u{1}replace\0\u{2}\u{8}summary\0\u{1}crosstab\0\u{1}describe\0\u{1}cov\0\u{1}corr\0\u{3}approx_quantile\0\u{3}freq_items\0\u{3}sample_by\0\u{2}]\u{1}catalog\0\u{4}d\u{1}ml_relation\0\u{2}z\u{a}extension\0\u{1}unknown\0")
 
   fileprivate class _StorageClass {
     var _common: Spark_Connect_RelationCommon? = nil
@@ -4292,6 +4333,19 @@ extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtobuf._MessageI
             _storage._relType = .lateralJoin(v)
           }
         }()
+        case 45: try {
+          var v: Spark_Connect_ChunkedCachedLocalRelation?
+          var hadOneofValue = false
+          if let current = _storage._relType {
+            hadOneofValue = true
+            if case .chunkedCachedLocalRelation(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._relType = .chunkedCachedLocalRelation(v)
+          }
+        }()
         case 90: try {
           var v: Spark_Connect_NAFill?
           var hadOneofValue = false
@@ -4674,6 +4728,10 @@ extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtobuf._MessageI
       case .lateralJoin?: try {
         guard case .lateralJoin(let v)? = _storage._relType else { preconditionFailure() }
         try visitor.visitSingularMessageField(value: v, fieldNumber: 44)
+      }()
+      case .chunkedCachedLocalRelation?: try {
+        guard case .chunkedCachedLocalRelation(let v)? = _storage._relType else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 45)
       }()
       case .fillNa?: try {
         guard case .fillNa(let v)? = _storage._relType else { preconditionFailure() }
@@ -6615,6 +6673,45 @@ extension Spark_Connect_CachedLocalRelation: SwiftProtobuf.Message, SwiftProtobu
 
   static func ==(lhs: Spark_Connect_CachedLocalRelation, rhs: Spark_Connect_CachedLocalRelation) -> Bool {
     if lhs.hash != rhs.hash {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_ChunkedCachedLocalRelation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".ChunkedCachedLocalRelation"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}dataHashes\0\u{1}schemaHash\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedStringField(value: &self.dataHashes) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self._schemaHash) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.dataHashes.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.dataHashes, fieldNumber: 1)
+    }
+    try { if let v = self._schemaHash {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 2)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_ChunkedCachedLocalRelation, rhs: Spark_Connect_ChunkedCachedLocalRelation) -> Bool {
+    if lhs.dataHashes != rhs.dataHashes {return false}
+    if lhs._schemaHash != rhs._schemaHash {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

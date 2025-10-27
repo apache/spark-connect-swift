@@ -182,14 +182,15 @@ extension String {
     }
   }
 
-  var toDatasetType: DatasetType {
+  var toOutputType: OutputType {
     let mode =
       switch self {
-      case "unspecified": DatasetType.unspecified
-      case "materializedView": DatasetType.materializedView
-      case "table": DatasetType.table
-      case "temporaryView": DatasetType.temporaryView
-      default: DatasetType.UNRECOGNIZED(-1)
+      case "unspecified": OutputType.unspecified
+      case "materializedView": OutputType.materializedView
+      case "table": OutputType.table
+      case "temporaryView": OutputType.temporaryView
+      case "sink": OutputType.sink
+      default: OutputType.UNRECOGNIZED(-1)
       }
     return mode
   }
