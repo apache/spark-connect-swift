@@ -130,76 +130,74 @@ struct SparkSessionTests {
     await spark.stop()
   }
 
-  #if !os(Linux)
-    @Test
-    func sql() async throws {
-      await SparkSession.builder.clear()
-      let spark = try await SparkSession.builder.getOrCreate()
-      let expected = [Row(true, 1, "a")]
-      if await spark.version.starts(with: "4.") {
-        #expect(try await spark.sql("SELECT ?, ?, ?", true, 1, "a").collect() == expected)
-        #expect(
-          try await spark.sql("SELECT :x, :y, :z", args: ["x": true, "y": 1, "z": "a"]).collect()
-            == expected)
-      }
-      await spark.stop()
+  @Test
+  func sql() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = [Row(true, 1, "a")]
+    if await spark.version.starts(with: "4.") {
+      #expect(try await spark.sql("SELECT ?, ?, ?", true, 1, "a").collect() == expected)
+      #expect(
+        try await spark.sql("SELECT :x, :y, :z", args: ["x": true, "y": 1, "z": "a"]).collect()
+          == expected)
     }
+    await spark.stop()
+  }
 
-    @Test
-    func addInvalidArtifact() async throws {
-      await SparkSession.builder.clear()
-      let spark = try await SparkSession.builder.getOrCreate()
-      await #expect(throws: SparkConnectError.InvalidArgument) {
-        try await spark.addArtifact("x.txt")
-      }
-      await spark.stop()
+  @Test
+  func addInvalidArtifact() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    await #expect(throws: SparkConnectError.InvalidArgument) {
+      try await spark.addArtifact("x.txt")
     }
+    await spark.stop()
+  }
 
-    @Test
-    func addArtifact() async throws {
-      let fm = FileManager()
-      let path = "my.jar"
-      let url = URL(fileURLWithPath: path)
+  @Test
+  func addArtifact() async throws {
+    let fm = FileManager()
+    let path = "my.jar"
+    let url = URL(fileURLWithPath: path)
 
-      await SparkSession.builder.clear()
-      let spark = try await SparkSession.builder.getOrCreate()
-      #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
-      if await spark.version.starts(with: "4.") {
-        try await spark.addArtifact(path)
-        try await spark.addArtifact(url)
-      }
-      try fm.removeItem(atPath: path)
-      await spark.stop()
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
+    if await spark.version.starts(with: "4.") {
+      try await spark.addArtifact(path)
+      try await spark.addArtifact(url)
     }
+    try fm.removeItem(atPath: path)
+    await spark.stop()
+  }
 
-    @Test
-    func addArtifacts() async throws {
-      let fm = FileManager()
-      let path = "my.jar"
-      let url = URL(fileURLWithPath: path)
+  @Test
+  func addArtifacts() async throws {
+    let fm = FileManager()
+    let path = "my.jar"
+    let url = URL(fileURLWithPath: path)
 
-      await SparkSession.builder.clear()
-      let spark = try await SparkSession.builder.getOrCreate()
-      #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
-      if await spark.version.starts(with: "4.") {
-        try await spark.addArtifacts(url, url)
-      }
-      try fm.removeItem(atPath: path)
-      await spark.stop()
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
+    if await spark.version.starts(with: "4.") {
+      try await spark.addArtifacts(url, url)
     }
+    try fm.removeItem(atPath: path)
+    await spark.stop()
+  }
 
-    @Test
-    func executeCommand() async throws {
-      await SparkSession.builder.clear()
-      let spark = try await SparkSession.builder.getOrCreate()
-      if await spark.version.starts(with: "4.") {
-        await #expect(throws: SparkConnectError.DataSourceNotFound) {
-          try await spark.executeCommand("runner", "command", [:]).show()
-        }
+  @Test
+  func executeCommand() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version.starts(with: "4.") {
+      await #expect(throws: SparkConnectError.DataSourceNotFound) {
+        try await spark.executeCommand("runner", "command", [:]).show()
       }
-      await spark.stop()
     }
-  #endif
+    await spark.stop()
+  }
 
   @Test
   func table() async throws {
@@ -218,10 +216,8 @@ struct SparkSessionTests {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.time(spark.range(1000).count) == 1000)
-    #if !os(Linux)
-      #expect(try await spark.time(spark.range(1).collect) == [Row(0)])
-      try await spark.time(spark.range(10).show)
-    #endif
+    #expect(try await spark.time(spark.range(1).collect) == [Row(0)])
+    try await spark.time(spark.range(10).show)
     await spark.stop()
   }
 

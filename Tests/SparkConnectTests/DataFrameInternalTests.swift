@@ -25,63 +25,61 @@ import Testing
 @Suite(.serialized)
 struct DataFrameInternalTests {
 
-  #if !os(Linux)
-    @Test
-    func showString() async throws {
-      let spark = try await SparkSession.builder.getOrCreate()
-      let rows = try await spark.range(10).showString(2, 0, false).collect()
-      #expect(rows.count == 1)
-      #expect(rows[0].length == 1)
-      #expect(
-        try (rows[0].get(0) as! String).trimmingCharacters(in: .whitespacesAndNewlines) == """
-          +---+
-          |id |
-          +---+
-          |0  |
-          |1  |
-          +---+
-          only showing top 2 rows
-          """)
-      await spark.stop()
-    }
+  @Test
+  func showString() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.range(10).showString(2, 0, false).collect()
+    #expect(rows.count == 1)
+    #expect(rows[0].length == 1)
+    #expect(
+      try (rows[0].get(0) as! String).trimmingCharacters(in: .whitespacesAndNewlines) == """
+        +---+
+        |id |
+        +---+
+        |0  |
+        |1  |
+        +---+
+        only showing top 2 rows
+        """)
+    await spark.stop()
+  }
 
-    @Test
-    func showStringTruncate() async throws {
-      let spark = try await SparkSession.builder.getOrCreate()
-      let rows = try await spark.sql("SELECT * FROM VALUES ('abc', 'def'), ('ghi', 'jkl')")
-        .showString(2, 2, false).collect()
-      #expect(rows.count == 1)
-      #expect(rows[0].length == 1)
-      print(try rows[0].get(0) as! String)
-      #expect(
-        try rows[0].get(0) as! String == """
-          +----+----+
-          |col1|col2|
-          +----+----+
-          |  ab|  de|
-          |  gh|  jk|
-          +----+----+
+  @Test
+  func showStringTruncate() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql("SELECT * FROM VALUES ('abc', 'def'), ('ghi', 'jkl')")
+      .showString(2, 2, false).collect()
+    #expect(rows.count == 1)
+    #expect(rows[0].length == 1)
+    print(try rows[0].get(0) as! String)
+    #expect(
+      try rows[0].get(0) as! String == """
+        +----+----+
+        |col1|col2|
+        +----+----+
+        |  ab|  de|
+        |  gh|  jk|
+        +----+----+
 
-          """)
-      await spark.stop()
-    }
+        """)
+    await spark.stop()
+  }
 
-    @Test
-    func showStringVertical() async throws {
-      let spark = try await SparkSession.builder.getOrCreate()
-      let rows = try await spark.range(10).showString(2, 0, true).collect()
-      #expect(rows.count == 1)
-      #expect(rows[0].length == 1)
-      print(try rows[0].get(0) as! String)
-      #expect(
-        try (rows[0].get(0) as! String).trimmingCharacters(in: .whitespacesAndNewlines) == """
-          -RECORD 0--
-           id  | 0   
-          -RECORD 1--
-           id  | 1   
-          only showing top 2 rows
-          """)
-      await spark.stop()
-    }
-  #endif
+  @Test
+  func showStringVertical() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.range(10).showString(2, 0, true).collect()
+    #expect(rows.count == 1)
+    #expect(rows[0].length == 1)
+    print(try rows[0].get(0) as! String)
+    #expect(
+      try (rows[0].get(0) as! String).trimmingCharacters(in: .whitespacesAndNewlines) == """
+        -RECORD 0--
+         id  | 0   
+        -RECORD 1--
+         id  | 1   
+        only showing top 2 rows
+        """)
+    await spark.stop()
+  }
 }

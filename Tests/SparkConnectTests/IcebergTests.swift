@@ -99,14 +99,12 @@ struct IcebergTests {
         WHEN NOT MATCHED BY SOURCE THEN UPDATE SET data = 'invalid'
         """
       ).count()
-      #if !os(Linux)
-        let expected = [
-          Row(2, "updated"),
-          Row(3, "invalid"),
-          Row(4, "new"),
-        ]
-        #expect(try await spark.table(t2).collect() == expected)
-      #endif
+      let expected = [
+        Row(2, "updated"),
+        Row(3, "invalid"),
+        Row(4, "new"),
+      ]
+      #expect(try await spark.table(t2).collect() == expected)
     })
     await spark.stop()
   }
