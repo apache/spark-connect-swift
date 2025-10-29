@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM swift:6.1 AS builder
+FROM swift:6.2 AS builder
 
 WORKDIR /app
 
@@ -22,7 +22,7 @@ COPY . .
 
 RUN swift build -c release
 
-FROM swift:6.1-slim
+FROM swift:6.2-slim
 
 ARG SPARK_UID=185
 

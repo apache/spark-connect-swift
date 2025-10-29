@@ -40,28 +40,6 @@ jobs:
         with:
           config: .github/.licenserc.yaml
 
-  build-macos-15-swift60:
-    runs-on: macos-15
-    timeout-minutes: 20
-    steps:
-    - uses: actions/checkout@v5
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.0"
-    - name: Build
-      run: swift build -c release
-
-  build-macos-15-swift61:
-    runs-on: macos-15
-    timeout-minutes: 20
-    steps:
-    - uses: actions/checkout@v5
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.1"
-    - name: Build
-      run: swift build -c release
-
   build-macos-26-swift62:
     runs-on: macos-26
     timeout-minutes: 20
@@ -129,15 +107,12 @@ jobs:
         docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.2 swift test --no-parallel -c release
 
   integration-test-mac-spark41:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v5
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.1"
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -151,15 +126,12 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v5
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.1"
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -173,16 +145,13 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-token:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
     - uses: actions/checkout@v5
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.1"
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -196,15 +165,12 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac-spark3:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v5
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.1"
     - name: Install Java
       uses: actions/setup-java@v4
       with:
@@ -223,16 +189,13 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac-spark3-iceberg:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
     - uses: actions/checkout@v5
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.1"
     - name: Install Java
       uses: actions/setup-java@v4
       with:
@@ -252,16 +215,13 @@ jobs:
         swift test --filter IcebergTest -c release
 
   integration-test-mac-spark4-iceberg:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
     - uses: actions/checkout@v5
-    - uses: swift-actions/setup-swift@d10500c1ac8822132eebbd74c48c3372c71d7ff5
-      with:
-        swift-version: "6.1"
     - name: Install Java
       uses: actions/setup-java@v4
       with:

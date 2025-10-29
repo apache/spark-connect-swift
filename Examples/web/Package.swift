@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version: 6.2
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file

@@ -25,7 +25,7 @@ targets: [
 
 ## Prerequisites
 
-- Swift 6.0 or later
+- Swift 6.2 or later
 - macOS 15+, iOS 18+, watchOS 11+, or tvOS 18+
 - A running Apache Spark cluster with Spark Connect enabled
 

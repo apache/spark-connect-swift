@@ -17,7 +17,7 @@ So far, this library project is tracking the upstream changes of [Apache Arrow](
 ## Requirement
 
 - [Apache Spark 4.0.1 (September 2025)](https://github.com/apache/spark/releases/tag/v4.0.1)
-- [Swift 6.0/6.1/6.2 (September 2025)](https://swift.org)
+- [Swift 6.2 (September 2025)](https://swift.org)
 - [gRPC Swift 2.1 (July 2025)](https://github.com/grpc/grpc-swift-2/releases/tag/2.1.0)
 - [gRPC Swift Protobuf 2.1 (August 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/2.1.1)
 - [gRPC Swift NIO Transport 2.2 (September 2025)](https://github.com/grpc/grpc-swift-nio-transport/releases/tag/2.2.0)
