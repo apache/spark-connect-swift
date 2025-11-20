@@ -117,7 +117,7 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.1.0-preview4-rc1-bin/spark-4.1.0-preview4-bin-hadoop3.tgz
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.0-preview4/spark-4.1.0-preview4-bin-hadoop3.tgz?action=download
         tar xvfz spark-4.1.0-preview4-bin-hadoop3.tgz && rm spark-4.1.0-preview4-bin-hadoop3.tgz
         mv spark-4.1.0-preview4-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
@@ -156,7 +156,7 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.1.0-preview4-rc1-bin/spark-4.1.0-preview4-bin-hadoop3.tgz
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.0-preview4/spark-4.1.0-preview4-bin-hadoop3.tgz?action=download
         tar xvfz spark-4.1.0-preview4-bin-hadoop3.tgz && rm spark-4.1.0-preview4-bin-hadoop3.tgz
         mv spark-4.1.0-preview4-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
