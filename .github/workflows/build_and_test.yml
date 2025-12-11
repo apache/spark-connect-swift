@@ -32,7 +32,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Check license header
         uses: apache/skywalking-eyes@main
         env:
@@ -44,7 +44,7 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       run: swift build -c release
 
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       run: |
         docker run swift:6.2 uname -a
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       run: |
         docker run swift:6.2 uname -a
@@ -81,7 +81,7 @@ jobs:
           - 15003:15002
         options: --entrypoint /opt/spark/sbin/start-connect-server.sh
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       run: |
         docker run swift:6.2 uname -a
@@ -100,7 +100,7 @@ jobs:
           - 15003:15002
         options: --entrypoint /opt/spark/sbin/start-connect-server.sh
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       run: |
         docker run swift:6.2 uname -a
@@ -112,7 +112,7 @@ jobs:
     env:
       SPARK_LOCAL_IP: localhost
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -131,7 +131,7 @@ jobs:
     env:
       SPARK_LOCAL_IP: localhost
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -151,7 +151,7 @@ jobs:
       SPARK_LOCAL_IP: localhost
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -170,7 +170,7 @@ jobs:
     env:
       SPARK_LOCAL_IP: localhost
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Install Java
       uses: actions/setup-java@v4
       with:
@@ -195,7 +195,7 @@ jobs:
       SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Install Java
       uses: actions/setup-java@v4
       with:
@@ -221,7 +221,7 @@ jobs:
       SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Install Java
       uses: actions/setup-java@v4
       with:
@@ -245,7 +245,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
     - name: Super-Linter
