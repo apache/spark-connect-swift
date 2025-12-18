@@ -93,7 +93,7 @@ jobs:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
       spark:
-        image: apache/spark:4.1.0-preview4-java21
+        image: apache/spark:4.1.0-scala
         env:
           SPARK_NO_DAEMONIZE: 1
         ports:
@@ -117,9 +117,9 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.0-preview4/spark-4.1.0-preview4-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.1.0-preview4-bin-hadoop3.tgz && rm spark-4.1.0-preview4-bin-hadoop3.tgz
-        mv spark-4.1.0-preview4-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.0/spark-4.1.0-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.1.0-bin-hadoop3.tgz && rm spark-4.1.0-bin-hadoop3.tgz
+        mv spark-4.1.0-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
@@ -156,9 +156,9 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.0-preview4/spark-4.1.0-preview4-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.1.0-preview4-bin-hadoop3.tgz && rm spark-4.1.0-preview4-bin-hadoop3.tgz
-        mv spark-4.1.0-preview4-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.0/spark-4.1.0-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.1.0-bin-hadoop3.tgz && rm spark-4.1.0-bin-hadoop3.tgz
+        mv spark-4.1.0-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
