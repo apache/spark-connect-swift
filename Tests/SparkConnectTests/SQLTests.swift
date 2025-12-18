@@ -99,7 +99,7 @@ struct SQLTests {
     "variant.sql",
   ]
 
-  let queriesForSpark41Only: [String] = [
+  let queriesForSpark42Only: [String] = [
     "time.sql"
   ]
 
@@ -114,8 +114,8 @@ struct SQLTests {
         print("Skip query \(name) due to the difference between Spark 3 and 4.")
         continue
       }
-      if await !spark.version.starts(with: "4.1") && queriesForSpark41Only.contains(name) {
-        print("Skip query \(name) due to the difference between Spark 4.0 and 4.1")
+      if await !spark.version.starts(with: "4.2") && queriesForSpark42Only.contains(name) {
+        print("Skip query \(name) due to the difference between Spark 4.1 and 4.2")
         continue
       }
 
