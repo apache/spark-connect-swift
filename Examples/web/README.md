@@ -90,7 +90,7 @@ index 2edcc8f..dd918a9 100644
 Prepare `Spark Connect Server` via running Docker image.
 
 ```bash
-docker run --rm -p 15002:15002 apache/spark:4.0.1 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
+docker run --rm -p 15002:15002 apache/spark:4.1.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait"
 ```
 
 Build an application Docker image.
@@ -98,8 +98,8 @@ Build an application Docker image.
 ```bash
 $ docker build -t apache/spark-connect-swift:web .
 $ docker images apache/spark-connect-swift:web
-REPOSITORY                   TAG       IMAGE ID       CREATED          SIZE
-apache/spark-connect-swift   web       3fd2422fdbee   27 seconds ago   417MB
+IMAGE                            ID             DISK USAGE   CONTENT SIZE   EXTRA
+apache/spark-connect-swift:web   a3865bf1867e        600MB          139MB
 ```
 
 Run `web` docker image
@@ -116,7 +116,7 @@ $ curl http://127.0.0.1:8080/
 Welcome to the Swift world. Say hello!%
 
 $ curl http://127.0.0.1:8080/hello
-Hi, this is powered by the Apache Spark 4.0.1.%
+Hi, this is powered by the Apache Spark 4.1.0.%
 ```
 
 Run from source code.

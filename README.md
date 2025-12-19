@@ -16,7 +16,7 @@ So far, this library project is tracking the upstream changes of [Apache Arrow](
 
 ## Requirement
 
-- [Apache Spark 4.0.1 (September 2025)](https://github.com/apache/spark/releases/tag/v4.0.1)
+- [Apache Spark 4.1.0 (December 2025)](https://github.com/apache/spark/releases/tag/v4.1.0)
 - [Swift 6.2 (September 2025)](https://swift.org)
 - [gRPC Swift 2.2 (November 2025)](https://github.com/grpc/grpc-swift-2/releases/tag/2.2.0)
 - [gRPC Swift Protobuf 2.1 (August 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/2.1.1)
@@ -91,27 +91,28 @@ Run your Swift application.
 ```bash
 $ swift run
 ...
-Connected to Apache Spark 4.0.1 Server
+Connected to Apache Spark 4.1.0 Server
 EXECUTE: DROP TABLE IF EXISTS t
-EXECUTE: CREATE TABLE IF NOT EXISTS t(a INT)
+EXECUTE: CREATE TABLE IF NOT EXISTS t(a INT) USING ORC
 EXECUTE: INSERT INTO t VALUES (1), (2), (3)
 SELECT * FROM t
 +---+
-| a |
+|  a|
 +---+
-| 2 |
-| 1 |
-| 3 |
+|  1|
+|  3|
+|  2|
 +---+
-+----+
-| id |
-+----+
-| 2  |
-| 6  |
-| 0  |
-| 8  |
-| 4  |
-+----+
+
++---+
+| id|
++---+
+|  6|
+|  8|
+|  4|
+|  2|
+|  0|
++---+
 ```
 
 You can find more complete examples including `Spark SQL REPL`, `Web Server` and `Streaming` applications in the [Examples](https://github.com/apache/spark-connect-swift/tree/main/Examples) directory.
