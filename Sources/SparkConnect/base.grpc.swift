@@ -31,13 +31,13 @@ import GRPCProtobuf
 
 /// Namespace containing generated types for the "spark.connect.SparkConnectService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-internal enum Spark_Connect_SparkConnectService {
+internal enum Spark_Connect_SparkConnectService: Sendable {
     /// Service descriptor for the "spark.connect.SparkConnectService" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService")
     /// Namespace for method metadata.
-    internal enum Method {
+    internal enum Method: Sendable {
         /// Namespace for "ExecutePlan" metadata.
-        internal enum ExecutePlan {
+        internal enum ExecutePlan: Sendable {
             /// Request type for "ExecutePlan".
             internal typealias Input = Spark_Connect_ExecutePlanRequest
             /// Response type for "ExecutePlan".
@@ -49,7 +49,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "AnalyzePlan" metadata.
-        internal enum AnalyzePlan {
+        internal enum AnalyzePlan: Sendable {
             /// Request type for "AnalyzePlan".
             internal typealias Input = Spark_Connect_AnalyzePlanRequest
             /// Response type for "AnalyzePlan".
@@ -61,7 +61,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "Config" metadata.
-        internal enum Config {
+        internal enum Config: Sendable {
             /// Request type for "Config".
             internal typealias Input = Spark_Connect_ConfigRequest
             /// Response type for "Config".
@@ -73,7 +73,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "AddArtifacts" metadata.
-        internal enum AddArtifacts {
+        internal enum AddArtifacts: Sendable {
             /// Request type for "AddArtifacts".
             internal typealias Input = Spark_Connect_AddArtifactsRequest
             /// Response type for "AddArtifacts".
@@ -85,7 +85,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "ArtifactStatus" metadata.
-        internal enum ArtifactStatus {
+        internal enum ArtifactStatus: Sendable {
             /// Request type for "ArtifactStatus".
             internal typealias Input = Spark_Connect_ArtifactStatusesRequest
             /// Response type for "ArtifactStatus".
@@ -97,7 +97,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "Interrupt" metadata.
-        internal enum Interrupt {
+        internal enum Interrupt: Sendable {
             /// Request type for "Interrupt".
             internal typealias Input = Spark_Connect_InterruptRequest
             /// Response type for "Interrupt".
@@ -109,7 +109,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "ReattachExecute" metadata.
-        internal enum ReattachExecute {
+        internal enum ReattachExecute: Sendable {
             /// Request type for "ReattachExecute".
             internal typealias Input = Spark_Connect_ReattachExecuteRequest
             /// Response type for "ReattachExecute".
@@ -121,7 +121,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "ReleaseExecute" metadata.
-        internal enum ReleaseExecute {
+        internal enum ReleaseExecute: Sendable {
             /// Request type for "ReleaseExecute".
             internal typealias Input = Spark_Connect_ReleaseExecuteRequest
             /// Response type for "ReleaseExecute".
@@ -133,7 +133,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "ReleaseSession" metadata.
-        internal enum ReleaseSession {
+        internal enum ReleaseSession: Sendable {
             /// Request type for "ReleaseSession".
             internal typealias Input = Spark_Connect_ReleaseSessionRequest
             /// Response type for "ReleaseSession".
@@ -145,7 +145,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "FetchErrorDetails" metadata.
-        internal enum FetchErrorDetails {
+        internal enum FetchErrorDetails: Sendable {
             /// Request type for "FetchErrorDetails".
             internal typealias Input = Spark_Connect_FetchErrorDetailsRequest
             /// Response type for "FetchErrorDetails".
@@ -157,7 +157,7 @@ internal enum Spark_Connect_SparkConnectService {
             )
         }
         /// Namespace for "CloneSession" metadata.
-        internal enum CloneSession {
+        internal enum CloneSession: Sendable {
             /// Request type for "CloneSession".
             internal typealias Input = Spark_Connect_CloneSessionRequest
             /// Response type for "CloneSession".

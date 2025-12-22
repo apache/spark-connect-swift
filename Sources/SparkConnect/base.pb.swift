@@ -37,10 +37,46 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
+/// Compression codec for plan compression.
+enum Spark_Connect_CompressionCodec: SwiftProtobuf.Enum, Swift.CaseIterable {
+  typealias RawValue = Int
+  case unspecified // = 0
+  case zstd // = 1
+  case UNRECOGNIZED(Int)
+
+  init() {
+    self = .unspecified
+  }
+
+  init?(rawValue: Int) {
+    switch rawValue {
+    case 0: self = .unspecified
+    case 1: self = .zstd
+    default: self = .UNRECOGNIZED(rawValue)
+    }
+  }
+
+  var rawValue: Int {
+    switch self {
+    case .unspecified: return 0
+    case .zstd: return 1
+    case .UNRECOGNIZED(let i): return i
+    }
+  }
+
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  static let allCases: [Spark_Connect_CompressionCodec] = [
+    .unspecified,
+    .zstd,
+  ]
+
+}
+
 /// A [[Plan]] is the structure that carries the runtime information for the execution from the
-/// client to the server. A [[Plan]] can either be of the type [[Relation]] which is a reference
-/// to the underlying logical plan or it can be of the [[Command]] type that is used to execute
-/// commands on the server.
+/// client to the server. A [[Plan]] can be one of the following:
+/// - [[Relation]]: a reference to the underlying logical plan.
+/// - [[Command]]: used to execute commands on the server.
+/// - [[CompressedOperation]]: a compressed representation of either a Relation or a Command.
 struct Spark_Connect_Plan: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -64,12 +100,75 @@ struct Spark_Connect_Plan: Sendable {
     set {opType = .command(newValue)}
   }
 
+  var compressedOperation: Spark_Connect_Plan.CompressedOperation {
+    get {
+      if case .compressedOperation(let v)? = opType {return v}
+      return Spark_Connect_Plan.CompressedOperation()
+    }
+    set {opType = .compressedOperation(newValue)}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   enum OneOf_OpType: Equatable, Sendable {
     case root(Spark_Connect_Relation)
     case command(Spark_Connect_Command)
+    case compressedOperation(Spark_Connect_Plan.CompressedOperation)
 
+  }
+
+  struct CompressedOperation: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    var data: Data = Data()
+
+    var opType: Spark_Connect_Plan.CompressedOperation.OpType = .unspecified
+
+    var compressionCodec: Spark_Connect_CompressionCodec = .unspecified
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    enum OpType: SwiftProtobuf.Enum, Swift.CaseIterable {
+      typealias RawValue = Int
+      case unspecified // = 0
+      case relation // = 1
+      case command // = 2
+      case UNRECOGNIZED(Int)
+
+      init() {
+        self = .unspecified
+      }
+
+      init?(rawValue: Int) {
+        switch rawValue {
+        case 0: self = .unspecified
+        case 1: self = .relation
+        case 2: self = .command
+        default: self = .UNRECOGNIZED(rawValue)
+        }
+      }
+
+      var rawValue: Int {
+        switch self {
+        case .unspecified: return 0
+        case .relation: return 1
+        case .command: return 2
+        case .UNRECOGNIZED(let i): return i
+        }
+      }
+
+      // The compiler won't synthesize support with the UNRECOGNIZED case.
+      static let allCases: [Spark_Connect_Plan.CompressedOperation.OpType] = [
+        .unspecified,
+        .relation,
+        .command,
+      ]
+
+    }
+
+    init() {}
   }
 
   init() {}
@@ -3246,9 +3345,13 @@ struct Spark_Connect_CloneSessionResponse: Sendable {
 
 fileprivate let _protobuf_package = "spark.connect"
 
+extension Spark_Connect_CompressionCodec: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0COMPRESSION_CODEC_UNSPECIFIED\0\u{1}COMPRESSION_CODEC_ZSTD\0")
+}
+
 extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Plan"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}root\0\u{1}command\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}root\0\u{1}command\0\u{3}compressed_operation\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -3282,6 +3385,19 @@ extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
           self.opType = .command(v)
         }
       }()
+      case 3: try {
+        var v: Spark_Connect_Plan.CompressedOperation?
+        var hadOneofValue = false
+        if let current = self.opType {
+          hadOneofValue = true
+          if case .compressedOperation(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.opType = .compressedOperation(v)
+        }
+      }()
       default: break
       }
     }
@@ -3301,6 +3417,10 @@ extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
       guard case .command(let v)? = self.opType else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
     }()
+    case .compressedOperation?: try {
+      guard case .compressedOperation(let v)? = self.opType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    }()
     case nil: break
     }
     try unknownFields.traverse(visitor: &visitor)
@@ -3311,6 +3431,50 @@ extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
+}
+
+extension Spark_Connect_Plan.CompressedOperation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_Plan.protoMessageName + ".CompressedOperation"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}data\0\u{3}op_type\0\u{3}compression_codec\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularBytesField(value: &self.data) }()
+      case 2: try { try decoder.decodeSingularEnumField(value: &self.opType) }()
+      case 3: try { try decoder.decodeSingularEnumField(value: &self.compressionCodec) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.data.isEmpty {
+      try visitor.visitSingularBytesField(value: self.data, fieldNumber: 1)
+    }
+    if self.opType != .unspecified {
+      try visitor.visitSingularEnumField(value: self.opType, fieldNumber: 2)
+    }
+    if self.compressionCodec != .unspecified {
+      try visitor.visitSingularEnumField(value: self.compressionCodec, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_Plan.CompressedOperation, rhs: Spark_Connect_Plan.CompressedOperation) -> Bool {
+    if lhs.data != rhs.data {return false}
+    if lhs.opType != rhs.opType {return false}
+    if lhs.compressionCodec != rhs.compressionCodec {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_Plan.CompressedOperation.OpType: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0OP_TYPE_UNSPECIFIED\0\u{1}OP_TYPE_RELATION\0\u{1}OP_TYPE_COMMAND\0")
 }
 
 extension Spark_Connect_UserContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {

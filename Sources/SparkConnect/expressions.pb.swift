@@ -2994,7 +2994,7 @@ extension Spark_Connect_Expression.Cast.EvalMode: SwiftProtobuf._ProtoNameProvid
 
 extension Spark_Connect_Expression.Literal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Expression.protoMessageName + ".Literal"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}null\0\u{1}binary\0\u{1}boolean\0\u{1}byte\0\u{1}short\0\u{1}integer\0\u{1}long\0\u{2}\u{3}float\0\u{1}double\0\u{1}decimal\0\u{1}string\0\u{2}\u{3}date\0\u{1}timestamp\0\u{3}timestamp_ntz\0\u{3}calendar_interval\0\u{3}year_month_interval\0\u{3}day_time_interval\0\u{1}array\0\u{1}map\0\u{1}struct\0\u{3}specialized_array\0\u{1}time\0\u{4}J\u{1}data_type\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}null\0\u{1}binary\0\u{1}boolean\0\u{1}byte\0\u{1}short\0\u{1}integer\0\u{1}long\0\u{2}\u{3}float\0\u{1}double\0\u{1}decimal\0\u{1}string\0\u{2}\u{3}date\0\u{1}timestamp\0\u{3}timestamp_ntz\0\u{3}calendar_interval\0\u{3}year_month_interval\0\u{3}day_time_interval\0\u{1}array\0\u{1}map\0\u{1}struct\0\u{3}specialized_array\0\u{1}time\0\u{4}J\u{1}data_type\0\u{c}\u{1b}\u{1}\u{c}\u{1c}\u{1}")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {

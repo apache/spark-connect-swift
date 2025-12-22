@@ -388,6 +388,9 @@ struct Spark_Connect_PipelineCommand: Sendable {
         set {schema = .schemaString(newValue)}
       }
 
+      /// Optional cluster columns for the table.
+      var clusteringColumns: [String] = []
+
       var unknownFields = SwiftProtobuf.UnknownStorage()
 
       /// Schema for the table. If unset, this will be inferred from incoming flows.
@@ -515,6 +518,20 @@ struct Spark_Connect_PipelineCommand: Sendable {
       set {details = .extension(newValue)}
     }
 
+    /// If true, define the flow as a one-time flow, such as for backfill.
+    /// Set to true changes the flow in two ways:
+    ///   - The flow is run one time by default. If the pipeline is ran with a full refresh,
+    ///     the flow will run again.
+    ///   - The flow function must be a batch DataFrame, not a streaming DataFrame.
+    var once: Bool {
+      get {return _once ?? false}
+      set {_once = newValue}
+    }
+    /// Returns true if `once` has been explicitly set.
+    var hasOnce: Bool {return self._once != nil}
+    /// Clears the value of `once`. Subsequent reads from it will return its default value.
+    mutating func clearOnce() {self._once = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     enum OneOf_Details: Equatable, Sendable {
@@ -576,6 +593,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
     fileprivate var _targetDatasetName: String? = nil
     fileprivate var _clientID: String? = nil
     fileprivate var _sourceCodeLocation: Spark_Connect_SourceCodeLocation? = nil
+    fileprivate var _once: Bool? = nil
   }
 
   /// Resolves all datasets and flows and start a pipeline update. Should be called after all
@@ -1027,6 +1045,16 @@ struct Spark_Connect_PipelineAnalysisContext: Sendable {
   /// Clears the value of `definitionPath`. Subsequent reads from it will return its default value.
   mutating func clearDefinitionPath() {self._definitionPath = nil}
 
+  /// The name of the Flow involved in this analysis
+  var flowName: String {
+    get {return _flowName ?? String()}
+    set {_flowName = newValue}
+  }
+  /// Returns true if `flowName` has been explicitly set.
+  var hasFlowName: Bool {return self._flowName != nil}
+  /// Clears the value of `flowName`. Subsequent reads from it will return its default value.
+  mutating func clearFlowName() {self._flowName = nil}
+
   /// Reserved field for protocol extensions.
   var `extension`: [SwiftProtobuf.Google_Protobuf_Any] = []
 
@@ -1036,6 +1064,7 @@ struct Spark_Connect_PipelineAnalysisContext: Sendable {
 
   fileprivate var _dataflowGraphID: String? = nil
   fileprivate var _definitionPath: String? = nil
+  fileprivate var _flowName: String? = nil
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -1421,7 +1450,7 @@ extension Spark_Connect_PipelineCommand.DefineOutput: SwiftProtobuf.Message, Swi
 
 extension Spark_Connect_PipelineCommand.DefineOutput.TableDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.DefineOutput.protoMessageName + ".TableDetails"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_properties\0\u{3}partition_cols\0\u{1}format\0\u{3}schema_data_type\0\u{3}schema_string\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_properties\0\u{3}partition_cols\0\u{1}format\0\u{3}schema_data_type\0\u{3}schema_string\0\u{3}clustering_columns\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1453,6 +1482,7 @@ extension Spark_Connect_PipelineCommand.DefineOutput.TableDetails: SwiftProtobuf
           self.schema = .schemaString(v)
         }
       }()
+      case 6: try { try decoder.decodeRepeatedStringField(value: &self.clusteringColumns) }()
       default: break
       }
     }
@@ -1483,6 +1513,9 @@ extension Spark_Connect_PipelineCommand.DefineOutput.TableDetails: SwiftProtobuf
     }()
     case nil: break
     }
+    if !self.clusteringColumns.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.clusteringColumns, fieldNumber: 6)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -1491,6 +1524,7 @@ extension Spark_Connect_PipelineCommand.DefineOutput.TableDetails: SwiftProtobuf
     if lhs.partitionCols != rhs.partitionCols {return false}
     if lhs._format != rhs._format {return false}
     if lhs.schema != rhs.schema {return false}
+    if lhs.clusteringColumns != rhs.clusteringColumns {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -1537,7 +1571,7 @@ extension Spark_Connect_PipelineCommand.DefineOutput.SinkDetails: SwiftProtobuf.
 
 extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineFlow"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}flow_name\0\u{3}target_dataset_name\0\u{3}sql_conf\0\u{3}client_id\0\u{3}source_code_location\0\u{3}relation_flow_details\0\u{2}`\u{f}extension\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}flow_name\0\u{3}target_dataset_name\0\u{3}sql_conf\0\u{3}client_id\0\u{3}source_code_location\0\u{3}relation_flow_details\0\u{1}once\0\u{2}_\u{f}extension\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1564,6 +1598,7 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
           self.details = .relationFlowDetails(v)
         }
       }()
+      case 8: try { try decoder.decodeSingularBoolField(value: &self._once) }()
       case 999: try {
         var v: SwiftProtobuf.Google_Protobuf_Any?
         var hadOneofValue = false
@@ -1605,17 +1640,15 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
     try { if let v = self._sourceCodeLocation {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
     } }()
-    switch self.details {
-    case .relationFlowDetails?: try {
-      guard case .relationFlowDetails(let v)? = self.details else { preconditionFailure() }
+    try { if case .relationFlowDetails(let v)? = self.details {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
-    }()
-    case .extension?: try {
-      guard case .extension(let v)? = self.details else { preconditionFailure() }
+    } }()
+    try { if let v = self._once {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 8)
+    } }()
+    try { if case .extension(let v)? = self.details {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 999)
-    }()
-    case nil: break
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -1627,6 +1660,7 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
     if lhs._clientID != rhs._clientID {return false}
     if lhs._sourceCodeLocation != rhs._sourceCodeLocation {return false}
     if lhs.details != rhs.details {return false}
+    if lhs._once != rhs._once {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -2226,7 +2260,7 @@ extension Spark_Connect_PipelineQueryFunctionExecutionSignal: SwiftProtobuf.Mess
 
 extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineAnalysisContext"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}definition_path\0\u{2}e\u{f}extension\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}definition_path\0\u{3}flow_name\0\u{2}d\u{f}extension\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2236,6 +2270,7 @@ extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Message, SwiftPro
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self._dataflowGraphID) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self._definitionPath) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self._flowName) }()
       case 999: try { try decoder.decodeRepeatedMessageField(value: &self.`extension`) }()
       default: break
       }
@@ -2253,6 +2288,9 @@ extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Message, SwiftPro
     try { if let v = self._definitionPath {
       try visitor.visitSingularStringField(value: v, fieldNumber: 2)
     } }()
+    try { if let v = self._flowName {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 3)
+    } }()
     if !self.`extension`.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.`extension`, fieldNumber: 999)
     }
@@ -2262,6 +2300,7 @@ extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Message, SwiftPro
   static func ==(lhs: Spark_Connect_PipelineAnalysisContext, rhs: Spark_Connect_PipelineAnalysisContext) -> Bool {
     if lhs._dataflowGraphID != rhs._dataflowGraphID {return false}
     if lhs._definitionPath != rhs._definitionPath {return false}
+    if lhs._flowName != rhs._flowName {return false}
     if lhs.`extension` != rhs.`extension` {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
