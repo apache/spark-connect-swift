@@ -209,7 +209,7 @@ jobs:
         tar xvfz spark-3.5.7-bin-hadoop3.tgz && rm spark-3.5.7-bin-hadoop3.tgz
         mv spark-3.5.7-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.7,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.10.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.12:3.5.7,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.10.1 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         cd -
         swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release
@@ -235,7 +235,7 @@ jobs:
         tar xvfz spark-4.0.1-bin-hadoop3.tgz && rm spark-4.0.1-bin-hadoop3.tgz
         mv spark-4.0.1-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.1,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.1,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.1 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         cd -
         swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release
