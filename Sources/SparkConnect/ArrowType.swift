@@ -426,7 +426,7 @@ public class ArrowType {
         return "z"
       case ArrowTypeId.string:
         return "u"
-
+      case ArrowTypeId.strct:
         if let structType = self as? ArrowTypeStruct {
           var format = "+s"
           for field in structType.fields {
