@@ -448,6 +448,8 @@ public actor DataFrame: Sendable {
               values.append((array as! AsString).asString(i).utf8)
             case .complexInfo(.strct):
               values.append((array as! AsString).asString(i))
+            case .complexInfo(.list):
+              values.append(array.asAny(i) as? [String])
             default:
               values.append(array.asAny(i) as? String)
             }

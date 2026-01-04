@@ -209,6 +209,34 @@ public actor Catalog: Sendable {
     return try await df.collect().first![0] as! Bool
   }
 
+  /// Returns a list of tables in the given database (or the current database).
+  /// - Parameter pattern: The pattern that the database name needs to match.
+  /// - Returns: A list of ``SparkTable``.
+  public func listTables(dbName: String? = nil, pattern: String? = nil) async throws -> [SparkTable]
+  {
+    let df = getDataFrame({
+      var listTables = Spark_Connect_ListTables()
+      if let dbName {
+        listTables.dbName = dbName
+      }
+      if let pattern {
+        listTables.pattern = pattern
+      }
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .listTables(listTables)
+      return catalog
+    })
+    return try await df.collect().map {
+      try SparkTable(
+        name: $0[0] as! String,
+        catalog: $0[1] as? String,
+        namespace: $0[2] as? [String],
+        description: $0[3] as? String,
+        tableType: $0[4] as! String,
+        isTemporary: $0[5] as! Bool)
+    }
+  }
+
   /// Creates a table from the given path and returns the corresponding ``DataFrame``.
   /// - Parameters:
   ///   - tableName: A qualified or unqualified name that designates a table. If no database
@@ -245,6 +273,28 @@ public actor Catalog: Sendable {
       return catalog
     })
     return df
+  }
+
+  /// Get the table with the specified name.
+  /// - Parameter tableName: name of the table to get.
+  /// - Returns: The table found by the name.
+  public func getTable(_ tableName: String) async throws -> SparkTable {
+    let df = getDataFrame({
+      var table = Spark_Connect_GetTable()
+      table.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .getTable(table)
+      return catalog
+    })
+    return try await df.collect().map {
+      try SparkTable(
+        name: $0[0] as! String,
+        catalog: $0[1] as? String,
+        namespace: $0[2] as? [String],
+        description: $0[3] as? String,
+        tableType: $0[4] as! String,
+        isTemporary: $0[5] as! Bool)
+    }.first!
   }
 
   /// Check if the table or view with the specified name exists. This can either be a temporary

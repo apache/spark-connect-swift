@@ -121,6 +121,56 @@ struct CatalogTests {
   }
 
   @Test
+  func listTables() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.catalog.listTables().count == 0)
+
+    let tableName = ("TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: ""))
+      .lowercased()
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.orc("/tmp/\(tableName)")
+      #expect(
+        try await spark.catalog.createTable(tableName, "/tmp/\(tableName)", source: "orc").count()
+          == 1)
+
+      let tables = try await spark.catalog.listTables()
+      #expect(tables.count == 1)
+      #expect(tables[0].name == tableName)
+      #expect(tables[0].catalog == "spark_catalog")
+      #expect(tables[0].namespace == ["default"])
+      #expect(tables[0].description == nil)
+      #expect(tables[0].tableType == "EXTERNAL")
+      #expect(tables[0].isTemporary == false)
+      #expect(try await spark.catalog.listTables(pattern: "*") == tables)
+      #expect(try await spark.catalog.listTables(pattern: "non_exist").count == 0)
+    })
+    await spark.stop()
+  }
+
+  @Test
+  func getTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+
+    let tableName = ("TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: ""))
+      .lowercased()
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.range(1).write.orc("/tmp/\(tableName)")
+      #expect(
+        try await spark.catalog.createTable(tableName, "/tmp/\(tableName)", source: "orc").count()
+          == 1)
+
+      let table = try await spark.catalog.getTable(tableName)
+      #expect(table.name == tableName)
+      #expect(table.catalog == "spark_catalog")
+      #expect(table.namespace == ["default"])
+      #expect(table.description == nil)
+      #expect(table.tableType == "EXTERNAL")
+      #expect(table.isTemporary == false)
+    })
+    await spark.stop()
+  }
+
+  @Test
   func createTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
