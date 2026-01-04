@@ -126,6 +126,44 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
       rbLength: UInt(loadInfo.batchData.recordBatch.length))
   }
 
+  private func loadListData(_ loadInfo: DataLoadInfo, field: org_apache_arrow_flatbuf_Field)
+    -> Result<ArrowArrayHolder, ArrowError>
+  {
+    guard let node = loadInfo.batchData.nextNode() else {
+      return .failure(.invalid("Node not found"))
+    }
+
+    guard let nullBuffer = loadInfo.batchData.nextBuffer() else {
+      return .failure(.invalid("Null buffer not found"))
+    }
+
+    guard let offsetBuffer = loadInfo.batchData.nextBuffer() else {
+      return .failure(.invalid("Offset buffer not found"))
+    }
+
+    let nullLength = UInt(ceil(Double(node.length) / 8))
+    let arrowNullBuffer = makeBuffer(
+      nullBuffer, fileData: loadInfo.fileData, length: nullLength,
+      messageOffset: loadInfo.messageOffset)
+    let arrowOffsetBuffer = makeBuffer(
+      offsetBuffer, fileData: loadInfo.fileData, length: UInt(node.length + 1),
+      messageOffset: loadInfo.messageOffset)
+
+    guard field.childrenCount == 1, let childField = field.children(at: 0) else {
+      return .failure(.invalid("List must have exactly one child"))
+    }
+
+    switch loadField(loadInfo, field: childField) {
+    case .success(let childHolder):
+      return makeArrayHolder(
+        field, buffers: [arrowNullBuffer, arrowOffsetBuffer], nullCount: UInt(node.nullCount),
+        children: [childHolder.array.arrowData],
+        rbLength: UInt(loadInfo.batchData.recordBatch.length))
+    case .failure(let error):
+      return .failure(error)
+    }
+  }
+
   private func loadPrimitiveData(
     _ loadInfo: DataLoadInfo,
     field: org_apache_arrow_flatbuf_Field
@@ -204,6 +242,8 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
     switch field.typeType {
     case .struct_:
       return loadStructData(loadInfo, field: field)
+    case .list:
+      return loadListData(loadInfo, field: field)
     default:
       if isFixedPrimitive(field.typeType) {
         return loadPrimitiveData(loadInfo, field: field)

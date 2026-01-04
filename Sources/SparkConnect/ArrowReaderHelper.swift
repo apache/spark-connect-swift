@@ -160,7 +160,7 @@ private func makeFixedHolder<T>(
   }
 }
 
-func makeStructHolder(
+func makeNestedHolder(
   _ field: ArrowField,
   buffers: [ArrowBuffer],
   nullCount: UInt,
@@ -170,9 +170,12 @@ func makeStructHolder(
   do {
     let arrowData = try ArrowData(
       field.type,
-      buffers: buffers, children: children,
-      nullCount: nullCount, length: rbLength)
-    return .success(ArrowArrayHolderImpl(try StructArray(arrowData)))
+      buffers: buffers,
+      children: children,
+      nullCount: nullCount,
+      length: rbLength
+    )
+    return .success(ArrowArrayHolderImpl(try NestedArray(arrowData)))
   } catch let error as ArrowError {
     return .failure(error)
   } catch {
@@ -236,7 +239,10 @@ func makeArrayHolder(  // swiftlint:disable:this cyclomatic_complexity
   case .timestamp:
     return makeTimestampHolder(field, buffers: buffers, nullCount: nullCount)
   case .strct:
-    return makeStructHolder(
+    return makeNestedHolder(
+      field, buffers: buffers, nullCount: nullCount, children: children!, rbLength: rbLength)
+  case .list:
+    return makeNestedHolder(
       field, buffers: buffers, nullCount: nullCount, children: children!, rbLength: rbLength)
   default:
     return .failure(.unknownType("Type \(typeId) currently not supported"))
@@ -345,7 +351,15 @@ func findArrowType(  // swiftlint:disable:this cyclomatic_complexity function_bo
         ArrowField(childField.name ?? "", type: childType, isNullable: childField.nullable))
     }
 
-    return ArrowNestedType(ArrowType.ArrowStruct, fields: fields)
+    return ArrowTypeStruct(ArrowType.ArrowStruct, fields: fields)
+  case .list:
+    guard field.childrenCount == 1, let childField = field.children(at: 0) else {
+      return ArrowType(ArrowType.ArrowUnknown)
+    }
+    let childType = findArrowType(childField)
+    let childFieldName = childField.name ?? "item"
+    return ArrowTypeList(
+      ArrowField(childFieldName, type: childType, isNullable: childField.nullable))
   default:
     return ArrowType(ArrowType.ArrowUnknown)
   }

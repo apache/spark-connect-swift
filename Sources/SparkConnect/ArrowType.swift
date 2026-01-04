@@ -190,11 +190,24 @@ public class ArrowTypeTimestamp: ArrowType {
 }
 
 /// @nodoc
-public class ArrowNestedType: ArrowType {
+public class ArrowTypeStruct: ArrowType {
   let fields: [ArrowField]
   public init(_ info: ArrowType.Info, fields: [ArrowField]) {
     self.fields = fields
     super.init(info)
+  }
+}
+
+public class ArrowTypeList: ArrowType {
+  public let elementField: ArrowField
+
+  public init(_ elementField: ArrowField) {
+    self.elementField = elementField
+    super.init(ArrowType.ArrowList)
+  }
+
+  public convenience init(_ elementType: ArrowType, nullable: Bool = true) {
+    self.init(ArrowField("item", type: elementType, isNullable: nullable))
   }
 }
 
@@ -222,6 +235,7 @@ public class ArrowType {
   public static let ArrowTime64 = Info.timeInfo(ArrowTypeId.time64)
   public static let ArrowTimestamp = Info.timeInfo(ArrowTypeId.timestamp)
   public static let ArrowStruct = Info.complexInfo(ArrowTypeId.strct)
+  public static let ArrowList = Info.complexInfo(ArrowTypeId.list)
 
   public init(_ info: ArrowType.Info) {
     self.info = info
@@ -355,7 +369,7 @@ public class ArrowType {
       return MemoryLayout<Int8>.stride
     case .string:
       return MemoryLayout<Int8>.stride
-    case .strct:
+    case .strct, .list:
       return 0
     default:
       fatalError("Stride requested for unknown type: \(self)")
@@ -412,6 +426,20 @@ public class ArrowType {
         return "z"
       case ArrowTypeId.string:
         return "u"
+
+        if let structType = self as? ArrowTypeStruct {
+          var format = "+s"
+          for field in structType.fields {
+            format += try field.type.cDataFormatId
+          }
+          return format
+        }
+        throw ArrowError.invalid("Invalid struct type")
+      case ArrowTypeId.list:
+        if let listType = self as? ArrowTypeList {
+          return "+l" + (try listType.elementField.type.cDataFormatId)
+        }
+        throw ArrowError.invalid("Invalid list type")
       default:
         throw ArrowError.notImplemented
       }

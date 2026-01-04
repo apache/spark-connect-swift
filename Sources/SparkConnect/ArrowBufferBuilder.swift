@@ -343,20 +343,20 @@ public class Date64BufferBuilder: AbstractWrapperBufferBuilder<Date, Int64> {
 
 public final class StructBufferBuilder: BaseBufferBuilder, ArrowBufferBuilder {
   public typealias ItemType = [Any?]
-  var info: ArrowNestedType?
+  var info: ArrowTypeStruct?
   public init() throws {
     let nulls = ArrowBuffer.createBuffer(0, size: UInt(MemoryLayout<UInt8>.stride))
     super.init(nulls)
   }
 
   public func initializeTypeInfo(_ fields: [ArrowField]) {
-    info = ArrowNestedType(ArrowType.ArrowStruct, fields: fields)
+    info = ArrowTypeStruct(ArrowType.ArrowStruct, fields: fields)
   }
 
   public func append(_ newValue: [Any?]?) {
     let index = UInt(self.length)
     self.length += 1
-    if length > self.nulls.length {
+    if self.length > self.nulls.length {
       self.resize(length)
     }
 
@@ -383,5 +383,84 @@ public final class StructBufferBuilder: BaseBufferBuilder, ArrowBufferBuilder {
     var nulls = ArrowBuffer.createBuffer(length / 8 + 1, size: UInt(MemoryLayout<UInt8>.size))
     ArrowBuffer.copyCurrent(self.nulls, to: &nulls, len: nulls.capacity)
     return [nulls]
+  }
+}
+
+public class ListBufferBuilder: BaseBufferBuilder, ArrowBufferBuilder {
+  public typealias ItemType = [Any?]
+  var offsets: ArrowBuffer
+
+  public required init() throws {
+    self.offsets = ArrowBuffer.createBuffer(1, size: UInt(MemoryLayout<Int32>.stride))
+    let nulls = ArrowBuffer.createBuffer(0, size: UInt(MemoryLayout<UInt8>.stride))
+    super.init(nulls)
+    self.offsets.rawPointer.storeBytes(of: Int32(0), as: Int32.self)
+  }
+
+  public func append(_ count: Int) {
+    let index = UInt(self.length)
+    self.length += 1
+
+    if length >= self.offsets.length {
+      self.resize(length + 1)
+    }
+
+    let offsetIndex = Int(index) * MemoryLayout<Int32>.stride
+    let currentOffset = self.offsets.rawPointer.advanced(by: offsetIndex).load(as: Int32.self)
+
+    BitUtility.setBit(index + self.offset, buffer: self.nulls)
+    let newOffset = currentOffset + Int32(count)
+    self.offsets.rawPointer.advanced(by: offsetIndex + MemoryLayout<Int32>.stride).storeBytes(
+      of: newOffset, as: Int32.self)
+  }
+
+  public func append(_ newValue: [Any?]?) {
+    let index = UInt(self.length)
+    self.length += 1
+
+    if self.length >= self.offsets.length {
+      self.resize(self.length + 1)
+    }
+
+    let offsetIndex = Int(index) * MemoryLayout<Int32>.stride
+    let currentOffset = self.offsets.rawPointer.advanced(by: offsetIndex).load(as: Int32.self)
+
+    if let vals = newValue {
+      BitUtility.setBit(index + self.offset, buffer: self.nulls)
+      let newOffset = currentOffset + Int32(vals.count)
+      self.offsets.rawPointer.advanced(by: offsetIndex + MemoryLayout<Int32>.stride).storeBytes(
+        of: newOffset, as: Int32.self)
+    } else {
+      self.nullCount += 1
+      BitUtility.clearBit(index + self.offset, buffer: self.nulls)
+      self.offsets.rawPointer.advanced(by: offsetIndex + MemoryLayout<Int32>.stride).storeBytes(
+        of: currentOffset, as: Int32.self)
+    }
+  }
+
+  public override func isNull(_ index: UInt) -> Bool {
+    return !BitUtility.isSet(index + self.offset, buffer: self.nulls)
+  }
+
+  public func resize(_ length: UInt) {
+    if length > self.offsets.length {
+      let resizeLength = resizeLength(self.offsets)
+      var offsets = ArrowBuffer.createBuffer(resizeLength, size: UInt(MemoryLayout<Int32>.size))
+      var nulls = ArrowBuffer.createBuffer(
+        resizeLength / 8 + 1, size: UInt(MemoryLayout<UInt8>.size))
+      ArrowBuffer.copyCurrent(self.offsets, to: &offsets, len: self.offsets.capacity)
+      ArrowBuffer.copyCurrent(self.nulls, to: &nulls, len: self.nulls.capacity)
+      self.offsets = offsets
+      self.nulls = nulls
+    }
+  }
+
+  public func finish() -> [ArrowBuffer] {
+    let length = self.length
+    var nulls = ArrowBuffer.createBuffer(length / 8 + 1, size: UInt(MemoryLayout<UInt8>.size))
+    var offsets = ArrowBuffer.createBuffer(length + 1, size: UInt(MemoryLayout<Int32>.size))
+    ArrowBuffer.copyCurrent(self.nulls, to: &nulls, len: nulls.capacity)
+    ArrowBuffer.copyCurrent(self.offsets, to: &offsets, len: offsets.capacity)
+    return [nulls, offsets]
   }
 }

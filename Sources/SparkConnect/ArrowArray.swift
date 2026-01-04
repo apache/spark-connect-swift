@@ -120,7 +120,9 @@ public class ArrowArrayHolderImpl: ArrowArrayHolder {
     case .binary:
       return try ArrowArrayHolderImpl(BinaryArray(with))
     case .strct:
-      return try ArrowArrayHolderImpl(StructArray(with))
+      return try ArrowArrayHolderImpl(NestedArray(with))
+    case .list:
+      return try ArrowArrayHolderImpl(NestedArray(with))
     default:
       throw ArrowError.invalid("Array not found for type: \(arrowType)")
     }
@@ -395,16 +397,40 @@ public class BinaryArray: ArrowArray<Data> {
 }
 
 /// @nodoc
-public class StructArray: ArrowArray<[Any?]> {
-  public private(set) var arrowFields: [ArrowArrayHolder]?
+public class NestedArray: ArrowArray<[Any?]> {
+  private var children: [ArrowArrayHolder]?
+
   public required init(_ arrowData: ArrowData) throws {
     try super.init(arrowData)
-    var fields = [ArrowArrayHolder]()
-    for child in arrowData.children {
-      fields.append(try ArrowArrayHolderImpl.loadArray(child.type, with: child))
-    }
 
-    self.arrowFields = fields
+    switch arrowData.type.id {
+    case .list:
+      guard arrowData.children.count == 1 else {
+        throw ArrowError.invalid("List array must have exactly one child")
+      }
+
+      guard let listType = arrowData.type as? ArrowTypeList else {
+        throw ArrowError.invalid("Expected ArrowTypeList for list type ID")
+      }
+
+      self.children = [
+        try ArrowArrayHolderImpl.loadArray(
+          listType.elementField.type,
+          with: arrowData.children[0]
+        )
+      ]
+
+    case .strct:
+      var fields = [ArrowArrayHolder]()
+      for child in arrowData.children {
+        fields.append(try ArrowArrayHolderImpl.loadArray(child.type, with: child))
+      }
+      self.children = fields
+
+    default:
+      throw ArrowError.invalid(
+        "NestedArray only supports list and struct types, got: \(arrowData.type.id)")
+    }
   }
 
   public override subscript(_ index: UInt) -> [Any?]? {
@@ -412,36 +438,105 @@ public class StructArray: ArrowArray<[Any?]> {
       return nil
     }
 
-    if let fields = arrowFields {
-      var result = [Any?]()
-      for field in fields {
-        result.append(field.array.asAny(index))
-      }
-
-      return result
+    guard let children = self.children else {
+      return nil
     }
 
-    return nil
+    switch arrowData.type.id {
+    case .list:
+      guard let values = children.first else { return nil }
+
+      let offsets = self.arrowData.buffers[1]
+      let offsetIndex = Int(index) * MemoryLayout<Int32>.stride
+
+      let startOffset = offsets.rawPointer.advanced(by: offsetIndex).load(as: Int32.self)
+      let endOffset = offsets.rawPointer.advanced(by: offsetIndex + MemoryLayout<Int32>.stride)
+        .load(as: Int32.self)
+
+      var items = [Any?]()
+      for i in startOffset..<endOffset {
+        items.append(values.array.asAny(UInt(i)))
+      }
+
+      return items
+
+    case .strct:
+      var result = [Any?]()
+      for field in children {
+        result.append(field.array.asAny(index))
+      }
+      return result
+
+    default:
+      return nil
+    }
   }
 
   public override func asString(_ index: UInt) -> String {
-    if self.arrowData.isNull(index) {
-      return ""
-    }
+    switch arrowData.type.id {
+    case .list:
+      if self.arrowData.isNull(index) {
+        return "null"
+      }
 
-    var output = "{"
-    if let fields = arrowFields {
-      for fieldIndex in 0..<fields.count {
-        let asStr = fields[fieldIndex].array as? AsString
-        if fieldIndex == 0 {
-          output.append("\(asStr!.asString(index))")
+      guard let list = self[index] else {
+        return "null"
+      }
+
+      var output = "["
+      for (i, item) in list.enumerated() {
+        if i > 0 {
+          output.append(",")
+        }
+
+        if item == nil {
+          output.append("null")
+        } else if let asStringItem = item as? AsString {
+          output.append(asStringItem.asString(0))
         } else {
-          output.append(",\(asStr!.asString(index))")
+          output.append("\(item!)")
         }
       }
-    }
+      output.append("]")
+      return output
 
-    output += "}"
-    return output
+    case .strct:
+      if self.arrowData.isNull(index) {
+        return ""
+      }
+
+      var output = "{"
+      if let children = self.children {
+        for fieldIndex in 0..<children.count {
+          let asStr = children[fieldIndex].array as? AsString
+          if fieldIndex == 0 {
+            output.append("\(asStr!.asString(index))")
+          } else {
+            output.append(",\(asStr!.asString(index))")
+          }
+        }
+      }
+      output += "}"
+      return output
+
+    default:
+      return ""
+    }
+  }
+
+  public var isListArray: Bool {
+    return arrowData.type.id == .list
+  }
+
+  public var isStructArray: Bool {
+    return arrowData.type.id == .strct
+  }
+
+  public var fields: [ArrowArrayHolder]? {
+    return arrowData.type.id == .strct ? children : nil
+  }
+
+  public var values: ArrowArrayHolder? {
+    return arrowData.type.id == .list ? children?.first : nil
   }
 }

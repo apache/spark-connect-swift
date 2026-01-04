@@ -135,13 +135,13 @@ public class TimestampArrayBuilder: ArrowArrayBuilder<FixedBufferBuilder<Int64>,
   }
 }
 
-public class StructArrayBuilder: ArrowArrayBuilder<StructBufferBuilder, StructArray> {
+public class StructArrayBuilder: ArrowArrayBuilder<StructBufferBuilder, NestedArray> {
   let builders: [any ArrowArrayHolderBuilder]
   let fields: [ArrowField]
   public init(_ fields: [ArrowField], builders: [any ArrowArrayHolderBuilder]) throws {
     self.fields = fields
     self.builders = builders
-    try super.init(ArrowNestedType(ArrowType.ArrowStruct, fields: fields))
+    try super.init(ArrowTypeStruct(ArrowType.ArrowStruct, fields: fields))
     self.bufferBuilder.initializeTypeInfo(fields)
   }
 
@@ -153,7 +153,7 @@ public class StructArrayBuilder: ArrowArrayBuilder<StructBufferBuilder, StructAr
     }
 
     self.builders = builders
-    try super.init(ArrowNestedType(ArrowType.ArrowStruct, fields: fields))
+    try super.init(ArrowTypeStruct(ArrowType.ArrowStruct, fields: fields))
   }
 
   public override func append(_ values: [Any?]?) {
@@ -169,7 +169,7 @@ public class StructArrayBuilder: ArrowArrayBuilder<StructBufferBuilder, StructAr
     }
   }
 
-  public override func finish() throws -> StructArray {
+  public override func finish() throws -> NestedArray {
     let buffers = self.bufferBuilder.finish()
     var childData = [ArrowData]()
     for builder in self.builders {
@@ -180,8 +180,39 @@ public class StructArrayBuilder: ArrowArrayBuilder<StructBufferBuilder, StructAr
       self.type, buffers: buffers,
       children: childData, nullCount: self.nullCount,
       length: self.length)
-    let structArray = try StructArray(arrowData)
+    let structArray = try NestedArray(arrowData)
     return structArray
+  }
+}
+
+public class ListArrayBuilder: ArrowArrayBuilder<ListBufferBuilder, NestedArray> {
+  let valueBuilder: any ArrowArrayHolderBuilder
+
+  public override init(_ arrowType: ArrowType) throws {
+    guard let listType = arrowType as? ArrowTypeList else {
+      throw ArrowError.invalid("Expected ArrowTypeList")
+    }
+    let arrowField = listType.elementField
+    self.valueBuilder = try ArrowArrayBuilders.loadBuilder(arrowType: arrowField.type)
+    try super.init(arrowType)
+  }
+
+  public override func append(_ values: [Any?]?) {
+    self.bufferBuilder.append(values)
+    if let vals = values {
+      for val in vals {
+        self.valueBuilder.appendAny(val)
+      }
+    }
+  }
+
+  public override func finish() throws -> NestedArray {
+    let buffers = self.bufferBuilder.finish()
+    let childData = try valueBuilder.toHolder().array.arrowData
+    let arrowData = try ArrowData(
+      self.type, buffers: buffers, children: [childData], nullCount: self.nullCount,
+      length: self.length)
+    return try NestedArray(arrowData)
   }
 }
 
@@ -304,6 +335,16 @@ public class ArrowArrayBuilders {
         throw ArrowError.invalid("Expected arrow type for \(arrowType.id) not found")
       }
       return try TimestampArrayBuilder(timestampType.unit)
+    case .strct:
+      guard let structType = arrowType as? ArrowTypeStruct else {
+        throw ArrowError.invalid("Expected ArrowStructType for \(arrowType.id)")
+      }
+      return try StructArrayBuilder(structType.fields)
+    case .list:
+      guard let listType = arrowType as? ArrowTypeList else {
+        throw ArrowError.invalid("Expected ArrowTypeList for \(arrowType.id)")
+      }
+      return try ListArrayBuilder(listType)
     default:
       throw ArrowError.unknownType("Builder not found for arrow type: \(arrowType.id)")
     }
@@ -377,5 +418,13 @@ public class ArrowArrayBuilders {
     _ scale: Int32 = 18
   ) throws -> Decimal128ArrayBuilder {
     return try Decimal128ArrayBuilder(precision: precision, scale: scale)
+  }
+
+  public static func loadStructArrayBuilder(_ fields: [ArrowField]) throws -> StructArrayBuilder {
+    return try StructArrayBuilder(fields)
+  }
+
+  public static func loadListArrayBuilder(_ listType: ArrowTypeList) throws -> ListArrayBuilder {
+    return try ListArrayBuilder(listType)
   }
 }

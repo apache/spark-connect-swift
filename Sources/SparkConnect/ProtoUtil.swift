@@ -96,7 +96,14 @@ func fromProto(  // swiftlint:disable:this cyclomatic_complexity function_body_l
       children.append(fromProto(field: childField))
     }
 
-    arrowType = ArrowNestedType(ArrowType.ArrowStruct, fields: children)
+    arrowType = ArrowTypeStruct(ArrowType.ArrowStruct, fields: children)
+  case .list:
+    guard field.childrenCount == 1, let childField = field.children(at: 0) else {
+      arrowType = ArrowType(ArrowType.ArrowUnknown)
+      break
+    }
+    let childArrowField = fromProto(field: childField)
+    arrowType = ArrowTypeList(childArrowField)
   default:
     arrowType = ArrowType(ArrowType.ArrowUnknown)
   }
