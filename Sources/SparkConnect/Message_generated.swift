@@ -146,7 +146,7 @@ public struct org_apache_arrow_flatbuf_FieldNode: NativeStruct, Verifiable, Flat
 ///  would have {length: 5, null_count: 2} for its List node, and {length: 6,
 ///  null_count: 0} for its Int16 node, as separate FieldNode structs
 /// @nodoc
-public struct org_apache_arrow_flatbuf_FieldNode_Mutable: FlatBufferObject {
+public struct org_apache_arrow_flatbuf_FieldNode_Mutable: FlatBufferStruct {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -162,7 +162,7 @@ public struct org_apache_arrow_flatbuf_FieldNode_Mutable: FlatBufferObject {
 ///  bodies. Intended for use with RecordBatch but could be used for other
 ///  message types
 /// @nodoc
-public struct org_apache_arrow_flatbuf_BodyCompression: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_BodyCompression: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -245,7 +245,7 @@ public struct org_apache_arrow_flatbuf_BodyCompression: FlatBufferObject, Verifi
 ///  batch. Some systems call this a "row batch" internally and others a "record
 ///  batch".
 /// @nodoc
-public struct org_apache_arrow_flatbuf_RecordBatch: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_RecordBatch: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -289,8 +289,8 @@ public struct org_apache_arrow_flatbuf_RecordBatch: FlatBufferObject, Verifiable
     let o = _accessor.offset(VTOFFSET.nodes.v)
     return o == 0
       ? nil
-      : _accessor.directRead(
-        of: org_apache_arrow_flatbuf_FieldNode.self, offset: _accessor.vector(at: o) + index * 16)
+      : _accessor.bb.read(
+        def: org_apache_arrow_flatbuf_FieldNode.self, position: Int(_accessor.vector(at: o) + index * 16))
   }
   public func mutableNodes(at index: Int32) -> org_apache_arrow_flatbuf_FieldNode_Mutable? {
     let o = _accessor.offset(VTOFFSET.nodes.v)
@@ -317,8 +317,8 @@ public struct org_apache_arrow_flatbuf_RecordBatch: FlatBufferObject, Verifiable
     let o = _accessor.offset(VTOFFSET.buffers.v)
     return o == 0
       ? nil
-      : _accessor.directRead(
-        of: org_apache_arrow_flatbuf_Buffer.self, offset: _accessor.vector(at: o) + index * 16)
+      : _accessor.bb.read(
+        def: org_apache_arrow_flatbuf_Buffer.self, position: Int(_accessor.vector(at: o) + index * 16))
   }
   public func mutableBuffers(at index: Int32) -> org_apache_arrow_flatbuf_Buffer_Mutable? {
     let o = _accessor.offset(VTOFFSET.buffers.v)
@@ -406,7 +406,7 @@ public struct org_apache_arrow_flatbuf_RecordBatch: FlatBufferObject, Verifiable
 ///  may be spread across multiple dictionary batches by using the isDelta
 ///  flag
 /// @nodoc
-public struct org_apache_arrow_flatbuf_DictionaryBatch: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_DictionaryBatch: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -494,7 +494,7 @@ public struct org_apache_arrow_flatbuf_DictionaryBatch: FlatBufferObject, Verifi
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Message: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Message: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }

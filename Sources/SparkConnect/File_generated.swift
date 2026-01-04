@@ -69,7 +69,7 @@ public struct org_apache_arrow_flatbuf_Block: NativeStruct, Verifiable, Flatbuff
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Block_Mutable: FlatBufferObject {
+public struct org_apache_arrow_flatbuf_Block_Mutable: FlatBufferStruct {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -86,7 +86,7 @@ public struct org_apache_arrow_flatbuf_Block_Mutable: FlatBufferObject {
 ///  Arrow File metadata
 ///
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Footer: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Footer: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -137,8 +137,8 @@ public struct org_apache_arrow_flatbuf_Footer: FlatBufferObject, Verifiable {
     let o = _accessor.offset(VTOFFSET.dictionaries.v)
     return o == 0
       ? nil
-      : _accessor.directRead(
-        of: org_apache_arrow_flatbuf_Block.self, offset: _accessor.vector(at: o) + index * 24)
+      : _accessor.bb.read(
+        def: org_apache_arrow_flatbuf_Block.self, position: Int(_accessor.vector(at: o) + index * 24))
   }
   public func mutableDictionaries(at index: Int32) -> org_apache_arrow_flatbuf_Block_Mutable? {
     let o = _accessor.offset(VTOFFSET.dictionaries.v)
@@ -159,8 +159,8 @@ public struct org_apache_arrow_flatbuf_Footer: FlatBufferObject, Verifiable {
     let o = _accessor.offset(VTOFFSET.recordBatches.v)
     return o == 0
       ? nil
-      : _accessor.directRead(
-        of: org_apache_arrow_flatbuf_Block.self, offset: _accessor.vector(at: o) + index * 24)
+      : _accessor.bb.read(
+        def: org_apache_arrow_flatbuf_Block.self, position: Int(_accessor.vector(at: o) + index * 24))
   }
   public func mutableRecordBatches(at index: Int32) -> org_apache_arrow_flatbuf_Block_Mutable? {
     let o = _accessor.offset(VTOFFSET.recordBatches.v)

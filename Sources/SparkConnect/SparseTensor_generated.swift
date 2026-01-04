@@ -85,7 +85,7 @@ public enum org_apache_arrow_flatbuf_SparseTensorIndex: UInt8, UnionEnum {
 ///  (row-major order), and it does not have duplicated entries.  Otherwise,
 ///  the indices may not be sorted, or may have duplicated entries.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_SparseTensorIndexCOO: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_SparseTensorIndexCOO: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -130,7 +130,7 @@ public struct org_apache_arrow_flatbuf_SparseTensorIndexCOO: FlatBufferObject, V
   public func indicesStrides(at index: Int32) -> Int64 {
     let o = _accessor.offset(VTOFFSET.indicesStrides.v)
     return o == 0
-      ? 0 : _accessor.directRead(of: Int64.self, offset: _accessor.vector(at: o) + index * 8)
+      ? 0 : _accessor.bb.read(def: Int64.self, position: Int(_accessor.vector(at: o) + index * 8))
   }
   public var indicesStrides: [Int64] {
     return _accessor.getVector(at: VTOFFSET.indicesStrides.v) ?? []
@@ -216,7 +216,7 @@ public struct org_apache_arrow_flatbuf_SparseTensorIndexCOO: FlatBufferObject, V
 
 ///  Compressed Sparse format, that is matrix-specific.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_SparseMatrixIndexCSX: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_SparseMatrixIndexCSX: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -384,7 +384,7 @@ public struct org_apache_arrow_flatbuf_SparseMatrixIndexCSX: FlatBufferObject, V
 
 ///  Compressed Sparse Fiber (CSF) sparse tensor index.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_SparseTensorIndexCSF: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_SparseTensorIndexCSF: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -473,8 +473,8 @@ public struct org_apache_arrow_flatbuf_SparseTensorIndexCSF: FlatBufferObject, V
     let o = _accessor.offset(VTOFFSET.indptrBuffers.v)
     return o == 0
       ? nil
-      : _accessor.directRead(
-        of: org_apache_arrow_flatbuf_Buffer.self, offset: _accessor.vector(at: o) + index * 16)
+      : _accessor.bb.read(
+        def: org_apache_arrow_flatbuf_Buffer.self, position: Int(_accessor.vector(at: o) + index * 16))
   }
   public func mutableIndptrBuffers(at index: Int32) -> org_apache_arrow_flatbuf_Buffer_Mutable? {
     let o = _accessor.offset(VTOFFSET.indptrBuffers.v)
@@ -511,8 +511,8 @@ public struct org_apache_arrow_flatbuf_SparseTensorIndexCSF: FlatBufferObject, V
     let o = _accessor.offset(VTOFFSET.indicesBuffers.v)
     return o == 0
       ? nil
-      : _accessor.directRead(
-        of: org_apache_arrow_flatbuf_Buffer.self, offset: _accessor.vector(at: o) + index * 16)
+      : _accessor.bb.read(
+        def: org_apache_arrow_flatbuf_Buffer.self, position: Int(_accessor.vector(at: o) + index * 16))
   }
   public func mutableIndicesBuffers(at index: Int32) -> org_apache_arrow_flatbuf_Buffer_Mutable? {
     let o = _accessor.offset(VTOFFSET.indicesBuffers.v)
@@ -538,7 +538,7 @@ public struct org_apache_arrow_flatbuf_SparseTensorIndexCSF: FlatBufferObject, V
   public func axisOrder(at index: Int32) -> Int32 {
     let o = _accessor.offset(VTOFFSET.axisOrder.v)
     return o == 0
-      ? 0 : _accessor.directRead(of: Int32.self, offset: _accessor.vector(at: o) + index * 4)
+      ? 0 : _accessor.bb.read(def: Int32.self, position: Int(_accessor.vector(at: o) + index * 4))
   }
   public var axisOrder: [Int32] { return _accessor.getVector(at: VTOFFSET.axisOrder.v) ?? [] }
   public static func startSparseTensorIndexCSF(_ fbb: inout FlatBufferBuilder) -> UOffset {
@@ -619,7 +619,7 @@ public struct org_apache_arrow_flatbuf_SparseTensorIndexCSF: FlatBufferObject, V
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_SparseTensor: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_SparseTensor: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }

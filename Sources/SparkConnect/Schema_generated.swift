@@ -271,7 +271,7 @@ public struct org_apache_arrow_flatbuf_Buffer: NativeStruct, Verifiable, Flatbuf
 ///  ----------------------------------------------------------------------
 ///  A Buffer represents a single contiguous memory segment
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Buffer_Mutable: FlatBufferObject {
+public struct org_apache_arrow_flatbuf_Buffer_Mutable: FlatBufferStruct {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -285,7 +285,7 @@ public struct org_apache_arrow_flatbuf_Buffer_Mutable: FlatBufferObject {
 
 ///  These are stored in the flatbuffer in the Type union below
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Null: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Null: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -320,7 +320,7 @@ public struct org_apache_arrow_flatbuf_Null: FlatBufferObject, Verifiable {
 ///  (according to the physical memory layout). We used Struct_ here as
 ///  Struct is a reserved word in Flatbuffers
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Struct_: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Struct_: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -352,7 +352,7 @@ public struct org_apache_arrow_flatbuf_Struct_: FlatBufferObject, Verifiable {
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_List: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_List: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -386,7 +386,7 @@ public struct org_apache_arrow_flatbuf_List: FlatBufferObject, Verifiable {
 ///  Same as List, but with 64-bit offsets, allowing to represent
 ///  extremely large data values.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_LargeList: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_LargeList: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -418,7 +418,7 @@ public struct org_apache_arrow_flatbuf_LargeList: FlatBufferObject, Verifiable {
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_FixedSizeList: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_FixedSizeList: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -501,7 +501,7 @@ public struct org_apache_arrow_flatbuf_FixedSizeList: FlatBufferObject, Verifiab
 ///  for Map can make Map an alias for List. The "layout" attribute for the Map
 ///  field must have the same contents as a List.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Map: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Map: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -561,7 +561,7 @@ public struct org_apache_arrow_flatbuf_Map: FlatBufferObject, Verifiable {
 ///  optionally typeIds provides an indirection between the child offset and the type id
 ///  for each child `typeIds[offset]` is the id used in the type vector
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Union: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Union: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -602,7 +602,7 @@ public struct org_apache_arrow_flatbuf_Union: FlatBufferObject, Verifiable {
   public func typeIds(at index: Int32) -> Int32 {
     let o = _accessor.offset(VTOFFSET.typeIds.v)
     return o == 0
-      ? 0 : _accessor.directRead(of: Int32.self, offset: _accessor.vector(at: o) + index * 4)
+      ? 0 : _accessor.bb.read(def: Int32.self, position: Int(_accessor.vector(at: o) + index * 4))
   }
   public var typeIds: [Int32] { return _accessor.getVector(at: VTOFFSET.typeIds.v) ?? [] }
   public static func startUnion(_ fbb: inout FlatBufferBuilder) -> UOffset {
@@ -643,7 +643,7 @@ public struct org_apache_arrow_flatbuf_Union: FlatBufferObject, Verifiable {
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Int: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Int: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -710,7 +710,7 @@ public struct org_apache_arrow_flatbuf_Int: FlatBufferObject, Verifiable {
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_FloatingPoint: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_FloatingPoint: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -772,7 +772,7 @@ public struct org_apache_arrow_flatbuf_FloatingPoint: FlatBufferObject, Verifiab
 
 ///  Unicode with UTF-8 encoding
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Utf8: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Utf8: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -805,7 +805,7 @@ public struct org_apache_arrow_flatbuf_Utf8: FlatBufferObject, Verifiable {
 
 ///  Opaque binary data
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Binary: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Binary: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -839,7 +839,7 @@ public struct org_apache_arrow_flatbuf_Binary: FlatBufferObject, Verifiable {
 ///  Same as Utf8, but with 64-bit offsets, allowing to represent
 ///  extremely large data values.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_LargeUtf8: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_LargeUtf8: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -873,7 +873,7 @@ public struct org_apache_arrow_flatbuf_LargeUtf8: FlatBufferObject, Verifiable {
 ///  Same as Binary, but with 64-bit offsets, allowing to represent
 ///  extremely large data values.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_LargeBinary: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_LargeBinary: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -905,7 +905,7 @@ public struct org_apache_arrow_flatbuf_LargeBinary: FlatBufferObject, Verifiable
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_FixedSizeBinary: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_FixedSizeBinary: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -963,7 +963,7 @@ public struct org_apache_arrow_flatbuf_FixedSizeBinary: FlatBufferObject, Verifi
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Bool: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Bool: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1000,7 +1000,7 @@ public struct org_apache_arrow_flatbuf_Bool: FlatBufferObject, Verifiable {
 ///  each corresponding index in the values child array ends.
 ///  Like list/struct types, the value array can be of any type.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_RunEndEncoded: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_RunEndEncoded: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1038,7 +1038,7 @@ public struct org_apache_arrow_flatbuf_RunEndEncoded: FlatBufferObject, Verifiab
 ///  are used. The representation uses the endianness indicated
 ///  in the Schema.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Decimal: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Decimal: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1126,7 +1126,7 @@ public struct org_apache_arrow_flatbuf_Decimal: FlatBufferObject, Verifiable {
 ///    leap seconds), where the values are evenly divisible by 86400000
 ///  * Days (32 bits) since the UNIX epoch
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Date: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Date: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1199,7 +1199,7 @@ public struct org_apache_arrow_flatbuf_Date: FlatBufferObject, Verifiable {
 ///  measurements with leap seconds will need to be corrected when ingesting
 ///  into Arrow (for example by replacing the value 86400 with 86399).
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Time: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Time: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1375,7 +1375,7 @@ public struct org_apache_arrow_flatbuf_Time: FlatBufferObject, Verifiable {
 ///  was UTC; for example, the naive date-time "January 1st 1970, 00h00" would
 ///  be encoded as timestamp value 0.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Timestamp: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Timestamp: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1458,7 +1458,7 @@ public struct org_apache_arrow_flatbuf_Timestamp: FlatBufferObject, Verifiable {
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Interval: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Interval: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1517,7 +1517,7 @@ public struct org_apache_arrow_flatbuf_Interval: FlatBufferObject, Verifiable {
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Duration: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Duration: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1579,7 +1579,7 @@ public struct org_apache_arrow_flatbuf_Duration: FlatBufferObject, Verifiable {
 ///  user defined key value pairs to add custom metadata to arrow
 ///  key namespacing is the responsibility of the user
 /// @nodoc
-public struct org_apache_arrow_flatbuf_KeyValue: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_KeyValue: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1649,7 +1649,7 @@ public struct org_apache_arrow_flatbuf_KeyValue: FlatBufferObject, Verifiable {
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_DictionaryEncoding: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_DictionaryEncoding: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -1766,7 +1766,7 @@ public struct org_apache_arrow_flatbuf_DictionaryEncoding: FlatBufferObject, Ver
 ///  A field represents a named column in a record / row batch or child of a
 ///  nested type.
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Field: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Field: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -2011,7 +2011,7 @@ public struct org_apache_arrow_flatbuf_Field: FlatBufferObject, Verifiable {
 ///  ----------------------------------------------------------------------
 ///  A Schema describes the columns in a row batch
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Schema: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Schema: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -2090,7 +2090,7 @@ public struct org_apache_arrow_flatbuf_Schema: FlatBufferObject, Verifiable {
     return o == 0
       ? org_apache_arrow_flatbuf_Feature.unused
       : org_apache_arrow_flatbuf_Feature(
-        rawValue: _accessor.directRead(of: Int64.self, offset: _accessor.vector(at: o) + index * 8))
+        rawValue: _accessor.bb.read(def: Int64.self, position: Int(_accessor.vector(at: o) + index * 8)))
   }
   public static func startSchema(_ fbb: inout FlatBufferBuilder) -> UOffset {
     fbb.startTable(with: 4)

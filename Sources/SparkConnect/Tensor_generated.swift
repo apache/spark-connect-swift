@@ -25,7 +25,7 @@ import FlatBuffers
 ///  Data structures for dense tensors
 ///  Shape data for a single axis in a tensor
 /// @nodoc
-public struct org_apache_arrow_flatbuf_TensorDim: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_TensorDim: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -94,7 +94,7 @@ public struct org_apache_arrow_flatbuf_TensorDim: FlatBufferObject, Verifiable {
 }
 
 /// @nodoc
-public struct org_apache_arrow_flatbuf_Tensor: FlatBufferObject, Verifiable {
+public struct org_apache_arrow_flatbuf_Tensor: FlatBufferTable, Verifiable {
 
   static func validateVersion() { FlatBuffersVersion_23_1_4() }
   public var __buffer: ByteBuffer! { return _accessor.bb }
@@ -162,7 +162,7 @@ public struct org_apache_arrow_flatbuf_Tensor: FlatBufferObject, Verifiable {
   public func strides(at index: Int32) -> Int64 {
     let o = _accessor.offset(VTOFFSET.strides.v)
     return o == 0
-      ? 0 : _accessor.directRead(of: Int64.self, offset: _accessor.vector(at: o) + index * 8)
+      ? 0 : _accessor.bb.read(def: Int64.self, position: Int(_accessor.vector(at: o) + index * 8))
   }
   public var strides: [Int64] { return _accessor.getVector(at: VTOFFSET.strides.v) ?? [] }
   ///  The location and size of the tensor's data
