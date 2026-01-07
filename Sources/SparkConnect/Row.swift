@@ -75,6 +75,20 @@ public struct Row: Sendable, Equatable {
         return a == b
       } else if let a = x as? String, let b = y as? String {
         return a == b
+      } else if let a = x as? [Bool], let b = y as? [Bool] {
+        return a == b
+      } else if let a = x as? [any FixedWidthInteger], let b = y as? [any FixedWidthInteger] {
+        return a.map { Int64($0) } == b.map { Int64($0) }
+      } else if let a = x as? [Float], let b = y as? [Float] {
+        return a == b
+      } else if let a = x as? [Double], let b = y as? [Double] {
+        return a == b
+      } else if let a = x as? [Decimal], let b = y as? [Decimal] {
+        return a == b
+      } else if let a = x as? [Date], let b = y as? [Date] {
+        return a == b
+      } else if let a = x as? [String], let b = y as? [String] {
+        return a == b
       } else {
         return false
       }

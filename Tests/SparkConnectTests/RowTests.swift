@@ -97,4 +97,27 @@ struct RowTests {
     #expect([Row(1), Row(2)] == [Row(1), Row(2)])
     #expect([Row(1), Row(2)] != [Row(1), Row(3)])
   }
+
+  @Test
+  func compareArray() {
+    #expect([Row([1, 2])] == [Row([1, 2])])
+    #expect([Row([1, 2])] != [Row([1, 3])])
+    #expect([Row([1, 2])] != [Row([1])])
+
+    #expect([Row([1.0, 2.0])] == [Row([1.0, 2.0])])
+    #expect([Row([1.0, 2.0])] != [Row([1.0, 3.0])])
+    #expect([Row([1.0, 2.0])] != [Row([1.0])])
+
+    #expect([Row([Decimal(1.0), Decimal(2.0)])] == [Row([Decimal(1.0), Decimal(2.0)])])
+    #expect([Row([Decimal(1.0), Decimal(2.0)])] != [Row([Decimal(1.0), Decimal(3.0)])])
+    #expect([Row([Decimal(1.0), Decimal(2.0)])] != [Row([Decimal(1.0)])])
+
+    #expect([Row(["a", "b"])] == [Row(["a", "b"])])
+    #expect([Row(["a", "b"])] != [Row(["a", "c"])])
+    #expect([Row(["a", "b"])] != [Row(["a"])])
+
+    #expect([Row([true, false])] == [Row([true, false])])
+    #expect([Row([true, false])] != [Row([true, true])])
+    #expect([Row([true, false])] != [Row([true])])
+  }
 }
