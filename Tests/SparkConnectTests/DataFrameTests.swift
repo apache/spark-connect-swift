@@ -131,6 +131,17 @@ struct DataFrameTests {
   }
 
   @Test
+  func array() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.sql("SELECT array('a')").collect() == [Row(Array(["a"]))])
+    #expect(try await spark.sql("SELECT array(true)").collect() == [Row(Array([true]))])
+    #expect(try await spark.sql("SELECT array(1)").collect() == [Row(Array([1]))])
+    #expect(try await spark.sql("SELECT array(1.0F)").collect() == [Row(Array([Float(1.0)]))])
+    #expect(try await spark.sql("SELECT array(1.0D)").collect() == [Row(Array([1.0]))])
+    await spark.stop()
+  }
+
+  @Test
   func sameSemantics() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df1 = try await spark.range(1)
