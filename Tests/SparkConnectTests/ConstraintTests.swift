@@ -22,8 +22,9 @@ import SparkConnect
 import Testing
 
 /// A test suite for new syntaxes from SPARK-51207 (SPIP: Constraints in DSv2)
-/// For now, only syntax test is here because Apache Spark 4.1 and the corresponding Apache Iceberg is not released yet.
-@Suite(.serialized)
+/// For now, this suite is disabled due to SPARK-54761 because the corresponding Apache Iceberg
+/// is not released yet. We will revise this to DSv2 table when Iceberg starts to support Spark 4.1
+@Suite(.disabled("TODO(SPARK-54999): Re-enable ConstraintTests when Iceberg supports Spark 4.1)"))
 struct ConstraintTests {
 
   @Test
