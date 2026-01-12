@@ -16,7 +16,7 @@ So far, this library project is tracking the upstream changes of [Apache Arrow](
 
 ## Requirement
 
-- [Apache Spark 4.1.0 (December 2025)](https://github.com/apache/spark/releases/tag/v4.1.0)
+- [Apache Spark 4.1.1 (January 2026)](https://github.com/apache/spark/releases/tag/v4.1.1)
 - [Swift 6.2 (September 2025)](https://swift.org)
 - [gRPC Swift 2.2 (November 2025)](https://github.com/grpc/grpc-swift-2/releases/tag/2.2.1)
 - [gRPC Swift Protobuf 2.1.2 (December 2025)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/2.1.2)
@@ -91,7 +91,7 @@ Run your Swift application.
 ```bash
 $ swift run
 ...
-Connected to Apache Spark 4.1.0 Server
+Connected to Apache Spark 4.1.1 Server
 EXECUTE: DROP TABLE IF EXISTS t
 EXECUTE: CREATE TABLE IF NOT EXISTS t(a INT) USING ORC
 EXECUTE: INSERT INTO t VALUES (1), (2), (3)
