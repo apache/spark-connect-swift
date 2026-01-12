@@ -5,7 +5,7 @@ This is an example Swift stream processing application to show how to count word
 ## Run `Spark Connect Server`
 
 ```bash
-docker run --rm -p 15002:15002 apache/spark:4.1.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
+docker run --rm -p 15002:15002 apache/spark:4.1.1 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
 ```
 
 ## Run `Netcat` as a streaming input server
@@ -81,5 +81,5 @@ Batch: 2
 ```bash
 $ TARGET_HOST=host.docker.internal swift run
 ...
-Connected to Apache Spark 4.1.0 Server
+Connected to Apache Spark 4.1.1 Server
 ```
