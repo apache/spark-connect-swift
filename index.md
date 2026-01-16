@@ -9,6 +9,7 @@ from their Swift applications.
 
 ## Releases
 
+- [0.5.0 (2026-01-15)](https://github.com/apache/spark-connect-swift/releases/tag/0.5.0)
 - [0.4.0 (2025-10-01)](https://github.com/apache/spark-connect-swift/releases/tag/0.4.0)
 - [0.3.0 (2025-06-04)](https://github.com/apache/spark-connect-swift/releases/tag/0.3.0)
 - [0.2.0 (2025-05-20)](https://github.com/apache/spark-connect-swift/releases/tag/0.2.0)
@@ -57,6 +58,7 @@ Pi is roughly 3.1426151426151425
 ## Library Documentation
 
 - [main](https://swiftpackageindex.com/apache/spark-connect-swift/main/documentation/sparkconnect/)
+- [0.5.0](https://swiftpackageindex.com/apache/spark-connect-swift/0.5.0/documentation/sparkconnect)
 - [0.4.0](https://swiftpackageindex.com/apache/spark-connect-swift/0.4.0/documentation/sparkconnect)
 - [0.3.0](https://swiftpackageindex.com/apache/spark-connect-swift/0.3.0/documentation/sparkconnect)
 - [0.2.0](https://swiftpackageindex.com/apache/spark-connect-swift/0.2.0/documentation/sparkconnect)
