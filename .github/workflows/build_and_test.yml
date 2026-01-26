@@ -150,7 +150,7 @@ jobs:
         tar xvfz spark-4.2.0-preview1-bin-hadoop3.tgz && rm spark-4.2.0-preview1-bin-hadoop3.tgz
         mv spark-4.2.0-preview1-bin-hadoop3/ /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh
+        ./start-connect-server.sh -c spark.sql.timeType.enabled=true
         cd -
         swift test --no-parallel -c release
 
