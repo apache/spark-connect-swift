@@ -135,6 +135,25 @@ jobs:
         cd -
         swift test --no-parallel -c release
 
+  integration-test-mac-spark42:
+    runs-on: macos-26
+    timeout-minutes: 20
+    env:
+      SPARK_LOCAL_IP: localhost
+    steps:
+    - uses: actions/checkout@v6
+    - name: Build
+      run: swift test --filter NOTHING -c release
+    - name: Test
+      run: |
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.2.0-preview1/spark-4.2.0-preview1-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.2.0-preview1-bin-hadoop3.tgz && rm spark-4.2.0-preview1-bin-hadoop3.tgz
+        mv spark-4.2.0-preview1-bin-hadoop3/ /tmp/spark
+        cd /tmp/spark/sbin
+        ./start-connect-server.sh -c spark.sql.timeType.enabled=true
+        cd -
+        swift test --no-parallel -c release
+
   integration-test-mac:
     runs-on: macos-26
     timeout-minutes: 20

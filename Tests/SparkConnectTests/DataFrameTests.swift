@@ -343,7 +343,8 @@ struct DataFrameTests {
   @Test
   func isLocal() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if !(await spark.version.starts(with: "4.1")) {  // TODO(SPARK-52746)
+    let version = await spark.version
+    if !(version.starts(with: "4.1") || version.starts(with: "4.2")) { // TODO(SPARK-52746)
       #expect(try await spark.sql("SHOW DATABASES").isLocal())
       #expect(try await spark.sql("SHOW TABLES").isLocal())
     }
