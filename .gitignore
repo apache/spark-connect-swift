@@ -64,3 +64,9 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+## IDEs and MacOS
+.vscode/
+*.swp
+*~
+.DS_Store
