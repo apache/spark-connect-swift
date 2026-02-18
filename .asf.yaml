@@ -18,6 +18,8 @@
 github:
   description: "Apache Spark Connect Client for Swift"
   homepage: https://apache.github.io/spark-connect-swift/
+  features:
+    issues: true
   labels:
     - swift
     - big-data
