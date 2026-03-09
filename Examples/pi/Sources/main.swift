@@ -30,6 +30,6 @@ let count =
   .where("v <= 1")
   .count()
 
-print("Pi is roughly \(4.0 * Double(count) / (Double(n) - 1))")
+print("Pi is roughly \(4.0 * Double(count) / Double(n))")
 
 await spark.stop()
