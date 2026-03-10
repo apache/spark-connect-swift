@@ -30,17 +30,17 @@ LABEL org.opencontainers.image.authors="Apache Spark project <dev@spark.apache.o
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.ref.name="Apache Spark Connect for Swift"
 
-ENV SPARK_SWIFT_HOME=/opt/spark-swift
-ENV SPARK_SWIFT_APP=SparkConnectSwiftApp
+ENV SPARK_APP_HOME=/opt/spark-app
+ENV SPARK_APP=SparkConnectSwiftApp
 
-WORKDIR $SPARK_SWIFT_HOME
+WORKDIR $SPARK_APP_HOME
 
 RUN groupadd --system --gid=$SPARK_UID spark && \
-    useradd --system --home-dir $SPARK_SWIFT_HOME --uid=$SPARK_UID --gid=spark spark && \
-    chown -R spark:spark $SPARK_SWIFT_HOME
+    useradd --system --home-dir $SPARK_APP_HOME --uid=$SPARK_UID --gid=spark spark && \
+    chown -R spark:spark $SPARK_APP_HOME
 
-COPY --from=builder --chown=spark:spark /app/.build/*-unknown-linux-gnu/release/$SPARK_SWIFT_APP .
+COPY --from=builder --chown=spark:spark /app/.build/*-unknown-linux-gnu/release/$SPARK_APP .
 
 USER spark
 
-ENTRYPOINT ["/bin/sh", "-c", "$SPARK_SWIFT_HOME/$SPARK_SWIFT_APP"]
+ENTRYPOINT ["/bin/sh", "-c", "$SPARK_APP_HOME/$SPARK_APP"]
