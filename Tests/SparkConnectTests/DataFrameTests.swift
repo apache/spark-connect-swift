@@ -69,8 +69,9 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
 
     let schema1 = try await spark.sql("SELECT 'a' as col1").schema
+    let version = await spark.version
     let answer1 =
-      if await spark.version.starts(with: "4.") {
+      if ["4.0", "4.1"].contains(where: version.hasPrefix) {
         #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
       } else {
         #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{}}}]}}"#
@@ -79,7 +80,7 @@ struct DataFrameTests {
 
     let schema2 = try await spark.sql("SELECT 'a' as col1, 'b' as col2").schema
     let answer2 =
-      if await spark.version.starts(with: "4.") {
+      if ["4.0", "4.1"].contains(where: version.hasPrefix) {
         #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}},{"name":"col2","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
       } else {
         #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{}}},{"name":"col2","dataType":{"string":{}}}]}}"#
