@@ -105,7 +105,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
       return .failure(.invalid("Null buffer not found"))
     }
 
-    let nullLength = UInt(ceil(Double(node.length) / 8))
+    let nullLength = UInt((node.length + 7) / 8)
     let arrowNullBuffer = makeBuffer(
       nullBuffer, fileData: loadInfo.fileData,
       length: nullLength, messageOffset: loadInfo.messageOffset)
@@ -141,7 +141,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
       return .failure(.invalid("Offset buffer not found"))
     }
 
-    let nullLength = UInt(ceil(Double(node.length) / 8))
+    let nullLength = UInt((node.length + 7) / 8)
     let arrowNullBuffer = makeBuffer(
       nullBuffer, fileData: loadInfo.fileData, length: nullLength,
       messageOffset: loadInfo.messageOffset)
@@ -182,7 +182,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
       return .failure(.invalid("Value buffer not found"))
     }
 
-    let nullLength = UInt(ceil(Double(node.length) / 8))
+    let nullLength = UInt((node.length + 7) / 8)
     let arrowNullBuffer = makeBuffer(
       nullBuffer, fileData: loadInfo.fileData,
       length: nullLength, messageOffset: loadInfo.messageOffset)
@@ -217,7 +217,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
       return .failure(.invalid("Value buffer not found"))
     }
 
-    let nullLength = UInt(ceil(Double(node.length) / 8))
+    let nullLength = UInt((node.length + 7) / 8)
     let arrowNullBuffer = makeBuffer(
       nullBuffer, fileData: loadInfo.fileData,
       length: nullLength, messageOffset: loadInfo.messageOffset)
