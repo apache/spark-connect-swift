@@ -315,11 +315,13 @@ public actor SparkSession {
   /// - Returns: The result of the executed closure
   /// - Throws: Any error thrown by the closure
   public func time<T: Sendable>(_ f: () async throws -> T) async throws -> T {
-    let start = DispatchTime.now()
+    let clock = ContinuousClock()
+    let start = clock.now
     let ret = try await f()
-    let end = DispatchTime.now()
-    let elapsed = (end.uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000
-    print("Time taken: \(elapsed) ms")
+    let elapsed = clock.now - start
+    let ms = elapsed.components.seconds * 1000
+      + elapsed.components.attoseconds / 1_000_000_000_000_000
+    print("Time taken: \(ms) ms")
     return ret
   }
 
