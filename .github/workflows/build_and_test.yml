@@ -270,7 +270,7 @@ jobs:
         swift test --filter IcebergTest -c release
 
   linter:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 20
     steps:
     - name: Checkout repository
