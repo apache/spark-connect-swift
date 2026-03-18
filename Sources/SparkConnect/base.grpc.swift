@@ -45,7 +45,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "ExecutePlan".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "ExecutePlan"
+                method: "ExecutePlan",
+                type: .serverStreaming
             )
         }
         /// Namespace for "AnalyzePlan" metadata.
@@ -57,7 +58,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "AnalyzePlan".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "AnalyzePlan"
+                method: "AnalyzePlan",
+                type: .unary
             )
         }
         /// Namespace for "Config" metadata.
@@ -69,7 +71,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "Config".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "Config"
+                method: "Config",
+                type: .unary
             )
         }
         /// Namespace for "AddArtifacts" metadata.
@@ -81,7 +84,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "AddArtifacts".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "AddArtifacts"
+                method: "AddArtifacts",
+                type: .clientStreaming
             )
         }
         /// Namespace for "ArtifactStatus" metadata.
@@ -93,7 +97,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "ArtifactStatus".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "ArtifactStatus"
+                method: "ArtifactStatus",
+                type: .unary
             )
         }
         /// Namespace for "Interrupt" metadata.
@@ -105,7 +110,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "Interrupt".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "Interrupt"
+                method: "Interrupt",
+                type: .unary
             )
         }
         /// Namespace for "ReattachExecute" metadata.
@@ -117,7 +123,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "ReattachExecute".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "ReattachExecute"
+                method: "ReattachExecute",
+                type: .serverStreaming
             )
         }
         /// Namespace for "ReleaseExecute" metadata.
@@ -129,7 +136,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "ReleaseExecute".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "ReleaseExecute"
+                method: "ReleaseExecute",
+                type: .unary
             )
         }
         /// Namespace for "ReleaseSession" metadata.
@@ -141,7 +149,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "ReleaseSession".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "ReleaseSession"
+                method: "ReleaseSession",
+                type: .unary
             )
         }
         /// Namespace for "FetchErrorDetails" metadata.
@@ -153,7 +162,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "FetchErrorDetails".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "FetchErrorDetails"
+                method: "FetchErrorDetails",
+                type: .unary
             )
         }
         /// Namespace for "CloneSession" metadata.
@@ -165,7 +175,21 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             /// Descriptor for "CloneSession".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
-                method: "CloneSession"
+                method: "CloneSession",
+                type: .unary
+            )
+        }
+        /// Namespace for "GetStatus" metadata.
+        internal enum GetStatus: Sendable {
+            /// Request type for "GetStatus".
+            internal typealias Input = Spark_Connect_GetStatusRequest
+            /// Response type for "GetStatus".
+            internal typealias Output = Spark_Connect_GetStatusResponse
+            /// Descriptor for "GetStatus".
+            internal static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "spark.connect.SparkConnectService"),
+                method: "GetStatus",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "spark.connect.SparkConnectService" service.
@@ -180,7 +204,8 @@ internal enum Spark_Connect_SparkConnectService: Sendable {
             ReleaseExecute.descriptor,
             ReleaseSession.descriptor,
             FetchErrorDetails.descriptor,
-            CloneSession.descriptor
+            CloneSession.descriptor,
+            GetStatus.descriptor
         ]
     }
 }
@@ -426,6 +451,24 @@ extension Spark_Connect_SparkConnectService {
             request: GRPCCore.StreamingServerRequest<Spark_Connect_CloneSessionRequest>,
             context: GRPCCore.ServerContext
         ) async throws -> GRPCCore.StreamingServerResponse<Spark_Connect_CloneSessionResponse>
+
+        /// Handle the "GetStatus" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Get status information of different types.
+        ///
+        /// - Parameters:
+        ///   - request: A streaming request of `Spark_Connect_GetStatusRequest` messages.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A streaming response of `Spark_Connect_GetStatusResponse` messages.
+        func getStatus(
+            request: GRPCCore.StreamingServerRequest<Spark_Connect_GetStatusRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.StreamingServerResponse<Spark_Connect_GetStatusResponse>
     }
 
     /// Service protocol for the "spark.connect.SparkConnectService" service.
@@ -656,6 +699,24 @@ extension Spark_Connect_SparkConnectService {
             request: GRPCCore.ServerRequest<Spark_Connect_CloneSessionRequest>,
             context: GRPCCore.ServerContext
         ) async throws -> GRPCCore.ServerResponse<Spark_Connect_CloneSessionResponse>
+
+        /// Handle the "GetStatus" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Get status information of different types.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Spark_Connect_GetStatusRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A response containing a single `Spark_Connect_GetStatusResponse` message.
+        func getStatus(
+            request: GRPCCore.ServerRequest<Spark_Connect_GetStatusRequest>,
+            context: GRPCCore.ServerContext
+        ) async throws -> GRPCCore.ServerResponse<Spark_Connect_GetStatusResponse>
     }
 
     /// Simple service protocol for the "spark.connect.SparkConnectService" service.
@@ -886,6 +947,24 @@ extension Spark_Connect_SparkConnectService {
             request: Spark_Connect_CloneSessionRequest,
             context: GRPCCore.ServerContext
         ) async throws -> Spark_Connect_CloneSessionResponse
+
+        /// Handle the "GetStatus" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Get status information of different types.
+        ///
+        /// - Parameters:
+        ///   - request: A `Spark_Connect_GetStatusRequest` message.
+        ///   - context: Context providing information about the RPC.
+        /// - Throws: Any error which occurred during the processing of the request. Thrown errors
+        ///     of type `RPCError` are mapped to appropriate statuses. All other errors are converted
+        ///     to an internal error.
+        /// - Returns: A `Spark_Connect_GetStatusResponse` to respond with.
+        func getStatus(
+            request: Spark_Connect_GetStatusRequest,
+            context: GRPCCore.ServerContext
+        ) async throws -> Spark_Connect_GetStatusResponse
     }
 }
 
@@ -1014,6 +1093,17 @@ extension Spark_Connect_SparkConnectService.StreamingServiceProtocol {
                 )
             }
         )
+        router.registerHandler(
+            forMethod: Spark_Connect_SparkConnectService.Method.GetStatus.descriptor,
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Spark_Connect_GetStatusRequest>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Spark_Connect_GetStatusResponse>(),
+            handler: { request, context in
+                try await self.getStatus(
+                    request: request,
+                    context: context
+                )
+            }
+        )
     }
 }
 
@@ -1135,6 +1225,17 @@ extension Spark_Connect_SparkConnectService.ServiceProtocol {
         context: GRPCCore.ServerContext
     ) async throws -> GRPCCore.StreamingServerResponse<Spark_Connect_CloneSessionResponse> {
         let response = try await self.cloneSession(
+            request: GRPCCore.ServerRequest(stream: request),
+            context: context
+        )
+        return GRPCCore.StreamingServerResponse(single: response)
+    }
+
+    internal func getStatus(
+        request: GRPCCore.StreamingServerRequest<Spark_Connect_GetStatusRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.StreamingServerResponse<Spark_Connect_GetStatusResponse> {
+        let response = try await self.getStatus(
             request: GRPCCore.ServerRequest(stream: request),
             context: context
         )
@@ -1289,6 +1390,19 @@ extension Spark_Connect_SparkConnectService.SimpleServiceProtocol {
     ) async throws -> GRPCCore.ServerResponse<Spark_Connect_CloneSessionResponse> {
         return GRPCCore.ServerResponse<Spark_Connect_CloneSessionResponse>(
             message: try await self.cloneSession(
+                request: request.message,
+                context: context
+            ),
+            metadata: [:]
+        )
+    }
+
+    internal func getStatus(
+        request: GRPCCore.ServerRequest<Spark_Connect_GetStatusRequest>,
+        context: GRPCCore.ServerContext
+    ) async throws -> GRPCCore.ServerResponse<Spark_Connect_GetStatusResponse> {
+        return GRPCCore.ServerResponse<Spark_Connect_GetStatusResponse>(
+            message: try await self.getStatus(
                 request: request.message,
                 context: context
             ),
@@ -1580,6 +1694,29 @@ extension Spark_Connect_SparkConnectService {
             deserializer: some GRPCCore.MessageDeserializer<Spark_Connect_CloneSessionResponse>,
             options: GRPCCore.CallOptions,
             onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_CloneSessionResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "GetStatus" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Get status information of different types.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Spark_Connect_GetStatusRequest` message.
+        ///   - serializer: A serializer for `Spark_Connect_GetStatusRequest` messages.
+        ///   - deserializer: A deserializer for `Spark_Connect_GetStatusResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func getStatus<Result>(
+            request: GRPCCore.ClientRequest<Spark_Connect_GetStatusRequest>,
+            serializer: some GRPCCore.MessageSerializer<Spark_Connect_GetStatusRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Spark_Connect_GetStatusResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_GetStatusResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
     }
 
@@ -1991,6 +2128,40 @@ extension Spark_Connect_SparkConnectService {
                 onResponse: handleResponse
             )
         }
+
+        /// Call the "GetStatus" method.
+        ///
+        /// > Source IDL Documentation:
+        /// >
+        /// > Get status information of different types.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Spark_Connect_GetStatusRequest` message.
+        ///   - serializer: A serializer for `Spark_Connect_GetStatusRequest` messages.
+        ///   - deserializer: A deserializer for `Spark_Connect_GetStatusResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        internal func getStatus<Result>(
+            request: GRPCCore.ClientRequest<Spark_Connect_GetStatusRequest>,
+            serializer: some GRPCCore.MessageSerializer<Spark_Connect_GetStatusRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Spark_Connect_GetStatusResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_GetStatusResponse>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Spark_Connect_SparkConnectService.Method.GetStatus.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
     }
 }
 
@@ -2326,6 +2497,35 @@ extension Spark_Connect_SparkConnectService.ClientProtocol {
             request: request,
             serializer: GRPCProtobuf.ProtobufSerializer<Spark_Connect_CloneSessionRequest>(),
             deserializer: GRPCProtobuf.ProtobufDeserializer<Spark_Connect_CloneSessionResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "GetStatus" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > Get status information of different types.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Spark_Connect_GetStatusRequest` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func getStatus<Result>(
+        request: GRPCCore.ClientRequest<Spark_Connect_GetStatusRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_GetStatusResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.getStatus(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Spark_Connect_GetStatusRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Spark_Connect_GetStatusResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -2708,6 +2908,39 @@ extension Spark_Connect_SparkConnectService.ClientProtocol {
             metadata: metadata
         )
         return try await self.cloneSession(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "GetStatus" method.
+    ///
+    /// > Source IDL Documentation:
+    /// >
+    /// > Get status information of different types.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func getStatus<Result>(
+        _ message: Spark_Connect_GetStatusRequest,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Spark_Connect_GetStatusResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Spark_Connect_GetStatusRequest>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.getStatus(
             request: request,
             options: options,
             onResponse: handleResponse

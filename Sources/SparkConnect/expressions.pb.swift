@@ -24,7 +24,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import SwiftProtobuf
 
 // If the compiler emits an error on this type, it is because this file
@@ -45,11 +49,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
   // methods supported on all messages.
 
   var common: Spark_Connect_ExpressionCommon {
-    get {return _storage._common ?? Spark_Connect_ExpressionCommon()}
+    get {_storage._common ?? Spark_Connect_ExpressionCommon()}
     set {_uniqueStorage()._common = newValue}
   }
   /// Returns true if `common` has been explicitly set.
-  var hasCommon: Bool {return _storage._common != nil}
+  var hasCommon: Bool {_storage._common != nil}
   /// Clears the value of `common`. Subsequent reads from it will return its default value.
   mutating func clearCommon() {_uniqueStorage()._common = nil}
 
@@ -274,23 +278,23 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Required) The window function.
     var windowFunction: Spark_Connect_Expression {
-      get {return _storage._windowFunction ?? Spark_Connect_Expression()}
+      get {_storage._windowFunction ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._windowFunction = newValue}
     }
     /// Returns true if `windowFunction` has been explicitly set.
-    var hasWindowFunction: Bool {return _storage._windowFunction != nil}
+    var hasWindowFunction: Bool {_storage._windowFunction != nil}
     /// Clears the value of `windowFunction`. Subsequent reads from it will return its default value.
     mutating func clearWindowFunction() {_uniqueStorage()._windowFunction = nil}
 
     /// (Optional) The way that input rows are partitioned.
     var partitionSpec: [Spark_Connect_Expression] {
-      get {return _storage._partitionSpec}
+      get {_storage._partitionSpec}
       set {_uniqueStorage()._partitionSpec = newValue}
     }
 
     /// (Optional) Ordering of rows in a partition.
     var orderSpec: [Spark_Connect_Expression.SortOrder] {
-      get {return _storage._orderSpec}
+      get {_storage._orderSpec}
       set {_uniqueStorage()._orderSpec = newValue}
     }
 
@@ -298,11 +302,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     ///
     /// If not set, it will be treated as 'UnspecifiedFrame'.
     var frameSpec: Spark_Connect_Expression.Window.WindowFrame {
-      get {return _storage._frameSpec ?? Spark_Connect_Expression.Window.WindowFrame()}
+      get {_storage._frameSpec ?? Spark_Connect_Expression.Window.WindowFrame()}
       set {_uniqueStorage()._frameSpec = newValue}
     }
     /// Returns true if `frameSpec` has been explicitly set.
-    var hasFrameSpec: Bool {return _storage._frameSpec != nil}
+    var hasFrameSpec: Bool {_storage._frameSpec != nil}
     /// Clears the value of `frameSpec`. Subsequent reads from it will return its default value.
     mutating func clearFrameSpec() {_uniqueStorage()._frameSpec = nil}
 
@@ -316,27 +320,27 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
       /// (Required) The type of the frame.
       var frameType: Spark_Connect_Expression.Window.WindowFrame.FrameType {
-        get {return _storage._frameType}
+        get {_storage._frameType}
         set {_uniqueStorage()._frameType = newValue}
       }
 
       /// (Required) The lower bound of the frame.
       var lower: Spark_Connect_Expression.Window.WindowFrame.FrameBoundary {
-        get {return _storage._lower ?? Spark_Connect_Expression.Window.WindowFrame.FrameBoundary()}
+        get {_storage._lower ?? Spark_Connect_Expression.Window.WindowFrame.FrameBoundary()}
         set {_uniqueStorage()._lower = newValue}
       }
       /// Returns true if `lower` has been explicitly set.
-      var hasLower: Bool {return _storage._lower != nil}
+      var hasLower: Bool {_storage._lower != nil}
       /// Clears the value of `lower`. Subsequent reads from it will return its default value.
       mutating func clearLower() {_uniqueStorage()._lower = nil}
 
       /// (Required) The upper bound of the frame.
       var upper: Spark_Connect_Expression.Window.WindowFrame.FrameBoundary {
-        get {return _storage._upper ?? Spark_Connect_Expression.Window.WindowFrame.FrameBoundary()}
+        get {_storage._upper ?? Spark_Connect_Expression.Window.WindowFrame.FrameBoundary()}
         set {_uniqueStorage()._upper = newValue}
       }
       /// Returns true if `upper` has been explicitly set.
-      var hasUpper: Bool {return _storage._upper != nil}
+      var hasUpper: Bool {_storage._upper != nil}
       /// Clears the value of `upper`. Subsequent reads from it will return its default value.
       mutating func clearUpper() {_uniqueStorage()._upper = nil}
 
@@ -462,23 +466,23 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Required) The expression to be sorted.
     var child: Spark_Connect_Expression {
-      get {return _storage._child ?? Spark_Connect_Expression()}
+      get {_storage._child ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._child = newValue}
     }
     /// Returns true if `child` has been explicitly set.
-    var hasChild: Bool {return _storage._child != nil}
+    var hasChild: Bool {_storage._child != nil}
     /// Clears the value of `child`. Subsequent reads from it will return its default value.
     mutating func clearChild() {_uniqueStorage()._child = nil}
 
     /// (Required) The sort direction, should be ASCENDING or DESCENDING.
     var direction: Spark_Connect_Expression.SortOrder.SortDirection {
-      get {return _storage._direction}
+      get {_storage._direction}
       set {_uniqueStorage()._direction = newValue}
     }
 
     /// (Required) How to deal with NULLs, should be NULLS_FIRST or NULLS_LAST.
     var nullOrdering: Spark_Connect_Expression.SortOrder.NullOrdering {
-      get {return _storage._nullOrdering}
+      get {_storage._nullOrdering}
       set {_uniqueStorage()._nullOrdering = newValue}
     }
 
@@ -575,11 +579,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Required) The expression that evaluates to the partition ID.
     var child: Spark_Connect_Expression {
-      get {return _storage._child ?? Spark_Connect_Expression()}
+      get {_storage._child ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._child = newValue}
     }
     /// Returns true if `child` has been explicitly set.
-    var hasChild: Bool {return _storage._child != nil}
+    var hasChild: Bool {_storage._child != nil}
     /// Clears the value of `child`. Subsequent reads from it will return its default value.
     mutating func clearChild() {_uniqueStorage()._child = nil}
 
@@ -597,11 +601,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Required) the expression to be casted.
     var expr: Spark_Connect_Expression {
-      get {return _storage._expr ?? Spark_Connect_Expression()}
+      get {_storage._expr ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._expr = newValue}
     }
     /// Returns true if `expr` has been explicitly set.
-    var hasExpr: Bool {return _storage._expr != nil}
+    var hasExpr: Bool {_storage._expr != nil}
     /// Clears the value of `expr`. Subsequent reads from it will return its default value.
     mutating func clearExpr() {_uniqueStorage()._expr = nil}
 
@@ -630,7 +634,7 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Optional) The expression evaluation mode.
     var evalMode: Spark_Connect_Expression.Cast.EvalMode {
-      get {return _storage._evalMode}
+      get {_storage._evalMode}
       set {_uniqueStorage()._evalMode = newValue}
     }
 
@@ -883,11 +887,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     /// If the data_type field is not set at the root level, the data type will be
     /// inferred or retrieved from the deprecated data type fields using best efforts.
     var dataType: Spark_Connect_DataType {
-      get {return _dataType ?? Spark_Connect_DataType()}
+      get {_dataType ?? Spark_Connect_DataType()}
       set {_dataType = newValue}
     }
     /// Returns true if `dataType` has been explicitly set.
-    var hasDataType: Bool {return self._dataType != nil}
+    var hasDataType: Bool {self._dataType != nil}
     /// Clears the value of `dataType`. Subsequent reads from it will return its default value.
     mutating func clearDataType() {self._dataType = nil}
 
@@ -933,21 +937,21 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       /// The maximum number of digits allowed in the value.
       /// the maximum precision is 38.
       var precision: Int32 {
-        get {return _precision ?? 0}
+        get {_precision ?? 0}
         set {_precision = newValue}
       }
       /// Returns true if `precision` has been explicitly set.
-      var hasPrecision: Bool {return self._precision != nil}
+      var hasPrecision: Bool {self._precision != nil}
       /// Clears the value of `precision`. Subsequent reads from it will return its default value.
       mutating func clearPrecision() {self._precision = nil}
 
       /// declared scale of decimal literal
       var scale: Int32 {
-        get {return _scale ?? 0}
+        get {_scale ?? 0}
         set {_scale = newValue}
       }
       /// Returns true if `scale` has been explicitly set.
-      var hasScale: Bool {return self._scale != nil}
+      var hasScale: Bool {self._scale != nil}
       /// Clears the value of `scale`. Subsequent reads from it will return its default value.
       mutating func clearScale() {self._scale = nil}
 
@@ -986,11 +990,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       ///
       /// NOTE: This field was marked as deprecated in the .proto file.
       var elementType: Spark_Connect_DataType {
-        get {return _elementType ?? Spark_Connect_DataType()}
+        get {_elementType ?? Spark_Connect_DataType()}
         set {_elementType = newValue}
       }
       /// Returns true if `elementType` has been explicitly set.
-      var hasElementType: Bool {return self._elementType != nil}
+      var hasElementType: Bool {self._elementType != nil}
       /// Clears the value of `elementType`. Subsequent reads from it will return its default value.
       mutating func clearElementType() {self._elementType = nil}
 
@@ -1015,11 +1019,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       ///
       /// NOTE: This field was marked as deprecated in the .proto file.
       var keyType: Spark_Connect_DataType {
-        get {return _keyType ?? Spark_Connect_DataType()}
+        get {_keyType ?? Spark_Connect_DataType()}
         set {_keyType = newValue}
       }
       /// Returns true if `keyType` has been explicitly set.
-      var hasKeyType: Bool {return self._keyType != nil}
+      var hasKeyType: Bool {self._keyType != nil}
       /// Clears the value of `keyType`. Subsequent reads from it will return its default value.
       mutating func clearKeyType() {self._keyType = nil}
 
@@ -1030,11 +1034,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       ///
       /// NOTE: This field was marked as deprecated in the .proto file.
       var valueType: Spark_Connect_DataType {
-        get {return _valueType ?? Spark_Connect_DataType()}
+        get {_valueType ?? Spark_Connect_DataType()}
         set {_valueType = newValue}
       }
       /// Returns true if `valueType` has been explicitly set.
-      var hasValueType: Bool {return self._valueType != nil}
+      var hasValueType: Bool {self._valueType != nil}
       /// Clears the value of `valueType`. Subsequent reads from it will return its default value.
       mutating func clearValueType() {self._valueType = nil}
 
@@ -1064,11 +1068,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
       ///
       /// NOTE: This field was marked as deprecated in the .proto file.
       var structType: Spark_Connect_DataType {
-        get {return _structType ?? Spark_Connect_DataType()}
+        get {_structType ?? Spark_Connect_DataType()}
         set {_structType = newValue}
       }
       /// Returns true if `structType` has been explicitly set.
-      var hasStructType: Bool {return self._structType != nil}
+      var hasStructType: Bool {self._structType != nil}
       /// Clears the value of `structType`. Subsequent reads from it will return its default value.
       mutating func clearStructType() {self._structType = nil}
 
@@ -1161,11 +1165,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
       /// The precision of this time, if omitted, uses the default value of MICROS_PRECISION.
       var precision: Int32 {
-        get {return _precision ?? 0}
+        get {_precision ?? 0}
         set {_precision = newValue}
       }
       /// Returns true if `precision` has been explicitly set.
-      var hasPrecision: Bool {return self._precision != nil}
+      var hasPrecision: Bool {self._precision != nil}
       /// Clears the value of `precision`. Subsequent reads from it will return its default value.
       mutating func clearPrecision() {self._precision = nil}
 
@@ -1194,21 +1198,21 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Optional) The id of corresponding connect plan.
     var planID: Int64 {
-      get {return _planID ?? 0}
+      get {_planID ?? 0}
       set {_planID = newValue}
     }
     /// Returns true if `planID` has been explicitly set.
-    var hasPlanID: Bool {return self._planID != nil}
+    var hasPlanID: Bool {self._planID != nil}
     /// Clears the value of `planID`. Subsequent reads from it will return its default value.
     mutating func clearPlanID() {self._planID = nil}
 
     /// (Optional) The requested column is a metadata column.
     var isMetadataColumn: Bool {
-      get {return _isMetadataColumn ?? false}
+      get {_isMetadataColumn ?? false}
       set {_isMetadataColumn = newValue}
     }
     /// Returns true if `isMetadataColumn` has been explicitly set.
-    var hasIsMetadataColumn: Bool {return self._isMetadataColumn != nil}
+    var hasIsMetadataColumn: Bool {self._isMetadataColumn != nil}
     /// Clears the value of `isMetadataColumn`. Subsequent reads from it will return its default value.
     mutating func clearIsMetadataColumn() {self._isMetadataColumn = nil}
 
@@ -1246,11 +1250,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     /// If not set, the server will try to look up the function in the internal function registry
     /// and decide appropriately.
     var isInternal: Bool {
-      get {return _isInternal ?? false}
+      get {_isInternal ?? false}
       set {_isInternal = newValue}
     }
     /// Returns true if `isInternal` has been explicitly set.
-    var hasIsInternal: Bool {return self._isInternal != nil}
+    var hasIsInternal: Bool {self._isInternal != nil}
     /// Clears the value of `isInternal`. Subsequent reads from it will return its default value.
     mutating func clearIsInternal() {self._isInternal = nil}
 
@@ -1286,21 +1290,21 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     /// If set, it should end with '.*' and will be parsed by 'parseAttributeName'
     /// in the server side.
     var unparsedTarget: String {
-      get {return _unparsedTarget ?? String()}
+      get {_unparsedTarget ?? String()}
       set {_unparsedTarget = newValue}
     }
     /// Returns true if `unparsedTarget` has been explicitly set.
-    var hasUnparsedTarget: Bool {return self._unparsedTarget != nil}
+    var hasUnparsedTarget: Bool {self._unparsedTarget != nil}
     /// Clears the value of `unparsedTarget`. Subsequent reads from it will return its default value.
     mutating func clearUnparsedTarget() {self._unparsedTarget = nil}
 
     /// (Optional) The id of corresponding connect plan.
     var planID: Int64 {
-      get {return _planID ?? 0}
+      get {_planID ?? 0}
       set {_planID = newValue}
     }
     /// Returns true if `planID` has been explicitly set.
-    var hasPlanID: Bool {return self._planID != nil}
+    var hasPlanID: Bool {self._planID != nil}
     /// Clears the value of `planID`. Subsequent reads from it will return its default value.
     mutating func clearPlanID() {self._planID = nil}
 
@@ -1324,11 +1328,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Optional) The id of corresponding connect plan.
     var planID: Int64 {
-      get {return _planID ?? 0}
+      get {_planID ?? 0}
       set {_planID = newValue}
     }
     /// Returns true if `planID` has been explicitly set.
-    var hasPlanID: Bool {return self._planID != nil}
+    var hasPlanID: Bool {self._planID != nil}
     /// Clears the value of `planID`. Subsequent reads from it will return its default value.
     mutating func clearPlanID() {self._planID = nil}
 
@@ -1348,22 +1352,22 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     /// (Required) The expression to extract value from, can be
     /// Map, Array, Struct or array of Structs.
     var child: Spark_Connect_Expression {
-      get {return _storage._child ?? Spark_Connect_Expression()}
+      get {_storage._child ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._child = newValue}
     }
     /// Returns true if `child` has been explicitly set.
-    var hasChild: Bool {return _storage._child != nil}
+    var hasChild: Bool {_storage._child != nil}
     /// Clears the value of `child`. Subsequent reads from it will return its default value.
     mutating func clearChild() {_uniqueStorage()._child = nil}
 
     /// (Required) The expression to describe the extraction, can be
     /// key of Map, index of Array, field name of Struct.
     var extraction: Spark_Connect_Expression {
-      get {return _storage._extraction ?? Spark_Connect_Expression()}
+      get {_storage._extraction ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._extraction = newValue}
     }
     /// Returns true if `extraction` has been explicitly set.
-    var hasExtraction: Bool {return _storage._extraction != nil}
+    var hasExtraction: Bool {_storage._extraction != nil}
     /// Clears the value of `extraction`. Subsequent reads from it will return its default value.
     mutating func clearExtraction() {_uniqueStorage()._extraction = nil}
 
@@ -1382,17 +1386,17 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Required) The struct expression.
     var structExpression: Spark_Connect_Expression {
-      get {return _storage._structExpression ?? Spark_Connect_Expression()}
+      get {_storage._structExpression ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._structExpression = newValue}
     }
     /// Returns true if `structExpression` has been explicitly set.
-    var hasStructExpression: Bool {return _storage._structExpression != nil}
+    var hasStructExpression: Bool {_storage._structExpression != nil}
     /// Clears the value of `structExpression`. Subsequent reads from it will return its default value.
     mutating func clearStructExpression() {_uniqueStorage()._structExpression = nil}
 
     /// (Required) The field name.
     var fieldName: String {
-      get {return _storage._fieldName}
+      get {_storage._fieldName}
       set {_uniqueStorage()._fieldName = newValue}
     }
 
@@ -1400,11 +1404,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     ///
     /// When not set, it means this field will be dropped.
     var valueExpression: Spark_Connect_Expression {
-      get {return _storage._valueExpression ?? Spark_Connect_Expression()}
+      get {_storage._valueExpression ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._valueExpression = newValue}
     }
     /// Returns true if `valueExpression` has been explicitly set.
-    var hasValueExpression: Bool {return _storage._valueExpression != nil}
+    var hasValueExpression: Bool {_storage._valueExpression != nil}
     /// Clears the value of `valueExpression`. Subsequent reads from it will return its default value.
     mutating func clearValueExpression() {_uniqueStorage()._valueExpression = nil}
 
@@ -1422,11 +1426,11 @@ struct Spark_Connect_Expression: @unchecked Sendable {
 
     /// (Required) The expression that alias will be added on.
     var expr: Spark_Connect_Expression {
-      get {return _storage._expr ?? Spark_Connect_Expression()}
+      get {_storage._expr ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._expr = newValue}
     }
     /// Returns true if `expr` has been explicitly set.
-    var hasExpr: Bool {return _storage._expr != nil}
+    var hasExpr: Bool {_storage._expr != nil}
     /// Clears the value of `expr`. Subsequent reads from it will return its default value.
     mutating func clearExpr() {_uniqueStorage()._expr = nil}
 
@@ -1434,17 +1438,17 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     ///
     /// Scalar columns only has one name that presents.
     var name: [String] {
-      get {return _storage._name}
+      get {_storage._name}
       set {_uniqueStorage()._name = newValue}
     }
 
     /// (Optional) Alias metadata expressed as a JSON map.
     var metadata: String {
-      get {return _storage._metadata ?? String()}
+      get {_storage._metadata ?? String()}
       set {_uniqueStorage()._metadata = newValue}
     }
     /// Returns true if `metadata` has been explicitly set.
-    var hasMetadata: Bool {return _storage._metadata != nil}
+    var hasMetadata: Bool {_storage._metadata != nil}
     /// Clears the value of `metadata`. Subsequent reads from it will return its default value.
     mutating func clearMetadata() {_uniqueStorage()._metadata = nil}
 
@@ -1465,17 +1469,17 @@ struct Spark_Connect_Expression: @unchecked Sendable {
     /// The function body should use 'UnresolvedAttribute' as arguments, the sever side will
     /// replace 'UnresolvedAttribute' with 'UnresolvedNamedLambdaVariable'.
     var function: Spark_Connect_Expression {
-      get {return _storage._function ?? Spark_Connect_Expression()}
+      get {_storage._function ?? Spark_Connect_Expression()}
       set {_uniqueStorage()._function = newValue}
     }
     /// Returns true if `function` has been explicitly set.
-    var hasFunction: Bool {return _storage._function != nil}
+    var hasFunction: Bool {_storage._function != nil}
     /// Clears the value of `function`. Subsequent reads from it will return its default value.
     mutating func clearFunction() {_uniqueStorage()._function = nil}
 
     /// (Required) Function variables. Must contains 1 ~ 3 variables.
     var arguments: [Spark_Connect_Expression.UnresolvedNamedLambdaVariable] {
-      get {return _storage._arguments}
+      get {_storage._arguments}
       set {_uniqueStorage()._arguments = newValue}
     }
 
@@ -1511,11 +1515,11 @@ struct Spark_Connect_ExpressionCommon: Sendable {
 
   /// (Required) Keep the information of the origin for this expression such as stacktrace.
   var origin: Spark_Connect_Origin {
-    get {return _origin ?? Spark_Connect_Origin()}
+    get {_origin ?? Spark_Connect_Origin()}
     set {_origin = newValue}
   }
   /// Returns true if `origin` has been explicitly set.
-  var hasOrigin: Bool {return self._origin != nil}
+  var hasOrigin: Bool {self._origin != nil}
   /// Clears the value of `origin`. Subsequent reads from it will return its default value.
   mutating func clearOrigin() {self._origin = nil}
 
@@ -1590,11 +1594,11 @@ struct Spark_Connect_PythonUDF: Sendable {
 
   /// (Required) Output type of the Python UDF
   var outputType: Spark_Connect_DataType {
-    get {return _outputType ?? Spark_Connect_DataType()}
+    get {_outputType ?? Spark_Connect_DataType()}
     set {_outputType = newValue}
   }
   /// Returns true if `outputType` has been explicitly set.
-  var hasOutputType: Bool {return self._outputType != nil}
+  var hasOutputType: Bool {self._outputType != nil}
   /// Clears the value of `outputType`. Subsequent reads from it will return its default value.
   mutating func clearOutputType() {self._outputType = nil}
 
@@ -1630,11 +1634,11 @@ struct Spark_Connect_ScalarScalaUDF: Sendable {
 
   /// (Required) Output type of the UDF
   var outputType: Spark_Connect_DataType {
-    get {return _outputType ?? Spark_Connect_DataType()}
+    get {_outputType ?? Spark_Connect_DataType()}
     set {_outputType = newValue}
   }
   /// Returns true if `outputType` has been explicitly set.
-  var hasOutputType: Bool {return self._outputType != nil}
+  var hasOutputType: Bool {self._outputType != nil}
   /// Clears the value of `outputType`. Subsequent reads from it will return its default value.
   mutating func clearOutputType() {self._outputType = nil}
 
@@ -1661,11 +1665,11 @@ struct Spark_Connect_JavaUDF: Sendable {
 
   /// (Optional) Output type of the Java UDF
   var outputType: Spark_Connect_DataType {
-    get {return _outputType ?? Spark_Connect_DataType()}
+    get {_outputType ?? Spark_Connect_DataType()}
     set {_outputType = newValue}
   }
   /// Returns true if `outputType` has been explicitly set.
-  var hasOutputType: Bool {return self._outputType != nil}
+  var hasOutputType: Bool {self._outputType != nil}
   /// Clears the value of `outputType`. Subsequent reads from it will return its default value.
   mutating func clearOutputType() {self._outputType = nil}
 
@@ -1686,11 +1690,11 @@ struct Spark_Connect_TypedAggregateExpression: Sendable {
 
   /// (Required) The aggregate function object packed into bytes.
   var scalarScalaUdf: Spark_Connect_ScalarScalaUDF {
-    get {return _scalarScalaUdf ?? Spark_Connect_ScalarScalaUDF()}
+    get {_scalarScalaUdf ?? Spark_Connect_ScalarScalaUDF()}
     set {_scalarScalaUdf = newValue}
   }
   /// Returns true if `scalarScalaUdf` has been explicitly set.
-  var hasScalarScalaUdf: Bool {return self._scalarScalaUdf != nil}
+  var hasScalarScalaUdf: Bool {self._scalarScalaUdf != nil}
   /// Clears the value of `scalarScalaUdf`. Subsequent reads from it will return its default value.
   mutating func clearScalarScalaUdf() {self._scalarScalaUdf = nil}
 
@@ -1724,17 +1728,17 @@ struct Spark_Connect_NamedArgumentExpression: @unchecked Sendable {
 
   /// (Required) The key of the named argument.
   var key: String {
-    get {return _storage._key}
+    get {_storage._key}
     set {_uniqueStorage()._key = newValue}
   }
 
   /// (Required) The value expression of the named argument.
   var value: Spark_Connect_Expression {
-    get {return _storage._value ?? Spark_Connect_Expression()}
+    get {_storage._value ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._value = newValue}
   }
   /// Returns true if `value` has been explicitly set.
-  var hasValue: Bool {return _storage._value != nil}
+  var hasValue: Bool {_storage._value != nil}
   /// Clears the value of `value`. Subsequent reads from it will return its default value.
   mutating func clearValue() {_uniqueStorage()._value = nil}
 
@@ -1752,23 +1756,23 @@ struct Spark_Connect_MergeAction: @unchecked Sendable {
 
   /// (Required) The action type of the merge action.
   var actionType: Spark_Connect_MergeAction.ActionType {
-    get {return _storage._actionType}
+    get {_storage._actionType}
     set {_uniqueStorage()._actionType = newValue}
   }
 
   /// (Optional) The condition expression of the merge action.
   var condition: Spark_Connect_Expression {
-    get {return _storage._condition ?? Spark_Connect_Expression()}
+    get {_storage._condition ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._condition = newValue}
   }
   /// Returns true if `condition` has been explicitly set.
-  var hasCondition: Bool {return _storage._condition != nil}
+  var hasCondition: Bool {_storage._condition != nil}
   /// Clears the value of `condition`. Subsequent reads from it will return its default value.
   mutating func clearCondition() {_uniqueStorage()._condition = nil}
 
   /// (Optional) The assignments of the merge action. Required for ActionTypes INSERT and UPDATE.
   var assignments: [Spark_Connect_MergeAction.Assignment] {
-    get {return _storage._assignments}
+    get {_storage._assignments}
     set {_uniqueStorage()._assignments = newValue}
   }
 
@@ -1831,21 +1835,21 @@ struct Spark_Connect_MergeAction: @unchecked Sendable {
 
     /// (Required) The key of the assignment.
     var key: Spark_Connect_Expression {
-      get {return _key ?? Spark_Connect_Expression()}
+      get {_key ?? Spark_Connect_Expression()}
       set {_key = newValue}
     }
     /// Returns true if `key` has been explicitly set.
-    var hasKey: Bool {return self._key != nil}
+    var hasKey: Bool {self._key != nil}
     /// Clears the value of `key`. Subsequent reads from it will return its default value.
     mutating func clearKey() {self._key = nil}
 
     /// (Required) The value of the assignment.
     var value: Spark_Connect_Expression {
-      get {return _value ?? Spark_Connect_Expression()}
+      get {_value ?? Spark_Connect_Expression()}
       set {_value = newValue}
     }
     /// Returns true if `value` has been explicitly set.
-    var hasValue: Bool {return self._value != nil}
+    var hasValue: Bool {self._value != nil}
     /// Clears the value of `value`. Subsequent reads from it will return its default value.
     mutating func clearValue() {self._value = nil}
 
@@ -1875,11 +1879,11 @@ struct Spark_Connect_SubqueryExpression: Sendable {
 
   /// (Optional) Options specific to table arguments.
   var tableArgOptions: Spark_Connect_SubqueryExpression.TableArgOptions {
-    get {return _tableArgOptions ?? Spark_Connect_SubqueryExpression.TableArgOptions()}
+    get {_tableArgOptions ?? Spark_Connect_SubqueryExpression.TableArgOptions()}
     set {_tableArgOptions = newValue}
   }
   /// Returns true if `tableArgOptions` has been explicitly set.
-  var hasTableArgOptions: Bool {return self._tableArgOptions != nil}
+  var hasTableArgOptions: Bool {self._tableArgOptions != nil}
   /// Clears the value of `tableArgOptions`. Subsequent reads from it will return its default value.
   mutating func clearTableArgOptions() {self._tableArgOptions = nil}
 
@@ -1948,11 +1952,11 @@ struct Spark_Connect_SubqueryExpression: Sendable {
 
     /// (Optional) Whether this is a single partition.
     var withSinglePartition: Bool {
-      get {return _withSinglePartition ?? false}
+      get {_withSinglePartition ?? false}
       set {_withSinglePartition = newValue}
     }
     /// Returns true if `withSinglePartition` has been explicitly set.
-    var hasWithSinglePartition: Bool {return self._withSinglePartition != nil}
+    var hasWithSinglePartition: Bool {self._withSinglePartition != nil}
     /// Clears the value of `withSinglePartition`. Subsequent reads from it will return its default value.
     mutating func clearWithSinglePartition() {self._withSinglePartition = nil}
 

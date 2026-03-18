@@ -24,7 +24,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import SwiftProtobuf
 
 // If the compiler emits an error on this type, it is because this file
@@ -324,11 +328,11 @@ struct Spark_Connect_SqlCommand: Sendable {
 
   /// (Optional) The relation that this SQL command will be built on.
   var input: Spark_Connect_Relation {
-    get {return _input ?? Spark_Connect_Relation()}
+    get {_input ?? Spark_Connect_Relation()}
     set {_input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return self._input != nil}
+  var hasInput: Bool {self._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {self._input = nil}
 
@@ -347,11 +351,11 @@ struct Spark_Connect_CreateDataFrameViewCommand: Sendable {
 
   /// (Required) The relation that this view will be built on.
   var input: Spark_Connect_Relation {
-    get {return _input ?? Spark_Connect_Relation()}
+    get {_input ?? Spark_Connect_Relation()}
     set {_input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return self._input != nil}
+  var hasInput: Bool {self._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {self._input = nil}
 
@@ -382,21 +386,21 @@ struct Spark_Connect_WriteOperation: Sendable {
 
   /// (Required) The output of the `input` relation will be persisted according to the options.
   var input: Spark_Connect_Relation {
-    get {return _input ?? Spark_Connect_Relation()}
+    get {_input ?? Spark_Connect_Relation()}
     set {_input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return self._input != nil}
+  var hasInput: Bool {self._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {self._input = nil}
 
   /// (Optional) Format value according to the Spark documentation. Examples are: text, parquet, delta.
   var source: String {
-    get {return _source ?? String()}
+    get {_source ?? String()}
     set {_source = newValue}
   }
   /// Returns true if `source` has been explicitly set.
-  var hasSource: Bool {return self._source != nil}
+  var hasSource: Bool {self._source != nil}
   /// Clears the value of `source`. Subsequent reads from it will return its default value.
   mutating func clearSource() {self._source = nil}
 
@@ -435,11 +439,11 @@ struct Spark_Connect_WriteOperation: Sendable {
   /// (Optional) Bucketing specification. Bucketing must set the number of buckets and the columns
   /// to bucket by.
   var bucketBy: Spark_Connect_WriteOperation.BucketBy {
-    get {return _bucketBy ?? Spark_Connect_WriteOperation.BucketBy()}
+    get {_bucketBy ?? Spark_Connect_WriteOperation.BucketBy()}
     set {_bucketBy = newValue}
   }
   /// Returns true if `bucketBy` has been explicitly set.
-  var hasBucketBy: Bool {return self._bucketBy != nil}
+  var hasBucketBy: Bool {self._bucketBy != nil}
   /// Clears the value of `bucketBy`. Subsequent reads from it will return its default value.
   mutating func clearBucketBy() {self._bucketBy = nil}
 
@@ -591,11 +595,11 @@ struct Spark_Connect_WriteOperationV2: Sendable {
 
   /// (Required) The output of the `input` relation will be persisted according to the options.
   var input: Spark_Connect_Relation {
-    get {return _input ?? Spark_Connect_Relation()}
+    get {_input ?? Spark_Connect_Relation()}
     set {_input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return self._input != nil}
+  var hasInput: Bool {self._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {self._input = nil}
 
@@ -605,11 +609,11 @@ struct Spark_Connect_WriteOperationV2: Sendable {
   /// (Optional) A provider for the underlying output data source. Spark's default catalog supports
   /// "parquet", "json", etc.
   var provider: String {
-    get {return _provider ?? String()}
+    get {_provider ?? String()}
     set {_provider = newValue}
   }
   /// Returns true if `provider` has been explicitly set.
-  var hasProvider: Bool {return self._provider != nil}
+  var hasProvider: Bool {self._provider != nil}
   /// Clears the value of `provider`. Subsequent reads from it will return its default value.
   mutating func clearProvider() {self._provider = nil}
 
@@ -628,11 +632,11 @@ struct Spark_Connect_WriteOperationV2: Sendable {
 
   /// (Optional) A condition for overwrite saving mode
   var overwriteCondition: Spark_Connect_Expression {
-    get {return _overwriteCondition ?? Spark_Connect_Expression()}
+    get {_overwriteCondition ?? Spark_Connect_Expression()}
     set {_overwriteCondition = newValue}
   }
   /// Returns true if `overwriteCondition` has been explicitly set.
-  var hasOverwriteCondition: Bool {return self._overwriteCondition != nil}
+  var hasOverwriteCondition: Bool {self._overwriteCondition != nil}
   /// Clears the value of `overwriteCondition`. Subsequent reads from it will return its default value.
   mutating func clearOverwriteCondition() {self._overwriteCondition = nil}
 
@@ -711,26 +715,26 @@ struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
 
   /// (Required) The output of the `input` streaming relation will be written.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   var format: String {
-    get {return _storage._format}
+    get {_storage._format}
     set {_uniqueStorage()._format = newValue}
   }
 
   var options: Dictionary<String,String> {
-    get {return _storage._options}
+    get {_storage._options}
     set {_uniqueStorage()._options = newValue}
   }
 
   var partitioningColumnNames: [String] {
-    get {return _storage._partitioningColumnNames}
+    get {_storage._partitioningColumnNames}
     set {_uniqueStorage()._partitioningColumnNames = newValue}
   }
 
@@ -771,13 +775,21 @@ struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
     set {_uniqueStorage()._trigger = .continuousCheckpointInterval(newValue)}
   }
 
+  var realTimeBatchDuration: String {
+    get {
+      if case .realTimeBatchDuration(let v)? = _storage._trigger {return v}
+      return String()
+    }
+    set {_uniqueStorage()._trigger = .realTimeBatchDuration(newValue)}
+  }
+
   var outputMode: String {
-    get {return _storage._outputMode}
+    get {_storage._outputMode}
     set {_uniqueStorage()._outputMode = newValue}
   }
 
   var queryName: String {
-    get {return _storage._queryName}
+    get {_storage._queryName}
     set {_uniqueStorage()._queryName = newValue}
   }
 
@@ -804,26 +816,26 @@ struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
   }
 
   var foreachWriter: Spark_Connect_StreamingForeachFunction {
-    get {return _storage._foreachWriter ?? Spark_Connect_StreamingForeachFunction()}
+    get {_storage._foreachWriter ?? Spark_Connect_StreamingForeachFunction()}
     set {_uniqueStorage()._foreachWriter = newValue}
   }
   /// Returns true if `foreachWriter` has been explicitly set.
-  var hasForeachWriter: Bool {return _storage._foreachWriter != nil}
+  var hasForeachWriter: Bool {_storage._foreachWriter != nil}
   /// Clears the value of `foreachWriter`. Subsequent reads from it will return its default value.
   mutating func clearForeachWriter() {_uniqueStorage()._foreachWriter = nil}
 
   var foreachBatch: Spark_Connect_StreamingForeachFunction {
-    get {return _storage._foreachBatch ?? Spark_Connect_StreamingForeachFunction()}
+    get {_storage._foreachBatch ?? Spark_Connect_StreamingForeachFunction()}
     set {_uniqueStorage()._foreachBatch = newValue}
   }
   /// Returns true if `foreachBatch` has been explicitly set.
-  var hasForeachBatch: Bool {return _storage._foreachBatch != nil}
+  var hasForeachBatch: Bool {_storage._foreachBatch != nil}
   /// Clears the value of `foreachBatch`. Subsequent reads from it will return its default value.
   mutating func clearForeachBatch() {_uniqueStorage()._foreachBatch = nil}
 
   /// (Optional) Columns used for clustering the table.
   var clusteringColumnNames: [String] {
-    get {return _storage._clusteringColumnNames}
+    get {_storage._clusteringColumnNames}
     set {_uniqueStorage()._clusteringColumnNames = newValue}
   }
 
@@ -834,6 +846,7 @@ struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
     case availableNow(Bool)
     case once(Bool)
     case continuousCheckpointInterval(String)
+    case realTimeBatchDuration(String)
 
   }
 
@@ -890,11 +903,11 @@ struct Spark_Connect_WriteStreamOperationStartResult: Sendable {
 
   /// (Required) Query instance. See `StreamingQueryInstanceId`.
   var queryID: Spark_Connect_StreamingQueryInstanceId {
-    get {return _queryID ?? Spark_Connect_StreamingQueryInstanceId()}
+    get {_queryID ?? Spark_Connect_StreamingQueryInstanceId()}
     set {_queryID = newValue}
   }
   /// Returns true if `queryID` has been explicitly set.
-  var hasQueryID: Bool {return self._queryID != nil}
+  var hasQueryID: Bool {self._queryID != nil}
   /// Clears the value of `queryID`. Subsequent reads from it will return its default value.
   mutating func clearQueryID() {self._queryID = nil}
 
@@ -903,11 +916,11 @@ struct Spark_Connect_WriteStreamOperationStartResult: Sendable {
 
   /// Optional query started event if there is any listener registered on the client side.
   var queryStartedEventJson: String {
-    get {return _queryStartedEventJson ?? String()}
+    get {_queryStartedEventJson ?? String()}
     set {_queryStartedEventJson = newValue}
   }
   /// Returns true if `queryStartedEventJson` has been explicitly set.
-  var hasQueryStartedEventJson: Bool {return self._queryStartedEventJson != nil}
+  var hasQueryStartedEventJson: Bool {self._queryStartedEventJson != nil}
   /// Clears the value of `queryStartedEventJson`. Subsequent reads from it will return its default value.
   mutating func clearQueryStartedEventJson() {self._queryStartedEventJson = nil}
 
@@ -950,11 +963,11 @@ struct Spark_Connect_StreamingQueryCommand: Sendable {
 
   /// (Required) Query instance. See `StreamingQueryInstanceId`.
   var queryID: Spark_Connect_StreamingQueryInstanceId {
-    get {return _queryID ?? Spark_Connect_StreamingQueryInstanceId()}
+    get {_queryID ?? Spark_Connect_StreamingQueryInstanceId()}
     set {_queryID = newValue}
   }
   /// Returns true if `queryID` has been explicitly set.
-  var hasQueryID: Bool {return self._queryID != nil}
+  var hasQueryID: Bool {self._queryID != nil}
   /// Clears the value of `queryID`. Subsequent reads from it will return its default value.
   mutating func clearQueryID() {self._queryID = nil}
 
@@ -1076,11 +1089,11 @@ struct Spark_Connect_StreamingQueryCommand: Sendable {
     // methods supported on all messages.
 
     var timeoutMs: Int64 {
-      get {return _timeoutMs ?? 0}
+      get {_timeoutMs ?? 0}
       set {_timeoutMs = newValue}
     }
     /// Returns true if `timeoutMs` has been explicitly set.
-    var hasTimeoutMs: Bool {return self._timeoutMs != nil}
+    var hasTimeoutMs: Bool {self._timeoutMs != nil}
     /// Clears the value of `timeoutMs`. Subsequent reads from it will return its default value.
     mutating func clearTimeoutMs() {self._timeoutMs = nil}
 
@@ -1104,11 +1117,11 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
 
   /// (Required) Query instance id. See `StreamingQueryInstanceId`.
   var queryID: Spark_Connect_StreamingQueryInstanceId {
-    get {return _queryID ?? Spark_Connect_StreamingQueryInstanceId()}
+    get {_queryID ?? Spark_Connect_StreamingQueryInstanceId()}
     set {_queryID = newValue}
   }
   /// Returns true if `queryID` has been explicitly set.
-  var hasQueryID: Bool {return self._queryID != nil}
+  var hasQueryID: Bool {self._queryID != nil}
   /// Clears the value of `queryID`. Subsequent reads from it will return its default value.
   mutating func clearQueryID() {self._queryID = nil}
 
@@ -1218,31 +1231,31 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
     /// (Optional) Exception message as string, maps to the return value of original
     /// StreamingQueryException's toString method
     var exceptionMessage: String {
-      get {return _exceptionMessage ?? String()}
+      get {_exceptionMessage ?? String()}
       set {_exceptionMessage = newValue}
     }
     /// Returns true if `exceptionMessage` has been explicitly set.
-    var hasExceptionMessage: Bool {return self._exceptionMessage != nil}
+    var hasExceptionMessage: Bool {self._exceptionMessage != nil}
     /// Clears the value of `exceptionMessage`. Subsequent reads from it will return its default value.
     mutating func clearExceptionMessage() {self._exceptionMessage = nil}
 
     /// (Optional) Exception error class as string
     var errorClass: String {
-      get {return _errorClass ?? String()}
+      get {_errorClass ?? String()}
       set {_errorClass = newValue}
     }
     /// Returns true if `errorClass` has been explicitly set.
-    var hasErrorClass: Bool {return self._errorClass != nil}
+    var hasErrorClass: Bool {self._errorClass != nil}
     /// Clears the value of `errorClass`. Subsequent reads from it will return its default value.
     mutating func clearErrorClass() {self._errorClass = nil}
 
     /// (Optional) Exception stack trace as string
     var stackTrace: String {
-      get {return _stackTrace ?? String()}
+      get {_stackTrace ?? String()}
       set {_stackTrace = newValue}
     }
     /// Returns true if `stackTrace` has been explicitly set.
-    var hasStackTrace: Bool {return self._stackTrace != nil}
+    var hasStackTrace: Bool {self._stackTrace != nil}
     /// Clears the value of `stackTrace`. Subsequent reads from it will return its default value.
     mutating func clearStackTrace() {self._stackTrace = nil}
 
@@ -1372,11 +1385,11 @@ struct Spark_Connect_StreamingQueryManagerCommand: Sendable {
 
     /// (Optional) The waiting time in milliseconds to wait for any query to terminate.
     var timeoutMs: Int64 {
-      get {return _timeoutMs ?? 0}
+      get {_timeoutMs ?? 0}
       set {_timeoutMs = newValue}
     }
     /// Returns true if `timeoutMs` has been explicitly set.
-    var hasTimeoutMs: Bool {return self._timeoutMs != nil}
+    var hasTimeoutMs: Bool {self._timeoutMs != nil}
     /// Clears the value of `timeoutMs`. Subsequent reads from it will return its default value.
     mutating func clearTimeoutMs() {self._timeoutMs = nil}
 
@@ -1395,11 +1408,11 @@ struct Spark_Connect_StreamingQueryManagerCommand: Sendable {
     var listenerPayload: Data = Data()
 
     var pythonListenerPayload: Spark_Connect_PythonUDF {
-      get {return _pythonListenerPayload ?? Spark_Connect_PythonUDF()}
+      get {_pythonListenerPayload ?? Spark_Connect_PythonUDF()}
       set {_pythonListenerPayload = newValue}
     }
     /// Returns true if `pythonListenerPayload` has been explicitly set.
-    var hasPythonListenerPayload: Bool {return self._pythonListenerPayload != nil}
+    var hasPythonListenerPayload: Bool {self._pythonListenerPayload != nil}
     /// Clears the value of `pythonListenerPayload`. Subsequent reads from it will return its default value.
     mutating func clearPythonListenerPayload() {self._pythonListenerPayload = nil}
 
@@ -1511,21 +1524,21 @@ struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
 
     /// (Required) The id and runId of this query.
     var id: Spark_Connect_StreamingQueryInstanceId {
-      get {return _id ?? Spark_Connect_StreamingQueryInstanceId()}
+      get {_id ?? Spark_Connect_StreamingQueryInstanceId()}
       set {_id = newValue}
     }
     /// Returns true if `id` has been explicitly set.
-    var hasID: Bool {return self._id != nil}
+    var hasID: Bool {self._id != nil}
     /// Clears the value of `id`. Subsequent reads from it will return its default value.
     mutating func clearID() {self._id = nil}
 
     /// (Optional) The name of this query.
     var name: String {
-      get {return _name ?? String()}
+      get {_name ?? String()}
       set {_name = newValue}
     }
     /// Returns true if `name` has been explicitly set.
-    var hasName: Bool {return self._name != nil}
+    var hasName: Bool {self._name != nil}
     /// Clears the value of `name`. Subsequent reads from it will return its default value.
     mutating func clearName() {self._name = nil}
 
@@ -1641,11 +1654,11 @@ struct Spark_Connect_StreamingQueryListenerEventsResult: Sendable {
   var events: [Spark_Connect_StreamingQueryListenerEvent] = []
 
   var listenerBusListenerAdded: Bool {
-    get {return _listenerBusListenerAdded ?? false}
+    get {_listenerBusListenerAdded ?? false}
     set {_listenerBusListenerAdded = newValue}
   }
   /// Returns true if `listenerBusListenerAdded` has been explicitly set.
-  var hasListenerBusListenerAdded: Bool {return self._listenerBusListenerAdded != nil}
+  var hasListenerBusListenerAdded: Bool {self._listenerBusListenerAdded != nil}
   /// Clears the value of `listenerBusListenerAdded`. Subsequent reads from it will return its default value.
   mutating func clearListenerBusListenerAdded() {self._listenerBusListenerAdded = nil}
 
@@ -1688,11 +1701,11 @@ struct Spark_Connect_CreateResourceProfileCommand: Sendable {
 
   /// (Required) The ResourceProfile to be built on the server-side.
   var profile: Spark_Connect_ResourceProfile {
-    get {return _profile ?? Spark_Connect_ResourceProfile()}
+    get {_profile ?? Spark_Connect_ResourceProfile()}
     set {_profile = newValue}
   }
   /// Returns true if `profile` has been explicitly set.
-  var hasProfile: Bool {return self._profile != nil}
+  var hasProfile: Bool {self._profile != nil}
   /// Clears the value of `profile`. Subsequent reads from it will return its default value.
   mutating func clearProfile() {self._profile = nil}
 
@@ -1725,11 +1738,11 @@ struct Spark_Connect_RemoveCachedRemoteRelationCommand: Sendable {
 
   /// (Required) The remote to be related
   var relation: Spark_Connect_CachedRemoteRelation {
-    get {return _relation ?? Spark_Connect_CachedRemoteRelation()}
+    get {_relation ?? Spark_Connect_CachedRemoteRelation()}
     set {_relation = newValue}
   }
   /// Returns true if `relation` has been explicitly set.
-  var hasRelation: Bool {return self._relation != nil}
+  var hasRelation: Bool {self._relation != nil}
   /// Clears the value of `relation`. Subsequent reads from it will return its default value.
   mutating func clearRelation() {self._relation = nil}
 
@@ -1747,11 +1760,11 @@ struct Spark_Connect_CheckpointCommand: Sendable {
 
   /// (Required) The logical plan to checkpoint.
   var relation: Spark_Connect_Relation {
-    get {return _relation ?? Spark_Connect_Relation()}
+    get {_relation ?? Spark_Connect_Relation()}
     set {_relation = newValue}
   }
   /// Returns true if `relation` has been explicitly set.
-  var hasRelation: Bool {return self._relation != nil}
+  var hasRelation: Bool {self._relation != nil}
   /// Clears the value of `relation`. Subsequent reads from it will return its default value.
   mutating func clearRelation() {self._relation = nil}
 
@@ -1764,11 +1777,11 @@ struct Spark_Connect_CheckpointCommand: Sendable {
 
   /// (Optional) For local checkpoint, the storage level to use.
   var storageLevel: Spark_Connect_StorageLevel {
-    get {return _storageLevel ?? Spark_Connect_StorageLevel()}
+    get {_storageLevel ?? Spark_Connect_StorageLevel()}
     set {_storageLevel = newValue}
   }
   /// Returns true if `storageLevel` has been explicitly set.
-  var hasStorageLevel: Bool {return self._storageLevel != nil}
+  var hasStorageLevel: Bool {self._storageLevel != nil}
   /// Clears the value of `storageLevel`. Subsequent reads from it will return its default value.
   mutating func clearStorageLevel() {self._storageLevel = nil}
 
@@ -1790,21 +1803,21 @@ struct Spark_Connect_MergeIntoTableCommand: Sendable {
 
   /// (Required) The relation of the source table.
   var sourceTablePlan: Spark_Connect_Relation {
-    get {return _sourceTablePlan ?? Spark_Connect_Relation()}
+    get {_sourceTablePlan ?? Spark_Connect_Relation()}
     set {_sourceTablePlan = newValue}
   }
   /// Returns true if `sourceTablePlan` has been explicitly set.
-  var hasSourceTablePlan: Bool {return self._sourceTablePlan != nil}
+  var hasSourceTablePlan: Bool {self._sourceTablePlan != nil}
   /// Clears the value of `sourceTablePlan`. Subsequent reads from it will return its default value.
   mutating func clearSourceTablePlan() {self._sourceTablePlan = nil}
 
   /// (Required) The condition to match the source and target.
   var mergeCondition: Spark_Connect_Expression {
-    get {return _mergeCondition ?? Spark_Connect_Expression()}
+    get {_mergeCondition ?? Spark_Connect_Expression()}
     set {_mergeCondition = newValue}
   }
   /// Returns true if `mergeCondition` has been explicitly set.
-  var hasMergeCondition: Bool {return self._mergeCondition != nil}
+  var hasMergeCondition: Bool {self._mergeCondition != nil}
   /// Clears the value of `mergeCondition`. Subsequent reads from it will return its default value.
   mutating func clearMergeCondition() {self._mergeCondition = nil}
 
@@ -2597,7 +2610,7 @@ extension Spark_Connect_WriteOperationV2.Mode: SwiftProtobuf._ProtoNameProviding
 
 extension Spark_Connect_WriteStreamOperationStart: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WriteStreamOperationStart"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}format\0\u{1}options\0\u{3}partitioning_column_names\0\u{3}processing_time_interval\0\u{3}available_now\0\u{1}once\0\u{3}continuous_checkpoint_interval\0\u{3}output_mode\0\u{3}query_name\0\u{1}path\0\u{3}table_name\0\u{3}foreach_writer\0\u{3}foreach_batch\0\u{3}clustering_column_names\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}format\0\u{1}options\0\u{3}partitioning_column_names\0\u{3}processing_time_interval\0\u{3}available_now\0\u{1}once\0\u{3}continuous_checkpoint_interval\0\u{3}output_mode\0\u{3}query_name\0\u{1}path\0\u{3}table_name\0\u{3}foreach_writer\0\u{3}foreach_batch\0\u{3}clustering_column_names\0\u{4}U\u{1}real_time_batch_duration\0")
 
   fileprivate class _StorageClass {
     var _input: Spark_Connect_Relation? = nil
@@ -2707,6 +2720,14 @@ extension Spark_Connect_WriteStreamOperationStart: SwiftProtobuf.Message, SwiftP
         case 13: try { try decoder.decodeSingularMessageField(value: &_storage._foreachWriter) }()
         case 14: try { try decoder.decodeSingularMessageField(value: &_storage._foreachBatch) }()
         case 15: try { try decoder.decodeRepeatedStringField(value: &_storage._clusteringColumnNames) }()
+        case 100: try {
+          var v: String?
+          try decoder.decodeSingularStringField(value: &v)
+          if let v = v {
+            if _storage._trigger != nil {try decoder.handleConflictingOneOf()}
+            _storage._trigger = .realTimeBatchDuration(v)
+          }
+        }()
         default: break
         }
       }
@@ -2748,7 +2769,7 @@ extension Spark_Connect_WriteStreamOperationStart: SwiftProtobuf.Message, SwiftP
         guard case .continuousCheckpointInterval(let v)? = _storage._trigger else { preconditionFailure() }
         try visitor.visitSingularStringField(value: v, fieldNumber: 8)
       }()
-      case nil: break
+      default: break
       }
       if !_storage._outputMode.isEmpty {
         try visitor.visitSingularStringField(value: _storage._outputMode, fieldNumber: 9)
@@ -2776,6 +2797,9 @@ extension Spark_Connect_WriteStreamOperationStart: SwiftProtobuf.Message, SwiftP
       if !_storage._clusteringColumnNames.isEmpty {
         try visitor.visitRepeatedStringField(value: _storage._clusteringColumnNames, fieldNumber: 15)
       }
+      try { if case .realTimeBatchDuration(let v)? = _storage._trigger {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 100)
+      } }()
     }
     try unknownFields.traverse(visitor: &visitor)
   }

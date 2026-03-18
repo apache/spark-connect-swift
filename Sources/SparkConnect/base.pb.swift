@@ -24,7 +24,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import SwiftProtobuf
 
 // If the compiler emits an error on this type, it is because this file
@@ -209,7 +213,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
   /// collate streaming responses from different queries within the dedicated session.
   /// The id should be an UUID string of the format `00112233-4455-6677-8899-aabbccddeeff`
   var sessionID: String {
-    get {return _storage._sessionID}
+    get {_storage._sessionID}
     set {_uniqueStorage()._sessionID = newValue}
   }
 
@@ -218,21 +222,21 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _storage._clientObservedServerSideSessionID ?? String()}
+    get {_storage._clientObservedServerSideSessionID ?? String()}
     set {_uniqueStorage()._clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return _storage._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {_storage._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {_uniqueStorage()._clientObservedServerSideSessionID = nil}
 
   /// (Required) User context
   var userContext: Spark_Connect_UserContext {
-    get {return _storage._userContext ?? Spark_Connect_UserContext()}
+    get {_storage._userContext ?? Spark_Connect_UserContext()}
     set {_uniqueStorage()._userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return _storage._userContext != nil}
+  var hasUserContext: Bool {_storage._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {_uniqueStorage()._userContext = nil}
 
@@ -240,11 +244,11 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _storage._clientType ?? String()}
+    get {_storage._clientType ?? String()}
     set {_uniqueStorage()._clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return _storage._clientType != nil}
+  var hasClientType: Bool {_storage._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {_uniqueStorage()._clientType = nil}
 
@@ -392,11 +396,11 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to be analyzed.
     var plan: Spark_Connect_Plan {
-      get {return _plan ?? Spark_Connect_Plan()}
+      get {_plan ?? Spark_Connect_Plan()}
       set {_plan = newValue}
     }
     /// Returns true if `plan` has been explicitly set.
-    var hasPlan: Bool {return self._plan != nil}
+    var hasPlan: Bool {self._plan != nil}
     /// Clears the value of `plan`. Subsequent reads from it will return its default value.
     mutating func clearPlan() {self._plan = nil}
 
@@ -415,11 +419,11 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to be analyzed.
     var plan: Spark_Connect_Plan {
-      get {return _plan ?? Spark_Connect_Plan()}
+      get {_plan ?? Spark_Connect_Plan()}
       set {_plan = newValue}
     }
     /// Returns true if `plan` has been explicitly set.
-    var hasPlan: Bool {return self._plan != nil}
+    var hasPlan: Bool {self._plan != nil}
     /// Clears the value of `plan`. Subsequent reads from it will return its default value.
     mutating func clearPlan() {self._plan = nil}
 
@@ -505,21 +509,21 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to be analyzed.
     var plan: Spark_Connect_Plan {
-      get {return _plan ?? Spark_Connect_Plan()}
+      get {_plan ?? Spark_Connect_Plan()}
       set {_plan = newValue}
     }
     /// Returns true if `plan` has been explicitly set.
-    var hasPlan: Bool {return self._plan != nil}
+    var hasPlan: Bool {self._plan != nil}
     /// Clears the value of `plan`. Subsequent reads from it will return its default value.
     mutating func clearPlan() {self._plan = nil}
 
     /// (Optional) Max level of the schema.
     var level: Int32 {
-      get {return _level ?? 0}
+      get {_level ?? 0}
       set {_level = newValue}
     }
     /// Returns true if `level` has been explicitly set.
-    var hasLevel: Bool {return self._level != nil}
+    var hasLevel: Bool {self._level != nil}
     /// Clears the value of `level`. Subsequent reads from it will return its default value.
     mutating func clearLevel() {self._level = nil}
 
@@ -538,11 +542,11 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to be analyzed.
     var plan: Spark_Connect_Plan {
-      get {return _plan ?? Spark_Connect_Plan()}
+      get {_plan ?? Spark_Connect_Plan()}
       set {_plan = newValue}
     }
     /// Returns true if `plan` has been explicitly set.
-    var hasPlan: Bool {return self._plan != nil}
+    var hasPlan: Bool {self._plan != nil}
     /// Clears the value of `plan`. Subsequent reads from it will return its default value.
     mutating func clearPlan() {self._plan = nil}
 
@@ -560,11 +564,11 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to be analyzed.
     var plan: Spark_Connect_Plan {
-      get {return _plan ?? Spark_Connect_Plan()}
+      get {_plan ?? Spark_Connect_Plan()}
       set {_plan = newValue}
     }
     /// Returns true if `plan` has been explicitly set.
-    var hasPlan: Bool {return self._plan != nil}
+    var hasPlan: Bool {self._plan != nil}
     /// Clears the value of `plan`. Subsequent reads from it will return its default value.
     mutating func clearPlan() {self._plan = nil}
 
@@ -582,11 +586,11 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to be analyzed.
     var plan: Spark_Connect_Plan {
-      get {return _plan ?? Spark_Connect_Plan()}
+      get {_plan ?? Spark_Connect_Plan()}
       set {_plan = newValue}
     }
     /// Returns true if `plan` has been explicitly set.
-    var hasPlan: Bool {return self._plan != nil}
+    var hasPlan: Bool {self._plan != nil}
     /// Clears the value of `plan`. Subsequent reads from it will return its default value.
     mutating func clearPlan() {self._plan = nil}
 
@@ -628,21 +632,21 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The plan to be compared.
     var targetPlan: Spark_Connect_Plan {
-      get {return _storage._targetPlan ?? Spark_Connect_Plan()}
+      get {_storage._targetPlan ?? Spark_Connect_Plan()}
       set {_uniqueStorage()._targetPlan = newValue}
     }
     /// Returns true if `targetPlan` has been explicitly set.
-    var hasTargetPlan: Bool {return _storage._targetPlan != nil}
+    var hasTargetPlan: Bool {_storage._targetPlan != nil}
     /// Clears the value of `targetPlan`. Subsequent reads from it will return its default value.
     mutating func clearTargetPlan() {_uniqueStorage()._targetPlan = nil}
 
     /// (Required) The other plan to be compared.
     var otherPlan: Spark_Connect_Plan {
-      get {return _storage._otherPlan ?? Spark_Connect_Plan()}
+      get {_storage._otherPlan ?? Spark_Connect_Plan()}
       set {_uniqueStorage()._otherPlan = newValue}
     }
     /// Returns true if `otherPlan` has been explicitly set.
-    var hasOtherPlan: Bool {return _storage._otherPlan != nil}
+    var hasOtherPlan: Bool {_storage._otherPlan != nil}
     /// Clears the value of `otherPlan`. Subsequent reads from it will return its default value.
     mutating func clearOtherPlan() {_uniqueStorage()._otherPlan = nil}
 
@@ -660,11 +664,11 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to get a hashCode.
     var plan: Spark_Connect_Plan {
-      get {return _plan ?? Spark_Connect_Plan()}
+      get {_plan ?? Spark_Connect_Plan()}
       set {_plan = newValue}
     }
     /// Returns true if `plan` has been explicitly set.
-    var hasPlan: Bool {return self._plan != nil}
+    var hasPlan: Bool {self._plan != nil}
     /// Clears the value of `plan`. Subsequent reads from it will return its default value.
     mutating func clearPlan() {self._plan = nil}
 
@@ -682,21 +686,21 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to persist.
     var relation: Spark_Connect_Relation {
-      get {return _relation ?? Spark_Connect_Relation()}
+      get {_relation ?? Spark_Connect_Relation()}
       set {_relation = newValue}
     }
     /// Returns true if `relation` has been explicitly set.
-    var hasRelation: Bool {return self._relation != nil}
+    var hasRelation: Bool {self._relation != nil}
     /// Clears the value of `relation`. Subsequent reads from it will return its default value.
     mutating func clearRelation() {self._relation = nil}
 
     /// (Optional) The storage level.
     var storageLevel: Spark_Connect_StorageLevel {
-      get {return _storageLevel ?? Spark_Connect_StorageLevel()}
+      get {_storageLevel ?? Spark_Connect_StorageLevel()}
       set {_storageLevel = newValue}
     }
     /// Returns true if `storageLevel` has been explicitly set.
-    var hasStorageLevel: Bool {return self._storageLevel != nil}
+    var hasStorageLevel: Bool {self._storageLevel != nil}
     /// Clears the value of `storageLevel`. Subsequent reads from it will return its default value.
     mutating func clearStorageLevel() {self._storageLevel = nil}
 
@@ -715,21 +719,21 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to unpersist.
     var relation: Spark_Connect_Relation {
-      get {return _relation ?? Spark_Connect_Relation()}
+      get {_relation ?? Spark_Connect_Relation()}
       set {_relation = newValue}
     }
     /// Returns true if `relation` has been explicitly set.
-    var hasRelation: Bool {return self._relation != nil}
+    var hasRelation: Bool {self._relation != nil}
     /// Clears the value of `relation`. Subsequent reads from it will return its default value.
     mutating func clearRelation() {self._relation = nil}
 
     /// (Optional) Whether to block until all blocks are deleted.
     var blocking: Bool {
-      get {return _blocking ?? false}
+      get {_blocking ?? false}
       set {_blocking = newValue}
     }
     /// Returns true if `blocking` has been explicitly set.
-    var hasBlocking: Bool {return self._blocking != nil}
+    var hasBlocking: Bool {self._blocking != nil}
     /// Clears the value of `blocking`. Subsequent reads from it will return its default value.
     mutating func clearBlocking() {self._blocking = nil}
 
@@ -748,11 +752,11 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
     /// (Required) The logical plan to get the storage level.
     var relation: Spark_Connect_Relation {
-      get {return _relation ?? Spark_Connect_Relation()}
+      get {_relation ?? Spark_Connect_Relation()}
       set {_relation = newValue}
     }
     /// Returns true if `relation` has been explicitly set.
-    var hasRelation: Bool {return self._relation != nil}
+    var hasRelation: Bool {self._relation != nil}
     /// Clears the value of `relation`. Subsequent reads from it will return its default value.
     mutating func clearRelation() {self._relation = nil}
 
@@ -935,11 +939,11 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     // methods supported on all messages.
 
     var schema: Spark_Connect_DataType {
-      get {return _schema ?? Spark_Connect_DataType()}
+      get {_schema ?? Spark_Connect_DataType()}
       set {_schema = newValue}
     }
     /// Returns true if `schema` has been explicitly set.
-    var hasSchema: Bool {return self._schema != nil}
+    var hasSchema: Bool {self._schema != nil}
     /// Clears the value of `schema`. Subsequent reads from it will return its default value.
     mutating func clearSchema() {self._schema = nil}
 
@@ -1029,11 +1033,11 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     // methods supported on all messages.
 
     var parsed: Spark_Connect_DataType {
-      get {return _parsed ?? Spark_Connect_DataType()}
+      get {_parsed ?? Spark_Connect_DataType()}
       set {_parsed = newValue}
     }
     /// Returns true if `parsed` has been explicitly set.
-    var hasParsed: Bool {return self._parsed != nil}
+    var hasParsed: Bool {self._parsed != nil}
     /// Clears the value of `parsed`. Subsequent reads from it will return its default value.
     mutating func clearParsed() {self._parsed = nil}
 
@@ -1095,11 +1099,11 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
 
     /// (Required) The StorageLevel as a result of get_storage_level request.
     var storageLevel: Spark_Connect_StorageLevel {
-      get {return _storageLevel ?? Spark_Connect_StorageLevel()}
+      get {_storageLevel ?? Spark_Connect_StorageLevel()}
       set {_storageLevel = newValue}
     }
     /// Returns true if `storageLevel` has been explicitly set.
-    var hasStorageLevel: Bool {return self._storageLevel != nil}
+    var hasStorageLevel: Bool {self._storageLevel != nil}
     /// Clears the value of `storageLevel`. Subsequent reads from it will return its default value.
     mutating func clearStorageLevel() {self._storageLevel = nil}
 
@@ -1138,7 +1142,7 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
   /// collate streaming responses from different queries within the dedicated session.
   /// The id should be an UUID string of the format `00112233-4455-6677-8899-aabbccddeeff`
   var sessionID: String {
-    get {return _storage._sessionID}
+    get {_storage._sessionID}
     set {_uniqueStorage()._sessionID = newValue}
   }
 
@@ -1147,11 +1151,11 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _storage._clientObservedServerSideSessionID ?? String()}
+    get {_storage._clientObservedServerSideSessionID ?? String()}
     set {_uniqueStorage()._clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return _storage._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {_storage._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {_uniqueStorage()._clientObservedServerSideSessionID = nil}
 
@@ -1160,11 +1164,11 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
   /// user_context.user_id and session+id both identify a unique remote spark session on the
   /// server side.
   var userContext: Spark_Connect_UserContext {
-    get {return _storage._userContext ?? Spark_Connect_UserContext()}
+    get {_storage._userContext ?? Spark_Connect_UserContext()}
     set {_uniqueStorage()._userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return _storage._userContext != nil}
+  var hasUserContext: Bool {_storage._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {_uniqueStorage()._userContext = nil}
 
@@ -1173,21 +1177,21 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
   /// It is returned in every ExecutePlanResponse.operation_id of the ExecutePlan response stream.
   /// The id must be an UUID string of the format `00112233-4455-6677-8899-aabbccddeeff`
   var operationID: String {
-    get {return _storage._operationID ?? String()}
+    get {_storage._operationID ?? String()}
     set {_uniqueStorage()._operationID = newValue}
   }
   /// Returns true if `operationID` has been explicitly set.
-  var hasOperationID: Bool {return _storage._operationID != nil}
+  var hasOperationID: Bool {_storage._operationID != nil}
   /// Clears the value of `operationID`. Subsequent reads from it will return its default value.
   mutating func clearOperationID() {_uniqueStorage()._operationID = nil}
 
   /// (Required) The logical plan to be executed / analyzed.
   var plan: Spark_Connect_Plan {
-    get {return _storage._plan ?? Spark_Connect_Plan()}
+    get {_storage._plan ?? Spark_Connect_Plan()}
     set {_uniqueStorage()._plan = newValue}
   }
   /// Returns true if `plan` has been explicitly set.
-  var hasPlan: Bool {return _storage._plan != nil}
+  var hasPlan: Bool {_storage._plan != nil}
   /// Clears the value of `plan`. Subsequent reads from it will return its default value.
   mutating func clearPlan() {_uniqueStorage()._plan = nil}
 
@@ -1195,18 +1199,18 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _storage._clientType ?? String()}
+    get {_storage._clientType ?? String()}
     set {_uniqueStorage()._clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return _storage._clientType != nil}
+  var hasClientType: Bool {_storage._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {_uniqueStorage()._clientType = nil}
 
   /// Repeated element for options that can be passed to the request. This element is currently
   /// unused but allows to pass in an extension value used for arbitrary options.
   var requestOptions: [Spark_Connect_ExecutePlanRequest.RequestOption] {
-    get {return _storage._requestOptions}
+    get {_storage._requestOptions}
     set {_uniqueStorage()._requestOptions = newValue}
   }
 
@@ -1214,7 +1218,7 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
   /// Tags cannot contain ',' character and cannot be empty strings.
   /// Used by Interrupt with interrupt.tag.
   var tags: [String] {
-    get {return _storage._tags}
+    get {_storage._tags}
     set {_uniqueStorage()._tags = newValue}
   }
 
@@ -1444,11 +1448,11 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
   /// Metrics for the query execution. Typically, this field is only present in the last
   /// batch of results and then represent the overall state of the query execution.
   var metrics: Spark_Connect_ExecutePlanResponse.Metrics {
-    get {return _metrics ?? Spark_Connect_ExecutePlanResponse.Metrics()}
+    get {_metrics ?? Spark_Connect_ExecutePlanResponse.Metrics()}
     set {_metrics = newValue}
   }
   /// Returns true if `metrics` has been explicitly set.
-  var hasMetrics: Bool {return self._metrics != nil}
+  var hasMetrics: Bool {self._metrics != nil}
   /// Clears the value of `metrics`. Subsequent reads from it will return its default value.
   mutating func clearMetrics() {self._metrics = nil}
 
@@ -1457,11 +1461,11 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
 
   /// (Optional) The Spark schema. This field is available when `collect` is called.
   var schema: Spark_Connect_DataType {
-    get {return _schema ?? Spark_Connect_DataType()}
+    get {_schema ?? Spark_Connect_DataType()}
     set {_schema = newValue}
   }
   /// Returns true if `schema` has been explicitly set.
-  var hasSchema: Bool {return self._schema != nil}
+  var hasSchema: Bool {self._schema != nil}
   /// Clears the value of `schema`. Subsequent reads from it will return its default value.
   mutating func clearSchema() {self._schema = nil}
 
@@ -1512,11 +1516,11 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     // methods supported on all messages.
 
     var relation: Spark_Connect_Relation {
-      get {return _relation ?? Spark_Connect_Relation()}
+      get {_relation ?? Spark_Connect_Relation()}
       set {_relation = newValue}
     }
     /// Returns true if `relation` has been explicitly set.
-    var hasRelation: Bool {return self._relation != nil}
+    var hasRelation: Bool {self._relation != nil}
     /// Clears the value of `relation`. Subsequent reads from it will return its default value.
     mutating func clearRelation() {self._relation = nil}
 
@@ -1541,21 +1545,21 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
 
     /// If set, row offset of the start of this ArrowBatch in execution results.
     var startOffset: Int64 {
-      get {return _startOffset ?? 0}
+      get {_startOffset ?? 0}
       set {_startOffset = newValue}
     }
     /// Returns true if `startOffset` has been explicitly set.
-    var hasStartOffset: Bool {return self._startOffset != nil}
+    var hasStartOffset: Bool {self._startOffset != nil}
     /// Clears the value of `startOffset`. Subsequent reads from it will return its default value.
     mutating func clearStartOffset() {self._startOffset = nil}
 
     /// Index of this chunk in the batch if chunking is enabled. The index starts from 0.
     var chunkIndex: Int64 {
-      get {return _chunkIndex ?? 0}
+      get {_chunkIndex ?? 0}
       set {_chunkIndex = newValue}
     }
     /// Returns true if `chunkIndex` has been explicitly set.
-    var hasChunkIndex: Bool {return self._chunkIndex != nil}
+    var hasChunkIndex: Bool {self._chunkIndex != nil}
     /// Clears the value of `chunkIndex`. Subsequent reads from it will return its default value.
     mutating func clearChunkIndex() {self._chunkIndex = nil}
 
@@ -1563,11 +1567,11 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     /// It is missing when chunking is disabled - the batch is returned whole
     /// and client will treat this response as the batch.
     var numChunksInBatch: Int64 {
-      get {return _numChunksInBatch ?? 0}
+      get {_numChunksInBatch ?? 0}
       set {_numChunksInBatch = newValue}
     }
     /// Returns true if `numChunksInBatch` has been explicitly set.
-    var hasNumChunksInBatch: Bool {return self._numChunksInBatch != nil}
+    var hasNumChunksInBatch: Bool {self._numChunksInBatch != nil}
     /// Clears the value of `numChunksInBatch`. Subsequent reads from it will return its default value.
     mutating func clearNumChunksInBatch() {self._numChunksInBatch = nil}
 
@@ -1639,9 +1643,26 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
 
     var planID: Int64 = 0
 
+    /// (Optional) The index of the root error in errors.
+    /// The field will not be set if there are no errors.
+    var rootErrorIdx: Int32 {
+      get {_rootErrorIdx ?? 0}
+      set {_rootErrorIdx = newValue}
+    }
+    /// Returns true if `rootErrorIdx` has been explicitly set.
+    var hasRootErrorIdx: Bool {self._rootErrorIdx != nil}
+    /// Clears the value of `rootErrorIdx`. Subsequent reads from it will return its default value.
+    mutating func clearRootErrorIdx() {self._rootErrorIdx = nil}
+
+    /// A list of errors that occurred while collecting the observed metrics.
+    /// If the length is 0, it means no errors occurred.
+    var errors: [Spark_Connect_FetchErrorDetailsResponse.Error] = []
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
+
+    fileprivate var _rootErrorIdx: Int32? = nil
   }
 
   /// If present, in a reattachable execution this means that after server sends onComplete,
@@ -1711,11 +1732,11 @@ struct Spark_Connect_KeyValue: Sendable {
 
   /// (Optional) The value.
   var value: String {
-    get {return _value ?? String()}
+    get {_value ?? String()}
     set {_value = newValue}
   }
   /// Returns true if `value` has been explicitly set.
-  var hasValue: Bool {return self._value != nil}
+  var hasValue: Bool {self._value != nil}
   /// Clears the value of `value`. Subsequent reads from it will return its default value.
   mutating func clearValue() {self._value = nil}
 
@@ -1745,31 +1766,31 @@ struct Spark_Connect_ConfigRequest: Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _clientObservedServerSideSessionID ?? String()}
+    get {_clientObservedServerSideSessionID ?? String()}
     set {_clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
 
   /// (Required) User context
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
   /// (Required) The operation for the config.
   var operation: Spark_Connect_ConfigRequest.Operation {
-    get {return _operation ?? Spark_Connect_ConfigRequest.Operation()}
+    get {_operation ?? Spark_Connect_ConfigRequest.Operation()}
     set {_operation = newValue}
   }
   /// Returns true if `operation` has been explicitly set.
-  var hasOperation: Bool {return self._operation != nil}
+  var hasOperation: Bool {self._operation != nil}
   /// Clears the value of `operation`. Subsequent reads from it will return its default value.
   mutating func clearOperation() {self._operation = nil}
 
@@ -1777,11 +1798,11 @@ struct Spark_Connect_ConfigRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -1876,11 +1897,11 @@ struct Spark_Connect_ConfigRequest: Sendable {
 
     /// (Optional) Whether to ignore failures.
     var silent: Bool {
-      get {return _silent ?? false}
+      get {_silent ?? false}
       set {_silent = newValue}
     }
     /// Returns true if `silent` has been explicitly set.
-    var hasSilent: Bool {return self._silent != nil}
+    var hasSilent: Bool {self._silent != nil}
     /// Clears the value of `silent`. Subsequent reads from it will return its default value.
     mutating func clearSilent() {self._silent = nil}
 
@@ -1937,11 +1958,11 @@ struct Spark_Connect_ConfigRequest: Sendable {
 
     /// (Optional) The prefix of the config key to get.
     var prefix: String {
-      get {return _prefix ?? String()}
+      get {_prefix ?? String()}
       set {_prefix = newValue}
     }
     /// Returns true if `prefix` has been explicitly set.
-    var hasPrefix: Bool {return self._prefix != nil}
+    var hasPrefix: Bool {self._prefix != nil}
     /// Clears the value of `prefix`. Subsequent reads from it will return its default value.
     mutating func clearPrefix() {self._prefix = nil}
 
@@ -2031,11 +2052,11 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
 
   /// User context
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
@@ -2044,11 +2065,11 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _clientObservedServerSideSessionID ?? String()}
+    get {_clientObservedServerSideSessionID ?? String()}
     set {_clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
 
@@ -2056,11 +2077,11 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -2145,11 +2166,11 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
 
     /// A single data chunk.
     var data: Spark_Connect_AddArtifactsRequest.ArtifactChunk {
-      get {return _data ?? Spark_Connect_AddArtifactsRequest.ArtifactChunk()}
+      get {_data ?? Spark_Connect_AddArtifactsRequest.ArtifactChunk()}
       set {_data = newValue}
     }
     /// Returns true if `data` has been explicitly set.
-    var hasData: Bool {return self._data != nil}
+    var hasData: Bool {self._data != nil}
     /// Clears the value of `data`. Subsequent reads from it will return its default value.
     mutating func clearData() {self._data = nil}
 
@@ -2194,11 +2215,11 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
 
     /// The first/initial chunk.
     var initialChunk: Spark_Connect_AddArtifactsRequest.ArtifactChunk {
-      get {return _initialChunk ?? Spark_Connect_AddArtifactsRequest.ArtifactChunk()}
+      get {_initialChunk ?? Spark_Connect_AddArtifactsRequest.ArtifactChunk()}
       set {_initialChunk = newValue}
     }
     /// Returns true if `initialChunk` has been explicitly set.
-    var hasInitialChunk: Bool {return self._initialChunk != nil}
+    var hasInitialChunk: Bool {self._initialChunk != nil}
     /// Clears the value of `initialChunk`. Subsequent reads from it will return its default value.
     mutating func clearInitialChunk() {self._initialChunk = nil}
 
@@ -2276,21 +2297,21 @@ struct Spark_Connect_ArtifactStatusesRequest: Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _clientObservedServerSideSessionID ?? String()}
+    get {_clientObservedServerSideSessionID ?? String()}
     set {_clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
 
   /// User context
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
@@ -2298,11 +2319,11 @@ struct Spark_Connect_ArtifactStatusesRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -2376,21 +2397,21 @@ struct Spark_Connect_InterruptRequest: Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _clientObservedServerSideSessionID ?? String()}
+    get {_clientObservedServerSideSessionID ?? String()}
     set {_clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
 
   /// (Required) User context
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
@@ -2398,11 +2419,11 @@ struct Spark_Connect_InterruptRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -2555,11 +2576,11 @@ struct Spark_Connect_ResultChunkingOptions: Sendable {
   /// The server will attempt to use this size if it is set and within the valid range
   /// ([1KB, max batch size on server]). Otherwise, the server's maximum batch size is used.
   var preferredArrowChunkSize: Int64 {
-    get {return _preferredArrowChunkSize ?? 0}
+    get {_preferredArrowChunkSize ?? 0}
     set {_preferredArrowChunkSize = newValue}
   }
   /// Returns true if `preferredArrowChunkSize` has been explicitly set.
-  var hasPreferredArrowChunkSize: Bool {return self._preferredArrowChunkSize != nil}
+  var hasPreferredArrowChunkSize: Bool {self._preferredArrowChunkSize != nil}
   /// Clears the value of `preferredArrowChunkSize`. Subsequent reads from it will return its default value.
   mutating func clearPreferredArrowChunkSize() {self._preferredArrowChunkSize = nil}
 
@@ -2586,11 +2607,11 @@ struct Spark_Connect_ReattachExecuteRequest: Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _clientObservedServerSideSessionID ?? String()}
+    get {_clientObservedServerSideSessionID ?? String()}
     set {_clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
 
@@ -2599,11 +2620,11 @@ struct Spark_Connect_ReattachExecuteRequest: Sendable {
   /// user_context.user_id and session+id both identify a unique remote spark session on the
   /// server side.
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
@@ -2616,11 +2637,11 @@ struct Spark_Connect_ReattachExecuteRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -2633,11 +2654,11 @@ struct Spark_Connect_ReattachExecuteRequest: Sendable {
   /// that are far behind the latest returned response, so this can't be used to arbitrarily
   /// scroll back the cursor. If the response is no longer available, this will result in an error.
   var lastResponseID: String {
-    get {return _lastResponseID ?? String()}
+    get {_lastResponseID ?? String()}
     set {_lastResponseID = newValue}
   }
   /// Returns true if `lastResponseID` has been explicitly set.
-  var hasLastResponseID: Bool {return self._lastResponseID != nil}
+  var hasLastResponseID: Bool {self._lastResponseID != nil}
   /// Clears the value of `lastResponseID`. Subsequent reads from it will return its default value.
   mutating func clearLastResponseID() {self._lastResponseID = nil}
 
@@ -2667,11 +2688,11 @@ struct Spark_Connect_ReleaseExecuteRequest: Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _clientObservedServerSideSessionID ?? String()}
+    get {_clientObservedServerSideSessionID ?? String()}
     set {_clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
 
@@ -2680,11 +2701,11 @@ struct Spark_Connect_ReleaseExecuteRequest: Sendable {
   /// user_context.user_id and session+id both identify a unique remote spark session on the
   /// server side.
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
@@ -2697,11 +2718,11 @@ struct Spark_Connect_ReleaseExecuteRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -2784,11 +2805,11 @@ struct Spark_Connect_ReleaseExecuteResponse: Sendable {
   /// If the operation couldn't be found (because e.g. it was concurrently released), will be unset.
   /// Otherwise, it will be equal to the operation_id from request.
   var operationID: String {
-    get {return _operationID ?? String()}
+    get {_operationID ?? String()}
     set {_operationID = newValue}
   }
   /// Returns true if `operationID` has been explicitly set.
-  var hasOperationID: Bool {return self._operationID != nil}
+  var hasOperationID: Bool {self._operationID != nil}
   /// Clears the value of `operationID`. Subsequent reads from it will return its default value.
   mutating func clearOperationID() {self._operationID = nil}
 
@@ -2815,11 +2836,11 @@ struct Spark_Connect_ReleaseSessionRequest: Sendable {
   /// user_context.user_id and session+id both identify a unique remote spark session on the
   /// server side.
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
@@ -2827,11 +2848,11 @@ struct Spark_Connect_ReleaseSessionRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -2890,21 +2911,21 @@ struct Spark_Connect_FetchErrorDetailsRequest: Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _clientObservedServerSideSessionID ?? String()}
+    get {_clientObservedServerSideSessionID ?? String()}
     set {_clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
 
   /// User context
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
@@ -2916,11 +2937,11 @@ struct Spark_Connect_FetchErrorDetailsRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -2947,11 +2968,11 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
 
   /// The index of the root error in errors. The field will not be set if the error is not found.
   var rootErrorIdx: Int32 {
-    get {return _rootErrorIdx ?? 0}
+    get {_rootErrorIdx ?? 0}
     set {_rootErrorIdx = newValue}
   }
   /// Returns true if `rootErrorIdx` has been explicitly set.
-  var hasRootErrorIdx: Bool {return self._rootErrorIdx != nil}
+  var hasRootErrorIdx: Bool {self._rootErrorIdx != nil}
   /// Clears the value of `rootErrorIdx`. Subsequent reads from it will return its default value.
   mutating func clearRootErrorIdx() {self._rootErrorIdx = nil}
 
@@ -2973,11 +2994,11 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
 
     /// The name of the file containing the execution point.
     var fileName: String {
-      get {return _fileName ?? String()}
+      get {_fileName ?? String()}
       set {_fileName = newValue}
     }
     /// Returns true if `fileName` has been explicitly set.
-    var hasFileName: Bool {return self._fileName != nil}
+    var hasFileName: Bool {self._fileName != nil}
     /// Clears the value of `fileName`. Subsequent reads from it will return its default value.
     mutating func clearFileName() {self._fileName = nil}
 
@@ -3073,11 +3094,11 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
 
     /// Succinct, human-readable, unique, and consistent representation of the error category.
     var errorClass: String {
-      get {return _errorClass ?? String()}
+      get {_errorClass ?? String()}
       set {_errorClass = newValue}
     }
     /// Returns true if `errorClass` has been explicitly set.
-    var hasErrorClass: Bool {return self._errorClass != nil}
+    var hasErrorClass: Bool {self._errorClass != nil}
     /// Clears the value of `errorClass`. Subsequent reads from it will return its default value.
     mutating func clearErrorClass() {self._errorClass = nil}
 
@@ -3090,21 +3111,21 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
     /// Portable error identifier across SQL engines
     /// If null, error class or SQLSTATE is not set.
     var sqlState: String {
-      get {return _sqlState ?? String()}
+      get {_sqlState ?? String()}
       set {_sqlState = newValue}
     }
     /// Returns true if `sqlState` has been explicitly set.
-    var hasSqlState: Bool {return self._sqlState != nil}
+    var hasSqlState: Bool {self._sqlState != nil}
     /// Clears the value of `sqlState`. Subsequent reads from it will return its default value.
     mutating func clearSqlState() {self._sqlState = nil}
 
     /// Additional information if the error was caused by a breaking change.
     var breakingChangeInfo: Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo {
-      get {return _breakingChangeInfo ?? Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo()}
+      get {_breakingChangeInfo ?? Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo()}
       set {_breakingChangeInfo = newValue}
     }
     /// Returns true if `breakingChangeInfo` has been explicitly set.
-    var hasBreakingChangeInfo: Bool {return self._breakingChangeInfo != nil}
+    var hasBreakingChangeInfo: Bool {self._breakingChangeInfo != nil}
     /// Clears the value of `breakingChangeInfo`. Subsequent reads from it will return its default value.
     mutating func clearBreakingChangeInfo() {self._breakingChangeInfo = nil}
 
@@ -3129,22 +3150,22 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
 
     /// A spark config flag that can be used to mitigate the breaking change.
     var mitigationConfig: Spark_Connect_FetchErrorDetailsResponse.MitigationConfig {
-      get {return _mitigationConfig ?? Spark_Connect_FetchErrorDetailsResponse.MitigationConfig()}
+      get {_mitigationConfig ?? Spark_Connect_FetchErrorDetailsResponse.MitigationConfig()}
       set {_mitigationConfig = newValue}
     }
     /// Returns true if `mitigationConfig` has been explicitly set.
-    var hasMitigationConfig: Bool {return self._mitigationConfig != nil}
+    var hasMitigationConfig: Bool {self._mitigationConfig != nil}
     /// Clears the value of `mitigationConfig`. Subsequent reads from it will return its default value.
     mutating func clearMitigationConfig() {self._mitigationConfig = nil}
 
     /// If true, the breaking change should be inspected manually.
     /// If false, the spark job should be retried by setting the mitigationConfig.
     var needsAudit: Bool {
-      get {return _needsAudit ?? false}
+      get {_needsAudit ?? false}
       set {_needsAudit = newValue}
     }
     /// Returns true if `needsAudit` has been explicitly set.
-    var hasNeedsAudit: Bool {return self._needsAudit != nil}
+    var hasNeedsAudit: Bool {self._needsAudit != nil}
     /// Clears the value of `needsAudit`. Subsequent reads from it will return its default value.
     mutating func clearNeedsAudit() {self._needsAudit = nil}
 
@@ -3191,21 +3212,21 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
 
     /// The index of the cause error in errors.
     var causeIdx: Int32 {
-      get {return _causeIdx ?? 0}
+      get {_causeIdx ?? 0}
       set {_causeIdx = newValue}
     }
     /// Returns true if `causeIdx` has been explicitly set.
-    var hasCauseIdx: Bool {return self._causeIdx != nil}
+    var hasCauseIdx: Bool {self._causeIdx != nil}
     /// Clears the value of `causeIdx`. Subsequent reads from it will return its default value.
     mutating func clearCauseIdx() {self._causeIdx = nil}
 
     /// The structured data of a SparkThrowable exception.
     var sparkThrowable: Spark_Connect_FetchErrorDetailsResponse.SparkThrowable {
-      get {return _sparkThrowable ?? Spark_Connect_FetchErrorDetailsResponse.SparkThrowable()}
+      get {_sparkThrowable ?? Spark_Connect_FetchErrorDetailsResponse.SparkThrowable()}
       set {_sparkThrowable = newValue}
     }
     /// Returns true if `sparkThrowable` has been explicitly set.
-    var hasSparkThrowable: Bool {return self._sparkThrowable != nil}
+    var hasSparkThrowable: Bool {self._sparkThrowable != nil}
     /// Clears the value of `sparkThrowable`. Subsequent reads from it will return its default value.
     mutating func clearSparkThrowable() {self._sparkThrowable = nil}
 
@@ -3229,11 +3250,11 @@ struct Spark_Connect_CheckpointCommandResult: Sendable {
 
   /// (Required) The logical plan checkpointed.
   var relation: Spark_Connect_CachedRemoteRelation {
-    get {return _relation ?? Spark_Connect_CachedRemoteRelation()}
+    get {_relation ?? Spark_Connect_CachedRemoteRelation()}
     set {_relation = newValue}
   }
   /// Returns true if `relation` has been explicitly set.
-  var hasRelation: Bool {return self._relation != nil}
+  var hasRelation: Bool {self._relation != nil}
   /// Clears the value of `relation`. Subsequent reads from it will return its default value.
   mutating func clearRelation() {self._relation = nil}
 
@@ -3262,11 +3283,11 @@ struct Spark_Connect_CloneSessionRequest: Sendable {
   /// Server-side generated idempotency key from the previous responses (if any). Server
   /// can use this to validate that the server side session has not changed.
   var clientObservedServerSideSessionID: String {
-    get {return _clientObservedServerSideSessionID ?? String()}
+    get {_clientObservedServerSideSessionID ?? String()}
     set {_clientObservedServerSideSessionID = newValue}
   }
   /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
-  var hasClientObservedServerSideSessionID: Bool {return self._clientObservedServerSideSessionID != nil}
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
   /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
   mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
 
@@ -3275,11 +3296,11 @@ struct Spark_Connect_CloneSessionRequest: Sendable {
   /// user_context.user_id and session_id both identify a unique remote spark session on the
   /// server side.
   var userContext: Spark_Connect_UserContext {
-    get {return _userContext ?? Spark_Connect_UserContext()}
+    get {_userContext ?? Spark_Connect_UserContext()}
     set {_userContext = newValue}
   }
   /// Returns true if `userContext` has been explicitly set.
-  var hasUserContext: Bool {return self._userContext != nil}
+  var hasUserContext: Bool {self._userContext != nil}
   /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
   mutating func clearUserContext() {self._userContext = nil}
 
@@ -3287,11 +3308,11 @@ struct Spark_Connect_CloneSessionRequest: Sendable {
   /// can be used for language or version specific information and is only intended for
   /// logging purposes and will not be interpreted by the server.
   var clientType: String {
-    get {return _clientType ?? String()}
+    get {_clientType ?? String()}
     set {_clientType = newValue}
   }
   /// Returns true if `clientType` has been explicitly set.
-  var hasClientType: Bool {return self._clientType != nil}
+  var hasClientType: Bool {self._clientType != nil}
   /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
   mutating func clearClientType() {self._clientType = nil}
 
@@ -3299,11 +3320,11 @@ struct Spark_Connect_CloneSessionRequest: Sendable {
   /// The session_id for the new cloned session. If not provided, a new UUID will be generated.
   /// The id should be an UUID string of the format `00112233-4455-6677-8899-aabbccddeeff`
   var newSessionID: String {
-    get {return _newSessionID ?? String()}
+    get {_newSessionID ?? String()}
     set {_newSessionID = newValue}
   }
   /// Returns true if `newSessionID` has been explicitly set.
-  var hasNewSessionID: Bool {return self._newSessionID != nil}
+  var hasNewSessionID: Bool {self._newSessionID != nil}
   /// Clears the value of `newSessionID`. Subsequent reads from it will return its default value.
   mutating func clearNewSessionID() {self._newSessionID = nil}
 
@@ -3337,6 +3358,198 @@ struct Spark_Connect_CloneSessionResponse: Sendable {
   var newServerSideSessionID: String = String()
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// Next ID: 6
+struct Spark_Connect_GetStatusRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  ///
+  /// The session_id specifies a Spark session for a user identified by user_context.user_id.
+  /// The id should be an UUID string of the format `00112233-4455-6677-8899-aabbccddeeff`
+  var sessionID: String = String()
+
+  /// (Required)
+  ///
+  /// user_context.user_id and session_id both identify a unique remote spark session on the
+  /// server side.
+  var userContext: Spark_Connect_UserContext {
+    get {_userContext ?? Spark_Connect_UserContext()}
+    set {_userContext = newValue}
+  }
+  /// Returns true if `userContext` has been explicitly set.
+  var hasUserContext: Bool {self._userContext != nil}
+  /// Clears the value of `userContext`. Subsequent reads from it will return its default value.
+  mutating func clearUserContext() {self._userContext = nil}
+
+  /// (Optional)
+  ///
+  /// Provides optional information about the client sending the request. This field
+  /// can be used for language or version specific information and is only intended for
+  /// logging purposes and will not be interpreted by the server.
+  var clientType: String {
+    get {_clientType ?? String()}
+    set {_clientType = newValue}
+  }
+  /// Returns true if `clientType` has been explicitly set.
+  var hasClientType: Bool {self._clientType != nil}
+  /// Clears the value of `clientType`. Subsequent reads from it will return its default value.
+  mutating func clearClientType() {self._clientType = nil}
+
+  /// (Optional)
+  ///
+  /// Server-side generated idempotency key from the previous responses (if any). Server
+  /// can use this to validate that the server side session has not changed.
+  var clientObservedServerSideSessionID: String {
+    get {_clientObservedServerSideSessionID ?? String()}
+    set {_clientObservedServerSideSessionID = newValue}
+  }
+  /// Returns true if `clientObservedServerSideSessionID` has been explicitly set.
+  var hasClientObservedServerSideSessionID: Bool {self._clientObservedServerSideSessionID != nil}
+  /// Clears the value of `clientObservedServerSideSessionID`. Subsequent reads from it will return its default value.
+  mutating func clearClientObservedServerSideSessionID() {self._clientObservedServerSideSessionID = nil}
+
+  /// (Optional)
+  ///
+  /// Get status of operations in the session.
+  var operationStatus: Spark_Connect_GetStatusRequest.OperationStatusRequest {
+    get {_operationStatus ?? Spark_Connect_GetStatusRequest.OperationStatusRequest()}
+    set {_operationStatus = newValue}
+  }
+  /// Returns true if `operationStatus` has been explicitly set.
+  var hasOperationStatus: Bool {self._operationStatus != nil}
+  /// Clears the value of `operationStatus`. Subsequent reads from it will return its default value.
+  mutating func clearOperationStatus() {self._operationStatus = nil}
+
+  /// Extension point for custom status request types.
+  var extensions: [SwiftProtobuf.Google_Protobuf_Any] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  struct OperationStatusRequest: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    /// Get status of operations with these operation_ids.
+    /// If unset or empty, returns status of all operations in the session.
+    var operationIds: [String] = []
+
+    /// Extension point for custom operation-level status requests.
+    var extensions: [SwiftProtobuf.Google_Protobuf_Any] = []
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+  }
+
+  init() {}
+
+  fileprivate var _userContext: Spark_Connect_UserContext? = nil
+  fileprivate var _clientType: String? = nil
+  fileprivate var _clientObservedServerSideSessionID: String? = nil
+  fileprivate var _operationStatus: Spark_Connect_GetStatusRequest.OperationStatusRequest? = nil
+}
+
+/// Next ID: 4
+struct Spark_Connect_GetStatusResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// Session id of the session for which the status was requested.
+  var sessionID: String = String()
+
+  /// Server-side generated idempotency key that the client can use to assert that the server side
+  /// session has not changed.
+  var serverSideSessionID: String = String()
+
+  /// Status information about requested operations.
+  var operationStatuses: [Spark_Connect_GetStatusResponse.OperationStatus] = []
+
+  /// Extension point for custom status response types.
+  var extensions: [SwiftProtobuf.Google_Protobuf_Any] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  /// Status information for a single operation.
+  struct OperationStatus: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    /// The operation_id of the operation.
+    var operationID: String = String()
+
+    /// The current status of the operation.
+    var state: Spark_Connect_GetStatusResponse.OperationStatus.OperationState = .unspecified
+
+    /// Extension point for custom operation-level status fields.
+    var extensions: [SwiftProtobuf.Google_Protobuf_Any] = []
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    enum OperationState: SwiftProtobuf.Enum, Swift.CaseIterable {
+      typealias RawValue = Int
+      case unspecified // = 0
+      case unknown // = 1
+      case running // = 2
+      case terminating // = 3
+      case succeeded // = 4
+      case failed // = 5
+      case cancelled // = 6
+      case UNRECOGNIZED(Int)
+
+      init() {
+        self = .unspecified
+      }
+
+      init?(rawValue: Int) {
+        switch rawValue {
+        case 0: self = .unspecified
+        case 1: self = .unknown
+        case 2: self = .running
+        case 3: self = .terminating
+        case 4: self = .succeeded
+        case 5: self = .failed
+        case 6: self = .cancelled
+        default: self = .UNRECOGNIZED(rawValue)
+        }
+      }
+
+      var rawValue: Int {
+        switch self {
+        case .unspecified: return 0
+        case .unknown: return 1
+        case .running: return 2
+        case .terminating: return 3
+        case .succeeded: return 4
+        case .failed: return 5
+        case .cancelled: return 6
+        case .UNRECOGNIZED(let i): return i
+        }
+      }
+
+      // The compiler won't synthesize support with the UNRECOGNIZED case.
+      static let allCases: [Spark_Connect_GetStatusResponse.OperationStatus.OperationState] = [
+        .unspecified,
+        .unknown,
+        .running,
+        .terminating,
+        .succeeded,
+        .failed,
+        .cancelled,
+      ]
+
+    }
+
+    init() {}
+  }
 
   init() {}
 }
@@ -5809,7 +6022,7 @@ extension Spark_Connect_ExecutePlanResponse.Metrics.MetricValue: SwiftProtobuf.M
 
 extension Spark_Connect_ExecutePlanResponse.ObservedMetrics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ObservedMetrics"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}values\0\u{1}keys\0\u{3}plan_id\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}values\0\u{1}keys\0\u{3}plan_id\0\u{3}root_error_idx\0\u{1}errors\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5821,12 +6034,18 @@ extension Spark_Connect_ExecutePlanResponse.ObservedMetrics: SwiftProtobuf.Messa
       case 2: try { try decoder.decodeRepeatedMessageField(value: &self.values) }()
       case 3: try { try decoder.decodeRepeatedStringField(value: &self.keys) }()
       case 4: try { try decoder.decodeSingularInt64Field(value: &self.planID) }()
+      case 5: try { try decoder.decodeSingularInt32Field(value: &self._rootErrorIdx) }()
+      case 6: try { try decoder.decodeRepeatedMessageField(value: &self.errors) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.name.isEmpty {
       try visitor.visitSingularStringField(value: self.name, fieldNumber: 1)
     }
@@ -5839,6 +6058,12 @@ extension Spark_Connect_ExecutePlanResponse.ObservedMetrics: SwiftProtobuf.Messa
     if self.planID != 0 {
       try visitor.visitSingularInt64Field(value: self.planID, fieldNumber: 4)
     }
+    try { if let v = self._rootErrorIdx {
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 5)
+    } }()
+    if !self.errors.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.errors, fieldNumber: 6)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -5847,6 +6072,8 @@ extension Spark_Connect_ExecutePlanResponse.ObservedMetrics: SwiftProtobuf.Messa
     if lhs.values != rhs.values {return false}
     if lhs.keys != rhs.keys {return false}
     if lhs.planID != rhs.planID {return false}
+    if lhs._rootErrorIdx != rhs._rootErrorIdx {return false}
+    if lhs.errors != rhs.errors {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -7987,4 +8214,187 @@ extension Spark_Connect_CloneSessionResponse: SwiftProtobuf.Message, SwiftProtob
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
+}
+
+extension Spark_Connect_GetStatusRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetStatusRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{3}client_observed_server_side_session_id\0\u{3}operation_status\0\u{2}b\u{f}extensions\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.sessionID) }()
+      case 2: try { try decoder.decodeSingularMessageField(value: &self._userContext) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self._clientType) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self._clientObservedServerSideSessionID) }()
+      case 5: try { try decoder.decodeSingularMessageField(value: &self._operationStatus) }()
+      case 999: try { try decoder.decodeRepeatedMessageField(value: &self.extensions) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.sessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.sessionID, fieldNumber: 1)
+    }
+    try { if let v = self._userContext {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+    } }()
+    try { if let v = self._clientType {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 3)
+    } }()
+    try { if let v = self._clientObservedServerSideSessionID {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 4)
+    } }()
+    try { if let v = self._operationStatus {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    } }()
+    if !self.extensions.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.extensions, fieldNumber: 999)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_GetStatusRequest, rhs: Spark_Connect_GetStatusRequest) -> Bool {
+    if lhs.sessionID != rhs.sessionID {return false}
+    if lhs._userContext != rhs._userContext {return false}
+    if lhs._clientType != rhs._clientType {return false}
+    if lhs._clientObservedServerSideSessionID != rhs._clientObservedServerSideSessionID {return false}
+    if lhs._operationStatus != rhs._operationStatus {return false}
+    if lhs.extensions != rhs.extensions {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_GetStatusRequest.OperationStatusRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_GetStatusRequest.protoMessageName + ".OperationStatusRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}operation_ids\0\u{2}f\u{f}extensions\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedStringField(value: &self.operationIds) }()
+      case 999: try { try decoder.decodeRepeatedMessageField(value: &self.extensions) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.operationIds.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.operationIds, fieldNumber: 1)
+    }
+    if !self.extensions.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.extensions, fieldNumber: 999)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_GetStatusRequest.OperationStatusRequest, rhs: Spark_Connect_GetStatusRequest.OperationStatusRequest) -> Bool {
+    if lhs.operationIds != rhs.operationIds {return false}
+    if lhs.extensions != rhs.extensions {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_GetStatusResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetStatusResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}server_side_session_id\0\u{3}operation_statuses\0\u{2}d\u{f}extensions\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.sessionID) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.serverSideSessionID) }()
+      case 3: try { try decoder.decodeRepeatedMessageField(value: &self.operationStatuses) }()
+      case 999: try { try decoder.decodeRepeatedMessageField(value: &self.extensions) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.sessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.sessionID, fieldNumber: 1)
+    }
+    if !self.serverSideSessionID.isEmpty {
+      try visitor.visitSingularStringField(value: self.serverSideSessionID, fieldNumber: 2)
+    }
+    if !self.operationStatuses.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.operationStatuses, fieldNumber: 3)
+    }
+    if !self.extensions.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.extensions, fieldNumber: 999)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_GetStatusResponse, rhs: Spark_Connect_GetStatusResponse) -> Bool {
+    if lhs.sessionID != rhs.sessionID {return false}
+    if lhs.serverSideSessionID != rhs.serverSideSessionID {return false}
+    if lhs.operationStatuses != rhs.operationStatuses {return false}
+    if lhs.extensions != rhs.extensions {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_GetStatusResponse.OperationStatus: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_GetStatusResponse.protoMessageName + ".OperationStatus"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}operation_id\0\u{1}state\0\u{2}e\u{f}extensions\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.operationID) }()
+      case 2: try { try decoder.decodeSingularEnumField(value: &self.state) }()
+      case 999: try { try decoder.decodeRepeatedMessageField(value: &self.extensions) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.operationID.isEmpty {
+      try visitor.visitSingularStringField(value: self.operationID, fieldNumber: 1)
+    }
+    if self.state != .unspecified {
+      try visitor.visitSingularEnumField(value: self.state, fieldNumber: 2)
+    }
+    if !self.extensions.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.extensions, fieldNumber: 999)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_GetStatusResponse.OperationStatus, rhs: Spark_Connect_GetStatusResponse.OperationStatus) -> Bool {
+    if lhs.operationID != rhs.operationID {return false}
+    if lhs.state != rhs.state {return false}
+    if lhs.extensions != rhs.extensions {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_GetStatusResponse.OperationStatus.OperationState: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0OPERATION_STATE_UNSPECIFIED\0\u{1}OPERATION_STATE_UNKNOWN\0\u{1}OPERATION_STATE_RUNNING\0\u{1}OPERATION_STATE_TERMINATING\0\u{1}OPERATION_STATE_SUCCEEDED\0\u{1}OPERATION_STATE_FAILED\0\u{1}OPERATION_STATE_CANCELLED\0")
 }

@@ -42,11 +42,11 @@ struct Spark_Connect_ExamplePluginRelation: Sendable {
   // methods supported on all messages.
 
   var input: Spark_Connect_Relation {
-    get {return _input ?? Spark_Connect_Relation()}
+    get {_input ?? Spark_Connect_Relation()}
     set {_input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return self._input != nil}
+  var hasInput: Bool {self._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {self._input = nil}
 
@@ -65,11 +65,11 @@ struct Spark_Connect_ExamplePluginExpression: Sendable {
   // methods supported on all messages.
 
   var child: Spark_Connect_Expression {
-    get {return _child ?? Spark_Connect_Expression()}
+    get {_child ?? Spark_Connect_Expression()}
     set {_child = newValue}
   }
   /// Returns true if `child` has been explicitly set.
-  var hasChild: Bool {return self._child != nil}
+  var hasChild: Bool {self._child != nil}
   /// Clears the value of `child`. Subsequent reads from it will return its default value.
   mutating func clearChild() {self._child = nil}
 

@@ -24,7 +24,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import SwiftProtobuf
 
 // If the compiler emits an error on this type, it is because this file
@@ -47,11 +51,11 @@ struct Spark_Connect_Relation: @unchecked Sendable {
   // methods supported on all messages.
 
   var common: Spark_Connect_RelationCommon {
-    get {return _storage._common ?? Spark_Connect_RelationCommon()}
+    get {_storage._common ?? Spark_Connect_RelationCommon()}
     set {_uniqueStorage()._common = newValue}
   }
   /// Returns true if `common` has been explicitly set.
-  var hasCommon: Bool {return _storage._common != nil}
+  var hasCommon: Bool {_storage._common != nil}
   /// Clears the value of `common`. Subsequent reads from it will return its default value.
   mutating func clearCommon() {_uniqueStorage()._common = nil}
 
@@ -643,11 +647,11 @@ struct Spark_Connect_MlRelation: @unchecked Sendable {
 
   /// (Optional) the dataset for restoring the model summary
   var modelSummaryDataset: Spark_Connect_Relation {
-    get {return _storage._modelSummaryDataset ?? Spark_Connect_Relation()}
+    get {_storage._modelSummaryDataset ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._modelSummaryDataset = newValue}
   }
   /// Returns true if `modelSummaryDataset` has been explicitly set.
-  var hasModelSummaryDataset: Bool {return _storage._modelSummaryDataset != nil}
+  var hasModelSummaryDataset: Bool {_storage._modelSummaryDataset != nil}
   /// Clears the value of `modelSummaryDataset`. Subsequent reads from it will return its default value.
   mutating func clearModelSummaryDataset() {_uniqueStorage()._modelSummaryDataset = nil}
 
@@ -691,21 +695,21 @@ struct Spark_Connect_MlRelation: @unchecked Sendable {
 
     /// the input dataframe
     var input: Spark_Connect_Relation {
-      get {return _storage._input ?? Spark_Connect_Relation()}
+      get {_storage._input ?? Spark_Connect_Relation()}
       set {_uniqueStorage()._input = newValue}
     }
     /// Returns true if `input` has been explicitly set.
-    var hasInput: Bool {return _storage._input != nil}
+    var hasInput: Bool {_storage._input != nil}
     /// Clears the value of `input`. Subsequent reads from it will return its default value.
     mutating func clearInput() {_uniqueStorage()._input = nil}
 
     /// the operator specific parameters
     var params: Spark_Connect_MlParams {
-      get {return _storage._params ?? Spark_Connect_MlParams()}
+      get {_storage._params ?? Spark_Connect_MlParams()}
       set {_uniqueStorage()._params = newValue}
     }
     /// Returns true if `params` has been explicitly set.
-    var hasParams: Bool {return _storage._params != nil}
+    var hasParams: Bool {_storage._params != nil}
     /// Clears the value of `params`. Subsequent reads from it will return its default value.
     mutating func clearParams() {_uniqueStorage()._params = nil}
 
@@ -741,11 +745,11 @@ struct Spark_Connect_Fetch: Sendable {
 
   /// (Required) reference to the object on the server side
   var objRef: Spark_Connect_ObjectRef {
-    get {return _objRef ?? Spark_Connect_ObjectRef()}
+    get {_objRef ?? Spark_Connect_ObjectRef()}
     set {_objRef = newValue}
   }
   /// Returns true if `objRef` has been explicitly set.
-  var hasObjRef: Bool {return self._objRef != nil}
+  var hasObjRef: Bool {self._objRef != nil}
   /// Clears the value of `objRef`. Subsequent reads from it will return its default value.
   mutating func clearObjRef() {self._objRef = nil}
 
@@ -834,21 +838,21 @@ struct Spark_Connect_RelationCommon: Sendable {
 
   /// (Optional) A per-client globally unique id for a given connect plan.
   var planID: Int64 {
-    get {return _planID ?? 0}
+    get {_planID ?? 0}
     set {_planID = newValue}
   }
   /// Returns true if `planID` has been explicitly set.
-  var hasPlanID: Bool {return self._planID != nil}
+  var hasPlanID: Bool {self._planID != nil}
   /// Clears the value of `planID`. Subsequent reads from it will return its default value.
   mutating func clearPlanID() {self._planID = nil}
 
   /// (Optional) Keep the information of the origin for this expression such as stacktrace.
   var origin: Spark_Connect_Origin {
-    get {return _origin ?? Spark_Connect_Origin()}
+    get {_origin ?? Spark_Connect_Origin()}
     set {_origin = newValue}
   }
   /// Returns true if `origin` has been explicitly set.
-  var hasOrigin: Bool {return self._origin != nil}
+  var hasOrigin: Bool {self._origin != nil}
   /// Clears the value of `origin`. Subsequent reads from it will return its default value.
   mutating func clearOrigin() {self._origin = nil}
 
@@ -907,18 +911,18 @@ struct Spark_Connect_WithRelations: @unchecked Sendable {
   /// (Required) Plan at the root of the query tree. This plan is expected to contain one or more
   /// references. Those references get expanded later on by the engine.
   var root: Spark_Connect_Relation {
-    get {return _storage._root ?? Spark_Connect_Relation()}
+    get {_storage._root ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._root = newValue}
   }
   /// Returns true if `root` has been explicitly set.
-  var hasRoot: Bool {return _storage._root != nil}
+  var hasRoot: Bool {_storage._root != nil}
   /// Clears the value of `root`. Subsequent reads from it will return its default value.
   mutating func clearRoot() {_uniqueStorage()._root = nil}
 
   /// (Required) Plans referenced by the root plan. Relations in this list are also allowed to
   /// contain references to other relations in this list, as long they do not form cycles.
   var references: [Spark_Connect_Relation] {
-    get {return _storage._references}
+    get {_storage._references}
     set {_uniqueStorage()._references = newValue}
   }
 
@@ -990,11 +994,11 @@ struct Spark_Connect_Read: Sendable {
     ///
     /// If not set, the value from SQL conf 'spark.sql.sources.default' will be used.
     var format: String {
-      get {return _format ?? String()}
+      get {_format ?? String()}
       set {_format = newValue}
     }
     /// Returns true if `format` has been explicitly set.
-    var hasFormat: Bool {return self._format != nil}
+    var hasFormat: Bool {self._format != nil}
     /// Clears the value of `format`. Subsequent reads from it will return its default value.
     mutating func clearFormat() {self._format = nil}
 
@@ -1002,11 +1006,11 @@ struct Spark_Connect_Read: Sendable {
     ///
     /// This schema string should be either DDL-formatted or JSON-formatted.
     var schema: String {
-      get {return _schema ?? String()}
+      get {_schema ?? String()}
       set {_schema = newValue}
     }
     /// Returns true if `schema` has been explicitly set.
-    var hasSchema: Bool {return self._schema != nil}
+    var hasSchema: Bool {self._schema != nil}
     /// Clears the value of `schema`. Subsequent reads from it will return its default value.
     mutating func clearSchema() {self._schema = nil}
 
@@ -1023,12 +1027,25 @@ struct Spark_Connect_Read: Sendable {
     /// This is only supported by the JDBC data source.
     var predicates: [String] = []
 
+    /// (Optional) A user-provided name for the streaming source.
+    /// This name is used in checkpoint metadata and enables stable checkpoint locations
+    /// for source evolution.
+    var sourceName: String {
+      get {_sourceName ?? String()}
+      set {_sourceName = newValue}
+    }
+    /// Returns true if `sourceName` has been explicitly set.
+    var hasSourceName: Bool {self._sourceName != nil}
+    /// Clears the value of `sourceName`. Subsequent reads from it will return its default value.
+    mutating func clearSourceName() {self._sourceName = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
 
     fileprivate var _format: String? = nil
     fileprivate var _schema: String? = nil
+    fileprivate var _sourceName: String? = nil
   }
 
   init() {}
@@ -1047,17 +1064,17 @@ struct Spark_Connect_Project: @unchecked Sendable {
   ///
   /// For example, `SELECT ABS(-1)` is valid plan without an input plan.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) A Project requires at least one expression.
   var expressions: [Spark_Connect_Expression] {
-    get {return _storage._expressions}
+    get {_storage._expressions}
     set {_uniqueStorage()._expressions = newValue}
   }
 
@@ -1077,21 +1094,21 @@ struct Spark_Connect_Filter: @unchecked Sendable {
 
   /// (Required) Input relation for a Filter.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) A Filter must have a condition expression.
   var condition: Spark_Connect_Expression {
-    get {return _storage._condition ?? Spark_Connect_Expression()}
+    get {_storage._condition ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._condition = newValue}
   }
   /// Returns true if `condition` has been explicitly set.
-  var hasCondition: Bool {return _storage._condition != nil}
+  var hasCondition: Bool {_storage._condition != nil}
   /// Clears the value of `condition`. Subsequent reads from it will return its default value.
   mutating func clearCondition() {_uniqueStorage()._condition = nil}
 
@@ -1112,21 +1129,21 @@ struct Spark_Connect_Join: @unchecked Sendable {
 
   /// (Required) Left input relation for a Join.
   var left: Spark_Connect_Relation {
-    get {return _storage._left ?? Spark_Connect_Relation()}
+    get {_storage._left ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._left = newValue}
   }
   /// Returns true if `left` has been explicitly set.
-  var hasLeft: Bool {return _storage._left != nil}
+  var hasLeft: Bool {_storage._left != nil}
   /// Clears the value of `left`. Subsequent reads from it will return its default value.
   mutating func clearLeft() {_uniqueStorage()._left = nil}
 
   /// (Required) Right input relation for a Join.
   var right: Spark_Connect_Relation {
-    get {return _storage._right ?? Spark_Connect_Relation()}
+    get {_storage._right ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._right = newValue}
   }
   /// Returns true if `right` has been explicitly set.
-  var hasRight: Bool {return _storage._right != nil}
+  var hasRight: Bool {_storage._right != nil}
   /// Clears the value of `right`. Subsequent reads from it will return its default value.
   mutating func clearRight() {_uniqueStorage()._right = nil}
 
@@ -1134,17 +1151,17 @@ struct Spark_Connect_Join: @unchecked Sendable {
   ///
   /// This field does not co-exist with using_columns.
   var joinCondition: Spark_Connect_Expression {
-    get {return _storage._joinCondition ?? Spark_Connect_Expression()}
+    get {_storage._joinCondition ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._joinCondition = newValue}
   }
   /// Returns true if `joinCondition` has been explicitly set.
-  var hasJoinCondition: Bool {return _storage._joinCondition != nil}
+  var hasJoinCondition: Bool {_storage._joinCondition != nil}
   /// Clears the value of `joinCondition`. Subsequent reads from it will return its default value.
   mutating func clearJoinCondition() {_uniqueStorage()._joinCondition = nil}
 
   /// (Required) The join type.
   var joinType: Spark_Connect_Join.JoinType {
-    get {return _storage._joinType}
+    get {_storage._joinType}
     set {_uniqueStorage()._joinType = newValue}
   }
 
@@ -1154,17 +1171,17 @@ struct Spark_Connect_Join: @unchecked Sendable {
   ///
   /// This field does not co-exist with join_condition.
   var usingColumns: [String] {
-    get {return _storage._usingColumns}
+    get {_storage._usingColumns}
     set {_uniqueStorage()._usingColumns = newValue}
   }
 
   /// (Optional) Only used by joinWith. Set the left and right join data types.
   var joinDataType: Spark_Connect_Join.JoinDataType {
-    get {return _storage._joinDataType ?? Spark_Connect_Join.JoinDataType()}
+    get {_storage._joinDataType ?? Spark_Connect_Join.JoinDataType()}
     set {_uniqueStorage()._joinDataType = newValue}
   }
   /// Returns true if `joinDataType` has been explicitly set.
-  var hasJoinDataType: Bool {return _storage._joinDataType != nil}
+  var hasJoinDataType: Bool {_storage._joinDataType != nil}
   /// Clears the value of `joinDataType`. Subsequent reads from it will return its default value.
   mutating func clearJoinDataType() {_uniqueStorage()._joinDataType = nil}
 
@@ -1257,27 +1274,27 @@ struct Spark_Connect_SetOperation: @unchecked Sendable {
 
   /// (Required) Left input relation for a Set operation.
   var leftInput: Spark_Connect_Relation {
-    get {return _storage._leftInput ?? Spark_Connect_Relation()}
+    get {_storage._leftInput ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._leftInput = newValue}
   }
   /// Returns true if `leftInput` has been explicitly set.
-  var hasLeftInput: Bool {return _storage._leftInput != nil}
+  var hasLeftInput: Bool {_storage._leftInput != nil}
   /// Clears the value of `leftInput`. Subsequent reads from it will return its default value.
   mutating func clearLeftInput() {_uniqueStorage()._leftInput = nil}
 
   /// (Required) Right input relation for a Set operation.
   var rightInput: Spark_Connect_Relation {
-    get {return _storage._rightInput ?? Spark_Connect_Relation()}
+    get {_storage._rightInput ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._rightInput = newValue}
   }
   /// Returns true if `rightInput` has been explicitly set.
-  var hasRightInput: Bool {return _storage._rightInput != nil}
+  var hasRightInput: Bool {_storage._rightInput != nil}
   /// Clears the value of `rightInput`. Subsequent reads from it will return its default value.
   mutating func clearRightInput() {_uniqueStorage()._rightInput = nil}
 
   /// (Required) The Set operation type.
   var setOpType: Spark_Connect_SetOperation.SetOpType {
-    get {return _storage._setOpType}
+    get {_storage._setOpType}
     set {_uniqueStorage()._setOpType = newValue}
   }
 
@@ -1286,11 +1303,11 @@ struct Spark_Connect_SetOperation: @unchecked Sendable {
   /// True to preserve all results.
   /// False to remove duplicate rows.
   var isAll: Bool {
-    get {return _storage._isAll ?? false}
+    get {_storage._isAll ?? false}
     set {_uniqueStorage()._isAll = newValue}
   }
   /// Returns true if `isAll` has been explicitly set.
-  var hasIsAll: Bool {return _storage._isAll != nil}
+  var hasIsAll: Bool {_storage._isAll != nil}
   /// Clears the value of `isAll`. Subsequent reads from it will return its default value.
   mutating func clearIsAll() {_uniqueStorage()._isAll = nil}
 
@@ -1298,11 +1315,11 @@ struct Spark_Connect_SetOperation: @unchecked Sendable {
   ///
   /// Only UNION supports this option.
   var byName: Bool {
-    get {return _storage._byName ?? false}
+    get {_storage._byName ?? false}
     set {_uniqueStorage()._byName = newValue}
   }
   /// Returns true if `byName` has been explicitly set.
-  var hasByName: Bool {return _storage._byName != nil}
+  var hasByName: Bool {_storage._byName != nil}
   /// Clears the value of `byName`. Subsequent reads from it will return its default value.
   mutating func clearByName() {_uniqueStorage()._byName = nil}
 
@@ -1310,11 +1327,11 @@ struct Spark_Connect_SetOperation: @unchecked Sendable {
   ///
   /// Only UNION supports this option.
   var allowMissingColumns: Bool {
-    get {return _storage._allowMissingColumns ?? false}
+    get {_storage._allowMissingColumns ?? false}
     set {_uniqueStorage()._allowMissingColumns = newValue}
   }
   /// Returns true if `allowMissingColumns` has been explicitly set.
-  var hasAllowMissingColumns: Bool {return _storage._allowMissingColumns != nil}
+  var hasAllowMissingColumns: Bool {_storage._allowMissingColumns != nil}
   /// Clears the value of `allowMissingColumns`. Subsequent reads from it will return its default value.
   mutating func clearAllowMissingColumns() {_uniqueStorage()._allowMissingColumns = nil}
 
@@ -1375,17 +1392,17 @@ struct Spark_Connect_Limit: @unchecked Sendable {
 
   /// (Required) Input relation for a Limit.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) the limit.
   var limit: Int32 {
-    get {return _storage._limit}
+    get {_storage._limit}
     set {_uniqueStorage()._limit = newValue}
   }
 
@@ -1405,17 +1422,17 @@ struct Spark_Connect_Offset: @unchecked Sendable {
 
   /// (Required) Input relation for an Offset.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) the limit.
   var offset: Int32 {
-    get {return _storage._offset}
+    get {_storage._offset}
     set {_uniqueStorage()._offset = newValue}
   }
 
@@ -1434,17 +1451,17 @@ struct Spark_Connect_Tail: @unchecked Sendable {
 
   /// (Required) Input relation for an Tail.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) the limit.
   var limit: Int32 {
-    get {return _storage._limit}
+    get {_storage._limit}
     set {_uniqueStorage()._limit = newValue}
   }
 
@@ -1463,45 +1480,45 @@ struct Spark_Connect_Aggregate: @unchecked Sendable {
 
   /// (Required) Input relation for a RelationalGroupedDataset.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) How the RelationalGroupedDataset was built.
   var groupType: Spark_Connect_Aggregate.GroupType {
-    get {return _storage._groupType}
+    get {_storage._groupType}
     set {_uniqueStorage()._groupType = newValue}
   }
 
   /// (Required) Expressions for grouping keys
   var groupingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._groupingExpressions}
+    get {_storage._groupingExpressions}
     set {_uniqueStorage()._groupingExpressions = newValue}
   }
 
   /// (Required) List of values that will be translated to columns in the output DataFrame.
   var aggregateExpressions: [Spark_Connect_Expression] {
-    get {return _storage._aggregateExpressions}
+    get {_storage._aggregateExpressions}
     set {_uniqueStorage()._aggregateExpressions = newValue}
   }
 
   /// (Optional) Pivots a column of the current `DataFrame` and performs the specified aggregation.
   var pivot: Spark_Connect_Aggregate.Pivot {
-    get {return _storage._pivot ?? Spark_Connect_Aggregate.Pivot()}
+    get {_storage._pivot ?? Spark_Connect_Aggregate.Pivot()}
     set {_uniqueStorage()._pivot = newValue}
   }
   /// Returns true if `pivot` has been explicitly set.
-  var hasPivot: Bool {return _storage._pivot != nil}
+  var hasPivot: Bool {_storage._pivot != nil}
   /// Clears the value of `pivot`. Subsequent reads from it will return its default value.
   mutating func clearPivot() {_uniqueStorage()._pivot = nil}
 
   /// (Optional) List of values that will be translated to columns in the output DataFrame.
   var groupingSets: [Spark_Connect_Aggregate.GroupingSets] {
-    get {return _storage._groupingSets}
+    get {_storage._groupingSets}
     set {_uniqueStorage()._groupingSets = newValue}
   }
 
@@ -1564,11 +1581,11 @@ struct Spark_Connect_Aggregate: @unchecked Sendable {
 
     /// (Required) The column to pivot
     var col: Spark_Connect_Expression {
-      get {return _col ?? Spark_Connect_Expression()}
+      get {_col ?? Spark_Connect_Expression()}
       set {_col = newValue}
     }
     /// Returns true if `col` has been explicitly set.
-    var hasCol: Bool {return self._col != nil}
+    var hasCol: Bool {self._col != nil}
     /// Clears the value of `col`. Subsequent reads from it will return its default value.
     mutating func clearCol() {self._col = nil}
 
@@ -1611,27 +1628,27 @@ struct Spark_Connect_Sort: @unchecked Sendable {
 
   /// (Required) Input relation for a Sort.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The ordering expressions
   var order: [Spark_Connect_Expression.SortOrder] {
-    get {return _storage._order}
+    get {_storage._order}
     set {_uniqueStorage()._order = newValue}
   }
 
   /// (Optional) if this is a global sort.
   var isGlobal: Bool {
-    get {return _storage._isGlobal ?? false}
+    get {_storage._isGlobal ?? false}
     set {_uniqueStorage()._isGlobal = newValue}
   }
   /// Returns true if `isGlobal` has been explicitly set.
-  var hasIsGlobal: Bool {return _storage._isGlobal != nil}
+  var hasIsGlobal: Bool {_storage._isGlobal != nil}
   /// Clears the value of `isGlobal`. Subsequent reads from it will return its default value.
   mutating func clearIsGlobal() {_uniqueStorage()._isGlobal = nil}
 
@@ -1650,23 +1667,23 @@ struct Spark_Connect_Drop: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Optional) columns to drop.
   var columns: [Spark_Connect_Expression] {
-    get {return _storage._columns}
+    get {_storage._columns}
     set {_uniqueStorage()._columns = newValue}
   }
 
   /// (Optional) names of columns to drop.
   var columnNames: [String] {
-    get {return _storage._columnNames}
+    get {_storage._columnNames}
     set {_uniqueStorage()._columnNames = newValue}
   }
 
@@ -1686,11 +1703,11 @@ struct Spark_Connect_Deduplicate: @unchecked Sendable {
 
   /// (Required) Input relation for a Deduplicate.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -1698,7 +1715,7 @@ struct Spark_Connect_Deduplicate: @unchecked Sendable {
   ///
   /// This field does not co-use with `all_columns_as_keys`.
   var columnNames: [String] {
-    get {return _storage._columnNames}
+    get {_storage._columnNames}
     set {_uniqueStorage()._columnNames = newValue}
   }
 
@@ -1706,21 +1723,21 @@ struct Spark_Connect_Deduplicate: @unchecked Sendable {
   ///
   /// This field does not co-use with `column_names`.
   var allColumnsAsKeys: Bool {
-    get {return _storage._allColumnsAsKeys ?? false}
+    get {_storage._allColumnsAsKeys ?? false}
     set {_uniqueStorage()._allColumnsAsKeys = newValue}
   }
   /// Returns true if `allColumnsAsKeys` has been explicitly set.
-  var hasAllColumnsAsKeys: Bool {return _storage._allColumnsAsKeys != nil}
+  var hasAllColumnsAsKeys: Bool {_storage._allColumnsAsKeys != nil}
   /// Clears the value of `allColumnsAsKeys`. Subsequent reads from it will return its default value.
   mutating func clearAllColumnsAsKeys() {_uniqueStorage()._allColumnsAsKeys = nil}
 
   /// (Optional) Deduplicate within the time range of watermark.
   var withinWatermark: Bool {
-    get {return _storage._withinWatermark ?? false}
+    get {_storage._withinWatermark ?? false}
     set {_uniqueStorage()._withinWatermark = newValue}
   }
   /// Returns true if `withinWatermark` has been explicitly set.
-  var hasWithinWatermark: Bool {return _storage._withinWatermark != nil}
+  var hasWithinWatermark: Bool {_storage._withinWatermark != nil}
   /// Clears the value of `withinWatermark`. Subsequent reads from it will return its default value.
   mutating func clearWithinWatermark() {_uniqueStorage()._withinWatermark = nil}
 
@@ -1740,11 +1757,11 @@ struct Spark_Connect_LocalRelation: Sendable {
   /// (Optional) Local collection data serialized into Arrow IPC streaming format which contains
   /// the schema of the data.
   var data: Data {
-    get {return _data ?? Data()}
+    get {_data ?? Data()}
     set {_data = newValue}
   }
   /// Returns true if `data` has been explicitly set.
-  var hasData: Bool {return self._data != nil}
+  var hasData: Bool {self._data != nil}
   /// Clears the value of `data`. Subsequent reads from it will return its default value.
   mutating func clearData() {self._data = nil}
 
@@ -1754,11 +1771,11 @@ struct Spark_Connect_LocalRelation: Sendable {
   /// The server side will update the column names and data types according to this schema.
   /// If the 'data' is not provided, then this schema will be required.
   var schema: String {
-    get {return _schema ?? String()}
+    get {_schema ?? String()}
     set {_schema = newValue}
   }
   /// Returns true if `schema` has been explicitly set.
-  var hasSchema: Bool {return self._schema != nil}
+  var hasSchema: Bool {self._schema != nil}
   /// Clears the value of `schema`. Subsequent reads from it will return its default value.
   mutating func clearSchema() {self._schema = nil}
 
@@ -1801,11 +1818,11 @@ struct Spark_Connect_ChunkedCachedLocalRelation: Sendable {
   /// Scala clients always provide the schema, Python clients can omit it.
   /// Hash is a hex-encoded string (e.g., "a3b2c1d4...").
   var schemaHash: String {
-    get {return _schemaHash ?? String()}
+    get {_schemaHash ?? String()}
     set {_schemaHash = newValue}
   }
   /// Returns true if `schemaHash` has been explicitly set.
-  var hasSchemaHash: Bool {return self._schemaHash != nil}
+  var hasSchemaHash: Bool {self._schemaHash != nil}
   /// Clears the value of `schemaHash`. Subsequent reads from it will return its default value.
   mutating func clearSchemaHash() {self._schemaHash = nil}
 
@@ -1838,33 +1855,33 @@ struct Spark_Connect_Sample: @unchecked Sendable {
 
   /// (Required) Input relation for a Sample.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) lower bound.
   var lowerBound: Double {
-    get {return _storage._lowerBound}
+    get {_storage._lowerBound}
     set {_uniqueStorage()._lowerBound = newValue}
   }
 
   /// (Required) upper bound.
   var upperBound: Double {
-    get {return _storage._upperBound}
+    get {_storage._upperBound}
     set {_uniqueStorage()._upperBound = newValue}
   }
 
   /// (Optional) Whether to sample with replacement.
   var withReplacement: Bool {
-    get {return _storage._withReplacement ?? false}
+    get {_storage._withReplacement ?? false}
     set {_uniqueStorage()._withReplacement = newValue}
   }
   /// Returns true if `withReplacement` has been explicitly set.
-  var hasWithReplacement: Bool {return _storage._withReplacement != nil}
+  var hasWithReplacement: Bool {_storage._withReplacement != nil}
   /// Clears the value of `withReplacement`. Subsequent reads from it will return its default value.
   mutating func clearWithReplacement() {_uniqueStorage()._withReplacement = nil}
 
@@ -1872,11 +1889,11 @@ struct Spark_Connect_Sample: @unchecked Sendable {
   /// This field is required to avoid generating mutable dataframes (see SPARK-48184 for details),
   /// however, still keep it 'optional' here for backward compatibility.
   var seed: Int64 {
-    get {return _storage._seed ?? 0}
+    get {_storage._seed ?? 0}
     set {_uniqueStorage()._seed = newValue}
   }
   /// Returns true if `seed` has been explicitly set.
-  var hasSeed: Bool {return _storage._seed != nil}
+  var hasSeed: Bool {_storage._seed != nil}
   /// Clears the value of `seed`. Subsequent reads from it will return its default value.
   mutating func clearSeed() {_uniqueStorage()._seed = nil}
 
@@ -1884,7 +1901,7 @@ struct Spark_Connect_Sample: @unchecked Sendable {
   /// This flag is true when invoking `dataframe.randomSplit` to randomly splits DataFrame with the
   /// provided weights. Otherwise, it is false.
   var deterministicOrder: Bool {
-    get {return _storage._deterministicOrder}
+    get {_storage._deterministicOrder}
     set {_uniqueStorage()._deterministicOrder = newValue}
   }
 
@@ -1903,11 +1920,11 @@ struct Spark_Connect_Range: Sendable {
 
   /// (Optional) Default value = 0
   var start: Int64 {
-    get {return _start ?? 0}
+    get {_start ?? 0}
     set {_start = newValue}
   }
   /// Returns true if `start` has been explicitly set.
-  var hasStart: Bool {return self._start != nil}
+  var hasStart: Bool {self._start != nil}
   /// Clears the value of `start`. Subsequent reads from it will return its default value.
   mutating func clearStart() {self._start = nil}
 
@@ -1920,11 +1937,11 @@ struct Spark_Connect_Range: Sendable {
   /// Optional. Default value is assigned by 1) SQL conf "spark.sql.leafNodeDefaultParallelism" if
   /// it is set, or 2) spark default parallelism.
   var numPartitions: Int32 {
-    get {return _numPartitions ?? 0}
+    get {_numPartitions ?? 0}
     set {_numPartitions = newValue}
   }
   /// Returns true if `numPartitions` has been explicitly set.
-  var hasNumPartitions: Bool {return self._numPartitions != nil}
+  var hasNumPartitions: Bool {self._numPartitions != nil}
   /// Clears the value of `numPartitions`. Subsequent reads from it will return its default value.
   mutating func clearNumPartitions() {self._numPartitions = nil}
 
@@ -1944,23 +1961,23 @@ struct Spark_Connect_SubqueryAlias: @unchecked Sendable {
 
   /// (Required) The input relation of SubqueryAlias.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The alias.
   var alias: String {
-    get {return _storage._alias}
+    get {_storage._alias}
     set {_uniqueStorage()._alias = newValue}
   }
 
   /// (Optional) Qualifier of the alias.
   var qualifier: [String] {
-    get {return _storage._qualifier}
+    get {_storage._qualifier}
     set {_uniqueStorage()._qualifier = newValue}
   }
 
@@ -1979,27 +1996,27 @@ struct Spark_Connect_Repartition: @unchecked Sendable {
 
   /// (Required) The input relation of Repartition.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Must be positive.
   var numPartitions: Int32 {
-    get {return _storage._numPartitions}
+    get {_storage._numPartitions}
     set {_uniqueStorage()._numPartitions = newValue}
   }
 
   /// (Optional) Default value is false.
   var shuffle: Bool {
-    get {return _storage._shuffle ?? false}
+    get {_storage._shuffle ?? false}
     set {_uniqueStorage()._shuffle = newValue}
   }
   /// Returns true if `shuffle` has been explicitly set.
-  var hasShuffle: Bool {return _storage._shuffle != nil}
+  var hasShuffle: Bool {_storage._shuffle != nil}
   /// Clears the value of `shuffle`. Subsequent reads from it will return its default value.
   mutating func clearShuffle() {_uniqueStorage()._shuffle = nil}
 
@@ -2019,30 +2036,30 @@ struct Spark_Connect_ShowString: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Number of rows to show.
   var numRows: Int32 {
-    get {return _storage._numRows}
+    get {_storage._numRows}
     set {_uniqueStorage()._numRows = newValue}
   }
 
   /// (Required) If set to more than 0, truncates strings to
   /// `truncate` characters and all cells will be aligned right.
   var truncate: Int32 {
-    get {return _storage._truncate}
+    get {_storage._truncate}
     set {_uniqueStorage()._truncate = newValue}
   }
 
   /// (Required) If set to true, prints output rows vertically (one line per column value).
   var vertical: Bool {
-    get {return _storage._vertical}
+    get {_storage._vertical}
     set {_uniqueStorage()._vertical = newValue}
   }
 
@@ -2062,24 +2079,24 @@ struct Spark_Connect_HtmlString: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Number of rows to show.
   var numRows: Int32 {
-    get {return _storage._numRows}
+    get {_storage._numRows}
     set {_uniqueStorage()._numRows = newValue}
   }
 
   /// (Required) If set to more than 0, truncates strings to
   /// `truncate` characters and all cells will be aligned right.
   var truncate: Int32 {
-    get {return _storage._truncate}
+    get {_storage._truncate}
     set {_uniqueStorage()._truncate = newValue}
   }
 
@@ -2100,11 +2117,11 @@ struct Spark_Connect_StatSummary: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2123,7 +2140,7 @@ struct Spark_Connect_StatSummary: @unchecked Sendable {
   /// If no statistics are given, this function computes 'count', 'mean', 'stddev', 'min',
   /// 'approximate quartiles' (percentiles at 25%, 50%, and 75%), and 'max'.
   var statistics: [String] {
-    get {return _storage._statistics}
+    get {_storage._statistics}
     set {_uniqueStorage()._statistics = newValue}
   }
 
@@ -2144,17 +2161,17 @@ struct Spark_Connect_StatDescribe: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Optional) Columns to compute statistics on.
   var cols: [String] {
-    get {return _storage._cols}
+    get {_storage._cols}
     set {_uniqueStorage()._cols = newValue}
   }
 
@@ -2175,11 +2192,11 @@ struct Spark_Connect_StatCrosstab: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2187,7 +2204,7 @@ struct Spark_Connect_StatCrosstab: @unchecked Sendable {
   ///
   /// Distinct items will make the first item of each row.
   var col1: String {
-    get {return _storage._col1}
+    get {_storage._col1}
     set {_uniqueStorage()._col1 = newValue}
   }
 
@@ -2195,7 +2212,7 @@ struct Spark_Connect_StatCrosstab: @unchecked Sendable {
   ///
   /// Distinct items will make the column names of the DataFrame.
   var col2: String {
-    get {return _storage._col2}
+    get {_storage._col2}
     set {_uniqueStorage()._col2 = newValue}
   }
 
@@ -2215,23 +2232,23 @@ struct Spark_Connect_StatCov: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The name of the first column.
   var col1: String {
-    get {return _storage._col1}
+    get {_storage._col1}
     set {_uniqueStorage()._col1 = newValue}
   }
 
   /// (Required) The name of the second column.
   var col2: String {
-    get {return _storage._col2}
+    get {_storage._col2}
     set {_uniqueStorage()._col2 = newValue}
   }
 
@@ -2252,23 +2269,23 @@ struct Spark_Connect_StatCorr: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The name of the first column.
   var col1: String {
-    get {return _storage._col1}
+    get {_storage._col1}
     set {_uniqueStorage()._col1 = newValue}
   }
 
   /// (Required) The name of the second column.
   var col2: String {
-    get {return _storage._col2}
+    get {_storage._col2}
     set {_uniqueStorage()._col2 = newValue}
   }
 
@@ -2276,11 +2293,11 @@ struct Spark_Connect_StatCorr: @unchecked Sendable {
   ///
   /// Currently only supports the Pearson Correlation Coefficient.
   var method: String {
-    get {return _storage._method ?? String()}
+    get {_storage._method ?? String()}
     set {_uniqueStorage()._method = newValue}
   }
   /// Returns true if `method` has been explicitly set.
-  var hasMethod: Bool {return _storage._method != nil}
+  var hasMethod: Bool {_storage._method != nil}
   /// Clears the value of `method`. Subsequent reads from it will return its default value.
   mutating func clearMethod() {_uniqueStorage()._method = nil}
 
@@ -2301,17 +2318,17 @@ struct Spark_Connect_StatApproxQuantile: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The names of the numerical columns.
   var cols: [String] {
-    get {return _storage._cols}
+    get {_storage._cols}
     set {_uniqueStorage()._cols = newValue}
   }
 
@@ -2320,7 +2337,7 @@ struct Spark_Connect_StatApproxQuantile: @unchecked Sendable {
   /// Each number must belong to [0, 1].
   /// For example 0 is the minimum, 0.5 is the median, 1 is the maximum.
   var probabilities: [Double] {
-    get {return _storage._probabilities}
+    get {_storage._probabilities}
     set {_uniqueStorage()._probabilities = newValue}
   }
 
@@ -2329,7 +2346,7 @@ struct Spark_Connect_StatApproxQuantile: @unchecked Sendable {
   /// If set to zero, the exact quantiles are computed, which could be very expensive.
   /// Note that values greater than 1 are accepted but give the same result as 1.
   var relativeError: Double {
-    get {return _storage._relativeError}
+    get {_storage._relativeError}
     set {_uniqueStorage()._relativeError = newValue}
   }
 
@@ -2350,28 +2367,28 @@ struct Spark_Connect_StatFreqItems: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The names of the columns to search frequent items in.
   var cols: [String] {
-    get {return _storage._cols}
+    get {_storage._cols}
     set {_uniqueStorage()._cols = newValue}
   }
 
   /// (Optional) The minimum frequency for an item to be considered `frequent`.
   /// Should be greater than 1e-4.
   var support: Double {
-    get {return _storage._support ?? 0}
+    get {_storage._support ?? 0}
     set {_uniqueStorage()._support = newValue}
   }
   /// Returns true if `support` has been explicitly set.
-  var hasSupport: Bool {return _storage._support != nil}
+  var hasSupport: Bool {_storage._support != nil}
   /// Clears the value of `support`. Subsequent reads from it will return its default value.
   mutating func clearSupport() {_uniqueStorage()._support = nil}
 
@@ -2393,21 +2410,21 @@ struct Spark_Connect_StatSampleBy: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The column that defines strata.
   var col: Spark_Connect_Expression {
-    get {return _storage._col ?? Spark_Connect_Expression()}
+    get {_storage._col ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._col = newValue}
   }
   /// Returns true if `col` has been explicitly set.
-  var hasCol: Bool {return _storage._col != nil}
+  var hasCol: Bool {_storage._col != nil}
   /// Clears the value of `col`. Subsequent reads from it will return its default value.
   mutating func clearCol() {_uniqueStorage()._col = nil}
 
@@ -2415,7 +2432,7 @@ struct Spark_Connect_StatSampleBy: @unchecked Sendable {
   ///
   /// If a stratum is not specified, we treat its fraction as zero.
   var fractions: [Spark_Connect_StatSampleBy.Fraction] {
-    get {return _storage._fractions}
+    get {_storage._fractions}
     set {_uniqueStorage()._fractions = newValue}
   }
 
@@ -2423,11 +2440,11 @@ struct Spark_Connect_StatSampleBy: @unchecked Sendable {
   /// This field is required to avoid generating mutable dataframes (see SPARK-48184 for details),
   /// however, still keep it 'optional' here for backward compatibility.
   var seed: Int64 {
-    get {return _storage._seed ?? 0}
+    get {_storage._seed ?? 0}
     set {_uniqueStorage()._seed = newValue}
   }
   /// Returns true if `seed` has been explicitly set.
-  var hasSeed: Bool {return _storage._seed != nil}
+  var hasSeed: Bool {_storage._seed != nil}
   /// Clears the value of `seed`. Subsequent reads from it will return its default value.
   mutating func clearSeed() {_uniqueStorage()._seed = nil}
 
@@ -2440,11 +2457,11 @@ struct Spark_Connect_StatSampleBy: @unchecked Sendable {
 
     /// (Required) The stratum.
     var stratum: Spark_Connect_Expression.Literal {
-      get {return _stratum ?? Spark_Connect_Expression.Literal()}
+      get {_stratum ?? Spark_Connect_Expression.Literal()}
       set {_stratum = newValue}
     }
     /// Returns true if `stratum` has been explicitly set.
-    var hasStratum: Bool {return self._stratum != nil}
+    var hasStratum: Bool {self._stratum != nil}
     /// Clears the value of `stratum`. Subsequent reads from it will return its default value.
     mutating func clearStratum() {self._stratum = nil}
 
@@ -2479,17 +2496,17 @@ struct Spark_Connect_NAFill: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Optional) Optional list of column names to consider.
   var cols: [String] {
-    get {return _storage._cols}
+    get {_storage._cols}
     set {_uniqueStorage()._cols = newValue}
   }
 
@@ -2498,7 +2515,7 @@ struct Spark_Connect_NAFill: @unchecked Sendable {
   /// Should contain at least 1 item.
   /// Only 4 data types are supported now: bool, long, double, string
   var values: [Spark_Connect_Expression.Literal] {
-    get {return _storage._values}
+    get {_storage._values}
     set {_uniqueStorage()._values = newValue}
   }
 
@@ -2518,11 +2535,11 @@ struct Spark_Connect_NADrop: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2530,7 +2547,7 @@ struct Spark_Connect_NADrop: @unchecked Sendable {
   ///
   /// When it is empty, all the columns in the input relation will be considered.
   var cols: [String] {
-    get {return _storage._cols}
+    get {_storage._cols}
     set {_uniqueStorage()._cols = newValue}
   }
 
@@ -2543,11 +2560,11 @@ struct Spark_Connect_NADrop: @unchecked Sendable {
   ///   - 'all' -> set 'min_non_nulls' 1;
   ///   - 'any' -> keep 'min_non_nulls' unset;
   var minNonNulls: Int32 {
-    get {return _storage._minNonNulls ?? 0}
+    get {_storage._minNonNulls ?? 0}
     set {_uniqueStorage()._minNonNulls = newValue}
   }
   /// Returns true if `minNonNulls` has been explicitly set.
-  var hasMinNonNulls: Bool {return _storage._minNonNulls != nil}
+  var hasMinNonNulls: Bool {_storage._minNonNulls != nil}
   /// Clears the value of `minNonNulls`. Subsequent reads from it will return its default value.
   mutating func clearMinNonNulls() {_uniqueStorage()._minNonNulls = nil}
 
@@ -2568,11 +2585,11 @@ struct Spark_Connect_NAReplace: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2580,13 +2597,13 @@ struct Spark_Connect_NAReplace: @unchecked Sendable {
   ///
   /// When it is empty, all the type-compatible columns in the input relation will be considered.
   var cols: [String] {
-    get {return _storage._cols}
+    get {_storage._cols}
     set {_uniqueStorage()._cols = newValue}
   }
 
   /// (Optional) The value replacement mapping.
   var replacements: [Spark_Connect_NAReplace.Replacement] {
-    get {return _storage._replacements}
+    get {_storage._replacements}
     set {_uniqueStorage()._replacements = newValue}
   }
 
@@ -2601,11 +2618,11 @@ struct Spark_Connect_NAReplace: @unchecked Sendable {
     ///
     /// Only 4 data types are supported now: null, bool, double, string.
     var oldValue: Spark_Connect_Expression.Literal {
-      get {return _oldValue ?? Spark_Connect_Expression.Literal()}
+      get {_oldValue ?? Spark_Connect_Expression.Literal()}
       set {_oldValue = newValue}
     }
     /// Returns true if `oldValue` has been explicitly set.
-    var hasOldValue: Bool {return self._oldValue != nil}
+    var hasOldValue: Bool {self._oldValue != nil}
     /// Clears the value of `oldValue`. Subsequent reads from it will return its default value.
     mutating func clearOldValue() {self._oldValue = nil}
 
@@ -2613,11 +2630,11 @@ struct Spark_Connect_NAReplace: @unchecked Sendable {
     ///
     /// Should be of the same data type with the old value.
     var newValue: Spark_Connect_Expression.Literal {
-      get {return _newValue ?? Spark_Connect_Expression.Literal()}
+      get {_newValue ?? Spark_Connect_Expression.Literal()}
       set {_newValue = newValue}
     }
     /// Returns true if `newValue` has been explicitly set.
-    var hasNewValue: Bool {return self._newValue != nil}
+    var hasNewValue: Bool {self._newValue != nil}
     /// Clears the value of `newValue`. Subsequent reads from it will return its default value.
     mutating func clearNewValue() {self._newValue = nil}
 
@@ -2642,11 +2659,11 @@ struct Spark_Connect_ToDF: @unchecked Sendable {
 
   /// (Required) The input relation of RenameColumnsBySameLengthNames.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2655,7 +2672,7 @@ struct Spark_Connect_ToDF: @unchecked Sendable {
   /// The number of columns of the input relation must be equal to the length
   /// of this field. If this is not true, an exception will be returned.
   var columnNames: [String] {
-    get {return _storage._columnNames}
+    get {_storage._columnNames}
     set {_uniqueStorage()._columnNames = newValue}
   }
 
@@ -2674,11 +2691,11 @@ struct Spark_Connect_WithColumnsRenamed: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2691,12 +2708,12 @@ struct Spark_Connect_WithColumnsRenamed: @unchecked Sendable {
   ///
   /// NOTE: This field was marked as deprecated in the .proto file.
   var renameColumnsMap: Dictionary<String,String> {
-    get {return _storage._renameColumnsMap}
+    get {_storage._renameColumnsMap}
     set {_uniqueStorage()._renameColumnsMap = newValue}
   }
 
   var renames: [Spark_Connect_WithColumnsRenamed.Rename] {
-    get {return _storage._renames}
+    get {_storage._renames}
     set {_uniqueStorage()._renames = newValue}
   }
 
@@ -2731,11 +2748,11 @@ struct Spark_Connect_WithColumns: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2749,7 +2766,7 @@ struct Spark_Connect_WithColumns: @unchecked Sendable {
   ///
   /// An exception is thrown when duplicated names are present in the mapping.
   var aliases: [Spark_Connect_Expression.Alias] {
-    get {return _storage._aliases}
+    get {_storage._aliases}
     set {_uniqueStorage()._aliases = newValue}
   }
 
@@ -2767,23 +2784,23 @@ struct Spark_Connect_WithWatermark: @unchecked Sendable {
 
   /// (Required) The input relation
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Name of the column containing event time.
   var eventTime: String {
-    get {return _storage._eventTime}
+    get {_storage._eventTime}
     set {_uniqueStorage()._eventTime = newValue}
   }
 
   /// (Required)
   var delayThreshold: String {
-    get {return _storage._delayThreshold}
+    get {_storage._delayThreshold}
     set {_uniqueStorage()._delayThreshold = newValue}
   }
 
@@ -2802,11 +2819,11 @@ struct Spark_Connect_Hint: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2816,13 +2833,13 @@ struct Spark_Connect_Hint: @unchecked Sendable {
   ///
   /// Supported partitioning hints include COALESCE, REPARTITION, REPARTITION_BY_RANGE.
   var name: String {
-    get {return _storage._name}
+    get {_storage._name}
     set {_uniqueStorage()._name = newValue}
   }
 
   /// (Optional) Hint parameters.
   var parameters: [Spark_Connect_Expression] {
-    get {return _storage._parameters}
+    get {_storage._parameters}
     set {_uniqueStorage()._parameters = newValue}
   }
 
@@ -2841,39 +2858,39 @@ struct Spark_Connect_Unpivot: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Id columns.
   var ids: [Spark_Connect_Expression] {
-    get {return _storage._ids}
+    get {_storage._ids}
     set {_uniqueStorage()._ids = newValue}
   }
 
   /// (Optional) Value columns to unpivot.
   var values: Spark_Connect_Unpivot.Values {
-    get {return _storage._values ?? Spark_Connect_Unpivot.Values()}
+    get {_storage._values ?? Spark_Connect_Unpivot.Values()}
     set {_uniqueStorage()._values = newValue}
   }
   /// Returns true if `values` has been explicitly set.
-  var hasValues: Bool {return _storage._values != nil}
+  var hasValues: Bool {_storage._values != nil}
   /// Clears the value of `values`. Subsequent reads from it will return its default value.
   mutating func clearValues() {_uniqueStorage()._values = nil}
 
   /// (Required) Name of the variable column.
   var variableColumnName: String {
-    get {return _storage._variableColumnName}
+    get {_storage._variableColumnName}
     set {_uniqueStorage()._variableColumnName = newValue}
   }
 
   /// (Required) Name of the value column.
   var valueColumnName: String {
-    get {return _storage._valueColumnName}
+    get {_storage._valueColumnName}
     set {_uniqueStorage()._valueColumnName = newValue}
   }
 
@@ -2906,18 +2923,18 @@ struct Spark_Connect_Transpose: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Optional) A list of columns that will be treated as the indices.
   /// Only single column is supported now.
   var indexColumns: [Spark_Connect_Expression] {
-    get {return _storage._indexColumns}
+    get {_storage._indexColumns}
     set {_uniqueStorage()._indexColumns = newValue}
   }
 
@@ -2951,11 +2968,11 @@ struct Spark_Connect_ToSchema: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
@@ -2963,11 +2980,11 @@ struct Spark_Connect_ToSchema: @unchecked Sendable {
   ///
   /// The Sever side will update the dataframe with this schema.
   var schema: Spark_Connect_DataType {
-    get {return _storage._schema ?? Spark_Connect_DataType()}
+    get {_storage._schema ?? Spark_Connect_DataType()}
     set {_uniqueStorage()._schema = newValue}
   }
   /// Returns true if `schema` has been explicitly set.
-  var hasSchema: Bool {return _storage._schema != nil}
+  var hasSchema: Bool {_storage._schema != nil}
   /// Clears the value of `schema`. Subsequent reads from it will return its default value.
   mutating func clearSchema() {_uniqueStorage()._schema = nil}
 
@@ -2985,27 +3002,27 @@ struct Spark_Connect_RepartitionByExpression: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The partitioning expressions.
   var partitionExprs: [Spark_Connect_Expression] {
-    get {return _storage._partitionExprs}
+    get {_storage._partitionExprs}
     set {_uniqueStorage()._partitionExprs = newValue}
   }
 
   /// (Optional) number of partitions, must be positive.
   var numPartitions: Int32 {
-    get {return _storage._numPartitions ?? 0}
+    get {_storage._numPartitions ?? 0}
     set {_uniqueStorage()._numPartitions = newValue}
   }
   /// Returns true if `numPartitions` has been explicitly set.
-  var hasNumPartitions: Bool {return _storage._numPartitions != nil}
+  var hasNumPartitions: Bool {_storage._numPartitions != nil}
   /// Clears the value of `numPartitions`. Subsequent reads from it will return its default value.
   mutating func clearNumPartitions() {_uniqueStorage()._numPartitions = nil}
 
@@ -3023,41 +3040,41 @@ struct Spark_Connect_MapPartitions: @unchecked Sendable {
 
   /// (Required) Input relation for a mapPartitions-equivalent API: mapInPandas, mapInArrow.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Input user-defined function.
   var `func`: Spark_Connect_CommonInlineUserDefinedFunction {
-    get {return _storage._func ?? Spark_Connect_CommonInlineUserDefinedFunction()}
+    get {_storage._func ?? Spark_Connect_CommonInlineUserDefinedFunction()}
     set {_uniqueStorage()._func = newValue}
   }
   /// Returns true if ``func`` has been explicitly set.
-  var hasFunc: Bool {return _storage._func != nil}
+  var hasFunc: Bool {_storage._func != nil}
   /// Clears the value of ``func``. Subsequent reads from it will return its default value.
   mutating func clearFunc() {_uniqueStorage()._func = nil}
 
   /// (Optional) Whether to use barrier mode execution or not.
   var isBarrier: Bool {
-    get {return _storage._isBarrier ?? false}
+    get {_storage._isBarrier ?? false}
     set {_uniqueStorage()._isBarrier = newValue}
   }
   /// Returns true if `isBarrier` has been explicitly set.
-  var hasIsBarrier: Bool {return _storage._isBarrier != nil}
+  var hasIsBarrier: Bool {_storage._isBarrier != nil}
   /// Clears the value of `isBarrier`. Subsequent reads from it will return its default value.
   mutating func clearIsBarrier() {_uniqueStorage()._isBarrier = nil}
 
   /// (Optional) ResourceProfile id used for the stage level scheduling.
   var profileID: Int32 {
-    get {return _storage._profileID ?? 0}
+    get {_storage._profileID ?? 0}
     set {_uniqueStorage()._profileID = newValue}
   }
   /// Returns true if `profileID` has been explicitly set.
-  var hasProfileID: Bool {return _storage._profileID != nil}
+  var hasProfileID: Bool {_storage._profileID != nil}
   /// Clears the value of `profileID`. Subsequent reads from it will return its default value.
   mutating func clearProfileID() {_uniqueStorage()._profileID = nil}
 
@@ -3075,101 +3092,101 @@ struct Spark_Connect_GroupMap: @unchecked Sendable {
 
   /// (Required) Input relation for Group Map API: apply, applyInPandas.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Expressions for grouping keys.
   var groupingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._groupingExpressions}
+    get {_storage._groupingExpressions}
     set {_uniqueStorage()._groupingExpressions = newValue}
   }
 
   /// (Required) Input user-defined function.
   var `func`: Spark_Connect_CommonInlineUserDefinedFunction {
-    get {return _storage._func ?? Spark_Connect_CommonInlineUserDefinedFunction()}
+    get {_storage._func ?? Spark_Connect_CommonInlineUserDefinedFunction()}
     set {_uniqueStorage()._func = newValue}
   }
   /// Returns true if ``func`` has been explicitly set.
-  var hasFunc: Bool {return _storage._func != nil}
+  var hasFunc: Bool {_storage._func != nil}
   /// Clears the value of ``func``. Subsequent reads from it will return its default value.
   mutating func clearFunc() {_uniqueStorage()._func = nil}
 
   /// (Optional) Expressions for sorting. Only used by Scala Sorted Group Map API.
   var sortingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._sortingExpressions}
+    get {_storage._sortingExpressions}
     set {_uniqueStorage()._sortingExpressions = newValue}
   }
 
   /// Below fields are only used by (Flat)MapGroupsWithState
   /// (Optional) Input relation for initial State.
   var initialInput: Spark_Connect_Relation {
-    get {return _storage._initialInput ?? Spark_Connect_Relation()}
+    get {_storage._initialInput ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._initialInput = newValue}
   }
   /// Returns true if `initialInput` has been explicitly set.
-  var hasInitialInput: Bool {return _storage._initialInput != nil}
+  var hasInitialInput: Bool {_storage._initialInput != nil}
   /// Clears the value of `initialInput`. Subsequent reads from it will return its default value.
   mutating func clearInitialInput() {_uniqueStorage()._initialInput = nil}
 
   /// (Optional) Expressions for grouping keys of the initial state input relation.
   var initialGroupingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._initialGroupingExpressions}
+    get {_storage._initialGroupingExpressions}
     set {_uniqueStorage()._initialGroupingExpressions = newValue}
   }
 
   /// (Optional) True if MapGroupsWithState, false if FlatMapGroupsWithState.
   var isMapGroupsWithState: Bool {
-    get {return _storage._isMapGroupsWithState ?? false}
+    get {_storage._isMapGroupsWithState ?? false}
     set {_uniqueStorage()._isMapGroupsWithState = newValue}
   }
   /// Returns true if `isMapGroupsWithState` has been explicitly set.
-  var hasIsMapGroupsWithState: Bool {return _storage._isMapGroupsWithState != nil}
+  var hasIsMapGroupsWithState: Bool {_storage._isMapGroupsWithState != nil}
   /// Clears the value of `isMapGroupsWithState`. Subsequent reads from it will return its default value.
   mutating func clearIsMapGroupsWithState() {_uniqueStorage()._isMapGroupsWithState = nil}
 
   /// (Optional) The output mode of the function.
   var outputMode: String {
-    get {return _storage._outputMode ?? String()}
+    get {_storage._outputMode ?? String()}
     set {_uniqueStorage()._outputMode = newValue}
   }
   /// Returns true if `outputMode` has been explicitly set.
-  var hasOutputMode: Bool {return _storage._outputMode != nil}
+  var hasOutputMode: Bool {_storage._outputMode != nil}
   /// Clears the value of `outputMode`. Subsequent reads from it will return its default value.
   mutating func clearOutputMode() {_uniqueStorage()._outputMode = nil}
 
   /// (Optional) Timeout configuration for groups that do not receive data for a while.
   var timeoutConf: String {
-    get {return _storage._timeoutConf ?? String()}
+    get {_storage._timeoutConf ?? String()}
     set {_uniqueStorage()._timeoutConf = newValue}
   }
   /// Returns true if `timeoutConf` has been explicitly set.
-  var hasTimeoutConf: Bool {return _storage._timeoutConf != nil}
+  var hasTimeoutConf: Bool {_storage._timeoutConf != nil}
   /// Clears the value of `timeoutConf`. Subsequent reads from it will return its default value.
   mutating func clearTimeoutConf() {_uniqueStorage()._timeoutConf = nil}
 
   /// (Optional) The schema for the grouped state.
   var stateSchema: Spark_Connect_DataType {
-    get {return _storage._stateSchema ?? Spark_Connect_DataType()}
+    get {_storage._stateSchema ?? Spark_Connect_DataType()}
     set {_uniqueStorage()._stateSchema = newValue}
   }
   /// Returns true if `stateSchema` has been explicitly set.
-  var hasStateSchema: Bool {return _storage._stateSchema != nil}
+  var hasStateSchema: Bool {_storage._stateSchema != nil}
   /// Clears the value of `stateSchema`. Subsequent reads from it will return its default value.
   mutating func clearStateSchema() {_uniqueStorage()._stateSchema = nil}
 
   /// Below fields are used by TransformWithState and TransformWithStateInPandas
   /// (Optional) TransformWithState related parameters.
   var transformWithStateInfo: Spark_Connect_TransformWithStateInfo {
-    get {return _storage._transformWithStateInfo ?? Spark_Connect_TransformWithStateInfo()}
+    get {_storage._transformWithStateInfo ?? Spark_Connect_TransformWithStateInfo()}
     set {_uniqueStorage()._transformWithStateInfo = newValue}
   }
   /// Returns true if `transformWithStateInfo` has been explicitly set.
-  var hasTransformWithStateInfo: Bool {return _storage._transformWithStateInfo != nil}
+  var hasTransformWithStateInfo: Bool {_storage._transformWithStateInfo != nil}
   /// Clears the value of `transformWithStateInfo`. Subsequent reads from it will return its default value.
   mutating func clearTransformWithStateInfo() {_uniqueStorage()._transformWithStateInfo = nil}
 
@@ -3191,22 +3208,22 @@ struct Spark_Connect_TransformWithStateInfo: Sendable {
 
   /// (Optional) Event time column name.
   var eventTimeColumnName: String {
-    get {return _eventTimeColumnName ?? String()}
+    get {_eventTimeColumnName ?? String()}
     set {_eventTimeColumnName = newValue}
   }
   /// Returns true if `eventTimeColumnName` has been explicitly set.
-  var hasEventTimeColumnName: Bool {return self._eventTimeColumnName != nil}
+  var hasEventTimeColumnName: Bool {self._eventTimeColumnName != nil}
   /// Clears the value of `eventTimeColumnName`. Subsequent reads from it will return its default value.
   mutating func clearEventTimeColumnName() {self._eventTimeColumnName = nil}
 
   /// (Optional) Schema for the output DataFrame.
   /// Only required used for TransformWithStateInPandas.
   var outputSchema: Spark_Connect_DataType {
-    get {return _outputSchema ?? Spark_Connect_DataType()}
+    get {_outputSchema ?? Spark_Connect_DataType()}
     set {_outputSchema = newValue}
   }
   /// Returns true if `outputSchema` has been explicitly set.
-  var hasOutputSchema: Bool {return self._outputSchema != nil}
+  var hasOutputSchema: Bool {self._outputSchema != nil}
   /// Clears the value of `outputSchema`. Subsequent reads from it will return its default value.
   mutating func clearOutputSchema() {self._outputSchema = nil}
 
@@ -3225,55 +3242,55 @@ struct Spark_Connect_CoGroupMap: @unchecked Sendable {
 
   /// (Required) One input relation for CoGroup Map API - applyInPandas.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// Expressions for grouping keys of the first input relation.
   var inputGroupingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._inputGroupingExpressions}
+    get {_storage._inputGroupingExpressions}
     set {_uniqueStorage()._inputGroupingExpressions = newValue}
   }
 
   /// (Required) The other input relation.
   var other: Spark_Connect_Relation {
-    get {return _storage._other ?? Spark_Connect_Relation()}
+    get {_storage._other ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._other = newValue}
   }
   /// Returns true if `other` has been explicitly set.
-  var hasOther: Bool {return _storage._other != nil}
+  var hasOther: Bool {_storage._other != nil}
   /// Clears the value of `other`. Subsequent reads from it will return its default value.
   mutating func clearOther() {_uniqueStorage()._other = nil}
 
   /// Expressions for grouping keys of the other input relation.
   var otherGroupingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._otherGroupingExpressions}
+    get {_storage._otherGroupingExpressions}
     set {_uniqueStorage()._otherGroupingExpressions = newValue}
   }
 
   /// (Required) Input user-defined function.
   var `func`: Spark_Connect_CommonInlineUserDefinedFunction {
-    get {return _storage._func ?? Spark_Connect_CommonInlineUserDefinedFunction()}
+    get {_storage._func ?? Spark_Connect_CommonInlineUserDefinedFunction()}
     set {_uniqueStorage()._func = newValue}
   }
   /// Returns true if ``func`` has been explicitly set.
-  var hasFunc: Bool {return _storage._func != nil}
+  var hasFunc: Bool {_storage._func != nil}
   /// Clears the value of ``func``. Subsequent reads from it will return its default value.
   mutating func clearFunc() {_uniqueStorage()._func = nil}
 
   /// (Optional) Expressions for sorting. Only used by Scala Sorted CoGroup Map API.
   var inputSortingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._inputSortingExpressions}
+    get {_storage._inputSortingExpressions}
     set {_uniqueStorage()._inputSortingExpressions = newValue}
   }
 
   /// (Optional) Expressions for sorting. Only used by Scala Sorted CoGroup Map API.
   var otherSortingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._otherSortingExpressions}
+    get {_storage._otherSortingExpressions}
     set {_uniqueStorage()._otherSortingExpressions = newValue}
   }
 
@@ -3291,51 +3308,51 @@ struct Spark_Connect_ApplyInPandasWithState: @unchecked Sendable {
 
   /// (Required) Input relation for applyInPandasWithState.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Expressions for grouping keys.
   var groupingExpressions: [Spark_Connect_Expression] {
-    get {return _storage._groupingExpressions}
+    get {_storage._groupingExpressions}
     set {_uniqueStorage()._groupingExpressions = newValue}
   }
 
   /// (Required) Input user-defined function.
   var `func`: Spark_Connect_CommonInlineUserDefinedFunction {
-    get {return _storage._func ?? Spark_Connect_CommonInlineUserDefinedFunction()}
+    get {_storage._func ?? Spark_Connect_CommonInlineUserDefinedFunction()}
     set {_uniqueStorage()._func = newValue}
   }
   /// Returns true if ``func`` has been explicitly set.
-  var hasFunc: Bool {return _storage._func != nil}
+  var hasFunc: Bool {_storage._func != nil}
   /// Clears the value of ``func``. Subsequent reads from it will return its default value.
   mutating func clearFunc() {_uniqueStorage()._func = nil}
 
   /// (Required) Schema for the output DataFrame.
   var outputSchema: String {
-    get {return _storage._outputSchema}
+    get {_storage._outputSchema}
     set {_uniqueStorage()._outputSchema = newValue}
   }
 
   /// (Required) Schema for the state.
   var stateSchema: String {
-    get {return _storage._stateSchema}
+    get {_storage._stateSchema}
     set {_uniqueStorage()._stateSchema = newValue}
   }
 
   /// (Required) The output mode of the function.
   var outputMode: String {
-    get {return _storage._outputMode}
+    get {_storage._outputMode}
     set {_uniqueStorage()._outputMode = newValue}
   }
 
   /// (Required) Timeout configuration for groups that do not receive data for a while.
   var timeoutConf: String {
-    get {return _storage._timeoutConf}
+    get {_storage._timeoutConf}
     set {_uniqueStorage()._timeoutConf = newValue}
   }
 
@@ -3389,11 +3406,11 @@ struct Spark_Connect_PythonUDTF: Sendable {
 
   /// (Optional) Return type of the Python UDTF.
   var returnType: Spark_Connect_DataType {
-    get {return _returnType ?? Spark_Connect_DataType()}
+    get {_returnType ?? Spark_Connect_DataType()}
     set {_returnType = newValue}
   }
   /// Returns true if `returnType` has been explicitly set.
-  var hasReturnType: Bool {return self._returnType != nil}
+  var hasReturnType: Bool {self._returnType != nil}
   /// Clears the value of `returnType`. Subsequent reads from it will return its default value.
   mutating func clearReturnType() {self._returnType = nil}
 
@@ -3467,23 +3484,23 @@ struct Spark_Connect_CollectMetrics: @unchecked Sendable {
 
   /// (Required) The input relation.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) Name of the metrics.
   var name: String {
-    get {return _storage._name}
+    get {_storage._name}
     set {_uniqueStorage()._name = newValue}
   }
 
   /// (Required) The metric sequence.
   var metrics: [Spark_Connect_Expression] {
-    get {return _storage._metrics}
+    get {_storage._metrics}
     set {_uniqueStorage()._metrics = newValue}
   }
 
@@ -3501,33 +3518,33 @@ struct Spark_Connect_Parse: @unchecked Sendable {
 
   /// (Required) Input relation to Parse. The input is expected to have single text column.
   var input: Spark_Connect_Relation {
-    get {return _storage._input ?? Spark_Connect_Relation()}
+    get {_storage._input ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._input = newValue}
   }
   /// Returns true if `input` has been explicitly set.
-  var hasInput: Bool {return _storage._input != nil}
+  var hasInput: Bool {_storage._input != nil}
   /// Clears the value of `input`. Subsequent reads from it will return its default value.
   mutating func clearInput() {_uniqueStorage()._input = nil}
 
   /// (Required) The expected format of the text.
   var format: Spark_Connect_Parse.ParseFormat {
-    get {return _storage._format}
+    get {_storage._format}
     set {_uniqueStorage()._format = newValue}
   }
 
   /// (Optional) DataType representing the schema. If not set, Spark will infer the schema.
   var schema: Spark_Connect_DataType {
-    get {return _storage._schema ?? Spark_Connect_DataType()}
+    get {_storage._schema ?? Spark_Connect_DataType()}
     set {_uniqueStorage()._schema = newValue}
   }
   /// Returns true if `schema` has been explicitly set.
-  var hasSchema: Bool {return _storage._schema != nil}
+  var hasSchema: Bool {_storage._schema != nil}
   /// Clears the value of `schema`. Subsequent reads from it will return its default value.
   mutating func clearSchema() {_uniqueStorage()._schema = nil}
 
   /// Options for the csv/json parser. The map key is case insensitive.
   var options: Dictionary<String,String> {
-    get {return _storage._options}
+    get {_storage._options}
     set {_uniqueStorage()._options = newValue}
   }
 
@@ -3586,41 +3603,41 @@ struct Spark_Connect_AsOfJoin: @unchecked Sendable {
 
   /// (Required) Left input relation for a Join.
   var left: Spark_Connect_Relation {
-    get {return _storage._left ?? Spark_Connect_Relation()}
+    get {_storage._left ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._left = newValue}
   }
   /// Returns true if `left` has been explicitly set.
-  var hasLeft: Bool {return _storage._left != nil}
+  var hasLeft: Bool {_storage._left != nil}
   /// Clears the value of `left`. Subsequent reads from it will return its default value.
   mutating func clearLeft() {_uniqueStorage()._left = nil}
 
   /// (Required) Right input relation for a Join.
   var right: Spark_Connect_Relation {
-    get {return _storage._right ?? Spark_Connect_Relation()}
+    get {_storage._right ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._right = newValue}
   }
   /// Returns true if `right` has been explicitly set.
-  var hasRight: Bool {return _storage._right != nil}
+  var hasRight: Bool {_storage._right != nil}
   /// Clears the value of `right`. Subsequent reads from it will return its default value.
   mutating func clearRight() {_uniqueStorage()._right = nil}
 
   /// (Required) Field to join on in left DataFrame
   var leftAsOf: Spark_Connect_Expression {
-    get {return _storage._leftAsOf ?? Spark_Connect_Expression()}
+    get {_storage._leftAsOf ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._leftAsOf = newValue}
   }
   /// Returns true if `leftAsOf` has been explicitly set.
-  var hasLeftAsOf: Bool {return _storage._leftAsOf != nil}
+  var hasLeftAsOf: Bool {_storage._leftAsOf != nil}
   /// Clears the value of `leftAsOf`. Subsequent reads from it will return its default value.
   mutating func clearLeftAsOf() {_uniqueStorage()._leftAsOf = nil}
 
   /// (Required) Field to join on in right DataFrame
   var rightAsOf: Spark_Connect_Expression {
-    get {return _storage._rightAsOf ?? Spark_Connect_Expression()}
+    get {_storage._rightAsOf ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._rightAsOf = newValue}
   }
   /// Returns true if `rightAsOf` has been explicitly set.
-  var hasRightAsOf: Bool {return _storage._rightAsOf != nil}
+  var hasRightAsOf: Bool {_storage._rightAsOf != nil}
   /// Clears the value of `rightAsOf`. Subsequent reads from it will return its default value.
   mutating func clearRightAsOf() {_uniqueStorage()._rightAsOf = nil}
 
@@ -3628,11 +3645,11 @@ struct Spark_Connect_AsOfJoin: @unchecked Sendable {
   ///
   /// This field does not co-exist with using_columns.
   var joinExpr: Spark_Connect_Expression {
-    get {return _storage._joinExpr ?? Spark_Connect_Expression()}
+    get {_storage._joinExpr ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._joinExpr = newValue}
   }
   /// Returns true if `joinExpr` has been explicitly set.
-  var hasJoinExpr: Bool {return _storage._joinExpr != nil}
+  var hasJoinExpr: Bool {_storage._joinExpr != nil}
   /// Clears the value of `joinExpr`. Subsequent reads from it will return its default value.
   mutating func clearJoinExpr() {_uniqueStorage()._joinExpr = nil}
 
@@ -3642,35 +3659,35 @@ struct Spark_Connect_AsOfJoin: @unchecked Sendable {
   ///
   /// This field does not co-exist with join_condition.
   var usingColumns: [String] {
-    get {return _storage._usingColumns}
+    get {_storage._usingColumns}
     set {_uniqueStorage()._usingColumns = newValue}
   }
 
   /// (Required) The join type.
   var joinType: String {
-    get {return _storage._joinType}
+    get {_storage._joinType}
     set {_uniqueStorage()._joinType = newValue}
   }
 
   /// (Optional) The asof tolerance within this range.
   var tolerance: Spark_Connect_Expression {
-    get {return _storage._tolerance ?? Spark_Connect_Expression()}
+    get {_storage._tolerance ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._tolerance = newValue}
   }
   /// Returns true if `tolerance` has been explicitly set.
-  var hasTolerance: Bool {return _storage._tolerance != nil}
+  var hasTolerance: Bool {_storage._tolerance != nil}
   /// Clears the value of `tolerance`. Subsequent reads from it will return its default value.
   mutating func clearTolerance() {_uniqueStorage()._tolerance = nil}
 
   /// (Required) Whether allow matching with the same value or not.
   var allowExactMatches: Bool {
-    get {return _storage._allowExactMatches}
+    get {_storage._allowExactMatches}
     set {_uniqueStorage()._allowExactMatches = newValue}
   }
 
   /// (Required) Whether to search for prior, subsequent, or closest matches.
   var direction: String {
-    get {return _storage._direction}
+    get {_storage._direction}
     set {_uniqueStorage()._direction = newValue}
   }
 
@@ -3691,37 +3708,37 @@ struct Spark_Connect_LateralJoin: @unchecked Sendable {
 
   /// (Required) Left input relation for a Join.
   var left: Spark_Connect_Relation {
-    get {return _storage._left ?? Spark_Connect_Relation()}
+    get {_storage._left ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._left = newValue}
   }
   /// Returns true if `left` has been explicitly set.
-  var hasLeft: Bool {return _storage._left != nil}
+  var hasLeft: Bool {_storage._left != nil}
   /// Clears the value of `left`. Subsequent reads from it will return its default value.
   mutating func clearLeft() {_uniqueStorage()._left = nil}
 
   /// (Required) Right input relation for a Join.
   var right: Spark_Connect_Relation {
-    get {return _storage._right ?? Spark_Connect_Relation()}
+    get {_storage._right ?? Spark_Connect_Relation()}
     set {_uniqueStorage()._right = newValue}
   }
   /// Returns true if `right` has been explicitly set.
-  var hasRight: Bool {return _storage._right != nil}
+  var hasRight: Bool {_storage._right != nil}
   /// Clears the value of `right`. Subsequent reads from it will return its default value.
   mutating func clearRight() {_uniqueStorage()._right = nil}
 
   /// (Optional) The join condition.
   var joinCondition: Spark_Connect_Expression {
-    get {return _storage._joinCondition ?? Spark_Connect_Expression()}
+    get {_storage._joinCondition ?? Spark_Connect_Expression()}
     set {_uniqueStorage()._joinCondition = newValue}
   }
   /// Returns true if `joinCondition` has been explicitly set.
-  var hasJoinCondition: Bool {return _storage._joinCondition != nil}
+  var hasJoinCondition: Bool {_storage._joinCondition != nil}
   /// Clears the value of `joinCondition`. Subsequent reads from it will return its default value.
   mutating func clearJoinCondition() {_uniqueStorage()._joinCondition = nil}
 
   /// (Required) The join type.
   var joinType: Spark_Connect_Join.JoinType {
-    get {return _storage._joinType}
+    get {_storage._joinType}
     set {_uniqueStorage()._joinType = newValue}
   }
 
@@ -5482,7 +5499,7 @@ extension Spark_Connect_Read.NamedTable: SwiftProtobuf.Message, SwiftProtobuf._M
 
 extension Spark_Connect_Read.DataSource: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Read.protoMessageName + ".DataSource"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{1}schema\0\u{1}options\0\u{1}paths\0\u{1}predicates\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{1}schema\0\u{1}options\0\u{1}paths\0\u{1}predicates\0\u{3}source_name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -5495,6 +5512,7 @@ extension Spark_Connect_Read.DataSource: SwiftProtobuf.Message, SwiftProtobuf._M
       case 3: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.options) }()
       case 4: try { try decoder.decodeRepeatedStringField(value: &self.paths) }()
       case 5: try { try decoder.decodeRepeatedStringField(value: &self.predicates) }()
+      case 6: try { try decoder.decodeSingularStringField(value: &self._sourceName) }()
       default: break
       }
     }
@@ -5520,6 +5538,9 @@ extension Spark_Connect_Read.DataSource: SwiftProtobuf.Message, SwiftProtobuf._M
     if !self.predicates.isEmpty {
       try visitor.visitRepeatedStringField(value: self.predicates, fieldNumber: 5)
     }
+    try { if let v = self._sourceName {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 6)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -5529,6 +5550,7 @@ extension Spark_Connect_Read.DataSource: SwiftProtobuf.Message, SwiftProtobuf._M
     if lhs.options != rhs.options {return false}
     if lhs.paths != rhs.paths {return false}
     if lhs.predicates != rhs.predicates {return false}
+    if lhs._sourceName != rhs._sourceName {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

@@ -320,11 +320,11 @@ struct Spark_Connect_ListDatabases: Sendable {
 
   /// (Optional) The pattern that the database name needs to match
   var pattern: String {
-    get {return _pattern ?? String()}
+    get {_pattern ?? String()}
     set {_pattern = newValue}
   }
   /// Returns true if `pattern` has been explicitly set.
-  var hasPattern: Bool {return self._pattern != nil}
+  var hasPattern: Bool {self._pattern != nil}
   /// Clears the value of `pattern`. Subsequent reads from it will return its default value.
   mutating func clearPattern() {self._pattern = nil}
 
@@ -343,21 +343,21 @@ struct Spark_Connect_ListTables: Sendable {
 
   /// (Optional)
   var dbName: String {
-    get {return _dbName ?? String()}
+    get {_dbName ?? String()}
     set {_dbName = newValue}
   }
   /// Returns true if `dbName` has been explicitly set.
-  var hasDbName: Bool {return self._dbName != nil}
+  var hasDbName: Bool {self._dbName != nil}
   /// Clears the value of `dbName`. Subsequent reads from it will return its default value.
   mutating func clearDbName() {self._dbName = nil}
 
   /// (Optional) The pattern that the table name needs to match
   var pattern: String {
-    get {return _pattern ?? String()}
+    get {_pattern ?? String()}
     set {_pattern = newValue}
   }
   /// Returns true if `pattern` has been explicitly set.
-  var hasPattern: Bool {return self._pattern != nil}
+  var hasPattern: Bool {self._pattern != nil}
   /// Clears the value of `pattern`. Subsequent reads from it will return its default value.
   mutating func clearPattern() {self._pattern = nil}
 
@@ -377,21 +377,21 @@ struct Spark_Connect_ListFunctions: Sendable {
 
   /// (Optional)
   var dbName: String {
-    get {return _dbName ?? String()}
+    get {_dbName ?? String()}
     set {_dbName = newValue}
   }
   /// Returns true if `dbName` has been explicitly set.
-  var hasDbName: Bool {return self._dbName != nil}
+  var hasDbName: Bool {self._dbName != nil}
   /// Clears the value of `dbName`. Subsequent reads from it will return its default value.
   mutating func clearDbName() {self._dbName = nil}
 
   /// (Optional) The pattern that the function name needs to match
   var pattern: String {
-    get {return _pattern ?? String()}
+    get {_pattern ?? String()}
     set {_pattern = newValue}
   }
   /// Returns true if `pattern` has been explicitly set.
-  var hasPattern: Bool {return self._pattern != nil}
+  var hasPattern: Bool {self._pattern != nil}
   /// Clears the value of `pattern`. Subsequent reads from it will return its default value.
   mutating func clearPattern() {self._pattern = nil}
 
@@ -414,11 +414,11 @@ struct Spark_Connect_ListColumns: Sendable {
 
   /// (Optional)
   var dbName: String {
-    get {return _dbName ?? String()}
+    get {_dbName ?? String()}
     set {_dbName = newValue}
   }
   /// Returns true if `dbName` has been explicitly set.
-  var hasDbName: Bool {return self._dbName != nil}
+  var hasDbName: Bool {self._dbName != nil}
   /// Clears the value of `dbName`. Subsequent reads from it will return its default value.
   mutating func clearDbName() {self._dbName = nil}
 
@@ -454,11 +454,11 @@ struct Spark_Connect_GetTable: Sendable {
 
   /// (Optional)
   var dbName: String {
-    get {return _dbName ?? String()}
+    get {_dbName ?? String()}
     set {_dbName = newValue}
   }
   /// Returns true if `dbName` has been explicitly set.
-  var hasDbName: Bool {return self._dbName != nil}
+  var hasDbName: Bool {self._dbName != nil}
   /// Clears the value of `dbName`. Subsequent reads from it will return its default value.
   mutating func clearDbName() {self._dbName = nil}
 
@@ -480,11 +480,11 @@ struct Spark_Connect_GetFunction: Sendable {
 
   /// (Optional)
   var dbName: String {
-    get {return _dbName ?? String()}
+    get {_dbName ?? String()}
     set {_dbName = newValue}
   }
   /// Returns true if `dbName` has been explicitly set.
-  var hasDbName: Bool {return self._dbName != nil}
+  var hasDbName: Bool {self._dbName != nil}
   /// Clears the value of `dbName`. Subsequent reads from it will return its default value.
   mutating func clearDbName() {self._dbName = nil}
 
@@ -520,11 +520,11 @@ struct Spark_Connect_TableExists: Sendable {
 
   /// (Optional)
   var dbName: String {
-    get {return _dbName ?? String()}
+    get {_dbName ?? String()}
     set {_dbName = newValue}
   }
   /// Returns true if `dbName` has been explicitly set.
-  var hasDbName: Bool {return self._dbName != nil}
+  var hasDbName: Bool {self._dbName != nil}
   /// Clears the value of `dbName`. Subsequent reads from it will return its default value.
   mutating func clearDbName() {self._dbName = nil}
 
@@ -546,11 +546,11 @@ struct Spark_Connect_FunctionExists: Sendable {
 
   /// (Optional)
   var dbName: String {
-    get {return _dbName ?? String()}
+    get {_dbName ?? String()}
     set {_dbName = newValue}
   }
   /// Returns true if `dbName` has been explicitly set.
-  var hasDbName: Bool {return self._dbName != nil}
+  var hasDbName: Bool {self._dbName != nil}
   /// Clears the value of `dbName`. Subsequent reads from it will return its default value.
   mutating func clearDbName() {self._dbName = nil}
 
@@ -572,31 +572,31 @@ struct Spark_Connect_CreateExternalTable: Sendable {
 
   /// (Optional)
   var path: String {
-    get {return _path ?? String()}
+    get {_path ?? String()}
     set {_path = newValue}
   }
   /// Returns true if `path` has been explicitly set.
-  var hasPath: Bool {return self._path != nil}
+  var hasPath: Bool {self._path != nil}
   /// Clears the value of `path`. Subsequent reads from it will return its default value.
   mutating func clearPath() {self._path = nil}
 
   /// (Optional)
   var source: String {
-    get {return _source ?? String()}
+    get {_source ?? String()}
     set {_source = newValue}
   }
   /// Returns true if `source` has been explicitly set.
-  var hasSource: Bool {return self._source != nil}
+  var hasSource: Bool {self._source != nil}
   /// Clears the value of `source`. Subsequent reads from it will return its default value.
   mutating func clearSource() {self._source = nil}
 
   /// (Optional)
   var schema: Spark_Connect_DataType {
-    get {return _schema ?? Spark_Connect_DataType()}
+    get {_schema ?? Spark_Connect_DataType()}
     set {_schema = newValue}
   }
   /// Returns true if `schema` has been explicitly set.
-  var hasSchema: Bool {return self._schema != nil}
+  var hasSchema: Bool {self._schema != nil}
   /// Clears the value of `schema`. Subsequent reads from it will return its default value.
   mutating func clearSchema() {self._schema = nil}
 
@@ -624,41 +624,41 @@ struct Spark_Connect_CreateTable: Sendable {
 
   /// (Optional)
   var path: String {
-    get {return _path ?? String()}
+    get {_path ?? String()}
     set {_path = newValue}
   }
   /// Returns true if `path` has been explicitly set.
-  var hasPath: Bool {return self._path != nil}
+  var hasPath: Bool {self._path != nil}
   /// Clears the value of `path`. Subsequent reads from it will return its default value.
   mutating func clearPath() {self._path = nil}
 
   /// (Optional)
   var source: String {
-    get {return _source ?? String()}
+    get {_source ?? String()}
     set {_source = newValue}
   }
   /// Returns true if `source` has been explicitly set.
-  var hasSource: Bool {return self._source != nil}
+  var hasSource: Bool {self._source != nil}
   /// Clears the value of `source`. Subsequent reads from it will return its default value.
   mutating func clearSource() {self._source = nil}
 
   /// (Optional)
   var description_p: String {
-    get {return _description_p ?? String()}
+    get {_description_p ?? String()}
     set {_description_p = newValue}
   }
   /// Returns true if `description_p` has been explicitly set.
-  var hasDescription_p: Bool {return self._description_p != nil}
+  var hasDescription_p: Bool {self._description_p != nil}
   /// Clears the value of `description_p`. Subsequent reads from it will return its default value.
   mutating func clearDescription_p() {self._description_p = nil}
 
   /// (Optional)
   var schema: Spark_Connect_DataType {
-    get {return _schema ?? Spark_Connect_DataType()}
+    get {_schema ?? Spark_Connect_DataType()}
     set {_schema = newValue}
   }
   /// Returns true if `schema` has been explicitly set.
-  var hasSchema: Bool {return self._schema != nil}
+  var hasSchema: Bool {self._schema != nil}
   /// Clears the value of `schema`. Subsequent reads from it will return its default value.
   mutating func clearSchema() {self._schema = nil}
 
@@ -743,11 +743,11 @@ struct Spark_Connect_CacheTable: Sendable {
 
   /// (Optional)
   var storageLevel: Spark_Connect_StorageLevel {
-    get {return _storageLevel ?? Spark_Connect_StorageLevel()}
+    get {_storageLevel ?? Spark_Connect_StorageLevel()}
     set {_storageLevel = newValue}
   }
   /// Returns true if `storageLevel` has been explicitly set.
-  var hasStorageLevel: Bool {return self._storageLevel != nil}
+  var hasStorageLevel: Bool {self._storageLevel != nil}
   /// Clears the value of `storageLevel`. Subsequent reads from it will return its default value.
   mutating func clearStorageLevel() {self._storageLevel = nil}
 
@@ -844,11 +844,11 @@ struct Spark_Connect_ListCatalogs: Sendable {
 
   /// (Optional) The pattern that the catalog name needs to match
   var pattern: String {
-    get {return _pattern ?? String()}
+    get {_pattern ?? String()}
     set {_pattern = newValue}
   }
   /// Returns true if `pattern` has been explicitly set.
-  var hasPattern: Bool {return self._pattern != nil}
+  var hasPattern: Bool {self._pattern != nil}
   /// Clears the value of `pattern`. Subsequent reads from it will return its default value.
   mutating func clearPattern() {self._pattern = nil}
 

@@ -165,6 +165,14 @@ struct Spark_Connect_PipelineCommand: Sendable {
     set {commandType = .defineFlowQueryFunctionResult(newValue)}
   }
 
+  var executeOutputFlows: Spark_Connect_PipelineCommand.ExecuteOutputFlows {
+    get {
+      if case .executeOutputFlows(let v)? = commandType {return v}
+      return Spark_Connect_PipelineCommand.ExecuteOutputFlows()
+    }
+    set {commandType = .executeOutputFlows(newValue)}
+  }
+
   /// Reserved field for protocol extensions.
   /// Used to support forward-compatibility by carrying additional command types
   /// that are not yet defined in this version of the proto. During planning, the
@@ -188,6 +196,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
     case defineSqlGraphElements(Spark_Connect_PipelineCommand.DefineSqlGraphElements)
     case getQueryFunctionExecutionSignalStream(Spark_Connect_PipelineCommand.GetQueryFunctionExecutionSignalStream)
     case defineFlowQueryFunctionResult(Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResult)
+    case executeOutputFlows(Spark_Connect_PipelineCommand.ExecuteOutputFlows)
     /// Reserved field for protocol extensions.
     /// Used to support forward-compatibility by carrying additional command types
     /// that are not yet defined in this version of the proto. During planning, the
@@ -204,21 +213,21 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// The default catalog.
     var defaultCatalog: String {
-      get {return _defaultCatalog ?? String()}
+      get {_defaultCatalog ?? String()}
       set {_defaultCatalog = newValue}
     }
     /// Returns true if `defaultCatalog` has been explicitly set.
-    var hasDefaultCatalog: Bool {return self._defaultCatalog != nil}
+    var hasDefaultCatalog: Bool {self._defaultCatalog != nil}
     /// Clears the value of `defaultCatalog`. Subsequent reads from it will return its default value.
     mutating func clearDefaultCatalog() {self._defaultCatalog = nil}
 
     /// The default database.
     var defaultDatabase: String {
-      get {return _defaultDatabase ?? String()}
+      get {_defaultDatabase ?? String()}
       set {_defaultDatabase = newValue}
     }
     /// Returns true if `defaultDatabase` has been explicitly set.
-    var hasDefaultDatabase: Bool {return self._defaultDatabase != nil}
+    var hasDefaultDatabase: Bool {self._defaultDatabase != nil}
     /// Clears the value of `defaultDatabase`. Subsequent reads from it will return its default value.
     mutating func clearDefaultDatabase() {self._defaultDatabase = nil}
 
@@ -241,11 +250,11 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// The graph to drop.
     var dataflowGraphID: String {
-      get {return _dataflowGraphID ?? String()}
+      get {_dataflowGraphID ?? String()}
       set {_dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
@@ -264,51 +273,51 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// The graph to attach this output to.
     var dataflowGraphID: String {
-      get {return _dataflowGraphID ?? String()}
+      get {_dataflowGraphID ?? String()}
       set {_dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
     /// Name of the output. Can be partially or fully qualified.
     var outputName: String {
-      get {return _outputName ?? String()}
+      get {_outputName ?? String()}
       set {_outputName = newValue}
     }
     /// Returns true if `outputName` has been explicitly set.
-    var hasOutputName: Bool {return self._outputName != nil}
+    var hasOutputName: Bool {self._outputName != nil}
     /// Clears the value of `outputName`. Subsequent reads from it will return its default value.
     mutating func clearOutputName() {self._outputName = nil}
 
     /// The type of the output.
     var outputType: Spark_Connect_OutputType {
-      get {return _outputType ?? .unspecified}
+      get {_outputType ?? .unspecified}
       set {_outputType = newValue}
     }
     /// Returns true if `outputType` has been explicitly set.
-    var hasOutputType: Bool {return self._outputType != nil}
+    var hasOutputType: Bool {self._outputType != nil}
     /// Clears the value of `outputType`. Subsequent reads from it will return its default value.
     mutating func clearOutputType() {self._outputType = nil}
 
     /// Optional comment for the output.
     var comment: String {
-      get {return _comment ?? String()}
+      get {_comment ?? String()}
       set {_comment = newValue}
     }
     /// Returns true if `comment` has been explicitly set.
-    var hasComment: Bool {return self._comment != nil}
+    var hasComment: Bool {self._comment != nil}
     /// Clears the value of `comment`. Subsequent reads from it will return its default value.
     mutating func clearComment() {self._comment = nil}
 
     /// The location in source code that this output was defined.
     var sourceCodeLocation: Spark_Connect_SourceCodeLocation {
-      get {return _sourceCodeLocation ?? Spark_Connect_SourceCodeLocation()}
+      get {_sourceCodeLocation ?? Spark_Connect_SourceCodeLocation()}
       set {_sourceCodeLocation = newValue}
     }
     /// Returns true if `sourceCodeLocation` has been explicitly set.
-    var hasSourceCodeLocation: Bool {return self._sourceCodeLocation != nil}
+    var hasSourceCodeLocation: Bool {self._sourceCodeLocation != nil}
     /// Clears the value of `sourceCodeLocation`. Subsequent reads from it will return its default value.
     mutating func clearSourceCodeLocation() {self._sourceCodeLocation = nil}
 
@@ -361,11 +370,11 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
       /// The output table format for the table.
       var format: String {
-        get {return _format ?? String()}
+        get {_format ?? String()}
         set {_format = newValue}
       }
       /// Returns true if `format` has been explicitly set.
-      var hasFormat: Bool {return self._format != nil}
+      var hasFormat: Bool {self._format != nil}
       /// Clears the value of `format`. Subsequent reads from it will return its default value.
       mutating func clearFormat() {self._format = nil}
 
@@ -416,11 +425,11 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
       /// Streaming write format
       var format: String {
-        get {return _format ?? String()}
+        get {_format ?? String()}
         set {_format = newValue}
       }
       /// Returns true if `format` has been explicitly set.
-      var hasFormat: Bool {return self._format != nil}
+      var hasFormat: Bool {self._format != nil}
       /// Clears the value of `format`. Subsequent reads from it will return its default value.
       mutating func clearFormat() {self._format = nil}
 
@@ -448,31 +457,31 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// The graph to attach this flow to.
     var dataflowGraphID: String {
-      get {return _dataflowGraphID ?? String()}
+      get {_dataflowGraphID ?? String()}
       set {_dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
     /// Name of the flow. For standalone flows, this must be a single-part name.
     var flowName: String {
-      get {return _flowName ?? String()}
+      get {_flowName ?? String()}
       set {_flowName = newValue}
     }
     /// Returns true if `flowName` has been explicitly set.
-    var hasFlowName: Bool {return self._flowName != nil}
+    var hasFlowName: Bool {self._flowName != nil}
     /// Clears the value of `flowName`. Subsequent reads from it will return its default value.
     mutating func clearFlowName() {self._flowName = nil}
 
     /// Name of the dataset this flow writes to. Can be partially or fully qualified.
     var targetDatasetName: String {
-      get {return _targetDatasetName ?? String()}
+      get {_targetDatasetName ?? String()}
       set {_targetDatasetName = newValue}
     }
     /// Returns true if `targetDatasetName` has been explicitly set.
-    var hasTargetDatasetName: Bool {return self._targetDatasetName != nil}
+    var hasTargetDatasetName: Bool {self._targetDatasetName != nil}
     /// Clears the value of `targetDatasetName`. Subsequent reads from it will return its default value.
     mutating func clearTargetDatasetName() {self._targetDatasetName = nil}
 
@@ -482,21 +491,21 @@ struct Spark_Connect_PipelineCommand: Sendable {
     /// Identifier for the client making the request. The server uses this to determine what flow
     /// evaluation request stream to dispatch evaluation requests to for this flow.
     var clientID: String {
-      get {return _clientID ?? String()}
+      get {_clientID ?? String()}
       set {_clientID = newValue}
     }
     /// Returns true if `clientID` has been explicitly set.
-    var hasClientID: Bool {return self._clientID != nil}
+    var hasClientID: Bool {self._clientID != nil}
     /// Clears the value of `clientID`. Subsequent reads from it will return its default value.
     mutating func clearClientID() {self._clientID = nil}
 
     /// The location in source code that this flow was defined.
     var sourceCodeLocation: Spark_Connect_SourceCodeLocation {
-      get {return _sourceCodeLocation ?? Spark_Connect_SourceCodeLocation()}
+      get {_sourceCodeLocation ?? Spark_Connect_SourceCodeLocation()}
       set {_sourceCodeLocation = newValue}
     }
     /// Returns true if `sourceCodeLocation` has been explicitly set.
-    var hasSourceCodeLocation: Bool {return self._sourceCodeLocation != nil}
+    var hasSourceCodeLocation: Bool {self._sourceCodeLocation != nil}
     /// Clears the value of `sourceCodeLocation`. Subsequent reads from it will return its default value.
     mutating func clearSourceCodeLocation() {self._sourceCodeLocation = nil}
 
@@ -524,11 +533,11 @@ struct Spark_Connect_PipelineCommand: Sendable {
     ///     the flow will run again.
     ///   - The flow function must be a batch DataFrame, not a streaming DataFrame.
     var once: Bool {
-      get {return _once ?? false}
+      get {_once ?? false}
       set {_once = newValue}
     }
     /// Returns true if `once` has been explicitly set.
-    var hasOnce: Bool {return self._once != nil}
+    var hasOnce: Bool {self._once != nil}
     /// Clears the value of `once`. Subsequent reads from it will return its default value.
     mutating func clearOnce() {self._once = nil}
 
@@ -549,11 +558,11 @@ struct Spark_Connect_PipelineCommand: Sendable {
       /// An unresolved relation that defines the dataset's flow. Empty if the query function
       /// that defines the flow cannot be analyzed at the time of flow definition.
       var relation: Spark_Connect_Relation {
-        get {return _relation ?? Spark_Connect_Relation()}
+        get {_relation ?? Spark_Connect_Relation()}
         set {_relation = newValue}
       }
       /// Returns true if `relation` has been explicitly set.
-      var hasRelation: Bool {return self._relation != nil}
+      var hasRelation: Bool {self._relation != nil}
       /// Clears the value of `relation`. Subsequent reads from it will return its default value.
       mutating func clearRelation() {self._relation = nil}
 
@@ -571,11 +580,11 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
       /// Fully qualified flow name that uniquely identify a flow in the Dataflow graph.
       var flowName: String {
-        get {return _flowName ?? String()}
+        get {_flowName ?? String()}
         set {_flowName = newValue}
       }
       /// Returns true if `flowName` has been explicitly set.
-      var hasFlowName: Bool {return self._flowName != nil}
+      var hasFlowName: Bool {self._flowName != nil}
       /// Clears the value of `flowName`. Subsequent reads from it will return its default value.
       mutating func clearFlowName() {self._flowName = nil}
 
@@ -596,6 +605,61 @@ struct Spark_Connect_PipelineCommand: Sendable {
     fileprivate var _once: Bool? = nil
   }
 
+  /// Request to execute all flows for a single output (dataset or sink) remotely.
+  struct ExecuteOutputFlows: @unchecked Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    /// The output (table or materialized view or sink) definition.
+    var defineOutput: Spark_Connect_PipelineCommand.DefineOutput {
+      get {_storage._defineOutput ?? Spark_Connect_PipelineCommand.DefineOutput()}
+      set {_uniqueStorage()._defineOutput = newValue}
+    }
+    /// Returns true if `defineOutput` has been explicitly set.
+    var hasDefineOutput: Bool {_storage._defineOutput != nil}
+    /// Clears the value of `defineOutput`. Subsequent reads from it will return its default value.
+    mutating func clearDefineOutput() {_uniqueStorage()._defineOutput = nil}
+
+    /// The flows to execute for this table.
+    var defineFlows: [Spark_Connect_PipelineCommand.DefineFlow] {
+      get {_storage._defineFlows}
+      set {_uniqueStorage()._defineFlows = newValue}
+    }
+
+    /// Whether to perform a full refresh instead of an incremental update.
+    var fullRefresh: Bool {
+      get {_storage._fullRefresh ?? false}
+      set {_uniqueStorage()._fullRefresh = newValue}
+    }
+    /// Returns true if `fullRefresh` has been explicitly set.
+    var hasFullRefresh: Bool {_storage._fullRefresh != nil}
+    /// Clears the value of `fullRefresh`. Subsequent reads from it will return its default value.
+    mutating func clearFullRefresh() {_uniqueStorage()._fullRefresh = nil}
+
+    /// Storage location for pipeline checkpoints and metadata.
+    var storage: String {
+      get {_storage._storage ?? String()}
+      set {_uniqueStorage()._storage = newValue}
+    }
+    /// Returns true if `storage` has been explicitly set.
+    var hasStorage: Bool {_storage._storage != nil}
+    /// Clears the value of `storage`. Subsequent reads from it will return its default value.
+    mutating func clearStorage() {_uniqueStorage()._storage = nil}
+
+    /// Reserved field for protocol extensions.
+    var `extension`: [SwiftProtobuf.Google_Protobuf_Any] {
+      get {_storage._extension}
+      set {_uniqueStorage()._extension = newValue}
+    }
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _storage = _StorageClass.defaultInstance
+  }
+
   /// Resolves all datasets and flows and start a pipeline update. Should be called after all
   /// graph elements are registered.
   struct StartRun: Sendable {
@@ -605,11 +669,11 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// The graph to start.
     var dataflowGraphID: String {
-      get {return _dataflowGraphID ?? String()}
+      get {_dataflowGraphID ?? String()}
       set {_dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
@@ -618,11 +682,11 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// Perform a full graph reset and recompute.
     var fullRefreshAll: Bool {
-      get {return _fullRefreshAll ?? false}
+      get {_fullRefreshAll ?? false}
       set {_fullRefreshAll = newValue}
     }
     /// Returns true if `fullRefreshAll` has been explicitly set.
-    var hasFullRefreshAll: Bool {return self._fullRefreshAll != nil}
+    var hasFullRefreshAll: Bool {self._fullRefreshAll != nil}
     /// Clears the value of `fullRefreshAll`. Subsequent reads from it will return its default value.
     mutating func clearFullRefreshAll() {self._fullRefreshAll = nil}
 
@@ -632,21 +696,21 @@ struct Spark_Connect_PipelineCommand: Sendable {
     /// If true, the run will not actually execute any flows, but will only validate the graph and
     /// check for any errors. This is useful for testing and validation purposes.
     var dry: Bool {
-      get {return _dry ?? false}
+      get {_dry ?? false}
       set {_dry = newValue}
     }
     /// Returns true if `dry` has been explicitly set.
-    var hasDry: Bool {return self._dry != nil}
+    var hasDry: Bool {self._dry != nil}
     /// Clears the value of `dry`. Subsequent reads from it will return its default value.
     mutating func clearDry() {self._dry = nil}
 
     /// storage location for pipeline checkpoints and metadata.
     var storage: String {
-      get {return _storage ?? String()}
+      get {_storage ?? String()}
       set {_storage = newValue}
     }
     /// Returns true if `storage` has been explicitly set.
-    var hasStorage: Bool {return self._storage != nil}
+    var hasStorage: Bool {self._storage != nil}
     /// Clears the value of `storage`. Subsequent reads from it will return its default value.
     mutating func clearStorage() {self._storage = nil}
 
@@ -668,31 +732,31 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// The graph to attach this dataset to.
     var dataflowGraphID: String {
-      get {return _dataflowGraphID ?? String()}
+      get {_dataflowGraphID ?? String()}
       set {_dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
     /// The full path to the SQL file. Can be relative or absolute.
     var sqlFilePath: String {
-      get {return _sqlFilePath ?? String()}
+      get {_sqlFilePath ?? String()}
       set {_sqlFilePath = newValue}
     }
     /// Returns true if `sqlFilePath` has been explicitly set.
-    var hasSqlFilePath: Bool {return self._sqlFilePath != nil}
+    var hasSqlFilePath: Bool {self._sqlFilePath != nil}
     /// Clears the value of `sqlFilePath`. Subsequent reads from it will return its default value.
     mutating func clearSqlFilePath() {self._sqlFilePath = nil}
 
     /// The contents of the SQL file.
     var sqlText: String {
-      get {return _sqlText ?? String()}
+      get {_sqlText ?? String()}
       set {_sqlText = newValue}
     }
     /// Returns true if `sqlText` has been explicitly set.
-    var hasSqlText: Bool {return self._sqlText != nil}
+    var hasSqlText: Bool {self._sqlText != nil}
     /// Clears the value of `sqlText`. Subsequent reads from it will return its default value.
     mutating func clearSqlText() {self._sqlText = nil}
 
@@ -714,21 +778,21 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// The graph to get the query function execution signal stream for.
     var dataflowGraphID: String {
-      get {return _dataflowGraphID ?? String()}
+      get {_dataflowGraphID ?? String()}
       set {_dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
     /// Identifier for the client that is requesting the stream.
     var clientID: String {
-      get {return _clientID ?? String()}
+      get {_clientID ?? String()}
       set {_clientID = newValue}
     }
     /// Returns true if `clientID` has been explicitly set.
-    var hasClientID: Bool {return self._clientID != nil}
+    var hasClientID: Bool {self._clientID != nil}
     /// Clears the value of `clientID`. Subsequent reads from it will return its default value.
     mutating func clearClientID() {self._clientID = nil}
 
@@ -749,31 +813,31 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     /// The fully qualified name of the flow being updated.
     var flowName: String {
-      get {return _flowName ?? String()}
+      get {_flowName ?? String()}
       set {_flowName = newValue}
     }
     /// Returns true if `flowName` has been explicitly set.
-    var hasFlowName: Bool {return self._flowName != nil}
+    var hasFlowName: Bool {self._flowName != nil}
     /// Clears the value of `flowName`. Subsequent reads from it will return its default value.
     mutating func clearFlowName() {self._flowName = nil}
 
     /// The ID of the graph this flow belongs to.
     var dataflowGraphID: String {
-      get {return _dataflowGraphID ?? String()}
+      get {_dataflowGraphID ?? String()}
       set {_dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
     /// An unresolved relation that defines the dataset's flow.
     var relation: Spark_Connect_Relation {
-      get {return _relation ?? Spark_Connect_Relation()}
+      get {_relation ?? Spark_Connect_Relation()}
       set {_relation = newValue}
     }
     /// Returns true if `relation` has been explicitly set.
-    var hasRelation: Bool {return self._relation != nil}
+    var hasRelation: Bool {self._relation != nil}
     /// Clears the value of `relation`. Subsequent reads from it will return its default value.
     mutating func clearRelation() {self._relation = nil}
 
@@ -837,11 +901,11 @@ struct Spark_Connect_PipelineCommandResult: Sendable {
 
     /// The ID of the created graph.
     var dataflowGraphID: String {
-      get {return _dataflowGraphID ?? String()}
+      get {_dataflowGraphID ?? String()}
       set {_dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
     mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
@@ -859,11 +923,11 @@ struct Spark_Connect_PipelineCommandResult: Sendable {
 
     /// Resolved identifier of the output
     var resolvedIdentifier: Spark_Connect_ResolvedIdentifier {
-      get {return _resolvedIdentifier ?? Spark_Connect_ResolvedIdentifier()}
+      get {_resolvedIdentifier ?? Spark_Connect_ResolvedIdentifier()}
       set {_resolvedIdentifier = newValue}
     }
     /// Returns true if `resolvedIdentifier` has been explicitly set.
-    var hasResolvedIdentifier: Bool {return self._resolvedIdentifier != nil}
+    var hasResolvedIdentifier: Bool {self._resolvedIdentifier != nil}
     /// Clears the value of `resolvedIdentifier`. Subsequent reads from it will return its default value.
     mutating func clearResolvedIdentifier() {self._resolvedIdentifier = nil}
 
@@ -881,11 +945,11 @@ struct Spark_Connect_PipelineCommandResult: Sendable {
 
     /// Resolved identifier of the flow
     var resolvedIdentifier: Spark_Connect_ResolvedIdentifier {
-      get {return _resolvedIdentifier ?? Spark_Connect_ResolvedIdentifier()}
+      get {_resolvedIdentifier ?? Spark_Connect_ResolvedIdentifier()}
       set {_resolvedIdentifier = newValue}
     }
     /// Returns true if `resolvedIdentifier` has been explicitly set.
-    var hasResolvedIdentifier: Bool {return self._resolvedIdentifier != nil}
+    var hasResolvedIdentifier: Bool {self._resolvedIdentifier != nil}
     /// Clears the value of `resolvedIdentifier`. Subsequent reads from it will return its default value.
     mutating func clearResolvedIdentifier() {self._resolvedIdentifier = nil}
 
@@ -906,11 +970,11 @@ struct Spark_Connect_PipelineEventResult: Sendable {
   // methods supported on all messages.
 
   var event: Spark_Connect_PipelineEvent {
-    get {return _event ?? Spark_Connect_PipelineEvent()}
+    get {_event ?? Spark_Connect_PipelineEvent()}
     set {_event = newValue}
   }
   /// Returns true if `event` has been explicitly set.
-  var hasEvent: Bool {return self._event != nil}
+  var hasEvent: Bool {self._event != nil}
   /// Clears the value of `event`. Subsequent reads from it will return its default value.
   mutating func clearEvent() {self._event = nil}
 
@@ -928,21 +992,21 @@ struct Spark_Connect_PipelineEvent: Sendable {
 
   /// The timestamp corresponding to when the event occurred.
   var timestamp: SwiftProtobuf.Google_Protobuf_Timestamp {
-    get {return _timestamp ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
+    get {_timestamp ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
     set {_timestamp = newValue}
   }
   /// Returns true if `timestamp` has been explicitly set.
-  var hasTimestamp: Bool {return self._timestamp != nil}
+  var hasTimestamp: Bool {self._timestamp != nil}
   /// Clears the value of `timestamp`. Subsequent reads from it will return its default value.
   mutating func clearTimestamp() {self._timestamp = nil}
 
   /// The message that should be displayed to users.
   var message: String {
-    get {return _message ?? String()}
+    get {_message ?? String()}
     set {_message = newValue}
   }
   /// Returns true if `message` has been explicitly set.
-  var hasMessage: Bool {return self._message != nil}
+  var hasMessage: Bool {self._message != nil}
   /// Clears the value of `message`. Subsequent reads from it will return its default value.
   mutating func clearMessage() {self._message = nil}
 
@@ -962,31 +1026,31 @@ struct Spark_Connect_SourceCodeLocation: Sendable {
 
   /// The file that this pipeline source code was defined in.
   var fileName: String {
-    get {return _fileName ?? String()}
+    get {_fileName ?? String()}
     set {_fileName = newValue}
   }
   /// Returns true if `fileName` has been explicitly set.
-  var hasFileName: Bool {return self._fileName != nil}
+  var hasFileName: Bool {self._fileName != nil}
   /// Clears the value of `fileName`. Subsequent reads from it will return its default value.
   mutating func clearFileName() {self._fileName = nil}
 
   /// The specific line number that this pipeline source code is located at, if applicable.
   var lineNumber: Int32 {
-    get {return _lineNumber ?? 0}
+    get {_lineNumber ?? 0}
     set {_lineNumber = newValue}
   }
   /// Returns true if `lineNumber` has been explicitly set.
-  var hasLineNumber: Bool {return self._lineNumber != nil}
+  var hasLineNumber: Bool {self._lineNumber != nil}
   /// Clears the value of `lineNumber`. Subsequent reads from it will return its default value.
   mutating func clearLineNumber() {self._lineNumber = nil}
 
   /// The path of the top-level pipeline file determined at runtime during pipeline initialization.
   var definitionPath: String {
-    get {return _definitionPath ?? String()}
+    get {_definitionPath ?? String()}
     set {_definitionPath = newValue}
   }
   /// Returns true if `definitionPath` has been explicitly set.
-  var hasDefinitionPath: Bool {return self._definitionPath != nil}
+  var hasDefinitionPath: Bool {self._definitionPath != nil}
   /// Clears the value of `definitionPath`. Subsequent reads from it will return its default value.
   mutating func clearDefinitionPath() {self._definitionPath = nil}
 
@@ -1027,31 +1091,31 @@ struct Spark_Connect_PipelineAnalysisContext: Sendable {
 
   /// Unique identifier of the dataflow graph associated with this pipeline.
   var dataflowGraphID: String {
-    get {return _dataflowGraphID ?? String()}
+    get {_dataflowGraphID ?? String()}
     set {_dataflowGraphID = newValue}
   }
   /// Returns true if `dataflowGraphID` has been explicitly set.
-  var hasDataflowGraphID: Bool {return self._dataflowGraphID != nil}
+  var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
   /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
   mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
 
   /// The path of the top-level pipeline file determined at runtime during pipeline initialization.
   var definitionPath: String {
-    get {return _definitionPath ?? String()}
+    get {_definitionPath ?? String()}
     set {_definitionPath = newValue}
   }
   /// Returns true if `definitionPath` has been explicitly set.
-  var hasDefinitionPath: Bool {return self._definitionPath != nil}
+  var hasDefinitionPath: Bool {self._definitionPath != nil}
   /// Clears the value of `definitionPath`. Subsequent reads from it will return its default value.
   mutating func clearDefinitionPath() {self._definitionPath = nil}
 
   /// The name of the Flow involved in this analysis
   var flowName: String {
-    get {return _flowName ?? String()}
+    get {_flowName ?? String()}
     set {_flowName = newValue}
   }
   /// Returns true if `flowName` has been explicitly set.
-  var hasFlowName: Bool {return self._flowName != nil}
+  var hasFlowName: Bool {self._flowName != nil}
   /// Clears the value of `flowName`. Subsequent reads from it will return its default value.
   mutating func clearFlowName() {self._flowName = nil}
 
@@ -1077,7 +1141,7 @@ extension Spark_Connect_OutputType: SwiftProtobuf._ProtoNameProviding {
 
 extension Spark_Connect_PipelineCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineCommand"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}create_dataflow_graph\0\u{3}define_output\0\u{3}define_flow\0\u{3}drop_dataflow_graph\0\u{3}start_run\0\u{3}define_sql_graph_elements\0\u{3}get_query_function_execution_signal_stream\0\u{3}define_flow_query_function_result\0\u{2}_\u{f}extension\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}create_dataflow_graph\0\u{3}define_output\0\u{3}define_flow\0\u{3}drop_dataflow_graph\0\u{3}start_run\0\u{3}define_sql_graph_elements\0\u{3}get_query_function_execution_signal_stream\0\u{3}define_flow_query_function_result\0\u{3}execute_output_flows\0\u{2}^\u{f}extension\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1189,6 +1253,19 @@ extension Spark_Connect_PipelineCommand: SwiftProtobuf.Message, SwiftProtobuf._M
           self.commandType = .defineFlowQueryFunctionResult(v)
         }
       }()
+      case 9: try {
+        var v: Spark_Connect_PipelineCommand.ExecuteOutputFlows?
+        var hadOneofValue = false
+        if let current = self.commandType {
+          hadOneofValue = true
+          if case .executeOutputFlows(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.commandType = .executeOutputFlows(v)
+        }
+      }()
       case 999: try {
         var v: SwiftProtobuf.Google_Protobuf_Any?
         var hadOneofValue = false
@@ -1244,6 +1321,10 @@ extension Spark_Connect_PipelineCommand: SwiftProtobuf.Message, SwiftProtobuf._M
     case .defineFlowQueryFunctionResult?: try {
       guard case .defineFlowQueryFunctionResult(let v)? = self.commandType else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
+    }()
+    case .executeOutputFlows?: try {
+      guard case .executeOutputFlows(let v)? = self.commandType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 9)
     }()
     case .extension?: try {
       guard case .extension(let v)? = self.commandType else { preconditionFailure() }
@@ -1729,6 +1810,104 @@ extension Spark_Connect_PipelineCommand.DefineFlow.Response: SwiftProtobuf.Messa
 
   static func ==(lhs: Spark_Connect_PipelineCommand.DefineFlow.Response, rhs: Spark_Connect_PipelineCommand.DefineFlow.Response) -> Bool {
     if lhs._flowName != rhs._flowName {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Spark_Connect_PipelineCommand.ExecuteOutputFlows: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".ExecuteOutputFlows"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}define_output\0\u{3}define_flows\0\u{3}full_refresh\0\u{1}storage\0\u{2}c\u{f}extension\0")
+
+  fileprivate class _StorageClass {
+    var _defineOutput: Spark_Connect_PipelineCommand.DefineOutput? = nil
+    var _defineFlows: [Spark_Connect_PipelineCommand.DefineFlow] = []
+    var _fullRefresh: Bool? = nil
+    var _storage: String? = nil
+    var _extension: [SwiftProtobuf.Google_Protobuf_Any] = []
+
+      // This property is used as the initial default value for new instances of the type.
+      // The type itself is protecting the reference to its storage via CoW semantics.
+      // This will force a copy to be made of this reference when the first mutation occurs;
+      // hence, it is safe to mark this as `nonisolated(unsafe)`.
+      static nonisolated(unsafe) let defaultInstance = _StorageClass()
+
+    private init() {}
+
+    init(copying source: _StorageClass) {
+      _defineOutput = source._defineOutput
+      _defineFlows = source._defineFlows
+      _fullRefresh = source._fullRefresh
+      _storage = source._storage
+      _extension = source._extension
+    }
+  }
+
+  fileprivate mutating func _uniqueStorage() -> _StorageClass {
+    if !isKnownUniquelyReferenced(&_storage) {
+      _storage = _StorageClass(copying: _storage)
+    }
+    return _storage
+  }
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    _ = _uniqueStorage()
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      while let fieldNumber = try decoder.nextFieldNumber() {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every case branch when no optimizations are
+        // enabled. https://github.com/apple/swift-protobuf/issues/1034
+        switch fieldNumber {
+        case 1: try { try decoder.decodeSingularMessageField(value: &_storage._defineOutput) }()
+        case 2: try { try decoder.decodeRepeatedMessageField(value: &_storage._defineFlows) }()
+        case 3: try { try decoder.decodeSingularBoolField(value: &_storage._fullRefresh) }()
+        case 4: try { try decoder.decodeSingularStringField(value: &_storage._storage) }()
+        case 999: try { try decoder.decodeRepeatedMessageField(value: &_storage._extension) }()
+        default: break
+        }
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every if/case branch local when no optimizations
+      // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+      // https://github.com/apple/swift-protobuf/issues/1182
+      try { if let v = _storage._defineOutput {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+      } }()
+      if !_storage._defineFlows.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._defineFlows, fieldNumber: 2)
+      }
+      try { if let v = _storage._fullRefresh {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 3)
+      } }()
+      try { if let v = _storage._storage {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 4)
+      } }()
+      if !_storage._extension.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._extension, fieldNumber: 999)
+      }
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_PipelineCommand.ExecuteOutputFlows, rhs: Spark_Connect_PipelineCommand.ExecuteOutputFlows) -> Bool {
+    if lhs._storage !== rhs._storage {
+      let storagesAreEqual: Bool = withExtendedLifetime((lhs._storage, rhs._storage)) { (_args: (_StorageClass, _StorageClass)) in
+        let _storage = _args.0
+        let rhs_storage = _args.1
+        if _storage._defineOutput != rhs_storage._defineOutput {return false}
+        if _storage._defineFlows != rhs_storage._defineFlows {return false}
+        if _storage._fullRefresh != rhs_storage._fullRefresh {return false}
+        if _storage._storage != rhs_storage._storage {return false}
+        if _storage._extension != rhs_storage._extension {return false}
+        return true
+      }
+      if !storagesAreEqual {return false}
+    }
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

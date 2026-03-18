@@ -486,11 +486,11 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     // methods supported on all messages.
 
     var precision: Int32 {
-      get {return _precision ?? 0}
+      get {_precision ?? 0}
       set {_precision = newValue}
     }
     /// Returns true if `precision` has been explicitly set.
-    var hasPrecision: Bool {return self._precision != nil}
+    var hasPrecision: Bool {self._precision != nil}
     /// Clears the value of `precision`. Subsequent reads from it will return its default value.
     mutating func clearPrecision() {self._precision = nil}
 
@@ -521,20 +521,20 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     // methods supported on all messages.
 
     var startField: Int32 {
-      get {return _startField ?? 0}
+      get {_startField ?? 0}
       set {_startField = newValue}
     }
     /// Returns true if `startField` has been explicitly set.
-    var hasStartField: Bool {return self._startField != nil}
+    var hasStartField: Bool {self._startField != nil}
     /// Clears the value of `startField`. Subsequent reads from it will return its default value.
     mutating func clearStartField() {self._startField = nil}
 
     var endField: Int32 {
-      get {return _endField ?? 0}
+      get {_endField ?? 0}
       set {_endField = newValue}
     }
     /// Returns true if `endField` has been explicitly set.
-    var hasEndField: Bool {return self._endField != nil}
+    var hasEndField: Bool {self._endField != nil}
     /// Clears the value of `endField`. Subsequent reads from it will return its default value.
     mutating func clearEndField() {self._endField = nil}
 
@@ -554,20 +554,20 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     // methods supported on all messages.
 
     var startField: Int32 {
-      get {return _startField ?? 0}
+      get {_startField ?? 0}
       set {_startField = newValue}
     }
     /// Returns true if `startField` has been explicitly set.
-    var hasStartField: Bool {return self._startField != nil}
+    var hasStartField: Bool {self._startField != nil}
     /// Clears the value of `startField`. Subsequent reads from it will return its default value.
     mutating func clearStartField() {self._startField = nil}
 
     var endField: Int32 {
-      get {return _endField ?? 0}
+      get {_endField ?? 0}
       set {_endField = newValue}
     }
     /// Returns true if `endField` has been explicitly set.
-    var hasEndField: Bool {return self._endField != nil}
+    var hasEndField: Bool {self._endField != nil}
     /// Clears the value of `endField`. Subsequent reads from it will return its default value.
     mutating func clearEndField() {self._endField = nil}
 
@@ -616,20 +616,20 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     // methods supported on all messages.
 
     var scale: Int32 {
-      get {return _scale ?? 0}
+      get {_scale ?? 0}
       set {_scale = newValue}
     }
     /// Returns true if `scale` has been explicitly set.
-    var hasScale: Bool {return self._scale != nil}
+    var hasScale: Bool {self._scale != nil}
     /// Clears the value of `scale`. Subsequent reads from it will return its default value.
     mutating func clearScale() {self._scale = nil}
 
     var precision: Int32 {
-      get {return _precision ?? 0}
+      get {_precision ?? 0}
       set {_precision = newValue}
     }
     /// Returns true if `precision` has been explicitly set.
-    var hasPrecision: Bool {return self._precision != nil}
+    var hasPrecision: Bool {self._precision != nil}
     /// Clears the value of `precision`. Subsequent reads from it will return its default value.
     mutating func clearPrecision() {self._precision = nil}
 
@@ -651,22 +651,22 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     var name: String = String()
 
     var dataType: Spark_Connect_DataType {
-      get {return _dataType ?? Spark_Connect_DataType()}
+      get {_dataType ?? Spark_Connect_DataType()}
       set {_dataType = newValue}
     }
     /// Returns true if `dataType` has been explicitly set.
-    var hasDataType: Bool {return self._dataType != nil}
+    var hasDataType: Bool {self._dataType != nil}
     /// Clears the value of `dataType`. Subsequent reads from it will return its default value.
     mutating func clearDataType() {self._dataType = nil}
 
     var nullable: Bool = false
 
     var metadata: String {
-      get {return _metadata ?? String()}
+      get {_metadata ?? String()}
       set {_metadata = newValue}
     }
     /// Returns true if `metadata` has been explicitly set.
-    var hasMetadata: Bool {return self._metadata != nil}
+    var hasMetadata: Bool {self._metadata != nil}
     /// Clears the value of `metadata`. Subsequent reads from it will return its default value.
     mutating func clearMetadata() {self._metadata = nil}
 
@@ -698,21 +698,21 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     // methods supported on all messages.
 
     var elementType: Spark_Connect_DataType {
-      get {return _storage._elementType ?? Spark_Connect_DataType()}
+      get {_storage._elementType ?? Spark_Connect_DataType()}
       set {_uniqueStorage()._elementType = newValue}
     }
     /// Returns true if `elementType` has been explicitly set.
-    var hasElementType: Bool {return _storage._elementType != nil}
+    var hasElementType: Bool {_storage._elementType != nil}
     /// Clears the value of `elementType`. Subsequent reads from it will return its default value.
     mutating func clearElementType() {_uniqueStorage()._elementType = nil}
 
     var containsNull: Bool {
-      get {return _storage._containsNull}
+      get {_storage._containsNull}
       set {_uniqueStorage()._containsNull = newValue}
     }
 
     var typeVariationReference: UInt32 {
-      get {return _storage._typeVariationReference}
+      get {_storage._typeVariationReference}
       set {_uniqueStorage()._typeVariationReference = newValue}
     }
 
@@ -729,30 +729,30 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     // methods supported on all messages.
 
     var keyType: Spark_Connect_DataType {
-      get {return _storage._keyType ?? Spark_Connect_DataType()}
+      get {_storage._keyType ?? Spark_Connect_DataType()}
       set {_uniqueStorage()._keyType = newValue}
     }
     /// Returns true if `keyType` has been explicitly set.
-    var hasKeyType: Bool {return _storage._keyType != nil}
+    var hasKeyType: Bool {_storage._keyType != nil}
     /// Clears the value of `keyType`. Subsequent reads from it will return its default value.
     mutating func clearKeyType() {_uniqueStorage()._keyType = nil}
 
     var valueType: Spark_Connect_DataType {
-      get {return _storage._valueType ?? Spark_Connect_DataType()}
+      get {_storage._valueType ?? Spark_Connect_DataType()}
       set {_uniqueStorage()._valueType = newValue}
     }
     /// Returns true if `valueType` has been explicitly set.
-    var hasValueType: Bool {return _storage._valueType != nil}
+    var hasValueType: Bool {_storage._valueType != nil}
     /// Clears the value of `valueType`. Subsequent reads from it will return its default value.
     mutating func clearValueType() {_uniqueStorage()._valueType = nil}
 
     var valueContainsNull: Bool {
-      get {return _storage._valueContainsNull}
+      get {_storage._valueContainsNull}
       set {_uniqueStorage()._valueContainsNull = newValue}
     }
 
     var typeVariationReference: UInt32 {
-      get {return _storage._typeVariationReference}
+      get {_storage._typeVariationReference}
       set {_uniqueStorage()._typeVariationReference = newValue}
     }
 
@@ -809,47 +809,47 @@ struct Spark_Connect_DataType: @unchecked Sendable {
     // methods supported on all messages.
 
     var type: String {
-      get {return _storage._type}
+      get {_storage._type}
       set {_uniqueStorage()._type = newValue}
     }
 
     /// Required for Scala/Java UDT
     var jvmClass: String {
-      get {return _storage._jvmClass ?? String()}
+      get {_storage._jvmClass ?? String()}
       set {_uniqueStorage()._jvmClass = newValue}
     }
     /// Returns true if `jvmClass` has been explicitly set.
-    var hasJvmClass: Bool {return _storage._jvmClass != nil}
+    var hasJvmClass: Bool {_storage._jvmClass != nil}
     /// Clears the value of `jvmClass`. Subsequent reads from it will return its default value.
     mutating func clearJvmClass() {_uniqueStorage()._jvmClass = nil}
 
     /// Required for Python UDT
     var pythonClass: String {
-      get {return _storage._pythonClass ?? String()}
+      get {_storage._pythonClass ?? String()}
       set {_uniqueStorage()._pythonClass = newValue}
     }
     /// Returns true if `pythonClass` has been explicitly set.
-    var hasPythonClass: Bool {return _storage._pythonClass != nil}
+    var hasPythonClass: Bool {_storage._pythonClass != nil}
     /// Clears the value of `pythonClass`. Subsequent reads from it will return its default value.
     mutating func clearPythonClass() {_uniqueStorage()._pythonClass = nil}
 
     /// Required for Python UDT
     var serializedPythonClass: String {
-      get {return _storage._serializedPythonClass ?? String()}
+      get {_storage._serializedPythonClass ?? String()}
       set {_uniqueStorage()._serializedPythonClass = newValue}
     }
     /// Returns true if `serializedPythonClass` has been explicitly set.
-    var hasSerializedPythonClass: Bool {return _storage._serializedPythonClass != nil}
+    var hasSerializedPythonClass: Bool {_storage._serializedPythonClass != nil}
     /// Clears the value of `serializedPythonClass`. Subsequent reads from it will return its default value.
     mutating func clearSerializedPythonClass() {_uniqueStorage()._serializedPythonClass = nil}
 
     /// Required for Python UDT
     var sqlType: Spark_Connect_DataType {
-      get {return _storage._sqlType ?? Spark_Connect_DataType()}
+      get {_storage._sqlType ?? Spark_Connect_DataType()}
       set {_uniqueStorage()._sqlType = newValue}
     }
     /// Returns true if `sqlType` has been explicitly set.
-    var hasSqlType: Bool {return _storage._sqlType != nil}
+    var hasSqlType: Bool {_storage._sqlType != nil}
     /// Clears the value of `sqlType`. Subsequent reads from it will return its default value.
     mutating func clearSqlType() {_uniqueStorage()._sqlType = nil}
 

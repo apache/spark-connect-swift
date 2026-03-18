@@ -94,21 +94,21 @@ struct Spark_Connect_ExecutorResourceRequest: Sendable {
 
   /// Optional script used to discover the resources.
   var discoveryScript: String {
-    get {return _discoveryScript ?? String()}
+    get {_discoveryScript ?? String()}
     set {_discoveryScript = newValue}
   }
   /// Returns true if `discoveryScript` has been explicitly set.
-  var hasDiscoveryScript: Bool {return self._discoveryScript != nil}
+  var hasDiscoveryScript: Bool {self._discoveryScript != nil}
   /// Clears the value of `discoveryScript`. Subsequent reads from it will return its default value.
   mutating func clearDiscoveryScript() {self._discoveryScript = nil}
 
   /// Optional vendor, required for some cluster managers.
   var vendor: String {
-    get {return _vendor ?? String()}
+    get {_vendor ?? String()}
     set {_vendor = newValue}
   }
   /// Returns true if `vendor` has been explicitly set.
-  var hasVendor: Bool {return self._vendor != nil}
+  var hasVendor: Bool {self._vendor != nil}
   /// Clears the value of `vendor`. Subsequent reads from it will return its default value.
   mutating func clearVendor() {self._vendor = nil}
 
@@ -215,71 +215,71 @@ struct Spark_Connect_JvmOrigin: Sendable {
 
   /// (Optional) Line number in the source file.
   var line: Int32 {
-    get {return _line ?? 0}
+    get {_line ?? 0}
     set {_line = newValue}
   }
   /// Returns true if `line` has been explicitly set.
-  var hasLine: Bool {return self._line != nil}
+  var hasLine: Bool {self._line != nil}
   /// Clears the value of `line`. Subsequent reads from it will return its default value.
   mutating func clearLine() {self._line = nil}
 
   /// (Optional) Start position in the source file.
   var startPosition: Int32 {
-    get {return _startPosition ?? 0}
+    get {_startPosition ?? 0}
     set {_startPosition = newValue}
   }
   /// Returns true if `startPosition` has been explicitly set.
-  var hasStartPosition: Bool {return self._startPosition != nil}
+  var hasStartPosition: Bool {self._startPosition != nil}
   /// Clears the value of `startPosition`. Subsequent reads from it will return its default value.
   mutating func clearStartPosition() {self._startPosition = nil}
 
   /// (Optional) Start index in the source file.
   var startIndex: Int32 {
-    get {return _startIndex ?? 0}
+    get {_startIndex ?? 0}
     set {_startIndex = newValue}
   }
   /// Returns true if `startIndex` has been explicitly set.
-  var hasStartIndex: Bool {return self._startIndex != nil}
+  var hasStartIndex: Bool {self._startIndex != nil}
   /// Clears the value of `startIndex`. Subsequent reads from it will return its default value.
   mutating func clearStartIndex() {self._startIndex = nil}
 
   /// (Optional) Stop index in the source file.
   var stopIndex: Int32 {
-    get {return _stopIndex ?? 0}
+    get {_stopIndex ?? 0}
     set {_stopIndex = newValue}
   }
   /// Returns true if `stopIndex` has been explicitly set.
-  var hasStopIndex: Bool {return self._stopIndex != nil}
+  var hasStopIndex: Bool {self._stopIndex != nil}
   /// Clears the value of `stopIndex`. Subsequent reads from it will return its default value.
   mutating func clearStopIndex() {self._stopIndex = nil}
 
   /// (Optional) SQL text.
   var sqlText: String {
-    get {return _sqlText ?? String()}
+    get {_sqlText ?? String()}
     set {_sqlText = newValue}
   }
   /// Returns true if `sqlText` has been explicitly set.
-  var hasSqlText: Bool {return self._sqlText != nil}
+  var hasSqlText: Bool {self._sqlText != nil}
   /// Clears the value of `sqlText`. Subsequent reads from it will return its default value.
   mutating func clearSqlText() {self._sqlText = nil}
 
   /// (Optional) Object type.
   var objectType: String {
-    get {return _objectType ?? String()}
+    get {_objectType ?? String()}
     set {_objectType = newValue}
   }
   /// Returns true if `objectType` has been explicitly set.
-  var hasObjectType: Bool {return self._objectType != nil}
+  var hasObjectType: Bool {self._objectType != nil}
   /// Clears the value of `objectType`. Subsequent reads from it will return its default value.
   mutating func clearObjectType() {self._objectType = nil}
 
   /// (Optional) Object name.
   var objectName: String {
-    get {return _objectName ?? String()}
+    get {_objectName ?? String()}
     set {_objectName = newValue}
   }
   /// Returns true if `objectName` has been explicitly set.
-  var hasObjectName: Bool {return self._objectName != nil}
+  var hasObjectName: Bool {self._objectName != nil}
   /// Clears the value of `objectName`. Subsequent reads from it will return its default value.
   mutating func clearObjectName() {self._objectName = nil}
 
@@ -307,31 +307,31 @@ struct Spark_Connect_StackTraceElement: Sendable {
 
   /// (Optional) Class loader name
   var classLoaderName: String {
-    get {return _classLoaderName ?? String()}
+    get {_classLoaderName ?? String()}
     set {_classLoaderName = newValue}
   }
   /// Returns true if `classLoaderName` has been explicitly set.
-  var hasClassLoaderName: Bool {return self._classLoaderName != nil}
+  var hasClassLoaderName: Bool {self._classLoaderName != nil}
   /// Clears the value of `classLoaderName`. Subsequent reads from it will return its default value.
   mutating func clearClassLoaderName() {self._classLoaderName = nil}
 
   /// (Optional) Module name
   var moduleName: String {
-    get {return _moduleName ?? String()}
+    get {_moduleName ?? String()}
     set {_moduleName = newValue}
   }
   /// Returns true if `moduleName` has been explicitly set.
-  var hasModuleName: Bool {return self._moduleName != nil}
+  var hasModuleName: Bool {self._moduleName != nil}
   /// Clears the value of `moduleName`. Subsequent reads from it will return its default value.
   mutating func clearModuleName() {self._moduleName = nil}
 
   /// (Optional) Module version
   var moduleVersion: String {
-    get {return _moduleVersion ?? String()}
+    get {_moduleVersion ?? String()}
     set {_moduleVersion = newValue}
   }
   /// Returns true if `moduleVersion` has been explicitly set.
-  var hasModuleVersion: Bool {return self._moduleVersion != nil}
+  var hasModuleVersion: Bool {self._moduleVersion != nil}
   /// Clears the value of `moduleVersion`. Subsequent reads from it will return its default value.
   mutating func clearModuleVersion() {self._moduleVersion = nil}
 
@@ -343,11 +343,11 @@ struct Spark_Connect_StackTraceElement: Sendable {
 
   /// (Optional) File name
   var fileName: String {
-    get {return _fileName ?? String()}
+    get {_fileName ?? String()}
     set {_fileName = newValue}
   }
   /// Returns true if `fileName` has been explicitly set.
-  var hasFileName: Bool {return self._fileName != nil}
+  var hasFileName: Bool {self._fileName != nil}
   /// Clears the value of `fileName`. Subsequent reads from it will return its default value.
   mutating func clearFileName() {self._fileName = nil}
 

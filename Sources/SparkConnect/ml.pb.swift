@@ -148,31 +148,31 @@ struct Spark_Connect_MlCommand: Sendable {
 
     /// (Required) Estimator information (its type should be OPERATOR_TYPE_ESTIMATOR)
     var estimator: Spark_Connect_MlOperator {
-      get {return _estimator ?? Spark_Connect_MlOperator()}
+      get {_estimator ?? Spark_Connect_MlOperator()}
       set {_estimator = newValue}
     }
     /// Returns true if `estimator` has been explicitly set.
-    var hasEstimator: Bool {return self._estimator != nil}
+    var hasEstimator: Bool {self._estimator != nil}
     /// Clears the value of `estimator`. Subsequent reads from it will return its default value.
     mutating func clearEstimator() {self._estimator = nil}
 
     /// (Optional) parameters of the Estimator
     var params: Spark_Connect_MlParams {
-      get {return _params ?? Spark_Connect_MlParams()}
+      get {_params ?? Spark_Connect_MlParams()}
       set {_params = newValue}
     }
     /// Returns true if `params` has been explicitly set.
-    var hasParams: Bool {return self._params != nil}
+    var hasParams: Bool {self._params != nil}
     /// Clears the value of `params`. Subsequent reads from it will return its default value.
     mutating func clearParams() {self._params = nil}
 
     /// (Required) the training dataset
     var dataset: Spark_Connect_Relation {
-      get {return _dataset ?? Spark_Connect_Relation()}
+      get {_dataset ?? Spark_Connect_Relation()}
       set {_dataset = newValue}
     }
     /// Returns true if `dataset` has been explicitly set.
-    var hasDataset: Bool {return self._dataset != nil}
+    var hasDataset: Bool {self._dataset != nil}
     /// Clears the value of `dataset`. Subsequent reads from it will return its default value.
     mutating func clearDataset() {self._dataset = nil}
 
@@ -197,11 +197,11 @@ struct Spark_Connect_MlCommand: Sendable {
     /// if set `evict_only` to true, only evict the cached model from memory,
     /// but keep the offloaded model in Spark driver local disk.
     var evictOnly: Bool {
-      get {return _evictOnly ?? false}
+      get {_evictOnly ?? false}
       set {_evictOnly = newValue}
     }
     /// Returns true if `evictOnly` has been explicitly set.
-    var hasEvictOnly: Bool {return self._evictOnly != nil}
+    var hasEvictOnly: Bool {self._evictOnly != nil}
     /// Clears the value of `evictOnly`. Subsequent reads from it will return its default value.
     mutating func clearEvictOnly() {self._evictOnly = nil}
 
@@ -263,11 +263,11 @@ struct Spark_Connect_MlCommand: Sendable {
 
     /// (Optional) The parameters of operator which could be estimator/evaluator or a cached model
     var params: Spark_Connect_MlParams {
-      get {return _params ?? Spark_Connect_MlParams()}
+      get {_params ?? Spark_Connect_MlParams()}
       set {_params = newValue}
     }
     /// Returns true if `params` has been explicitly set.
-    var hasParams: Bool {return self._params != nil}
+    var hasParams: Bool {self._params != nil}
     /// Clears the value of `params`. Subsequent reads from it will return its default value.
     mutating func clearParams() {self._params = nil}
 
@@ -276,11 +276,11 @@ struct Spark_Connect_MlCommand: Sendable {
 
     /// (Optional) Overwrites if the output path already exists.
     var shouldOverwrite: Bool {
-      get {return _shouldOverwrite ?? false}
+      get {_shouldOverwrite ?? false}
       set {_shouldOverwrite = newValue}
     }
     /// Returns true if `shouldOverwrite` has been explicitly set.
-    var hasShouldOverwrite: Bool {return self._shouldOverwrite != nil}
+    var hasShouldOverwrite: Bool {self._shouldOverwrite != nil}
     /// Clears the value of `shouldOverwrite`. Subsequent reads from it will return its default value.
     mutating func clearShouldOverwrite() {self._shouldOverwrite = nil}
 
@@ -312,11 +312,11 @@ struct Spark_Connect_MlCommand: Sendable {
 
     /// (Required) ML operator information
     var `operator`: Spark_Connect_MlOperator {
-      get {return _operator ?? Spark_Connect_MlOperator()}
+      get {_operator ?? Spark_Connect_MlOperator()}
       set {_operator = newValue}
     }
     /// Returns true if ``operator`` has been explicitly set.
-    var hasOperator: Bool {return self._operator != nil}
+    var hasOperator: Bool {self._operator != nil}
     /// Clears the value of ``operator``. Subsequent reads from it will return its default value.
     mutating func clearOperator() {self._operator = nil}
 
@@ -338,31 +338,31 @@ struct Spark_Connect_MlCommand: Sendable {
 
     /// (Required) Evaluator information (its type should be OPERATOR_TYPE_EVALUATOR)
     var evaluator: Spark_Connect_MlOperator {
-      get {return _evaluator ?? Spark_Connect_MlOperator()}
+      get {_evaluator ?? Spark_Connect_MlOperator()}
       set {_evaluator = newValue}
     }
     /// Returns true if `evaluator` has been explicitly set.
-    var hasEvaluator: Bool {return self._evaluator != nil}
+    var hasEvaluator: Bool {self._evaluator != nil}
     /// Clears the value of `evaluator`. Subsequent reads from it will return its default value.
     mutating func clearEvaluator() {self._evaluator = nil}
 
     /// (Optional) parameters of the Evaluator
     var params: Spark_Connect_MlParams {
-      get {return _params ?? Spark_Connect_MlParams()}
+      get {_params ?? Spark_Connect_MlParams()}
       set {_params = newValue}
     }
     /// Returns true if `params` has been explicitly set.
-    var hasParams: Bool {return self._params != nil}
+    var hasParams: Bool {self._params != nil}
     /// Clears the value of `params`. Subsequent reads from it will return its default value.
     mutating func clearParams() {self._params = nil}
 
     /// (Required) the evaluating dataset
     var dataset: Spark_Connect_Relation {
-      get {return _dataset ?? Spark_Connect_Relation()}
+      get {_dataset ?? Spark_Connect_Relation()}
       set {_dataset = newValue}
     }
     /// Returns true if `dataset` has been explicitly set.
-    var hasDataset: Bool {return self._dataset != nil}
+    var hasDataset: Bool {self._dataset != nil}
     /// Clears the value of `dataset`. Subsequent reads from it will return its default value.
     mutating func clearDataset() {self._dataset = nil}
 
@@ -383,20 +383,20 @@ struct Spark_Connect_MlCommand: Sendable {
     // methods supported on all messages.
 
     var modelRef: Spark_Connect_ObjectRef {
-      get {return _modelRef ?? Spark_Connect_ObjectRef()}
+      get {_modelRef ?? Spark_Connect_ObjectRef()}
       set {_modelRef = newValue}
     }
     /// Returns true if `modelRef` has been explicitly set.
-    var hasModelRef: Bool {return self._modelRef != nil}
+    var hasModelRef: Bool {self._modelRef != nil}
     /// Clears the value of `modelRef`. Subsequent reads from it will return its default value.
     mutating func clearModelRef() {self._modelRef = nil}
 
     var dataset: Spark_Connect_Relation {
-      get {return _dataset ?? Spark_Connect_Relation()}
+      get {_dataset ?? Spark_Connect_Relation()}
       set {_dataset = newValue}
     }
     /// Returns true if `dataset` has been explicitly set.
-    var hasDataset: Bool {return self._dataset != nil}
+    var hasDataset: Bool {self._dataset != nil}
     /// Clears the value of `dataset`. Subsequent reads from it will return its default value.
     mutating func clearDataset() {self._dataset = nil}
 
@@ -415,11 +415,11 @@ struct Spark_Connect_MlCommand: Sendable {
     // methods supported on all messages.
 
     var modelRef: Spark_Connect_ObjectRef {
-      get {return _modelRef ?? Spark_Connect_ObjectRef()}
+      get {_modelRef ?? Spark_Connect_ObjectRef()}
       set {_modelRef = newValue}
     }
     /// Returns true if `modelRef` has been explicitly set.
-    var hasModelRef: Bool {return self._modelRef != nil}
+    var hasModelRef: Bool {self._modelRef != nil}
     /// Clears the value of `modelRef`. Subsequent reads from it will return its default value.
     mutating func clearModelRef() {self._modelRef = nil}
 
@@ -509,31 +509,31 @@ struct Spark_Connect_MlCommandResult: Sendable {
     /// (Optional) the 'uid' of a ML object
     /// Note it is different from the 'id' of a cached object.
     var uid: String {
-      get {return _uid ?? String()}
+      get {_uid ?? String()}
       set {_uid = newValue}
     }
     /// Returns true if `uid` has been explicitly set.
-    var hasUid: Bool {return self._uid != nil}
+    var hasUid: Bool {self._uid != nil}
     /// Clears the value of `uid`. Subsequent reads from it will return its default value.
     mutating func clearUid() {self._uid = nil}
 
     /// (Optional) parameters
     var params: Spark_Connect_MlParams {
-      get {return _params ?? Spark_Connect_MlParams()}
+      get {_params ?? Spark_Connect_MlParams()}
       set {_params = newValue}
     }
     /// Returns true if `params` has been explicitly set.
-    var hasParams: Bool {return self._params != nil}
+    var hasParams: Bool {self._params != nil}
     /// Clears the value of `params`. Subsequent reads from it will return its default value.
     mutating func clearParams() {self._params = nil}
 
     /// (Optional) warning message generated during the ML command execution
     var warningMessage: String {
-      get {return _warningMessage ?? String()}
+      get {_warningMessage ?? String()}
       set {_warningMessage = newValue}
     }
     /// Returns true if `warningMessage` has been explicitly set.
-    var hasWarningMessage: Bool {return self._warningMessage != nil}
+    var hasWarningMessage: Bool {self._warningMessage != nil}
     /// Clears the value of `warningMessage`. Subsequent reads from it will return its default value.
     mutating func clearWarningMessage() {self._warningMessage = nil}
 
