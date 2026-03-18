@@ -16,7 +16,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// An interface used to load a ``DataFrame`` from external storage systems
 /// (e.g. file systems, key-value stores, etc). Use `SparkSession.read` to access this.

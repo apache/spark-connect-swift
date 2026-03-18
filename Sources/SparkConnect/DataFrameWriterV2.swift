@@ -16,7 +16,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// Interface used to write a ``DataFrame`` to external storage using the v2 API.
 public actor DataFrameWriterV2: Sendable {

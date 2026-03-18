@@ -16,7 +16,11 @@
 // under the License.
 
 import FlatBuffers
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 let FILEMARKER = "ARROW1"
 let CONTINUATIONMARKER = UInt32(0xFFFF_FFFF)

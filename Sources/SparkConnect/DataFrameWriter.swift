@@ -16,7 +16,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// An interface used to write a `DataFrame` to external storage systems
 /// (e.g. file systems, key-value stores, etc). Use `DataFrame.write` to access this.

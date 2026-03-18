@@ -16,7 +16,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// An actor to load a streaming ``DataFrame`` from external storage systems
 /// (e.g. file systems, key-value stores, etc). Use `SparkSession.readStream` to access this.

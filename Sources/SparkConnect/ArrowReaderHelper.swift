@@ -16,7 +16,11 @@
 // under the License.
 
 import FlatBuffers
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// @nodoc
 private func makeBinaryHolder(

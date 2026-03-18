@@ -15,7 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+import FoundationInternationalization
+#else
 import Foundation
+#endif
 
 /// @nodoc
 public protocol ArrowArrayHolder {

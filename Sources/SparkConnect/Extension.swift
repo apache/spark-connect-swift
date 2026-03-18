@@ -17,7 +17,11 @@
 // under the License.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 extension String {
   /// Get a `Plan` instance from a string.

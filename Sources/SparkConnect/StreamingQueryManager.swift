@@ -16,7 +16,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// Information about progress made for a source in the execution of a ``StreamingQuery``
 /// during a trigger. See ``StreamingQueryProgress`` for more information.

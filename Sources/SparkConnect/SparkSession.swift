@@ -17,7 +17,11 @@
 // under the License.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// The entry point to programming Spark with ``DataFrame`` API.
 ///

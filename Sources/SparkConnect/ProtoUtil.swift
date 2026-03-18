@@ -15,7 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 func fromProto(  // swiftlint:disable:this cyclomatic_complexity function_body_length
   field: org_apache_arrow_flatbuf_Field

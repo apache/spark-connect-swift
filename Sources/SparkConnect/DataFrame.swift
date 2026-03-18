@@ -17,7 +17,11 @@
 // under the License.
 //
 import Atomics
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import GRPCCore
 import GRPCNIOTransportHTTP2
 import GRPCProtobuf

@@ -16,7 +16,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// A  dictionary in which keys are case insensitive. The input dictionary can be
 /// accessed for cases where case-sensitive information is required.

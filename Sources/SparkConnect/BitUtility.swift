@@ -15,7 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 class BitUtility {
   static func isSet(_ bit: UInt, buffer: ArrowBuffer) -> Bool {

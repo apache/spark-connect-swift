@@ -17,7 +17,11 @@
 // under the License.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import SparkConnect
 
 let spark = try await SparkSession.builder.getOrCreate()

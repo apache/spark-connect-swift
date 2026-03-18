@@ -16,7 +16,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// Utility functions like `org.apache.spark.util.SparkFileUtils`.
 public enum SparkFileUtils {
