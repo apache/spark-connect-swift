@@ -38,6 +38,7 @@ let package = Package(
     .package(url: "https://github.com/grpc/grpc-swift-protobuf.git", exact: "2.2.1"),
     .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", exact: "2.4.3"),
     .package(url: "https://github.com/google/flatbuffers.git", branch: "v25.12.19-2026-02-06-03fffb2"),
+    .package(url: "https://github.com/apple/swift-system.git", exact: "1.6.4")
   ],
   targets: [
     .target(
@@ -47,6 +48,7 @@ let package = Package(
         .product(name: "GRPCProtobuf", package: "grpc-swift-protobuf"),
         .product(name: "GRPCNIOTransportHTTP2", package: "grpc-swift-nio-transport"),
         .product(name: "FlatBuffers", package: "flatbuffers"),
+        .product(name: "SystemPackage", package: "swift-system"),
       ],
       resources: [
         .process("Documentation.docc")

@@ -17,6 +17,7 @@
 
 import FlatBuffers
 import Foundation
+import SystemPackage
 
 public protocol DataWriter {
   var count: Int { get }
@@ -40,15 +41,17 @@ public class ArrowWriter {  // swiftlint:disable:this type_body_length
   }
 
   public class FileDataWriter: DataWriter {
-    private var handle: FileHandle
+    private var handle: FileDescriptor
     private var currentSize: Int = 0
     public var count: Int { return currentSize }
-    public init(_ handle: FileHandle) {
+    public init(_ handle: FileDescriptor) {
       self.handle = handle
     }
 
     public func append(_ data: Data) {
-      self.handle.write(data)
+      _ = try! data.withUnsafeBytes {
+        try handle.write(UnsafeRawBufferPointer($0))
+      }
       self.currentSize += data.count
     }
   }
@@ -404,8 +407,13 @@ public class ArrowWriter {  // swiftlint:disable:this type_body_length
       return .failure(.ioError("\(error)"))
     }
 
-    let fileHandle = FileHandle(forUpdatingAtPath: fileName.path)!
-    defer { fileHandle.closeFile() }
+    let fileHandle: FileDescriptor
+    do {
+      fileHandle = try FileDescriptor.open(FilePath(fileName.path), .readWrite)
+    } catch {
+      return .failure(.ioError("\(error)"))
+    }
+    defer { try? fileHandle.close() }
 
     var markerData = FILEMARKER.data(using: .utf8)!
     addPadForAlignment(&markerData)
