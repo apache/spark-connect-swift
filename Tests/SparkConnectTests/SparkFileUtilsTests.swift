@@ -52,9 +52,8 @@ struct SparkFileUtilsTests {
     // -> createDirectory(at: URL)
     let dir = SparkFileUtils.createTempDir()
 
-    var isDir: ObjCBool = false
-    let exists = fm.fileExists(atPath: dir.path(), isDirectory: &isDir)
-    #expect(exists && isDir.boolValue)
+    let values = try dir.resourceValues(forKeys: [.isDirectoryKey])
+    #expect(values.isDirectory == true)
 
     #expect(SparkFileUtils.recursiveList(directory: dir).isEmpty)
 
@@ -65,6 +64,6 @@ struct SparkFileUtilsTests {
 
     try SparkFileUtils.deleteRecursively(dir)
 
-    #expect(!fm.fileExists(atPath: dir.path(), isDirectory: &isDir))
+    #expect(!fm.fileExists(atPath: dir.path()))
   }
 }

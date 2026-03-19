@@ -81,9 +81,8 @@ public enum SparkFileUtils {
     let fileManager = FileManager.default
     do {
       try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
-      var isDir: ObjCBool = false
-      let exists = fileManager.fileExists(atPath: url.path, isDirectory: &isDir)
-      return exists && isDir.boolValue
+      let values = try url.resourceValues(forKeys: [.isDirectoryKey])
+      return values.isDirectory == true
     } catch {
       print("Failed to create directory: \(url.path), error: \(error)")
       return false
