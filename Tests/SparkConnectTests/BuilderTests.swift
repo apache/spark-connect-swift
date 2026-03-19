@@ -17,11 +17,8 @@
 // under the License.
 //
 
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
+// We cannot use `FoundationEssentials` because `Bundle` is in `Foundation` only.
 import Foundation
-#endif
 import Testing
 
 @testable import SparkConnect
