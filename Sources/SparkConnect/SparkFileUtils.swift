@@ -90,10 +90,10 @@ public enum SparkFileUtils {
     return tempDir
   }
 
-  /// Create a new temporary directory prefixed with `spark` inside ``NSTemporaryDirectory``.
+  /// Create a new temporary directory prefixed with `spark` inside `FileManager.default.temporaryDirectory`.
   /// - Returns: An URL for the created directory
   static func createTempDir() -> URL {
-    let dir = createDirectory(root: NSTemporaryDirectory(), namePrefix: "spark")
+    let dir = createDirectory(root: FileManager.default.temporaryDirectory.path, namePrefix: "spark")
 
     return dir
   }
