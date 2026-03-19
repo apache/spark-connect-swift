@@ -87,9 +87,9 @@ public class ArrowBuffer {
   private static func alignTo64(_ length: UInt) -> UInt {
     let bufAlignment = length % 64
     if bufAlignment != 0 {
-      return length + (64 - bufAlignment) + 8
+      return length + (64 - bufAlignment)
     }
 
-    return length + 8
+    return length
   }
 }
