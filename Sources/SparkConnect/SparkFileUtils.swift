@@ -53,7 +53,7 @@ public enum SparkFileUtils {
 
   private static func expandingTildeInPath(_ path: String) -> String {
     guard path.hasPrefix("~") else { return path }
-    let homeDir = FileManager.default.homeDirectoryForCurrentUser.path
+    let homeDir = URL.homeDirectory.path
     if path == "~" {
       return homeDir
     }

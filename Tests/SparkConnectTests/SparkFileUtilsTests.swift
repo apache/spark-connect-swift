@@ -37,7 +37,8 @@ struct SparkFileUtilsTests {
     #expect(fileNameURL!.absoluteString == "file://\(fm.currentDirectoryPath)/jar1")
 
     let homeUrl = SparkFileUtils.resolveURL("~/jar1")
-    #expect(homeUrl!.absoluteString == "\(fm.homeDirectoryForCurrentUser.absoluteString)jar1")
+    let homeDir = URL.homeDirectory.absoluteString
+    #expect(homeUrl!.absoluteString == "\(homeDir)jar1")
 
     let absolutePath = SparkFileUtils.resolveURL("file:/jar1")
     #expect(absolutePath!.absoluteString == "file:/jar1")
