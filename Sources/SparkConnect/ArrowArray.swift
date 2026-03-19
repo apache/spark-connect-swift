@@ -269,7 +269,7 @@ public class Decimal128Array: FixedArray<Decimal> {
     let byteOffset = self.arrowData.stride * Int(index)
     let value = self.arrowData.buffers[1].rawPointer.advanced(by: byteOffset).load(
       as: UInt64.self)
-    return Decimal(value) / pow(10, Int(scale))
+    return Decimal(sign: .plus, exponent: -Int(scale), significand: Decimal(value))
   }
 }
 
