@@ -39,12 +39,24 @@ public enum SparkFileUtils {
       if let fragment = url.fragment {
         var components = URLComponents()
         components.scheme = "file"
-        components.path = (path as NSString).expandingTildeInPath
+        components.path = expandingTildeInPath(path)
         components.fragment = fragment
         return components.url?.absoluteURL
       }
     }
-    return URL(fileURLWithPath: (path as NSString).expandingTildeInPath).absoluteURL
+    return URL(fileURLWithPath: expandingTildeInPath(path)).absoluteURL
+  }
+
+  private static func expandingTildeInPath(_ path: String) -> String {
+    guard path.hasPrefix("~") else { return path }
+    let homeDir = FileManager.default.homeDirectoryForCurrentUser.path
+    if path == "~" {
+      return homeDir
+    }
+    if path.hasPrefix("~/") {
+      return homeDir + path.dropFirst(1)
+    }
+    return path
   }
 
   /// Lists files recursively.
