@@ -22,25 +22,12 @@ COPY . .
 
 RUN swift build -c release --static-swift-stdlib
 
-FROM ubuntu:24.04
-
-ARG SPARK_UID=185
+FROM gcr.io/distroless/cc-debian13:nonroot
 
 LABEL org.opencontainers.image.authors="Apache Spark project <dev@spark.apache.org>"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.ref.name="Apache Spark Connect for Swift"
 
-ENV SPARK_APP_HOME=/opt/spark-app
-ENV SPARK_APP=SparkConnectSwiftSQLRepl
+COPY --from=builder --chown=65532:65532 /app/.build/*-unknown-linux-gnu/release/SparkConnectSwiftSQLRepl /opt/spark-app/
 
-WORKDIR $SPARK_APP_HOME
-
-RUN groupadd --system --gid=$SPARK_UID spark && \
-    useradd --system --home-dir $SPARK_APP_HOME --uid=$SPARK_UID --gid=spark spark && \
-    chown -R spark:spark $SPARK_APP_HOME
-
-COPY --from=builder --chown=spark:spark /app/.build/*-unknown-linux-gnu/release/$SPARK_APP .
-
-USER spark
-
-ENTRYPOINT ["/bin/sh", "-c", "$SPARK_APP_HOME/$SPARK_APP"]
+ENTRYPOINT ["/opt/spark-app/SparkConnectSwiftSQLRepl"]

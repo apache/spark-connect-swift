@@ -99,7 +99,7 @@ Build an application Docker image.
 $ docker build -t apache/spark-connect-swift:web .
 $ docker images apache/spark-connect-swift:web
 IMAGE                            ID             DISK USAGE   CONTENT SIZE   EXTRA
-apache/spark-connect-swift:web   6fd1ee541fc6        428MB         96.7MB
+apache/spark-connect-swift:web   95b8f92cbd3b        342MB         78.7MB
 ```
 
 Run `web` docker image
