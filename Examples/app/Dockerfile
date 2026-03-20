@@ -20,9 +20,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN swift build -c release
+RUN swift build -c release --static-swift-stdlib
 
-FROM swift:6.2-slim
+FROM ubuntu:24.04
 
 ARG SPARK_UID=185
 
