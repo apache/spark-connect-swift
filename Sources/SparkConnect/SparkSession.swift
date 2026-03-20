@@ -411,6 +411,15 @@ public actor SparkSession {
     return try await client.interruptOperation(operationId)
   }
 
+  /// Get the status of operations in this session.
+  /// - Parameter operationIds: The IDs of operations to get status for. Empty array returns all.
+  /// - Returns: Status information about the requested operations.
+  func getOperationStatuses(_ operationIds: [String] = []) async throws
+    -> [Spark_Connect_GetStatusResponse.OperationStatus]
+  {
+    return try await client.getOperationStatuses(operationIds)
+  }
+
   func sameSemantics(_ plan: Plan, _ otherPlan: Plan) async throws -> Bool {
     return try await client.sameSemantics(plan, otherPlan)
   }

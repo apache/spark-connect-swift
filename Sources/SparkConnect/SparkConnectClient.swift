@@ -851,6 +851,26 @@ public actor SparkConnectClient {
     }
   }
 
+  func getOperationStatuses(_ operationIds: [String] = []) async throws
+    -> [Spark_Connect_GetStatusResponse.OperationStatus]
+  {
+    var request = Spark_Connect_GetStatusRequest()
+    request.sessionID = self.sessionID!
+    request.userContext = self.userContext
+    request.clientType = self.clientType
+    if !operationIds.isEmpty {
+      var operationStatusRequest = Spark_Connect_GetStatusRequest.OperationStatusRequest()
+      operationStatusRequest.operationIds = operationIds
+      request.operationStatus = operationStatusRequest
+    }
+
+    return try await withGPRC { client in
+      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+      let response = try await service.getStatus(request)
+      return response.operationStatuses
+    }
+  }
+
   /// Parse a DDL string to ``Spark_Connect_DataType`` instance.
   /// - Parameter ddlString: A string to parse.
   /// - Returns: A ``Spark_Connect_DataType`` instance.

@@ -276,4 +276,27 @@ struct SparkSessionTests {
     #expect(try await spark.interruptOperation("id") == [])
     await spark.stop()
   }
+
+  @Test
+  func getOperationStatuses() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      #expect(try await spark.getOperationStatuses() == [])
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func getOperationStatusesByIds() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let statuses = try await spark.getOperationStatuses(["id"])
+      #expect(statuses.count == 1)
+      #expect(statuses[0].operationID == "id")
+      #expect(statuses[0].state == .unknown)
+    }
+    await spark.stop()
+  }
 }
