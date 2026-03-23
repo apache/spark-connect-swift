@@ -55,6 +55,14 @@ $ kubectl logs -f job/spark-connect-swift-pi
 Pi is roughly 3.1426151426151425
 ```
 
+## Docker Image Size ###
+
+|     Name      | Image Size |
+| ------------- | ---------- |
+| `apache/spark:4.1.1-python3`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark/4.1.1-python3?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark/tags?page=1&name=4.1.1-python3) |
+| `pyspark-connect`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark-connect-swift/pyspark-connect?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark-connect-swift/tags?page=1&name=pyspark-connect) |
+| `Swift`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark-connect-swift/pi?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark-connect-swift/tags?page=1&name=pi) |
+
 ## Library Documentation
 
 - [main](https://swiftpackageindex.com/apache/spark-connect-swift/main/documentation/sparkconnect/)
