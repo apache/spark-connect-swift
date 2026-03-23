@@ -5,9 +5,15 @@
 [![Swift Version Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fapache%2Fspark-connect-swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/apache/spark-connect-swift)
 [![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fapache%2Fspark-connect-swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/apache/spark-connect-swift)
 
-This is an experimental Swift library to show how to connect to a remote Apache Spark Connect Server and run SQL statements to manipulate remote data.
+Apache Spark™ Connect for Swift is a subproject of Apache Spark and aims to provide a modern Swift library to enable Swift developers to leverage the power of Apache Spark for distributed data processing, machine learning, and analytical workloads directly from their Swift applications.
+For example, a user can develop and ship a lightweight Swift-based SparkPi app.
 
-So far, this library project is tracking the upstream changes of [Apache Arrow](https://arrow.apache.org) project's Swift-support.
+**Docker Image Size**
+|     Name      | Image Size |
+| ------------- | ---------- |
+| `apache/spark:4.1.1-python3`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark/4.1.1-python3?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark/tags?page=1&name=4.1.1-python3) |
+| `pyspark-connect`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark-connect-swift/pyspark-connect?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark-connect-swift/tags?page=1&name=pyspark-connect) |
+| `Swift`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark-connect-swift/pi?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark-connect-swift/tags?page=1&name=pi) |
 
 ## Resources
 
@@ -24,6 +30,8 @@ So far, this library project is tracking the upstream changes of [Apache Arrow](
 - [gRPC Swift NIO Transport 2.4.5 (March 2026)](https://github.com/grpc/grpc-swift-nio-transport/releases/tag/2.4.5)
 - [FlatBuffers v25.12.19 (February 2026)](https://github.com/google/flatbuffers/releases/tag/v25.12.19-2026-02-06-03fffb2)
 - [Apache Arrow Swift](https://github.com/apache/arrow-swift)
+
+So far, this library project is tracking the upstream changes of [Apache Arrow](https://arrow.apache.org) project's Swift-support.
 
 ## How to use in your apps
 
