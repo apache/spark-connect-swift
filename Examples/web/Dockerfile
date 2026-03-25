@@ -18,17 +18,23 @@ FROM swift:6.2 AS builder
 
 WORKDIR /app
 
+ADD https://download.swift.org/swift-6.2.4-release/static-sdk/swift-6.2.4-RELEASE/swift-6.2.4-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz /tmp/swift-static-sdk.tar.gz
+RUN swift sdk install /tmp/swift-static-sdk.tar.gz && \
+    rm /tmp/swift-static-sdk.tar.gz
+
 COPY . .
 
-RUN swift build -c release --static-swift-stdlib
+RUN arch=$(uname -m) && \
+    swift build -c release --swift-sdk ${arch}-swift-linux-musl && \
+    strip .build/*-swift-linux-musl/release/SparkConnectSwiftWeb
 
-FROM gcr.io/distroless/cc-debian13:nonroot
+FROM gcr.io/distroless/static-debian12:nonroot
 
 LABEL org.opencontainers.image.authors="Apache Spark project <dev@spark.apache.org>"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.ref.name="Apache Spark Connect for Swift"
 
-COPY --from=builder --chown=65532:65532 /app/.build/*-unknown-linux-gnu/release/SparkConnectSwiftWeb /opt/spark-app/
+COPY --from=builder --chown=65532:65532 /app/.build/*-swift-linux-musl/release/SparkConnectSwiftWeb /opt/spark-app/
 
 EXPOSE 8080
 
