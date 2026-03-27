@@ -45,6 +45,8 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v6
+    - name: Select Xcode 26.4
+      run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
     - name: Build
       run: swift build -c release
 
@@ -123,6 +125,8 @@ jobs:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v6
+    - name: Select Xcode 26.4
+      run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -142,6 +146,8 @@ jobs:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v6
+    - name: Select Xcode 26.4
+      run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -161,6 +167,8 @@ jobs:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v6
+    - name: Select Xcode 26.4
+      run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -181,6 +189,8 @@ jobs:
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
     - uses: actions/checkout@v6
+    - name: Select Xcode 26.4
+      run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - name: Test
@@ -200,6 +210,8 @@ jobs:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v6
+    - name: Select Xcode 26.4
+      run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
     - name: Install Java
       uses: actions/setup-java@v4
       with:
@@ -225,6 +237,8 @@ jobs:
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
     - uses: actions/checkout@v6
+    - name: Select Xcode 26.4
+      run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
     - name: Install Java
       uses: actions/setup-java@v4
       with:
@@ -251,6 +265,8 @@ jobs:
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
     - uses: actions/checkout@v6
+    - name: Select Xcode 26.4
+      run: sudo xcode-select -s /Applications/Xcode_26.4.app/Contents/Developer
     - name: Install Java
       uses: actions/setup-java@v4
       with:
