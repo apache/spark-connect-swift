@@ -16,7 +16,7 @@ Build an application Docker image.
 $ docker build -t apache/spark-connect-swift:pyspark-connect .
 $ docker images apache/spark-connect-swift:pyspark-connect
 IMAGE                                        ID             DISK USAGE   CONTENT SIZE   EXTRA
-apache/spark-connect-swift:pyspark-connect   d2abec2df6f5       1.63GB          609MB
+apache/spark-connect-swift:pyspark-connect   28125cf3a670       1.63GB          609MB
 ```
 
 Run `pyspark-connect` docker image.
