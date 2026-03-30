@@ -27,7 +27,7 @@ For example, a user can develop and ship a lightweight Swift-based SparkPi app.
 - [Swift 6.2 (September 2025)](https://swift.org)
 - [gRPC Swift 2.3 (March 2026)](https://github.com/grpc/grpc-swift-2/releases/tag/2.3.0)
 - [gRPC Swift Protobuf 2.2.1 (March 2026)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/2.2.1)
-- [gRPC Swift NIO Transport 2.6.0 (March 2026)](https://github.com/grpc/grpc-swift-nio-transport/releases/tag/2.6.0)
+- [gRPC Swift NIO Transport 2.6.2 (March 2026)](https://github.com/grpc/grpc-swift-nio-transport/releases/tag/2.6.2)
 - [FlatBuffers v25.12.19 (February 2026)](https://github.com/google/flatbuffers/releases/tag/v25.12.19-2026-02-06-03fffb2)
 - [Apache Arrow Swift](https://github.com/apache/arrow-swift)
 
