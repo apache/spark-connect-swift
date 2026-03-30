@@ -40,7 +40,7 @@ jobs:
         with:
           config: .github/.licenserc.yaml
 
-  build-macos-26-swift62:
+  build-macos-26-swift63:
     runs-on: macos-26
     timeout-minutes: 20
     steps:
