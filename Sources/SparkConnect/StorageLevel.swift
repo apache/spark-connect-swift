@@ -21,7 +21,7 @@
 /// or `ExternalBlockStore`, whether to drop the `RDD` to disk if it falls out of memory or
 /// `ExternalBlockStore`, whether to keep the data in memory in a serialized format, and whether
 /// to replicate the `RDD` partitions on multiple nodes.
-public struct StorageLevel: Sendable {
+public struct StorageLevel: Sendable, Equatable {
   /// Whether the cache should use disk or not.
   public var useDisk: Bool
 
@@ -79,11 +79,6 @@ extension StorageLevel {
     return level
   }
 
-  public static func == (lhs: StorageLevel, rhs: StorageLevel) -> Bool {
-    return lhs.useDisk == rhs.useDisk && lhs.useMemory == rhs.useMemory
-      && lhs.useOffHeap == rhs.useOffHeap && lhs.deserialized == rhs.deserialized
-      && lhs.replication == rhs.replication
-  }
 }
 
 extension StorageLevel: CustomStringConvertible {
