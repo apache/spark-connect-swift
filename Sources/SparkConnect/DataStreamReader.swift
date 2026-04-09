@@ -29,7 +29,7 @@ public actor DataStreamReader: Sendable {
 
   var paths: [String] = []
 
-  var extraOptions: CaseInsensitiveDictionary = CaseInsensitiveDictionary([:])
+  var extraOptions: CaseInsensitiveDictionary = CaseInsensitiveDictionary()
 
   var userSpecifiedSchemaDDL: String? = nil
 
