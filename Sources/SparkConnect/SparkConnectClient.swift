@@ -371,14 +371,19 @@ public actor SparkConnectClient {
     }
   }
 
-  func getLocalRelation() -> Plan {
-    var localRelation = Spark_Connect_LocalRelation()
-    localRelation.schema = ""
+  /// Create a `Plan` with a root `Relation` configured by the given closure.
+  static func createPlan(_ configure: (inout Relation) -> Void) -> Plan {
     var relation = Relation()
-    relation.localRelation = localRelation
+    configure(&relation)
     var plan = Plan()
     plan.opType = .root(relation)
     return plan
+  }
+
+  func getLocalRelation() -> Plan {
+    var localRelation = Spark_Connect_LocalRelation()
+    localRelation.schema = ""
+    return Self.createPlan { $0.localRelation = localRelation }
   }
 
   /// Create a `Plan` instance for `Range` relation.
@@ -392,11 +397,7 @@ public actor SparkConnectClient {
     range.start = start
     range.end = end
     range.step = step
-    var relation = Relation()
-    relation.range = range
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return Self.createPlan { $0.range = range }
   }
 
   /// Create a ``ExecutePlanRequest`` instance with the given plan.
@@ -507,11 +508,7 @@ public actor SparkConnectClient {
     showString.numRows = numRows
     showString.truncate = truncate
     showString.vertical = vertical
-    var relation = Relation()
-    relation.showString = showString
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.showString = showString }
   }
 
   func getTreeString(_ sessionID: String, _ plan: Plan, _ level: Int32) async -> AnalyzePlanRequest
@@ -535,22 +532,14 @@ public actor SparkConnectClient {
       return expression
     }
     project.expressions = expressions
-    var relation = Relation()
-    relation.project = project
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.project = project }
   }
 
   static func getToSchema(_ child: Relation, _ schema: Spark_Connect_DataType) -> Plan {
     var toSchema = Spark_Connect_ToSchema()
     toSchema.input = child
     toSchema.schema = schema
-    var relation = Relation()
-    relation.toSchema = toSchema
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.toSchema = toSchema }
   }
 
   static func getProjectExprs(_ child: Relation, _ exprs: [String]) -> Plan {
@@ -558,44 +547,28 @@ public actor SparkConnectClient {
     project.input = child
     let expressions: [Spark_Connect_Expression] = exprs.map { $0.toExpression }
     project.expressions = expressions
-    var relation = Relation()
-    relation.project = project
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.project = project }
   }
 
   static func getWithColumnRenamed(_ child: Relation, _ colsMap: [String: String]) -> Plan {
     var withColumnsRenamed = WithColumnsRenamed()
     withColumnsRenamed.input = child
     withColumnsRenamed.renameColumnsMap = colsMap
-    var relation = Relation()
-    relation.withColumnsRenamed = withColumnsRenamed
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.withColumnsRenamed = withColumnsRenamed }
   }
 
   static func getFilter(_ child: Relation, _ conditionExpr: String) -> Plan {
     var filter = Filter()
     filter.input = child
     filter.condition.expressionString = conditionExpr.toExpressionString
-    var relation = Relation()
-    relation.filter = filter
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.filter = filter }
   }
 
   static func getDrop(_ child: Relation, _ columnNames: [String]) -> Plan {
     var drop = Drop()
     drop.input = child
     drop.columnNames = columnNames
-    var relation = Relation()
-    relation.drop = drop
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.drop = drop }
   }
 
   static func getDropDuplicates(
@@ -610,33 +583,21 @@ public actor SparkConnectClient {
     } else {
       deduplicate.columnNames = columnNames
     }
-    var relation = Relation()
-    relation.deduplicate = deduplicate
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.deduplicate = deduplicate }
   }
 
   static func getDescribe(_ child: Relation, _ cols: [String]) -> Plan {
     var describe = Spark_Connect_StatDescribe()
     describe.input = child
     describe.cols = cols
-    var relation = Relation()
-    relation.describe = describe
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.describe = describe }
   }
 
   static func getSummary(_ child: Relation, _ statistics: [String]) -> Plan {
     var summary = Spark_Connect_StatSummary()
     summary.input = child
     summary.statistics = statistics
-    var relation = Relation()
-    relation.summary = summary
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.summary = summary }
   }
 
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
@@ -650,33 +611,21 @@ public actor SparkConnectClient {
     }
     sort.order = expressions
     sort.isGlobal = true
-    var relation = Relation()
-    relation.sort = sort
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.sort = sort }
   }
 
   static func getLimit(_ child: Relation, _ n: Int32) -> Plan {
     var limit = Limit()
     limit.input = child
     limit.limit = n
-    var relation = Relation()
-    relation.limit = limit
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.limit = limit }
   }
 
   static func getOffset(_ child: Relation, _ n: Int32) -> Plan {
     var offset = Spark_Connect_Offset()
     offset.input = child
     offset.offset = n
-    var relation = Relation()
-    relation.offset = offset
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.offset = offset }
   }
 
   static func getSample(
@@ -688,22 +637,14 @@ public actor SparkConnectClient {
     sample.lowerBound = 0.0
     sample.upperBound = fraction
     sample.seed = seed
-    var relation = Relation()
-    relation.sample = sample
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.sample = sample }
   }
 
   static func getTail(_ child: Relation, _ n: Int32) -> Plan {
     var tail = Tail()
     tail.input = child
     tail.limit = n
-    var relation = Relation()
-    relation.tail = tail
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.tail = tail }
   }
 
   var result: [ExecutePlanResponse] = []
@@ -963,11 +904,7 @@ public actor SparkConnectClient {
       join.usingColumns = usingColumns
     }
     // join.joinDataType = Join.JoinDataType()
-    var relation = Relation()
-    relation.join = join
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.join = join }
   }
 
   static func getLateralJoin(
@@ -981,11 +918,7 @@ public actor SparkConnectClient {
     if let joinCondition {
       lateralJoin.joinCondition.expressionString = joinCondition.toExpressionString
     }
-    var relation = Relation()
-    relation.lateralJoin = lateralJoin
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.lateralJoin = lateralJoin }
   }
 
   static func getSetOperation(
@@ -999,11 +932,7 @@ public actor SparkConnectClient {
     setOp.isAll = isAll
     setOp.allowMissingColumns = allowMissingColumns
     setOp.byName = byName
-    var relation = Relation()
-    relation.setOp = setOp
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.setOp = setOp }
   }
 
   func getIsLocal(_ sessionID: String, _ plan: Plan) async -> AnalyzePlanRequest {
@@ -1033,11 +962,7 @@ public actor SparkConnectClient {
     repartition.input = child
     repartition.numPartitions = numPartitions
     repartition.shuffle = shuffle
-    var relation = Relation()
-    relation.repartition = repartition
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.repartition = repartition }
   }
 
   static func getRepartitionByExpression(
@@ -1049,11 +974,7 @@ public actor SparkConnectClient {
     if let numPartitions {
       repartitionByExpression.numPartitions = numPartitions
     }
-    var relation = Relation()
-    relation.repartitionByExpression = repartitionByExpression
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.repartitionByExpression = repartitionByExpression }
   }
 
   static func getUnpivot(
@@ -1073,22 +994,14 @@ public actor SparkConnectClient {
     }
     unpivot.variableColumnName = variableColumnName
     unpivot.valueColumnName = valueColumnName
-    var relation = Relation()
-    relation.unpivot = unpivot
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.unpivot = unpivot }
   }
 
   static func getTranspose(_ child: Relation, _ indexColumn: [String]) -> Plan {
     var transpose = Spark_Connect_Transpose()
     transpose.input = child
     transpose.indexColumns = indexColumn.map { $0.toExpression }
-    var relation = Relation()
-    relation.transpose = transpose
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.transpose = transpose }
   }
 
   static func getHint(_ child: Relation, _ name: String, _ parameters: [Sendable]) -> Plan {
@@ -1119,11 +1032,7 @@ public actor SparkConnectClient {
       expr.literal = literal
       return expr
     }
-    var relation = Relation()
-    relation.hint = hint
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.hint = hint }
   }
 
   func getCheckpoint(
@@ -1144,12 +1053,7 @@ public actor SparkConnectClient {
     command.checkpointCommand = checkpointCommand
     let response = try await execute(self.sessionID!, command)
     let cachedRemoteRelation = response.first!.checkpointCommandResult.relation
-
-    var relation = Relation()
-    relation.cachedRemoteRelation = cachedRemoteRelation
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return Self.createPlan { $0.cachedRemoteRelation = cachedRemoteRelation }
   }
 
   static func getWithWatermark(
@@ -1162,11 +1066,7 @@ public actor SparkConnectClient {
     withWatermark.eventTime = eventTime
     withWatermark.delayThreshold = delayThreshold
 
-    var relation = Relation()
-    relation.withWatermark = withWatermark
-    var plan = Plan()
-    plan.opType = .root(relation)
-    return plan
+    return createPlan { $0.withWatermark = withWatermark }
   }
 
   func createTempView(
