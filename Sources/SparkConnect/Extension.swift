@@ -35,33 +35,35 @@ extension String {
     return plan
   }
 
+  private func toExpression(_ value: Sendable) -> Spark_Connect_Expression {
+    var literal = ExpressionLiteral()
+    switch value {
+    case let value as Bool:
+      literal.boolean = value
+    case let value as Int8:
+      literal.byte = Int32(value)
+    case let value as Int16:
+      literal.short = Int32(value)
+    case let value as Int32:
+      literal.integer = value
+    case let value as Int64:
+      literal.long = value
+    case let value as Int:
+      literal.long = Int64(value)
+    case let value as String:
+      literal.string = value
+    default:
+      literal.string = value as! String
+    }
+    var expr = Spark_Connect_Expression()
+    expr.literal = literal
+    return expr
+  }
+
   func toSparkConnectPlan(_ posArguments: [Sendable]) -> Plan {
     var sql = Spark_Connect_SQL()
     sql.query = self
-    sql.posArguments = posArguments.map {
-      var literal = ExpressionLiteral()
-      switch $0 {
-      case let value as Bool:
-        literal.boolean = value
-      case let value as Int8:
-        literal.byte = Int32(value)
-      case let value as Int16:
-        literal.short = Int32(value)
-      case let value as Int32:
-        literal.integer = value
-      case let value as Int64:
-        literal.long = value
-      case let value as Int:
-        literal.long = Int64(value)
-      case let value as String:
-        literal.string = value
-      default:
-        literal.string = $0 as! String
-      }
-      var expr = Spark_Connect_Expression()
-      expr.literal = literal
-      return expr
-    }
+    sql.posArguments = posArguments.map { toExpression($0) }
     var relation = Relation()
     relation.sql = sql
     var plan = Plan()
@@ -72,30 +74,7 @@ extension String {
   func toSparkConnectPlan(_ namedArguments: [String: Sendable]) -> Plan {
     var sql = Spark_Connect_SQL()
     sql.query = self
-    sql.namedArguments = namedArguments.mapValues { value in
-      var literal = ExpressionLiteral()
-      switch value {
-      case let value as Bool:
-        literal.boolean = value
-      case let value as Int8:
-        literal.byte = Int32(value)
-      case let value as Int16:
-        literal.short = Int32(value)
-      case let value as Int32:
-        literal.integer = value
-      case let value as Int64:
-        literal.long = value
-      case let value as Int:
-        literal.long = Int64(value)
-      case let value as String:
-        literal.string = value
-      default:
-        literal.string = value as! String
-      }
-      var expr = Spark_Connect_Expression()
-      expr.literal = literal
-      return expr
-    }
+    sql.namedArguments = namedArguments.mapValues { toExpression($0) }
     var relation = Relation()
     relation.sql = sql
     var plan = Plan()
