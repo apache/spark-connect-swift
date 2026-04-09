@@ -204,16 +204,13 @@ extension SparkSession: Equatable {
   }
 }
 
-extension YearMonthInterval {
-  func fieldToString(_ field: Int32) throws -> String {
-    return switch field {
-    case 0: "year"
-    case 1: "month"
-    default:
-      throw SparkConnectError.InvalidType
-    }
-  }
+protocol IntervalType {
+  var startField: Int32 { get }
+  var endField: Int32 { get }
+  func fieldToString(_ field: Int32) throws -> String
+}
 
+extension IntervalType {
   func toString() throws -> String {
     let startFieldName = try fieldToString(self.startField)
     let endFieldName = try fieldToString(self.endField)
@@ -229,7 +226,18 @@ extension YearMonthInterval {
   }
 }
 
-extension DayTimeInterval {
+extension YearMonthInterval: IntervalType {
+  func fieldToString(_ field: Int32) throws -> String {
+    return switch field {
+    case 0: "year"
+    case 1: "month"
+    default:
+      throw SparkConnectError.InvalidType
+    }
+  }
+}
+
+extension DayTimeInterval: IntervalType {
   func fieldToString(_ field: Int32) throws -> String {
     return switch field {
     case 0: "day"
@@ -239,20 +247,6 @@ extension DayTimeInterval {
     default:
       throw SparkConnectError.InvalidType
     }
-  }
-
-  func toString() throws -> String {
-    let startFieldName = try fieldToString(self.startField)
-    let endFieldName = try fieldToString(self.endField)
-    let interval =
-      if startFieldName == endFieldName {
-        "interval \(startFieldName)"
-      } else if startFieldName < endFieldName {
-        "interval \(startFieldName) to \(endFieldName)"
-      } else {
-        throw SparkConnectError.InvalidType
-      }
-    return interval
   }
 }
 
