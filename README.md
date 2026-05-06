@@ -21,7 +21,7 @@ For example, a user can develop and ship a lightweight Swift-based SparkPi app.
 - [Swift Package Index](https://swiftpackageindex.com/apache/spark-connect-swift/)
 - [Library Documentation](https://swiftpackageindex.com/apache/spark-connect-swift/main/documentation/sparkconnect)
 
-## Requirement
+## Requirements
 
 - [Apache Spark 4.1.1 (January 2026)](https://github.com/apache/spark/releases/tag/v4.1.1)
 - [Swift 6.3.1 (April 2026)](https://swift.org)

@@ -20,10 +20,10 @@ let spark = try await SparkSession
 
 ```swift
 // Create a DataFrame from a range
-let df = spark.range(1, 10)
+let df = try await spark.range(1, 10)
 
 // Execute SQL query
-let result = spark.sql("SELECT * FROM table")
+let result = try await spark.sql("SELECT * FROM table")
 
 // Read data from files
 let csvDf = spark.read.csv("path/to/file.csv")

@@ -8,7 +8,7 @@ Add SparkConnect to your Swift package dependencies:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/apache/spark-connect-swift.git", from: "main")
+    .package(url: "https://github.com/apache/spark-connect-swift.git", branch: "main")
 ]
 ```
 
@@ -55,7 +55,7 @@ try await df1.show()
 // Select columns
 try await df1.select("id").show()
 
-let df2 = await df1.selectExpr("id", "id % 3 as value")
+let df2 = df1.selectExpr("id", "id % 3 as value")
 try await df2.show()
 
 // Filter data
@@ -82,7 +82,7 @@ let result = try await spark.sql("""
     ORDER BY value_sum DESC
 """)
 
-result.show()
+try await result.show()
 ```
 
 ### 4. Reading and Writing Data

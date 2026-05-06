@@ -1,6 +1,6 @@
 # A `Spark SQL REPL` Application with Apache Spark Connect Swift Client
 
-This is an example Swift application to show how to develop a Spark SQL REPL(Read-eval-print Loop) with Apache Spark Connect Swift Client library.
+This is an example Swift application to show how to develop a Spark SQL REPL (Read-Eval-Print Loop) with Apache Spark Connect Swift Client library.
 
 ## How to run
 

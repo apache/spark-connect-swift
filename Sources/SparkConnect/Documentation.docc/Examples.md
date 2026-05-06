@@ -39,7 +39,7 @@ docker run -it --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 apache/spark
 swift run
 ```
 
-## Spark SQL REPL(Read-Eval-Print Loop) Example
+## Spark SQL REPL (Read-Eval-Print Loop) Example
 
 The Spark SQL REPL application example demonstrates interactive operations with ad-hoc Spark SQL queries with Apache Spark Connect, including:
 
@@ -119,7 +119,7 @@ docker run --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 -e TARGET_HOST=h
 swift run
 ```
 
-Type text into the Netcat terminal to see real-time word counting from `Spark Connect Server` container.
+Type text into the Netcat terminal to see real-time word counting in the `Spark Connect Server` container output.
 
 ## Web Application Example
 

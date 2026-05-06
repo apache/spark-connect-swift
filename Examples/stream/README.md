@@ -35,7 +35,7 @@ docker run --rm -e SPARK_REMOTE=sc://host.docker.internal:15002 -e TARGET_HOST=h
 
 ## Send input and check output
 
-Then, any lines typed in the terminal running the `Netcat` server will be counted and printed on screen every second.
+Then, any lines typed in the terminal running the `Netcat` server will be counted and printed to the screen every second.
 
 ```bash
 $ nc -lk 9999
