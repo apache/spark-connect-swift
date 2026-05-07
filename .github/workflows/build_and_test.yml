@@ -108,6 +108,21 @@ jobs:
         docker run swift:6.3.1 uname -a
         docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.3.1 swift test --no-parallel -c release
 
+  integration-test-ubuntu-spark42:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Start Spark Connect Server
+      run: |
+        docker run -d --name spark -p 15003:15002 -e SPARK_NO_DAEMONIZE=1 \
+          --entrypoint /opt/spark/sbin/start-connect-server.sh \
+          apache/spark:4.2.0-preview5-scala \
+          -c spark.sql.timeType.enabled=true
+    - name: Test
+      run: |
+        docker run swift:6.3.1 uname -a
+        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.3.1 swift test --no-parallel -c release
+
   integration-test-mac-spark41:
     runs-on: macos-26
     timeout-minutes: 20
