@@ -31,13 +31,13 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
 /// MlParams stores param settings for ML Estimator / Transformer / Evaluator
-struct Spark_Connect_MlParams: Sendable {
+nonisolated struct Spark_Connect_MlParams: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -51,7 +51,7 @@ struct Spark_Connect_MlParams: Sendable {
 }
 
 /// MLOperator represents the ML operators like (Estimator, Transformer or Evaluator)
-struct Spark_Connect_MlOperator: Sendable {
+nonisolated struct Spark_Connect_MlOperator: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -67,7 +67,7 @@ struct Spark_Connect_MlOperator: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OperatorType: SwiftProtobuf.Enum, Swift.CaseIterable {
+  nonisolated enum OperatorType: SwiftProtobuf.Enum, Swift.CaseIterable {
     typealias RawValue = Int
     case unspecified // = 0
 
@@ -126,7 +126,7 @@ struct Spark_Connect_MlOperator: Sendable {
 
 /// Represents a reference to the cached object which could be a model
 /// or summary evaluated by a model
-struct Spark_Connect_ObjectRef: Sendable {
+nonisolated struct Spark_Connect_ObjectRef: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -142,9 +142,9 @@ struct Spark_Connect_ObjectRef: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "spark.connect"
+fileprivate nonisolated let _protobuf_package = "spark.connect"
 
-extension Spark_Connect_MlParams: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlParams: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlParams"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}params\0")
 
@@ -174,7 +174,7 @@ extension Spark_Connect_MlParams: SwiftProtobuf.Message, SwiftProtobuf._MessageI
   }
 }
 
-extension Spark_Connect_MlOperator: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlOperator: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlOperator"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}uid\0\u{1}type\0")
 
@@ -214,11 +214,11 @@ extension Spark_Connect_MlOperator: SwiftProtobuf.Message, SwiftProtobuf._Messag
   }
 }
 
-extension Spark_Connect_MlOperator.OperatorType: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlOperator.OperatorType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0OPERATOR_TYPE_UNSPECIFIED\0\u{1}OPERATOR_TYPE_ESTIMATOR\0\u{1}OPERATOR_TYPE_TRANSFORMER\0\u{1}OPERATOR_TYPE_EVALUATOR\0\u{1}OPERATOR_TYPE_MODEL\0")
 }
 
-extension Spark_Connect_ObjectRef: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ObjectRef: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ObjectRef"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0")
 

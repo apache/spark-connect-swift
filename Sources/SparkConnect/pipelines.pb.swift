@@ -31,13 +31,13 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
 /// The type of output.
-enum Spark_Connect_OutputType: SwiftProtobuf.Enum, Swift.CaseIterable {
+nonisolated enum Spark_Connect_OutputType: SwiftProtobuf.Enum, Swift.CaseIterable {
   typealias RawValue = Int
 
   /// Safe default value. Should not be used.
@@ -94,7 +94,7 @@ enum Spark_Connect_OutputType: SwiftProtobuf.Enum, Swift.CaseIterable {
 }
 
 /// Dispatch object for pipelines commands. See each individual command for documentation.
-struct Spark_Connect_PipelineCommand: Sendable {
+nonisolated struct Spark_Connect_PipelineCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -187,7 +187,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_CommandType: Equatable, Sendable {
+  nonisolated enum OneOf_CommandType: Equatable, Sendable {
     case createDataflowGraph(Spark_Connect_PipelineCommand.CreateDataflowGraph)
     case defineOutput(Spark_Connect_PipelineCommand.DefineOutput)
     case defineFlow(Spark_Connect_PipelineCommand.DefineFlow)
@@ -206,7 +206,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
   }
 
   /// Request to create a new dataflow graph.
-  struct CreateDataflowGraph: Sendable {
+  nonisolated struct CreateDataflowGraph: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -243,7 +243,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
   }
 
   /// Drops the graph and stops any running attached flows.
-  struct DropDataflowGraph: Sendable {
+  nonisolated struct DropDataflowGraph: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -266,7 +266,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
   }
 
   /// Request to define an output: a table, a materialized view, a temporary view or a sink.
-  struct DefineOutput: Sendable {
+  nonisolated struct DefineOutput: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -349,7 +349,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    enum OneOf_Details: Equatable, Sendable {
+    nonisolated enum OneOf_Details: Equatable, Sendable {
       case tableDetails(Spark_Connect_PipelineCommand.DefineOutput.TableDetails)
       case sinkDetails(Spark_Connect_PipelineCommand.DefineOutput.SinkDetails)
       case `extension`(SwiftProtobuf.Google_Protobuf_Any)
@@ -357,7 +357,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
     }
 
     /// Metadata that's only applicable to tables and materialized views.
-    struct TableDetails: Sendable {
+    nonisolated struct TableDetails: Sendable {
       // SwiftProtobuf.Message conformance is added in an extension below. See the
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
@@ -403,7 +403,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
       var unknownFields = SwiftProtobuf.UnknownStorage()
 
       /// Schema for the table. If unset, this will be inferred from incoming flows.
-      enum OneOf_Schema: Equatable, Sendable {
+      nonisolated enum OneOf_Schema: Equatable, Sendable {
         case schemaDataType(Spark_Connect_DataType)
         case schemaString(String)
 
@@ -415,7 +415,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
     }
 
     /// Metadata that's only applicable to sinks.
-    struct SinkDetails: Sendable {
+    nonisolated struct SinkDetails: Sendable {
       // SwiftProtobuf.Message conformance is added in an extension below. See the
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
@@ -450,7 +450,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
   }
 
   /// Request to define a flow targeting a dataset.
-  struct DefineFlow: Sendable {
+  nonisolated struct DefineFlow: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -543,14 +543,14 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    enum OneOf_Details: Equatable, Sendable {
+    nonisolated enum OneOf_Details: Equatable, Sendable {
       case relationFlowDetails(Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails)
       case `extension`(SwiftProtobuf.Google_Protobuf_Any)
 
     }
 
     /// A flow that is that takes the contents of a relation and writes it to the target dataset.
-    struct WriteRelationFlowDetails: Sendable {
+    nonisolated struct WriteRelationFlowDetails: Sendable {
       // SwiftProtobuf.Message conformance is added in an extension below. See the
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
@@ -573,7 +573,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
       fileprivate var _relation: Spark_Connect_Relation? = nil
     }
 
-    struct Response: Sendable {
+    nonisolated struct Response: Sendable {
       // SwiftProtobuf.Message conformance is added in an extension below. See the
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
@@ -606,7 +606,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
   }
 
   /// Request to execute all flows for a single output (dataset or sink) remotely.
-  struct ExecuteOutputFlows: @unchecked Sendable {
+  nonisolated struct ExecuteOutputFlows: @unchecked Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -662,7 +662,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
   /// Resolves all datasets and flows and start a pipeline update. Should be called after all
   /// graph elements are registered.
-  struct StartRun: Sendable {
+  nonisolated struct StartRun: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -725,7 +725,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
   }
 
   /// Parses the SQL file and registers all datasets and flows.
-  struct DefineSqlGraphElements: Sendable {
+  nonisolated struct DefineSqlGraphElements: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -771,7 +771,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
   /// Request to get the stream of query function execution signals for a graph. Responses should
   /// be a stream of PipelineQueryFunctionExecutionSignal messages.
-  struct GetQueryFunctionExecutionSignalStream: Sendable {
+  nonisolated struct GetQueryFunctionExecutionSignalStream: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -806,7 +806,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
 
   /// Request from the client to update the flow function evaluation result
   /// for a previously un-analyzed flow.
-  struct DefineFlowQueryFunctionResult: Sendable {
+  nonisolated struct DefineFlowQueryFunctionResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -854,7 +854,7 @@ struct Spark_Connect_PipelineCommand: Sendable {
 }
 
 /// Dispatch object for pipelines command results.
-struct Spark_Connect_PipelineCommandResult: Sendable {
+nonisolated struct Spark_Connect_PipelineCommandResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -887,14 +887,14 @@ struct Spark_Connect_PipelineCommandResult: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_ResultType: Equatable, Sendable {
+  nonisolated enum OneOf_ResultType: Equatable, Sendable {
     case createDataflowGraphResult(Spark_Connect_PipelineCommandResult.CreateDataflowGraphResult)
     case defineOutputResult(Spark_Connect_PipelineCommandResult.DefineOutputResult)
     case defineFlowResult(Spark_Connect_PipelineCommandResult.DefineFlowResult)
 
   }
 
-  struct CreateDataflowGraphResult: Sendable {
+  nonisolated struct CreateDataflowGraphResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -916,7 +916,7 @@ struct Spark_Connect_PipelineCommandResult: Sendable {
     fileprivate var _dataflowGraphID: String? = nil
   }
 
-  struct DefineOutputResult: Sendable {
+  nonisolated struct DefineOutputResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -938,7 +938,7 @@ struct Spark_Connect_PipelineCommandResult: Sendable {
     fileprivate var _resolvedIdentifier: Spark_Connect_ResolvedIdentifier? = nil
   }
 
-  struct DefineFlowResult: Sendable {
+  nonisolated struct DefineFlowResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -964,7 +964,7 @@ struct Spark_Connect_PipelineCommandResult: Sendable {
 }
 
 /// A response containing an event emitted during the run of a pipeline.
-struct Spark_Connect_PipelineEventResult: Sendable {
+nonisolated struct Spark_Connect_PipelineEventResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -985,7 +985,7 @@ struct Spark_Connect_PipelineEventResult: Sendable {
   fileprivate var _event: Spark_Connect_PipelineEvent? = nil
 }
 
-struct Spark_Connect_PipelineEvent: Sendable {
+nonisolated struct Spark_Connect_PipelineEvent: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1019,7 +1019,7 @@ struct Spark_Connect_PipelineEvent: Sendable {
 }
 
 /// Source code location information associated with a particular dataset or flow.
-struct Spark_Connect_SourceCodeLocation: Sendable {
+nonisolated struct Spark_Connect_SourceCodeLocation: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1071,7 +1071,7 @@ struct Spark_Connect_SourceCodeLocation: Sendable {
 
 /// A signal from the server to the client to execute the query function for one or more flows, and
 /// to register their results with the server.
-struct Spark_Connect_PipelineQueryFunctionExecutionSignal: Sendable {
+nonisolated struct Spark_Connect_PipelineQueryFunctionExecutionSignal: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1084,7 +1084,7 @@ struct Spark_Connect_PipelineQueryFunctionExecutionSignal: Sendable {
 }
 
 /// Metadata providing context about the pipeline during Spark Connect query analysis.
-struct Spark_Connect_PipelineAnalysisContext: Sendable {
+nonisolated struct Spark_Connect_PipelineAnalysisContext: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1133,13 +1133,13 @@ struct Spark_Connect_PipelineAnalysisContext: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "spark.connect"
+fileprivate nonisolated let _protobuf_package = "spark.connect"
 
-extension Spark_Connect_OutputType: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_OutputType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0OUTPUT_TYPE_UNSPECIFIED\0\u{1}MATERIALIZED_VIEW\0\u{1}TABLE\0\u{1}TEMPORARY_VIEW\0\u{1}SINK\0")
 }
 
-extension Spark_Connect_PipelineCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}create_dataflow_graph\0\u{3}define_output\0\u{3}define_flow\0\u{3}drop_dataflow_graph\0\u{3}start_run\0\u{3}define_sql_graph_elements\0\u{3}get_query_function_execution_signal_stream\0\u{3}define_flow_query_function_result\0\u{3}execute_output_flows\0\u{2}^\u{f}extension\0")
 
@@ -1342,7 +1342,7 @@ extension Spark_Connect_PipelineCommand: SwiftProtobuf.Message, SwiftProtobuf._M
   }
 }
 
-extension Spark_Connect_PipelineCommand.CreateDataflowGraph: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.CreateDataflowGraph: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".CreateDataflowGraph"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}default_catalog\0\u{3}default_database\0\u{4}\u{3}sql_conf\0")
 
@@ -1386,7 +1386,7 @@ extension Spark_Connect_PipelineCommand.CreateDataflowGraph: SwiftProtobuf.Messa
   }
 }
 
-extension Spark_Connect_PipelineCommand.DropDataflowGraph: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DropDataflowGraph: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DropDataflowGraph"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0")
 
@@ -1420,7 +1420,7 @@ extension Spark_Connect_PipelineCommand.DropDataflowGraph: SwiftProtobuf.Message
   }
 }
 
-extension Spark_Connect_PipelineCommand.DefineOutput: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DefineOutput: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineOutput"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}output_name\0\u{3}output_type\0\u{1}comment\0\u{3}source_code_location\0\u{3}table_details\0\u{3}sink_details\0\u{2}`\u{f}extension\0")
 
@@ -1529,7 +1529,7 @@ extension Spark_Connect_PipelineCommand.DefineOutput: SwiftProtobuf.Message, Swi
   }
 }
 
-extension Spark_Connect_PipelineCommand.DefineOutput.TableDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DefineOutput.TableDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.DefineOutput.protoMessageName + ".TableDetails"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_properties\0\u{3}partition_cols\0\u{1}format\0\u{3}schema_data_type\0\u{3}schema_string\0\u{3}clustering_columns\0")
 
@@ -1611,7 +1611,7 @@ extension Spark_Connect_PipelineCommand.DefineOutput.TableDetails: SwiftProtobuf
   }
 }
 
-extension Spark_Connect_PipelineCommand.DefineOutput.SinkDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DefineOutput.SinkDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.DefineOutput.protoMessageName + ".SinkDetails"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}options\0\u{1}format\0")
 
@@ -1650,7 +1650,7 @@ extension Spark_Connect_PipelineCommand.DefineOutput.SinkDetails: SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineFlow"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}flow_name\0\u{3}target_dataset_name\0\u{3}sql_conf\0\u{3}client_id\0\u{3}source_code_location\0\u{3}relation_flow_details\0\u{1}once\0\u{2}_\u{f}extension\0")
 
@@ -1747,7 +1747,7 @@ extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, Swift
   }
 }
 
-extension Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.DefineFlow.protoMessageName + ".WriteRelationFlowDetails"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0")
 
@@ -1781,7 +1781,7 @@ extension Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails: Swi
   }
 }
 
-extension Spark_Connect_PipelineCommand.DefineFlow.Response: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.Response: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.DefineFlow.protoMessageName + ".Response"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}flow_name\0")
 
@@ -1815,7 +1815,7 @@ extension Spark_Connect_PipelineCommand.DefineFlow.Response: SwiftProtobuf.Messa
   }
 }
 
-extension Spark_Connect_PipelineCommand.ExecuteOutputFlows: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.ExecuteOutputFlows: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".ExecuteOutputFlows"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}define_output\0\u{3}define_flows\0\u{3}full_refresh\0\u{1}storage\0\u{2}c\u{f}extension\0")
 
@@ -1913,7 +1913,7 @@ extension Spark_Connect_PipelineCommand.ExecuteOutputFlows: SwiftProtobuf.Messag
   }
 }
 
-extension Spark_Connect_PipelineCommand.StartRun: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.StartRun: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".StartRun"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}full_refresh_selection\0\u{3}full_refresh_all\0\u{3}refresh_selection\0\u{1}dry\0\u{1}storage\0")
 
@@ -1972,7 +1972,7 @@ extension Spark_Connect_PipelineCommand.StartRun: SwiftProtobuf.Message, SwiftPr
   }
 }
 
-extension Spark_Connect_PipelineCommand.DefineSqlGraphElements: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DefineSqlGraphElements: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineSqlGraphElements"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}sql_file_path\0\u{3}sql_text\0")
 
@@ -2016,7 +2016,7 @@ extension Spark_Connect_PipelineCommand.DefineSqlGraphElements: SwiftProtobuf.Me
   }
 }
 
-extension Spark_Connect_PipelineCommand.GetQueryFunctionExecutionSignalStream: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.GetQueryFunctionExecutionSignalStream: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".GetQueryFunctionExecutionSignalStream"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}client_id\0")
 
@@ -2055,7 +2055,7 @@ extension Spark_Connect_PipelineCommand.GetQueryFunctionExecutionSignalStream: S
   }
 }
 
-extension Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineFlowQueryFunctionResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}flow_name\0\u{3}dataflow_graph_id\0\u{1}relation\0")
 
@@ -2099,7 +2099,7 @@ extension Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResult: SwiftProt
   }
 }
 
-extension Spark_Connect_PipelineCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineCommandResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}create_dataflow_graph_result\0\u{3}define_output_result\0\u{3}define_flow_result\0")
 
@@ -2183,7 +2183,7 @@ extension Spark_Connect_PipelineCommandResult: SwiftProtobuf.Message, SwiftProto
   }
 }
 
-extension Spark_Connect_PipelineCommandResult.CreateDataflowGraphResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommandResult.CreateDataflowGraphResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommandResult.protoMessageName + ".CreateDataflowGraphResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0")
 
@@ -2217,7 +2217,7 @@ extension Spark_Connect_PipelineCommandResult.CreateDataflowGraphResult: SwiftPr
   }
 }
 
-extension Spark_Connect_PipelineCommandResult.DefineOutputResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommandResult.DefineOutputResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommandResult.protoMessageName + ".DefineOutputResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}resolved_identifier\0")
 
@@ -2251,7 +2251,7 @@ extension Spark_Connect_PipelineCommandResult.DefineOutputResult: SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_PipelineCommandResult.DefineFlowResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineCommandResult.DefineFlowResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommandResult.protoMessageName + ".DefineFlowResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}resolved_identifier\0")
 
@@ -2285,7 +2285,7 @@ extension Spark_Connect_PipelineCommandResult.DefineFlowResult: SwiftProtobuf.Me
   }
 }
 
-extension Spark_Connect_PipelineEventResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineEventResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineEventResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}event\0")
 
@@ -2319,7 +2319,7 @@ extension Spark_Connect_PipelineEventResult: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Spark_Connect_PipelineEvent: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineEvent: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineEvent"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}timestamp\0\u{1}message\0")
 
@@ -2358,7 +2358,7 @@ extension Spark_Connect_PipelineEvent: SwiftProtobuf.Message, SwiftProtobuf._Mes
   }
 }
 
-extension Spark_Connect_SourceCodeLocation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_SourceCodeLocation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SourceCodeLocation"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}file_name\0\u{3}line_number\0\u{3}definition_path\0\u{2}d\u{f}extension\0")
 
@@ -2407,7 +2407,7 @@ extension Spark_Connect_SourceCodeLocation: SwiftProtobuf.Message, SwiftProtobuf
   }
 }
 
-extension Spark_Connect_PipelineQueryFunctionExecutionSignal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineQueryFunctionExecutionSignal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineQueryFunctionExecutionSignal"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}flow_names\0")
 
@@ -2437,7 +2437,7 @@ extension Spark_Connect_PipelineQueryFunctionExecutionSignal: SwiftProtobuf.Mess
   }
 }
 
-extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineAnalysisContext"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}definition_path\0\u{3}flow_name\0\u{2}d\u{f}extension\0")
 

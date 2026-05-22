@@ -31,13 +31,13 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
 /// Command for ML
-struct Spark_Connect_MlCommand: Sendable {
+nonisolated struct Spark_Connect_MlCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -126,7 +126,7 @@ struct Spark_Connect_MlCommand: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Command: Equatable, Sendable {
+  nonisolated enum OneOf_Command: Equatable, Sendable {
     case fit(Spark_Connect_MlCommand.Fit)
     case fetch(Spark_Connect_Fetch)
     case delete(Spark_Connect_MlCommand.Delete)
@@ -141,7 +141,7 @@ struct Spark_Connect_MlCommand: Sendable {
   }
 
   /// Command for estimator.fit(dataset)
-  struct Fit: Sendable {
+  nonisolated struct Fit: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -187,7 +187,7 @@ struct Spark_Connect_MlCommand: Sendable {
 
   /// Command to delete the cached objects which could be a model
   /// or summary evaluated by a model
-  struct Delete: Sendable {
+  nonisolated struct Delete: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -213,7 +213,7 @@ struct Spark_Connect_MlCommand: Sendable {
   }
 
   /// Force to clean up all the ML cached objects
-  struct CleanCache: Sendable {
+  nonisolated struct CleanCache: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -224,7 +224,7 @@ struct Spark_Connect_MlCommand: Sendable {
   }
 
   /// Get the information of all the ML cached objects
-  struct GetCacheInfo: Sendable {
+  nonisolated struct GetCacheInfo: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -235,7 +235,7 @@ struct Spark_Connect_MlCommand: Sendable {
   }
 
   /// Command to write ML operator
-  struct Write: Sendable {
+  nonisolated struct Write: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -290,7 +290,7 @@ struct Spark_Connect_MlCommand: Sendable {
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     /// It could be an estimator/evaluator or the cached model
-    enum OneOf_Type: Equatable, Sendable {
+    nonisolated enum OneOf_Type: Equatable, Sendable {
       /// Estimator or evaluator
       case `operator`(Spark_Connect_MlOperator)
       /// The cached model
@@ -305,7 +305,7 @@ struct Spark_Connect_MlCommand: Sendable {
   }
 
   /// Command to load ML operator.
-  struct Read: Sendable {
+  nonisolated struct Read: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -331,7 +331,7 @@ struct Spark_Connect_MlCommand: Sendable {
   }
 
   /// Command for evaluator.evaluate(dataset)
-  struct Evaluate: Sendable {
+  nonisolated struct Evaluate: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -377,7 +377,7 @@ struct Spark_Connect_MlCommand: Sendable {
 
   /// This is for re-creating the model summary when the model summary is lost
   /// (model summary is lost when the model is offloaded and then loaded back)
-  struct CreateSummary: Sendable {
+  nonisolated struct CreateSummary: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -409,7 +409,7 @@ struct Spark_Connect_MlCommand: Sendable {
   }
 
   /// This is for query the model estimated in-memory size
-  struct GetModelSize: Sendable {
+  nonisolated struct GetModelSize: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -434,7 +434,7 @@ struct Spark_Connect_MlCommand: Sendable {
 }
 
 /// The result of MlCommand
-struct Spark_Connect_MlCommandResult: Sendable {
+nonisolated struct Spark_Connect_MlCommandResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -470,7 +470,7 @@ struct Spark_Connect_MlCommandResult: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_ResultType: Equatable, Sendable {
+  nonisolated enum OneOf_ResultType: Equatable, Sendable {
     /// The result of the attribute
     case param(Spark_Connect_Expression.Literal)
     /// Evaluate a Dataset in a model and return the cached ID of summary
@@ -481,7 +481,7 @@ struct Spark_Connect_MlCommandResult: Sendable {
   }
 
   /// Represents an operator info
-  struct MlOperatorInfo: Sendable {
+  nonisolated struct MlOperatorInfo: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -539,7 +539,7 @@ struct Spark_Connect_MlCommandResult: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    enum OneOf_Type: Equatable, Sendable {
+    nonisolated enum OneOf_Type: Equatable, Sendable {
       /// The cached object which could be a model or summary evaluated by a model
       case objRef(Spark_Connect_ObjectRef)
       /// Operator name
@@ -559,9 +559,9 @@ struct Spark_Connect_MlCommandResult: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "spark.connect"
+fileprivate nonisolated let _protobuf_package = "spark.connect"
 
-extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}fit\0\u{1}fetch\0\u{1}delete\0\u{1}write\0\u{1}read\0\u{1}evaluate\0\u{3}clean_cache\0\u{3}get_cache_info\0\u{3}create_summary\0\u{3}get_model_size\0")
 
@@ -764,7 +764,7 @@ extension Spark_Connect_MlCommand: SwiftProtobuf.Message, SwiftProtobuf._Message
   }
 }
 
-extension Spark_Connect_MlCommand.Fit: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.Fit: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".Fit"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}estimator\0\u{1}params\0\u{1}dataset\0")
 
@@ -808,7 +808,7 @@ extension Spark_Connect_MlCommand.Fit: SwiftProtobuf.Message, SwiftProtobuf._Mes
   }
 }
 
-extension Spark_Connect_MlCommand.Delete: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.Delete: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".Delete"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}obj_refs\0\u{3}evict_only\0")
 
@@ -847,7 +847,7 @@ extension Spark_Connect_MlCommand.Delete: SwiftProtobuf.Message, SwiftProtobuf._
   }
 }
 
-extension Spark_Connect_MlCommand.CleanCache: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.CleanCache: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".CleanCache"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -866,7 +866,7 @@ extension Spark_Connect_MlCommand.CleanCache: SwiftProtobuf.Message, SwiftProtob
   }
 }
 
-extension Spark_Connect_MlCommand.GetCacheInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.GetCacheInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".GetCacheInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -885,7 +885,7 @@ extension Spark_Connect_MlCommand.GetCacheInfo: SwiftProtobuf.Message, SwiftProt
   }
 }
 
-extension Spark_Connect_MlCommand.Write: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.Write: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".Write"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}operator\0\u{3}obj_ref\0\u{1}params\0\u{1}path\0\u{3}should_overwrite\0\u{1}options\0")
 
@@ -972,7 +972,7 @@ extension Spark_Connect_MlCommand.Write: SwiftProtobuf.Message, SwiftProtobuf._M
   }
 }
 
-extension Spark_Connect_MlCommand.Read: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.Read: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".Read"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}operator\0\u{1}path\0")
 
@@ -1011,7 +1011,7 @@ extension Spark_Connect_MlCommand.Read: SwiftProtobuf.Message, SwiftProtobuf._Me
   }
 }
 
-extension Spark_Connect_MlCommand.Evaluate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.Evaluate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".Evaluate"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}evaluator\0\u{1}params\0\u{1}dataset\0")
 
@@ -1055,7 +1055,7 @@ extension Spark_Connect_MlCommand.Evaluate: SwiftProtobuf.Message, SwiftProtobuf
   }
 }
 
-extension Spark_Connect_MlCommand.CreateSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.CreateSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".CreateSummary"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}model_ref\0\u{1}dataset\0")
 
@@ -1094,7 +1094,7 @@ extension Spark_Connect_MlCommand.CreateSummary: SwiftProtobuf.Message, SwiftPro
   }
 }
 
-extension Spark_Connect_MlCommand.GetModelSize: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommand.GetModelSize: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommand.protoMessageName + ".GetModelSize"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}model_ref\0")
 
@@ -1128,7 +1128,7 @@ extension Spark_Connect_MlCommand.GetModelSize: SwiftProtobuf.Message, SwiftProt
   }
 }
 
-extension Spark_Connect_MlCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MlCommandResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}param\0\u{1}summary\0\u{3}operator_info\0")
 
@@ -1207,7 +1207,7 @@ extension Spark_Connect_MlCommandResult: SwiftProtobuf.Message, SwiftProtobuf._M
   }
 }
 
-extension Spark_Connect_MlCommandResult.MlOperatorInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MlCommandResult.MlOperatorInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_MlCommandResult.protoMessageName + ".MlOperatorInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}obj_ref\0\u{1}name\0\u{1}uid\0\u{1}params\0\u{3}warning_message\0")
 
