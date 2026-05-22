@@ -252,6 +252,86 @@ nonisolated struct Spark_Connect_Catalog: Sendable {
     set {catType = .listCatalogs(newValue)}
   }
 
+  var dropTable: Spark_Connect_DropTable {
+    get {
+      if case .dropTable(let v)? = catType {return v}
+      return Spark_Connect_DropTable()
+    }
+    set {catType = .dropTable(newValue)}
+  }
+
+  var dropView: Spark_Connect_DropView {
+    get {
+      if case .dropView(let v)? = catType {return v}
+      return Spark_Connect_DropView()
+    }
+    set {catType = .dropView(newValue)}
+  }
+
+  var createDatabase: Spark_Connect_CreateDatabase {
+    get {
+      if case .createDatabase(let v)? = catType {return v}
+      return Spark_Connect_CreateDatabase()
+    }
+    set {catType = .createDatabase(newValue)}
+  }
+
+  var dropDatabase: Spark_Connect_DropDatabase {
+    get {
+      if case .dropDatabase(let v)? = catType {return v}
+      return Spark_Connect_DropDatabase()
+    }
+    set {catType = .dropDatabase(newValue)}
+  }
+
+  var listPartitions: Spark_Connect_ListPartitions {
+    get {
+      if case .listPartitions(let v)? = catType {return v}
+      return Spark_Connect_ListPartitions()
+    }
+    set {catType = .listPartitions(newValue)}
+  }
+
+  var listViews: Spark_Connect_ListViews {
+    get {
+      if case .listViews(let v)? = catType {return v}
+      return Spark_Connect_ListViews()
+    }
+    set {catType = .listViews(newValue)}
+  }
+
+  var getTableProperties: Spark_Connect_GetTableProperties {
+    get {
+      if case .getTableProperties(let v)? = catType {return v}
+      return Spark_Connect_GetTableProperties()
+    }
+    set {catType = .getTableProperties(newValue)}
+  }
+
+  var getCreateTableString: Spark_Connect_GetCreateTableString {
+    get {
+      if case .getCreateTableString(let v)? = catType {return v}
+      return Spark_Connect_GetCreateTableString()
+    }
+    set {catType = .getCreateTableString(newValue)}
+  }
+
+  var truncateTable: Spark_Connect_TruncateTable {
+    get {
+      if case .truncateTable(let v)? = catType {return v}
+      return Spark_Connect_TruncateTable()
+    }
+    set {catType = .truncateTable(newValue)}
+  }
+
+  var analyzeTable: Spark_Connect_AnalyzeTable {
+    get {
+      if case .analyzeTable(let v)? = catType {return v}
+      return Spark_Connect_AnalyzeTable()
+    }
+    set {catType = .analyzeTable(newValue)}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   nonisolated enum OneOf_CatType: Equatable, Sendable {
@@ -281,6 +361,16 @@ nonisolated struct Spark_Connect_Catalog: Sendable {
     case currentCatalog(Spark_Connect_CurrentCatalog)
     case setCurrentCatalog(Spark_Connect_SetCurrentCatalog)
     case listCatalogs(Spark_Connect_ListCatalogs)
+    case dropTable(Spark_Connect_DropTable)
+    case dropView(Spark_Connect_DropView)
+    case createDatabase(Spark_Connect_CreateDatabase)
+    case dropDatabase(Spark_Connect_DropDatabase)
+    case listPartitions(Spark_Connect_ListPartitions)
+    case listViews(Spark_Connect_ListViews)
+    case getTableProperties(Spark_Connect_GetTableProperties)
+    case getCreateTableString(Spark_Connect_GetCreateTableString)
+    case truncateTable(Spark_Connect_TruncateTable)
+    case analyzeTable(Spark_Connect_AnalyzeTable)
 
   }
 
@@ -859,13 +949,191 @@ nonisolated struct Spark_Connect_ListCatalogs: Sendable {
   fileprivate var _pattern: String? = nil
 }
 
+/// See `spark.catalog.dropTable`
+nonisolated struct Spark_Connect_DropTable: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var tableName: String = String()
+
+  var ifExists: Bool = false
+
+  var purge: Bool = false
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// See `spark.catalog.dropView`
+nonisolated struct Spark_Connect_DropView: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var viewName: String = String()
+
+  var ifExists: Bool = false
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// See `spark.catalog.createDatabase`
+nonisolated struct Spark_Connect_CreateDatabase: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var dbName: String = String()
+
+  var ifNotExists: Bool = false
+
+  var properties: Dictionary<String,String> = [:]
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// See `spark.catalog.dropDatabase`
+nonisolated struct Spark_Connect_DropDatabase: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var dbName: String = String()
+
+  var ifExists: Bool = false
+
+  var cascade: Bool = false
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// See `spark.catalog.listPartitions`
+nonisolated struct Spark_Connect_ListPartitions: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var tableName: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// See `spark.catalog.listViews`
+nonisolated struct Spark_Connect_ListViews: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Optional)
+  var dbName: String {
+    get {_dbName ?? String()}
+    set {_dbName = newValue}
+  }
+  /// Returns true if `dbName` has been explicitly set.
+  var hasDbName: Bool {self._dbName != nil}
+  /// Clears the value of `dbName`. Subsequent reads from it will return its default value.
+  mutating func clearDbName() {self._dbName = nil}
+
+  /// (Optional) The pattern that the view name needs to match
+  var pattern: String {
+    get {_pattern ?? String()}
+    set {_pattern = newValue}
+  }
+  /// Returns true if `pattern` has been explicitly set.
+  var hasPattern: Bool {self._pattern != nil}
+  /// Clears the value of `pattern`. Subsequent reads from it will return its default value.
+  mutating func clearPattern() {self._pattern = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _dbName: String? = nil
+  fileprivate var _pattern: String? = nil
+}
+
+/// See `spark.catalog.getTableProperties`
+nonisolated struct Spark_Connect_GetTableProperties: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var tableName: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// See `spark.catalog.getCreateTableString`
+nonisolated struct Spark_Connect_GetCreateTableString: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var tableName: String = String()
+
+  var asSerde: Bool = false
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// See `spark.catalog.truncateTable`
+nonisolated struct Spark_Connect_TruncateTable: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var tableName: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// See `spark.catalog.analyzeTable`
+nonisolated struct Spark_Connect_AnalyzeTable: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required)
+  var tableName: String = String()
+
+  var noScan: Bool = false
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate nonisolated let _protobuf_package = "spark.connect"
 
 nonisolated extension Spark_Connect_Catalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Catalog"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}current_database\0\u{3}set_current_database\0\u{3}list_databases\0\u{3}list_tables\0\u{3}list_functions\0\u{3}list_columns\0\u{3}get_database\0\u{3}get_table\0\u{3}get_function\0\u{3}database_exists\0\u{3}table_exists\0\u{3}function_exists\0\u{3}create_external_table\0\u{3}create_table\0\u{3}drop_temp_view\0\u{3}drop_global_temp_view\0\u{3}recover_partitions\0\u{3}is_cached\0\u{3}cache_table\0\u{3}uncache_table\0\u{3}clear_cache\0\u{3}refresh_table\0\u{3}refresh_by_path\0\u{3}current_catalog\0\u{3}set_current_catalog\0\u{3}list_catalogs\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}current_database\0\u{3}set_current_database\0\u{3}list_databases\0\u{3}list_tables\0\u{3}list_functions\0\u{3}list_columns\0\u{3}get_database\0\u{3}get_table\0\u{3}get_function\0\u{3}database_exists\0\u{3}table_exists\0\u{3}function_exists\0\u{3}create_external_table\0\u{3}create_table\0\u{3}drop_temp_view\0\u{3}drop_global_temp_view\0\u{3}recover_partitions\0\u{3}is_cached\0\u{3}cache_table\0\u{3}uncache_table\0\u{3}clear_cache\0\u{3}refresh_table\0\u{3}refresh_by_path\0\u{3}current_catalog\0\u{3}set_current_catalog\0\u{3}list_catalogs\0\u{3}drop_table\0\u{3}drop_view\0\u{3}create_database\0\u{3}drop_database\0\u{3}list_partitions\0\u{3}list_views\0\u{3}get_table_properties\0\u{3}get_create_table_string\0\u{3}truncate_table\0\u{3}analyze_table\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1211,6 +1479,136 @@ nonisolated extension Spark_Connect_Catalog: SwiftProtobuf.Message, SwiftProtobu
           self.catType = .listCatalogs(v)
         }
       }()
+      case 27: try {
+        var v: Spark_Connect_DropTable?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .dropTable(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .dropTable(v)
+        }
+      }()
+      case 28: try {
+        var v: Spark_Connect_DropView?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .dropView(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .dropView(v)
+        }
+      }()
+      case 29: try {
+        var v: Spark_Connect_CreateDatabase?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .createDatabase(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .createDatabase(v)
+        }
+      }()
+      case 30: try {
+        var v: Spark_Connect_DropDatabase?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .dropDatabase(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .dropDatabase(v)
+        }
+      }()
+      case 31: try {
+        var v: Spark_Connect_ListPartitions?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .listPartitions(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .listPartitions(v)
+        }
+      }()
+      case 32: try {
+        var v: Spark_Connect_ListViews?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .listViews(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .listViews(v)
+        }
+      }()
+      case 33: try {
+        var v: Spark_Connect_GetTableProperties?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .getTableProperties(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .getTableProperties(v)
+        }
+      }()
+      case 34: try {
+        var v: Spark_Connect_GetCreateTableString?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .getCreateTableString(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .getCreateTableString(v)
+        }
+      }()
+      case 35: try {
+        var v: Spark_Connect_TruncateTable?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .truncateTable(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .truncateTable(v)
+        }
+      }()
+      case 36: try {
+        var v: Spark_Connect_AnalyzeTable?
+        var hadOneofValue = false
+        if let current = self.catType {
+          hadOneofValue = true
+          if case .analyzeTable(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.catType = .analyzeTable(v)
+        }
+      }()
       default: break
       }
     }
@@ -1325,6 +1723,46 @@ nonisolated extension Spark_Connect_Catalog: SwiftProtobuf.Message, SwiftProtobu
     case .listCatalogs?: try {
       guard case .listCatalogs(let v)? = self.catType else { preconditionFailure() }
       try visitor.visitSingularMessageField(value: v, fieldNumber: 26)
+    }()
+    case .dropTable?: try {
+      guard case .dropTable(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 27)
+    }()
+    case .dropView?: try {
+      guard case .dropView(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 28)
+    }()
+    case .createDatabase?: try {
+      guard case .createDatabase(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 29)
+    }()
+    case .dropDatabase?: try {
+      guard case .dropDatabase(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 30)
+    }()
+    case .listPartitions?: try {
+      guard case .listPartitions(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 31)
+    }()
+    case .listViews?: try {
+      guard case .listViews(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 32)
+    }()
+    case .getTableProperties?: try {
+      guard case .getTableProperties(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 33)
+    }()
+    case .getCreateTableString?: try {
+      guard case .getCreateTableString(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 34)
+    }()
+    case .truncateTable?: try {
+      guard case .truncateTable(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 35)
+    }()
+    case .analyzeTable?: try {
+      guard case .analyzeTable(let v)? = self.catType else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 36)
     }()
     case nil: break
     }
@@ -2213,6 +2651,360 @@ nonisolated extension Spark_Connect_ListCatalogs: SwiftProtobuf.Message, SwiftPr
 
   static func ==(lhs: Spark_Connect_ListCatalogs, rhs: Spark_Connect_ListCatalogs) -> Bool {
     if lhs._pattern != rhs._pattern {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_DropTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".DropTable"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}if_exists\0\u{1}purge\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.tableName) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.ifExists) }()
+      case 3: try { try decoder.decodeSingularBoolField(value: &self.purge) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.tableName.isEmpty {
+      try visitor.visitSingularStringField(value: self.tableName, fieldNumber: 1)
+    }
+    if self.ifExists != false {
+      try visitor.visitSingularBoolField(value: self.ifExists, fieldNumber: 2)
+    }
+    if self.purge != false {
+      try visitor.visitSingularBoolField(value: self.purge, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_DropTable, rhs: Spark_Connect_DropTable) -> Bool {
+    if lhs.tableName != rhs.tableName {return false}
+    if lhs.ifExists != rhs.ifExists {return false}
+    if lhs.purge != rhs.purge {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_DropView: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".DropView"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}view_name\0\u{3}if_exists\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.viewName) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.ifExists) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.viewName.isEmpty {
+      try visitor.visitSingularStringField(value: self.viewName, fieldNumber: 1)
+    }
+    if self.ifExists != false {
+      try visitor.visitSingularBoolField(value: self.ifExists, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_DropView, rhs: Spark_Connect_DropView) -> Bool {
+    if lhs.viewName != rhs.viewName {return false}
+    if lhs.ifExists != rhs.ifExists {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_CreateDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CreateDatabase"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0\u{3}if_not_exists\0\u{1}properties\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.dbName) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.ifNotExists) }()
+      case 3: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.properties) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.dbName.isEmpty {
+      try visitor.visitSingularStringField(value: self.dbName, fieldNumber: 1)
+    }
+    if self.ifNotExists != false {
+      try visitor.visitSingularBoolField(value: self.ifNotExists, fieldNumber: 2)
+    }
+    if !self.properties.isEmpty {
+      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: self.properties, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_CreateDatabase, rhs: Spark_Connect_CreateDatabase) -> Bool {
+    if lhs.dbName != rhs.dbName {return false}
+    if lhs.ifNotExists != rhs.ifNotExists {return false}
+    if lhs.properties != rhs.properties {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_DropDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".DropDatabase"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0\u{3}if_exists\0\u{1}cascade\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.dbName) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.ifExists) }()
+      case 3: try { try decoder.decodeSingularBoolField(value: &self.cascade) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.dbName.isEmpty {
+      try visitor.visitSingularStringField(value: self.dbName, fieldNumber: 1)
+    }
+    if self.ifExists != false {
+      try visitor.visitSingularBoolField(value: self.ifExists, fieldNumber: 2)
+    }
+    if self.cascade != false {
+      try visitor.visitSingularBoolField(value: self.cascade, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_DropDatabase, rhs: Spark_Connect_DropDatabase) -> Bool {
+    if lhs.dbName != rhs.dbName {return false}
+    if lhs.ifExists != rhs.ifExists {return false}
+    if lhs.cascade != rhs.cascade {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_ListPartitions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".ListPartitions"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.tableName) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.tableName.isEmpty {
+      try visitor.visitSingularStringField(value: self.tableName, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_ListPartitions, rhs: Spark_Connect_ListPartitions) -> Bool {
+    if lhs.tableName != rhs.tableName {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_ListViews: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".ListViews"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0\u{1}pattern\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self._dbName) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self._pattern) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._dbName {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 1)
+    } }()
+    try { if let v = self._pattern {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 2)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_ListViews, rhs: Spark_Connect_ListViews) -> Bool {
+    if lhs._dbName != rhs._dbName {return false}
+    if lhs._pattern != rhs._pattern {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_GetTableProperties: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetTableProperties"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.tableName) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.tableName.isEmpty {
+      try visitor.visitSingularStringField(value: self.tableName, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_GetTableProperties, rhs: Spark_Connect_GetTableProperties) -> Bool {
+    if lhs.tableName != rhs.tableName {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_GetCreateTableString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCreateTableString"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}as_serde\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.tableName) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.asSerde) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.tableName.isEmpty {
+      try visitor.visitSingularStringField(value: self.tableName, fieldNumber: 1)
+    }
+    if self.asSerde != false {
+      try visitor.visitSingularBoolField(value: self.asSerde, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_GetCreateTableString, rhs: Spark_Connect_GetCreateTableString) -> Bool {
+    if lhs.tableName != rhs.tableName {return false}
+    if lhs.asSerde != rhs.asSerde {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_TruncateTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".TruncateTable"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.tableName) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.tableName.isEmpty {
+      try visitor.visitSingularStringField(value: self.tableName, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_TruncateTable, rhs: Spark_Connect_TruncateTable) -> Bool {
+    if lhs.tableName != rhs.tableName {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_AnalyzeTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".AnalyzeTable"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}no_scan\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.tableName) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.noScan) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.tableName.isEmpty {
+      try visitor.visitSingularStringField(value: self.tableName, fieldNumber: 1)
+    }
+    if self.noScan != false {
+      try visitor.visitSingularBoolField(value: self.noScan, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_AnalyzeTable, rhs: Spark_Connect_AnalyzeTable) -> Bool {
+    if lhs.tableName != rhs.tableName {return false}
+    if lhs.noScan != rhs.noScan {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
