@@ -31,13 +31,13 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
 /// Catalog messages are marked as unstable.
-struct Spark_Connect_Catalog: Sendable {
+nonisolated struct Spark_Connect_Catalog: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -254,7 +254,7 @@ struct Spark_Connect_Catalog: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_CatType: Equatable, Sendable {
+  nonisolated enum OneOf_CatType: Equatable, Sendable {
     case currentDatabase(Spark_Connect_CurrentDatabase)
     case setCurrentDatabase(Spark_Connect_SetCurrentDatabase)
     case listDatabases(Spark_Connect_ListDatabases)
@@ -288,7 +288,7 @@ struct Spark_Connect_Catalog: Sendable {
 }
 
 /// See `spark.catalog.currentDatabase`
-struct Spark_Connect_CurrentDatabase: Sendable {
+nonisolated struct Spark_Connect_CurrentDatabase: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -299,7 +299,7 @@ struct Spark_Connect_CurrentDatabase: Sendable {
 }
 
 /// See `spark.catalog.setCurrentDatabase`
-struct Spark_Connect_SetCurrentDatabase: Sendable {
+nonisolated struct Spark_Connect_SetCurrentDatabase: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -313,7 +313,7 @@ struct Spark_Connect_SetCurrentDatabase: Sendable {
 }
 
 /// See `spark.catalog.listDatabases`
-struct Spark_Connect_ListDatabases: Sendable {
+nonisolated struct Spark_Connect_ListDatabases: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -336,7 +336,7 @@ struct Spark_Connect_ListDatabases: Sendable {
 }
 
 /// See `spark.catalog.listTables`
-struct Spark_Connect_ListTables: Sendable {
+nonisolated struct Spark_Connect_ListTables: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -370,7 +370,7 @@ struct Spark_Connect_ListTables: Sendable {
 }
 
 /// See `spark.catalog.listFunctions`
-struct Spark_Connect_ListFunctions: Sendable {
+nonisolated struct Spark_Connect_ListFunctions: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -404,7 +404,7 @@ struct Spark_Connect_ListFunctions: Sendable {
 }
 
 /// See `spark.catalog.listColumns`
-struct Spark_Connect_ListColumns: Sendable {
+nonisolated struct Spark_Connect_ListColumns: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -430,7 +430,7 @@ struct Spark_Connect_ListColumns: Sendable {
 }
 
 /// See `spark.catalog.getDatabase`
-struct Spark_Connect_GetDatabase: Sendable {
+nonisolated struct Spark_Connect_GetDatabase: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -444,7 +444,7 @@ struct Spark_Connect_GetDatabase: Sendable {
 }
 
 /// See `spark.catalog.getTable`
-struct Spark_Connect_GetTable: Sendable {
+nonisolated struct Spark_Connect_GetTable: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -470,7 +470,7 @@ struct Spark_Connect_GetTable: Sendable {
 }
 
 /// See `spark.catalog.getFunction`
-struct Spark_Connect_GetFunction: Sendable {
+nonisolated struct Spark_Connect_GetFunction: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -496,7 +496,7 @@ struct Spark_Connect_GetFunction: Sendable {
 }
 
 /// See `spark.catalog.databaseExists`
-struct Spark_Connect_DatabaseExists: Sendable {
+nonisolated struct Spark_Connect_DatabaseExists: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -510,7 +510,7 @@ struct Spark_Connect_DatabaseExists: Sendable {
 }
 
 /// See `spark.catalog.tableExists`
-struct Spark_Connect_TableExists: Sendable {
+nonisolated struct Spark_Connect_TableExists: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -536,7 +536,7 @@ struct Spark_Connect_TableExists: Sendable {
 }
 
 /// See `spark.catalog.functionExists`
-struct Spark_Connect_FunctionExists: Sendable {
+nonisolated struct Spark_Connect_FunctionExists: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -562,7 +562,7 @@ struct Spark_Connect_FunctionExists: Sendable {
 }
 
 /// See `spark.catalog.createExternalTable`
-struct Spark_Connect_CreateExternalTable: Sendable {
+nonisolated struct Spark_Connect_CreateExternalTable: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -614,7 +614,7 @@ struct Spark_Connect_CreateExternalTable: Sendable {
 }
 
 /// See `spark.catalog.createTable`
-struct Spark_Connect_CreateTable: Sendable {
+nonisolated struct Spark_Connect_CreateTable: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -677,7 +677,7 @@ struct Spark_Connect_CreateTable: Sendable {
 }
 
 /// See `spark.catalog.dropTempView`
-struct Spark_Connect_DropTempView: Sendable {
+nonisolated struct Spark_Connect_DropTempView: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -691,7 +691,7 @@ struct Spark_Connect_DropTempView: Sendable {
 }
 
 /// See `spark.catalog.dropGlobalTempView`
-struct Spark_Connect_DropGlobalTempView: Sendable {
+nonisolated struct Spark_Connect_DropGlobalTempView: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -705,7 +705,7 @@ struct Spark_Connect_DropGlobalTempView: Sendable {
 }
 
 /// See `spark.catalog.recoverPartitions`
-struct Spark_Connect_RecoverPartitions: Sendable {
+nonisolated struct Spark_Connect_RecoverPartitions: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -719,7 +719,7 @@ struct Spark_Connect_RecoverPartitions: Sendable {
 }
 
 /// See `spark.catalog.isCached`
-struct Spark_Connect_IsCached: Sendable {
+nonisolated struct Spark_Connect_IsCached: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -733,7 +733,7 @@ struct Spark_Connect_IsCached: Sendable {
 }
 
 /// See `spark.catalog.cacheTable`
-struct Spark_Connect_CacheTable: Sendable {
+nonisolated struct Spark_Connect_CacheTable: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -759,7 +759,7 @@ struct Spark_Connect_CacheTable: Sendable {
 }
 
 /// See `spark.catalog.uncacheTable`
-struct Spark_Connect_UncacheTable: Sendable {
+nonisolated struct Spark_Connect_UncacheTable: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -773,7 +773,7 @@ struct Spark_Connect_UncacheTable: Sendable {
 }
 
 /// See `spark.catalog.clearCache`
-struct Spark_Connect_ClearCache: Sendable {
+nonisolated struct Spark_Connect_ClearCache: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -784,7 +784,7 @@ struct Spark_Connect_ClearCache: Sendable {
 }
 
 /// See `spark.catalog.refreshTable`
-struct Spark_Connect_RefreshTable: Sendable {
+nonisolated struct Spark_Connect_RefreshTable: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -798,7 +798,7 @@ struct Spark_Connect_RefreshTable: Sendable {
 }
 
 /// See `spark.catalog.refreshByPath`
-struct Spark_Connect_RefreshByPath: Sendable {
+nonisolated struct Spark_Connect_RefreshByPath: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -812,7 +812,7 @@ struct Spark_Connect_RefreshByPath: Sendable {
 }
 
 /// See `spark.catalog.currentCatalog`
-struct Spark_Connect_CurrentCatalog: Sendable {
+nonisolated struct Spark_Connect_CurrentCatalog: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -823,7 +823,7 @@ struct Spark_Connect_CurrentCatalog: Sendable {
 }
 
 /// See `spark.catalog.setCurrentCatalog`
-struct Spark_Connect_SetCurrentCatalog: Sendable {
+nonisolated struct Spark_Connect_SetCurrentCatalog: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -837,7 +837,7 @@ struct Spark_Connect_SetCurrentCatalog: Sendable {
 }
 
 /// See `spark.catalog.listCatalogs`
-struct Spark_Connect_ListCatalogs: Sendable {
+nonisolated struct Spark_Connect_ListCatalogs: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -861,9 +861,9 @@ struct Spark_Connect_ListCatalogs: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "spark.connect"
+fileprivate nonisolated let _protobuf_package = "spark.connect"
 
-extension Spark_Connect_Catalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_Catalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Catalog"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}current_database\0\u{3}set_current_database\0\u{3}list_databases\0\u{3}list_tables\0\u{3}list_functions\0\u{3}list_columns\0\u{3}get_database\0\u{3}get_table\0\u{3}get_function\0\u{3}database_exists\0\u{3}table_exists\0\u{3}function_exists\0\u{3}create_external_table\0\u{3}create_table\0\u{3}drop_temp_view\0\u{3}drop_global_temp_view\0\u{3}recover_partitions\0\u{3}is_cached\0\u{3}cache_table\0\u{3}uncache_table\0\u{3}clear_cache\0\u{3}refresh_table\0\u{3}refresh_by_path\0\u{3}current_catalog\0\u{3}set_current_catalog\0\u{3}list_catalogs\0")
 
@@ -1338,7 +1338,7 @@ extension Spark_Connect_Catalog: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
   }
 }
 
-extension Spark_Connect_CurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CurrentDatabase"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -1357,7 +1357,7 @@ extension Spark_Connect_CurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf._M
   }
 }
 
-extension Spark_Connect_SetCurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_SetCurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SetCurrentDatabase"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0")
 
@@ -1387,7 +1387,7 @@ extension Spark_Connect_SetCurrentDatabase: SwiftProtobuf.Message, SwiftProtobuf
   }
 }
 
-extension Spark_Connect_ListDatabases: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ListDatabases: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListDatabases"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pattern\0")
 
@@ -1421,7 +1421,7 @@ extension Spark_Connect_ListDatabases: SwiftProtobuf.Message, SwiftProtobuf._Mes
   }
 }
 
-extension Spark_Connect_ListTables: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ListTables: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListTables"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0\u{1}pattern\0")
 
@@ -1460,7 +1460,7 @@ extension Spark_Connect_ListTables: SwiftProtobuf.Message, SwiftProtobuf._Messag
   }
 }
 
-extension Spark_Connect_ListFunctions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ListFunctions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListFunctions"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0\u{1}pattern\0")
 
@@ -1499,7 +1499,7 @@ extension Spark_Connect_ListFunctions: SwiftProtobuf.Message, SwiftProtobuf._Mes
   }
 }
 
-extension Spark_Connect_ListColumns: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ListColumns: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListColumns"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}db_name\0")
 
@@ -1538,7 +1538,7 @@ extension Spark_Connect_ListColumns: SwiftProtobuf.Message, SwiftProtobuf._Messa
   }
 }
 
-extension Spark_Connect_GetDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetDatabase: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetDatabase"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0")
 
@@ -1568,7 +1568,7 @@ extension Spark_Connect_GetDatabase: SwiftProtobuf.Message, SwiftProtobuf._Messa
   }
 }
 
-extension Spark_Connect_GetTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetTable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}db_name\0")
 
@@ -1607,7 +1607,7 @@ extension Spark_Connect_GetTable: SwiftProtobuf.Message, SwiftProtobuf._MessageI
   }
 }
 
-extension Spark_Connect_GetFunction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetFunction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetFunction"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}function_name\0\u{3}db_name\0")
 
@@ -1646,7 +1646,7 @@ extension Spark_Connect_GetFunction: SwiftProtobuf.Message, SwiftProtobuf._Messa
   }
 }
 
-extension Spark_Connect_DatabaseExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_DatabaseExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DatabaseExists"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}db_name\0")
 
@@ -1676,7 +1676,7 @@ extension Spark_Connect_DatabaseExists: SwiftProtobuf.Message, SwiftProtobuf._Me
   }
 }
 
-extension Spark_Connect_TableExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_TableExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".TableExists"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}db_name\0")
 
@@ -1715,7 +1715,7 @@ extension Spark_Connect_TableExists: SwiftProtobuf.Message, SwiftProtobuf._Messa
   }
 }
 
-extension Spark_Connect_FunctionExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FunctionExists: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".FunctionExists"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}function_name\0\u{3}db_name\0")
 
@@ -1754,7 +1754,7 @@ extension Spark_Connect_FunctionExists: SwiftProtobuf.Message, SwiftProtobuf._Me
   }
 }
 
-extension Spark_Connect_CreateExternalTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CreateExternalTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CreateExternalTable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{1}path\0\u{1}source\0\u{1}schema\0\u{1}options\0")
 
@@ -1808,7 +1808,7 @@ extension Spark_Connect_CreateExternalTable: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Spark_Connect_CreateTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CreateTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CreateTable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{1}path\0\u{1}source\0\u{1}description\0\u{1}schema\0\u{1}options\0")
 
@@ -1867,7 +1867,7 @@ extension Spark_Connect_CreateTable: SwiftProtobuf.Message, SwiftProtobuf._Messa
   }
 }
 
-extension Spark_Connect_DropTempView: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_DropTempView: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DropTempView"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}view_name\0")
 
@@ -1897,7 +1897,7 @@ extension Spark_Connect_DropTempView: SwiftProtobuf.Message, SwiftProtobuf._Mess
   }
 }
 
-extension Spark_Connect_DropGlobalTempView: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_DropGlobalTempView: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DropGlobalTempView"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}view_name\0")
 
@@ -1927,7 +1927,7 @@ extension Spark_Connect_DropGlobalTempView: SwiftProtobuf.Message, SwiftProtobuf
   }
 }
 
-extension Spark_Connect_RecoverPartitions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_RecoverPartitions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RecoverPartitions"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
 
@@ -1957,7 +1957,7 @@ extension Spark_Connect_RecoverPartitions: SwiftProtobuf.Message, SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_IsCached: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_IsCached: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".IsCached"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
 
@@ -1987,7 +1987,7 @@ extension Spark_Connect_IsCached: SwiftProtobuf.Message, SwiftProtobuf._MessageI
   }
 }
 
-extension Spark_Connect_CacheTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CacheTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CacheTable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}storage_level\0")
 
@@ -2026,7 +2026,7 @@ extension Spark_Connect_CacheTable: SwiftProtobuf.Message, SwiftProtobuf._Messag
   }
 }
 
-extension Spark_Connect_UncacheTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_UncacheTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".UncacheTable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
 
@@ -2056,7 +2056,7 @@ extension Spark_Connect_UncacheTable: SwiftProtobuf.Message, SwiftProtobuf._Mess
   }
 }
 
-extension Spark_Connect_ClearCache: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ClearCache: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ClearCache"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -2075,7 +2075,7 @@ extension Spark_Connect_ClearCache: SwiftProtobuf.Message, SwiftProtobuf._Messag
   }
 }
 
-extension Spark_Connect_RefreshTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_RefreshTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RefreshTable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0")
 
@@ -2105,7 +2105,7 @@ extension Spark_Connect_RefreshTable: SwiftProtobuf.Message, SwiftProtobuf._Mess
   }
 }
 
-extension Spark_Connect_RefreshByPath: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_RefreshByPath: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RefreshByPath"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}path\0")
 
@@ -2135,7 +2135,7 @@ extension Spark_Connect_RefreshByPath: SwiftProtobuf.Message, SwiftProtobuf._Mes
   }
 }
 
-extension Spark_Connect_CurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CurrentCatalog"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -2154,7 +2154,7 @@ extension Spark_Connect_CurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf._Me
   }
 }
 
-extension Spark_Connect_SetCurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_SetCurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SetCurrentCatalog"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}catalog_name\0")
 
@@ -2184,7 +2184,7 @@ extension Spark_Connect_SetCurrentCatalog: SwiftProtobuf.Message, SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_ListCatalogs: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ListCatalogs: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ListCatalogs"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pattern\0")
 

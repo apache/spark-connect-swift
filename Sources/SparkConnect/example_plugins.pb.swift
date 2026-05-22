@@ -31,12 +31,12 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
-struct Spark_Connect_ExamplePluginRelation: Sendable {
+nonisolated struct Spark_Connect_ExamplePluginRelation: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -59,7 +59,7 @@ struct Spark_Connect_ExamplePluginRelation: Sendable {
   fileprivate var _input: Spark_Connect_Relation? = nil
 }
 
-struct Spark_Connect_ExamplePluginExpression: Sendable {
+nonisolated struct Spark_Connect_ExamplePluginExpression: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -82,7 +82,7 @@ struct Spark_Connect_ExamplePluginExpression: Sendable {
   fileprivate var _child: Spark_Connect_Expression? = nil
 }
 
-struct Spark_Connect_ExamplePluginCommand: Sendable {
+nonisolated struct Spark_Connect_ExamplePluginCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -96,9 +96,9 @@ struct Spark_Connect_ExamplePluginCommand: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "spark.connect"
+fileprivate nonisolated let _protobuf_package = "spark.connect"
 
-extension Spark_Connect_ExamplePluginRelation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExamplePluginRelation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExamplePluginRelation"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}custom_field\0")
 
@@ -137,7 +137,7 @@ extension Spark_Connect_ExamplePluginRelation: SwiftProtobuf.Message, SwiftProto
   }
 }
 
-extension Spark_Connect_ExamplePluginExpression: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExamplePluginExpression: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExamplePluginExpression"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}child\0\u{3}custom_field\0")
 
@@ -176,7 +176,7 @@ extension Spark_Connect_ExamplePluginExpression: SwiftProtobuf.Message, SwiftPro
   }
 }
 
-extension Spark_Connect_ExamplePluginCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExamplePluginCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExamplePluginCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}custom_field\0")
 

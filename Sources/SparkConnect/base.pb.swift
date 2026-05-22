@@ -36,13 +36,13 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
 /// Compression codec for plan compression.
-enum Spark_Connect_CompressionCodec: SwiftProtobuf.Enum, Swift.CaseIterable {
+nonisolated enum Spark_Connect_CompressionCodec: SwiftProtobuf.Enum, Swift.CaseIterable {
   typealias RawValue = Int
   case unspecified // = 0
   case zstd // = 1
@@ -81,7 +81,7 @@ enum Spark_Connect_CompressionCodec: SwiftProtobuf.Enum, Swift.CaseIterable {
 /// - [[Relation]]: a reference to the underlying logical plan.
 /// - [[Command]]: used to execute commands on the server.
 /// - [[CompressedOperation]]: a compressed representation of either a Relation or a Command.
-struct Spark_Connect_Plan: Sendable {
+nonisolated struct Spark_Connect_Plan: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -114,14 +114,14 @@ struct Spark_Connect_Plan: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_OpType: Equatable, Sendable {
+  nonisolated enum OneOf_OpType: Equatable, Sendable {
     case root(Spark_Connect_Relation)
     case command(Spark_Connect_Command)
     case compressedOperation(Spark_Connect_Plan.CompressedOperation)
 
   }
 
-  struct CompressedOperation: Sendable {
+  nonisolated struct CompressedOperation: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -134,7 +134,7 @@ struct Spark_Connect_Plan: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    enum OpType: SwiftProtobuf.Enum, Swift.CaseIterable {
+    nonisolated enum OpType: SwiftProtobuf.Enum, Swift.CaseIterable {
       typealias RawValue = Int
       case unspecified // = 0
       case relation // = 1
@@ -180,7 +180,7 @@ struct Spark_Connect_Plan: Sendable {
 
 /// User Context is used to refer to one particular user session that is executing
 /// queries in the backend.
-struct Spark_Connect_UserContext: Sendable {
+nonisolated struct Spark_Connect_UserContext: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -201,7 +201,7 @@ struct Spark_Connect_UserContext: Sendable {
 }
 
 /// Request to perform plan analyze, optionally to explain the plan.
-struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
+nonisolated struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -371,7 +371,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Analyze: Equatable, Sendable {
+  nonisolated enum OneOf_Analyze: Equatable, Sendable {
     case schema(Spark_Connect_AnalyzePlanRequest.Schema)
     case explain(Spark_Connect_AnalyzePlanRequest.Explain)
     case treeString(Spark_Connect_AnalyzePlanRequest.TreeString)
@@ -389,7 +389,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 
   }
 
-  struct Schema: Sendable {
+  nonisolated struct Schema: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -412,7 +412,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
   }
 
   /// Explains the input plan based on a configurable mode.
-  struct Explain: Sendable {
+  nonisolated struct Explain: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -433,7 +433,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     /// Plan explanation mode.
-    enum ExplainMode: SwiftProtobuf.Enum, Swift.CaseIterable {
+    nonisolated enum ExplainMode: SwiftProtobuf.Enum, Swift.CaseIterable {
       typealias RawValue = Int
       case unspecified // = 0
 
@@ -502,7 +502,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _plan: Spark_Connect_Plan? = nil
   }
 
-  struct TreeString: Sendable {
+  nonisolated struct TreeString: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -535,7 +535,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _level: Int32? = nil
   }
 
-  struct IsLocal: Sendable {
+  nonisolated struct IsLocal: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -557,7 +557,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _plan: Spark_Connect_Plan? = nil
   }
 
-  struct IsStreaming: Sendable {
+  nonisolated struct IsStreaming: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -579,7 +579,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _plan: Spark_Connect_Plan? = nil
   }
 
-  struct InputFiles: Sendable {
+  nonisolated struct InputFiles: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -601,7 +601,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _plan: Spark_Connect_Plan? = nil
   }
 
-  struct SparkVersion: Sendable {
+  nonisolated struct SparkVersion: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -611,7 +611,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     init() {}
   }
 
-  struct DDLParse: Sendable {
+  nonisolated struct DDLParse: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -625,7 +625,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
   }
 
   /// Returns `true` when the logical query plans  are equal and therefore return same results.
-  struct SameSemantics: @unchecked Sendable {
+  nonisolated struct SameSemantics: @unchecked Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -657,7 +657,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _storage = _StorageClass.defaultInstance
   }
 
-  struct SemanticHash: Sendable {
+  nonisolated struct SemanticHash: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -679,7 +679,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _plan: Spark_Connect_Plan? = nil
   }
 
-  struct Persist: Sendable {
+  nonisolated struct Persist: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -712,7 +712,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _storageLevel: Spark_Connect_StorageLevel? = nil
   }
 
-  struct Unpersist: Sendable {
+  nonisolated struct Unpersist: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -745,7 +745,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _blocking: Bool? = nil
   }
 
-  struct GetStorageLevel: Sendable {
+  nonisolated struct GetStorageLevel: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -767,7 +767,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
     fileprivate var _relation: Spark_Connect_Relation? = nil
   }
 
-  struct JsonToDDL: Sendable {
+  nonisolated struct JsonToDDL: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -788,7 +788,7 @@ struct Spark_Connect_AnalyzePlanRequest: @unchecked Sendable {
 /// Response to performing analysis of the query. Contains relevant metadata to be able to
 /// reason about the performance.
 /// Next ID: 16
-struct Spark_Connect_AnalyzePlanResponse: Sendable {
+nonisolated struct Spark_Connect_AnalyzePlanResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -915,7 +915,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Result: Equatable, Sendable {
+  nonisolated enum OneOf_Result: Equatable, Sendable {
     case schema(Spark_Connect_AnalyzePlanResponse.Schema)
     case explain(Spark_Connect_AnalyzePlanResponse.Explain)
     case treeString(Spark_Connect_AnalyzePlanResponse.TreeString)
@@ -933,7 +933,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
 
   }
 
-  struct Schema: Sendable {
+  nonisolated struct Schema: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -954,7 +954,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     fileprivate var _schema: Spark_Connect_DataType? = nil
   }
 
-  struct Explain: Sendable {
+  nonisolated struct Explain: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -966,7 +966,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct TreeString: Sendable {
+  nonisolated struct TreeString: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -978,7 +978,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct IsLocal: Sendable {
+  nonisolated struct IsLocal: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -990,7 +990,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct IsStreaming: Sendable {
+  nonisolated struct IsStreaming: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1002,7 +1002,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct InputFiles: Sendable {
+  nonisolated struct InputFiles: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1015,7 +1015,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct SparkVersion: Sendable {
+  nonisolated struct SparkVersion: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1027,7 +1027,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct DDLParse: Sendable {
+  nonisolated struct DDLParse: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1048,7 +1048,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     fileprivate var _parsed: Spark_Connect_DataType? = nil
   }
 
-  struct SameSemantics: Sendable {
+  nonisolated struct SameSemantics: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1060,7 +1060,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct SemanticHash: Sendable {
+  nonisolated struct SemanticHash: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1072,7 +1072,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct Persist: Sendable {
+  nonisolated struct Persist: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1082,7 +1082,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct Unpersist: Sendable {
+  nonisolated struct Unpersist: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1092,7 +1092,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     init() {}
   }
 
-  struct GetStorageLevel: Sendable {
+  nonisolated struct GetStorageLevel: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1114,7 +1114,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
     fileprivate var _storageLevel: Spark_Connect_StorageLevel? = nil
   }
 
-  struct JsonToDDL: Sendable {
+  nonisolated struct JsonToDDL: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1130,7 +1130,7 @@ struct Spark_Connect_AnalyzePlanResponse: Sendable {
 }
 
 /// A request to be executed by the service.
-struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
+nonisolated struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1224,7 +1224,7 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  struct RequestOption: Sendable {
+  nonisolated struct RequestOption: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1258,7 +1258,7 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    enum OneOf_RequestOption: Equatable, Sendable {
+    nonisolated enum OneOf_RequestOption: Equatable, Sendable {
       case reattachOptions(Spark_Connect_ReattachOptions)
       case resultChunkingOptions(Spark_Connect_ResultChunkingOptions)
       /// Extension type for request options
@@ -1277,7 +1277,7 @@ struct Spark_Connect_ExecutePlanRequest: @unchecked Sendable {
 /// The response of a query, can be one or more for each request. Responses belonging to the
 /// same input query, carry the same `session_id`.
 /// Next ID: 17
-struct Spark_Connect_ExecutePlanResponse: Sendable {
+nonisolated struct Spark_Connect_ExecutePlanResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1472,7 +1472,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// Union type for the different response messages.
-  enum OneOf_ResponseType: Equatable, Sendable {
+  nonisolated enum OneOf_ResponseType: Equatable, Sendable {
     case arrowBatch(Spark_Connect_ExecutePlanResponse.ArrowBatch)
     /// Special case for executing SQL commands.
     case sqlCommandResult(Spark_Connect_ExecutePlanResponse.SqlCommandResult)
@@ -1510,7 +1510,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
 
   /// A SQL command returns an opaque Relation that can be directly used as input for the next
   /// call.
-  struct SqlCommandResult: Sendable {
+  nonisolated struct SqlCommandResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1532,7 +1532,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
   }
 
   /// Batch results of metrics.
-  struct ArrowBatch: Sendable {
+  nonisolated struct ArrowBatch: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1584,7 +1584,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     fileprivate var _numChunksInBatch: Int64? = nil
   }
 
-  struct Metrics: Sendable {
+  nonisolated struct Metrics: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1593,7 +1593,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    struct MetricObject: Sendable {
+    nonisolated struct MetricObject: Sendable {
       // SwiftProtobuf.Message conformance is added in an extension below. See the
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
@@ -1611,7 +1611,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
       init() {}
     }
 
-    struct MetricValue: Sendable {
+    nonisolated struct MetricValue: Sendable {
       // SwiftProtobuf.Message conformance is added in an extension below. See the
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
@@ -1630,7 +1630,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
     init() {}
   }
 
-  struct ObservedMetrics: Sendable {
+  nonisolated struct ObservedMetrics: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1668,7 +1668,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
   /// If present, in a reattachable execution this means that after server sends onComplete,
   /// the execution is complete. If the server sends onComplete without sending a ResultComplete,
   /// it means that there is more, and the client should use ReattachExecute RPC to continue.
-  struct ResultComplete: Sendable {
+  nonisolated struct ResultComplete: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1679,7 +1679,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
   }
 
   /// This message is used to communicate progress about the query progress during the execution.
-  struct ExecutionProgress: Sendable {
+  nonisolated struct ExecutionProgress: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1692,7 +1692,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    struct StageInfo: Sendable {
+    nonisolated struct StageInfo: Sendable {
       // SwiftProtobuf.Message conformance is added in an extension below. See the
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
       // methods supported on all messages.
@@ -1722,7 +1722,7 @@ struct Spark_Connect_ExecutePlanResponse: Sendable {
 }
 
 /// The key-value pair for the config request and response.
-struct Spark_Connect_KeyValue: Sendable {
+nonisolated struct Spark_Connect_KeyValue: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1748,7 +1748,7 @@ struct Spark_Connect_KeyValue: Sendable {
 }
 
 /// Request to update or fetch the configurations.
-struct Spark_Connect_ConfigRequest: Sendable {
+nonisolated struct Spark_Connect_ConfigRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1808,7 +1808,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  struct Operation: Sendable {
+  nonisolated struct Operation: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1873,7 +1873,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    enum OneOf_OpType: Equatable, Sendable {
+    nonisolated enum OneOf_OpType: Equatable, Sendable {
       case set(Spark_Connect_ConfigRequest.Set)
       case get(Spark_Connect_ConfigRequest.Get)
       case getWithDefault(Spark_Connect_ConfigRequest.GetWithDefault)
@@ -1887,7 +1887,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
     init() {}
   }
 
-  struct Set: Sendable {
+  nonisolated struct Set: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1912,7 +1912,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
     fileprivate var _silent: Bool? = nil
   }
 
-  struct Get: Sendable {
+  nonisolated struct Get: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1925,7 +1925,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
     init() {}
   }
 
-  struct GetWithDefault: Sendable {
+  nonisolated struct GetWithDefault: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1938,7 +1938,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
     init() {}
   }
 
-  struct GetOption: Sendable {
+  nonisolated struct GetOption: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1951,7 +1951,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
     init() {}
   }
 
-  struct GetAll: Sendable {
+  nonisolated struct GetAll: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1973,7 +1973,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
     fileprivate var _prefix: String? = nil
   }
 
-  struct Unset: Sendable {
+  nonisolated struct Unset: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1986,7 +1986,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
     init() {}
   }
 
-  struct IsModifiable: Sendable {
+  nonisolated struct IsModifiable: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2009,7 +2009,7 @@ struct Spark_Connect_ConfigRequest: Sendable {
 
 /// Response to the config request.
 /// Next ID: 5
-struct Spark_Connect_ConfigResponse: Sendable {
+nonisolated struct Spark_Connect_ConfigResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2037,7 +2037,7 @@ struct Spark_Connect_ConfigResponse: Sendable {
 }
 
 /// Request to transfer client-local artifacts.
-struct Spark_Connect_AddArtifactsRequest: Sendable {
+nonisolated struct Spark_Connect_AddArtifactsRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2120,7 +2120,7 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// The payload is either a batch of artifacts or a partial chunk of a large artifact.
-  enum OneOf_Payload: Equatable, Sendable {
+  nonisolated enum OneOf_Payload: Equatable, Sendable {
     case batch(Spark_Connect_AddArtifactsRequest.Batch)
     /// The metadata and the initial chunk of a large artifact chunked into multiple requests.
     /// The server side is notified about the total size of the large artifact as well as the
@@ -2133,7 +2133,7 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
   }
 
   /// A chunk of an Artifact.
-  struct ArtifactChunk: Sendable {
+  nonisolated struct ArtifactChunk: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2151,7 +2151,7 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
 
   /// An artifact that is contained in a single `ArtifactChunk`.
   /// Generally, this message represents tiny artifacts such as REPL-generated class files.
-  struct SingleChunkArtifact: Sendable {
+  nonisolated struct SingleChunkArtifact: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2182,7 +2182,7 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
   }
 
   /// A number of `SingleChunkArtifact` batched into a single RPC.
-  struct Batch: Sendable {
+  nonisolated struct Batch: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2197,7 +2197,7 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
   /// Signals the beginning/start of a chunked artifact.
   /// A large artifact is transferred through a payload of `BeginChunkedArtifact` followed by a
   /// sequence of `ArtifactChunk`s.
-  struct BeginChunkedArtifact: Sendable {
+  nonisolated struct BeginChunkedArtifact: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2240,7 +2240,7 @@ struct Spark_Connect_AddArtifactsRequest: Sendable {
 /// Response to adding an artifact. Contains relevant metadata to verify successful transfer of
 /// artifact(s).
 /// Next ID: 4
-struct Spark_Connect_AddArtifactsResponse: Sendable {
+nonisolated struct Spark_Connect_AddArtifactsResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2258,7 +2258,7 @@ struct Spark_Connect_AddArtifactsResponse: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// Metadata of an artifact.
-  struct ArtifactSummary: Sendable {
+  nonisolated struct ArtifactSummary: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2279,7 +2279,7 @@ struct Spark_Connect_AddArtifactsResponse: Sendable {
 }
 
 /// Request to get current statuses of artifacts at the server side.
-struct Spark_Connect_ArtifactStatusesRequest: Sendable {
+nonisolated struct Spark_Connect_ArtifactStatusesRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2346,7 +2346,7 @@ struct Spark_Connect_ArtifactStatusesRequest: Sendable {
 
 /// Response to checking artifact statuses.
 /// Next ID: 4
-struct Spark_Connect_ArtifactStatusesResponse: Sendable {
+nonisolated struct Spark_Connect_ArtifactStatusesResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2363,7 +2363,7 @@ struct Spark_Connect_ArtifactStatusesResponse: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  struct ArtifactStatus: Sendable {
+  nonisolated struct ArtifactStatus: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2379,7 +2379,7 @@ struct Spark_Connect_ArtifactStatusesResponse: Sendable {
   init() {}
 }
 
-struct Spark_Connect_InterruptRequest: Sendable {
+nonisolated struct Spark_Connect_InterruptRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2452,7 +2452,7 @@ struct Spark_Connect_InterruptRequest: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Interrupt: Equatable, Sendable {
+  nonisolated enum OneOf_Interrupt: Equatable, Sendable {
     /// if interrupt_tag == INTERRUPT_TYPE_TAG, interrupt operation with this tag.
     case operationTag(String)
     /// if interrupt_tag == INTERRUPT_TYPE_OPERATION_ID, interrupt operation with this operation_id.
@@ -2460,7 +2460,7 @@ struct Spark_Connect_InterruptRequest: Sendable {
 
   }
 
-  enum InterruptType: SwiftProtobuf.Enum, Swift.CaseIterable {
+  nonisolated enum InterruptType: SwiftProtobuf.Enum, Swift.CaseIterable {
     typealias RawValue = Int
     case unspecified // = 0
 
@@ -2516,7 +2516,7 @@ struct Spark_Connect_InterruptRequest: Sendable {
 }
 
 /// Next ID: 4
-struct Spark_Connect_InterruptResponse: Sendable {
+nonisolated struct Spark_Connect_InterruptResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2536,7 +2536,7 @@ struct Spark_Connect_InterruptResponse: Sendable {
   init() {}
 }
 
-struct Spark_Connect_ReattachOptions: Sendable {
+nonisolated struct Spark_Connect_ReattachOptions: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2556,7 +2556,7 @@ struct Spark_Connect_ReattachOptions: Sendable {
   init() {}
 }
 
-struct Spark_Connect_ResultChunkingOptions: Sendable {
+nonisolated struct Spark_Connect_ResultChunkingOptions: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2591,7 +2591,7 @@ struct Spark_Connect_ResultChunkingOptions: Sendable {
   fileprivate var _preferredArrowChunkSize: Int64? = nil
 }
 
-struct Spark_Connect_ReattachExecuteRequest: Sendable {
+nonisolated struct Spark_Connect_ReattachExecuteRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2672,7 +2672,7 @@ struct Spark_Connect_ReattachExecuteRequest: Sendable {
   fileprivate var _lastResponseID: String? = nil
 }
 
-struct Spark_Connect_ReleaseExecuteRequest: Sendable {
+nonisolated struct Spark_Connect_ReleaseExecuteRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2746,7 +2746,7 @@ struct Spark_Connect_ReleaseExecuteRequest: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Release: Equatable, Sendable {
+  nonisolated enum OneOf_Release: Equatable, Sendable {
     case releaseAll(Spark_Connect_ReleaseExecuteRequest.ReleaseAll)
     case releaseUntil(Spark_Connect_ReleaseExecuteRequest.ReleaseUntil)
 
@@ -2754,7 +2754,7 @@ struct Spark_Connect_ReleaseExecuteRequest: Sendable {
 
   /// Release and close operation completely.
   /// This will also interrupt the query if it is running execution, and wait for it to be torn down.
-  struct ReleaseAll: Sendable {
+  nonisolated struct ReleaseAll: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2769,7 +2769,7 @@ struct Spark_Connect_ReleaseExecuteRequest: Sendable {
   /// While server determines by itself how much of a buffer of responses to keep, client providing
   /// explicit release calls will help reduce resource consumption.
   /// Noop if response_id not found in cached responses.
-  struct ReleaseUntil: Sendable {
+  nonisolated struct ReleaseUntil: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -2789,7 +2789,7 @@ struct Spark_Connect_ReleaseExecuteRequest: Sendable {
 }
 
 /// Next ID: 4
-struct Spark_Connect_ReleaseExecuteResponse: Sendable {
+nonisolated struct Spark_Connect_ReleaseExecuteResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2820,7 +2820,7 @@ struct Spark_Connect_ReleaseExecuteResponse: Sendable {
   fileprivate var _operationID: String? = nil
 }
 
-struct Spark_Connect_ReleaseSessionRequest: Sendable {
+nonisolated struct Spark_Connect_ReleaseSessionRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2879,7 +2879,7 @@ struct Spark_Connect_ReleaseSessionRequest: Sendable {
 }
 
 /// Next ID: 3
-struct Spark_Connect_ReleaseSessionResponse: Sendable {
+nonisolated struct Spark_Connect_ReleaseSessionResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2896,7 +2896,7 @@ struct Spark_Connect_ReleaseSessionResponse: Sendable {
   init() {}
 }
 
-struct Spark_Connect_FetchErrorDetailsRequest: Sendable {
+nonisolated struct Spark_Connect_FetchErrorDetailsRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2955,7 +2955,7 @@ struct Spark_Connect_FetchErrorDetailsRequest: Sendable {
 }
 
 /// Next ID: 5
-struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
+nonisolated struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -2981,7 +2981,7 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  struct StackTraceElement: Sendable {
+  nonisolated struct StackTraceElement: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3014,7 +3014,7 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
 
   /// QueryContext defines the schema for the query context of a SparkThrowable.
   /// It helps users understand where the error occurs while executing queries.
-  struct QueryContext: Sendable {
+  nonisolated struct QueryContext: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3049,7 +3049,7 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     /// The type of this query context.
-    enum ContextType: SwiftProtobuf.Enum, Swift.CaseIterable {
+    nonisolated enum ContextType: SwiftProtobuf.Enum, Swift.CaseIterable {
       typealias RawValue = Int
       case sql // = 0
       case dataframe // = 1
@@ -3087,7 +3087,7 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
   }
 
   /// SparkThrowable defines the schema for SparkThrowable exceptions.
-  struct SparkThrowable: Sendable {
+  nonisolated struct SparkThrowable: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3139,7 +3139,7 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
   }
 
   /// BreakingChangeInfo defines the schema for breaking change information.
-  struct BreakingChangeInfo: Sendable {
+  nonisolated struct BreakingChangeInfo: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3178,7 +3178,7 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
   }
 
   /// MitigationConfig defines a spark config flag that can be used to mitigate a breaking change.
-  struct MitigationConfig: Sendable {
+  nonisolated struct MitigationConfig: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3195,7 +3195,7 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
   }
 
   /// Error defines the schema for the representing exception.
-  struct Error: Sendable {
+  nonisolated struct Error: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3243,7 +3243,7 @@ struct Spark_Connect_FetchErrorDetailsResponse: Sendable {
   fileprivate var _rootErrorIdx: Int32? = nil
 }
 
-struct Spark_Connect_CheckpointCommandResult: Sendable {
+nonisolated struct Spark_Connect_CheckpointCommandResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -3265,7 +3265,7 @@ struct Spark_Connect_CheckpointCommandResult: Sendable {
   fileprivate var _relation: Spark_Connect_CachedRemoteRelation? = nil
 }
 
-struct Spark_Connect_CloneSessionRequest: Sendable {
+nonisolated struct Spark_Connect_CloneSessionRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -3339,7 +3339,7 @@ struct Spark_Connect_CloneSessionRequest: Sendable {
 }
 
 /// Next ID: 5
-struct Spark_Connect_CloneSessionResponse: Sendable {
+nonisolated struct Spark_Connect_CloneSessionResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -3363,7 +3363,7 @@ struct Spark_Connect_CloneSessionResponse: Sendable {
 }
 
 /// Next ID: 6
-struct Spark_Connect_GetStatusRequest: Sendable {
+nonisolated struct Spark_Connect_GetStatusRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -3431,7 +3431,7 @@ struct Spark_Connect_GetStatusRequest: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  struct OperationStatusRequest: Sendable {
+  nonisolated struct OperationStatusRequest: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3457,7 +3457,7 @@ struct Spark_Connect_GetStatusRequest: Sendable {
 }
 
 /// Next ID: 4
-struct Spark_Connect_GetStatusResponse: Sendable {
+nonisolated struct Spark_Connect_GetStatusResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -3478,7 +3478,7 @@ struct Spark_Connect_GetStatusResponse: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// Status information for a single operation.
-  struct OperationStatus: Sendable {
+  nonisolated struct OperationStatus: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -3494,7 +3494,7 @@ struct Spark_Connect_GetStatusResponse: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    enum OperationState: SwiftProtobuf.Enum, Swift.CaseIterable {
+    nonisolated enum OperationState: SwiftProtobuf.Enum, Swift.CaseIterable {
       typealias RawValue = Int
       case unspecified // = 0
       case unknown // = 1
@@ -3556,13 +3556,13 @@ struct Spark_Connect_GetStatusResponse: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "spark.connect"
+fileprivate nonisolated let _protobuf_package = "spark.connect"
 
-extension Spark_Connect_CompressionCodec: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CompressionCodec: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0COMPRESSION_CODEC_UNSPECIFIED\0\u{1}COMPRESSION_CODEC_ZSTD\0")
 }
 
-extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Plan"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}root\0\u{1}command\0\u{3}compressed_operation\0")
 
@@ -3646,7 +3646,7 @@ extension Spark_Connect_Plan: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
   }
 }
 
-extension Spark_Connect_Plan.CompressedOperation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_Plan.CompressedOperation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_Plan.protoMessageName + ".CompressedOperation"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}data\0\u{3}op_type\0\u{3}compression_codec\0")
 
@@ -3686,11 +3686,11 @@ extension Spark_Connect_Plan.CompressedOperation: SwiftProtobuf.Message, SwiftPr
   }
 }
 
-extension Spark_Connect_Plan.CompressedOperation.OpType: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_Plan.CompressedOperation.OpType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0OP_TYPE_UNSPECIFIED\0\u{1}OP_TYPE_RELATION\0\u{1}OP_TYPE_COMMAND\0")
 }
 
-extension Spark_Connect_UserContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_UserContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".UserContext"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}user_id\0\u{3}user_name\0\u{2}e\u{f}extensions\0")
 
@@ -3730,7 +3730,7 @@ extension Spark_Connect_UserContext: SwiftProtobuf.Message, SwiftProtobuf._Messa
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AnalyzePlanRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{1}schema\0\u{1}explain\0\u{3}tree_string\0\u{3}is_local\0\u{3}is_streaming\0\u{3}input_files\0\u{3}spark_version\0\u{3}ddl_parse\0\u{3}same_semantics\0\u{3}semantic_hash\0\u{1}persist\0\u{1}unpersist\0\u{3}get_storage_level\0\u{3}client_observed_server_side_session_id\0\u{3}json_to_ddl\0")
 
@@ -4064,7 +4064,7 @@ extension Spark_Connect_AnalyzePlanRequest: SwiftProtobuf.Message, SwiftProtobuf
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.Schema: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.Schema: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".Schema"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
@@ -4098,7 +4098,7 @@ extension Spark_Connect_AnalyzePlanRequest.Schema: SwiftProtobuf.Message, SwiftP
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.Explain: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.Explain: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".Explain"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0\u{3}explain_mode\0")
 
@@ -4137,11 +4137,11 @@ extension Spark_Connect_AnalyzePlanRequest.Explain: SwiftProtobuf.Message, Swift
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.Explain.ExplainMode: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.Explain.ExplainMode: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0EXPLAIN_MODE_UNSPECIFIED\0\u{1}EXPLAIN_MODE_SIMPLE\0\u{1}EXPLAIN_MODE_EXTENDED\0\u{1}EXPLAIN_MODE_CODEGEN\0\u{1}EXPLAIN_MODE_COST\0\u{1}EXPLAIN_MODE_FORMATTED\0")
 }
 
-extension Spark_Connect_AnalyzePlanRequest.TreeString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.TreeString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".TreeString"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0\u{1}level\0")
 
@@ -4180,7 +4180,7 @@ extension Spark_Connect_AnalyzePlanRequest.TreeString: SwiftProtobuf.Message, Sw
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.IsLocal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.IsLocal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".IsLocal"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
@@ -4214,7 +4214,7 @@ extension Spark_Connect_AnalyzePlanRequest.IsLocal: SwiftProtobuf.Message, Swift
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.IsStreaming: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.IsStreaming: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".IsStreaming"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
@@ -4248,7 +4248,7 @@ extension Spark_Connect_AnalyzePlanRequest.IsStreaming: SwiftProtobuf.Message, S
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.InputFiles: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.InputFiles: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".InputFiles"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
@@ -4282,7 +4282,7 @@ extension Spark_Connect_AnalyzePlanRequest.InputFiles: SwiftProtobuf.Message, Sw
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.SparkVersion: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.SparkVersion: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".SparkVersion"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -4301,7 +4301,7 @@ extension Spark_Connect_AnalyzePlanRequest.SparkVersion: SwiftProtobuf.Message, 
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.DDLParse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.DDLParse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".DDLParse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}ddl_string\0")
 
@@ -4331,7 +4331,7 @@ extension Spark_Connect_AnalyzePlanRequest.DDLParse: SwiftProtobuf.Message, Swif
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.SameSemantics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.SameSemantics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".SameSemantics"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}target_plan\0\u{3}other_plan\0")
 
@@ -4408,7 +4408,7 @@ extension Spark_Connect_AnalyzePlanRequest.SameSemantics: SwiftProtobuf.Message,
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.SemanticHash: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.SemanticHash: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".SemanticHash"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}plan\0")
 
@@ -4442,7 +4442,7 @@ extension Spark_Connect_AnalyzePlanRequest.SemanticHash: SwiftProtobuf.Message, 
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.Persist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.Persist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".Persist"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0\u{3}storage_level\0")
 
@@ -4481,7 +4481,7 @@ extension Spark_Connect_AnalyzePlanRequest.Persist: SwiftProtobuf.Message, Swift
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.Unpersist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.Unpersist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".Unpersist"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0\u{1}blocking\0")
 
@@ -4520,7 +4520,7 @@ extension Spark_Connect_AnalyzePlanRequest.Unpersist: SwiftProtobuf.Message, Swi
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.GetStorageLevel: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.GetStorageLevel: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".GetStorageLevel"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0")
 
@@ -4554,7 +4554,7 @@ extension Spark_Connect_AnalyzePlanRequest.GetStorageLevel: SwiftProtobuf.Messag
   }
 }
 
-extension Spark_Connect_AnalyzePlanRequest.JsonToDDL: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanRequest.JsonToDDL: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanRequest.protoMessageName + ".JsonToDDL"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}json_string\0")
 
@@ -4584,7 +4584,7 @@ extension Spark_Connect_AnalyzePlanRequest.JsonToDDL: SwiftProtobuf.Message, Swi
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AnalyzePlanResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{1}schema\0\u{1}explain\0\u{3}tree_string\0\u{3}is_local\0\u{3}is_streaming\0\u{3}input_files\0\u{3}spark_version\0\u{3}ddl_parse\0\u{3}same_semantics\0\u{3}semantic_hash\0\u{1}persist\0\u{1}unpersist\0\u{3}get_storage_level\0\u{3}server_side_session_id\0\u{3}json_to_ddl\0")
 
@@ -4864,7 +4864,7 @@ extension Spark_Connect_AnalyzePlanResponse: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.Schema: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.Schema: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".Schema"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}schema\0")
 
@@ -4898,7 +4898,7 @@ extension Spark_Connect_AnalyzePlanResponse.Schema: SwiftProtobuf.Message, Swift
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.Explain: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.Explain: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".Explain"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}explain_string\0")
 
@@ -4928,7 +4928,7 @@ extension Spark_Connect_AnalyzePlanResponse.Explain: SwiftProtobuf.Message, Swif
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.TreeString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.TreeString: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".TreeString"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}tree_string\0")
 
@@ -4958,7 +4958,7 @@ extension Spark_Connect_AnalyzePlanResponse.TreeString: SwiftProtobuf.Message, S
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.IsLocal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.IsLocal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".IsLocal"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}is_local\0")
 
@@ -4988,7 +4988,7 @@ extension Spark_Connect_AnalyzePlanResponse.IsLocal: SwiftProtobuf.Message, Swif
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.IsStreaming: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.IsStreaming: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".IsStreaming"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}is_streaming\0")
 
@@ -5018,7 +5018,7 @@ extension Spark_Connect_AnalyzePlanResponse.IsStreaming: SwiftProtobuf.Message, 
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.InputFiles: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.InputFiles: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".InputFiles"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}files\0")
 
@@ -5048,7 +5048,7 @@ extension Spark_Connect_AnalyzePlanResponse.InputFiles: SwiftProtobuf.Message, S
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.SparkVersion: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.SparkVersion: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".SparkVersion"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}version\0")
 
@@ -5078,7 +5078,7 @@ extension Spark_Connect_AnalyzePlanResponse.SparkVersion: SwiftProtobuf.Message,
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.DDLParse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.DDLParse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".DDLParse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}parsed\0")
 
@@ -5112,7 +5112,7 @@ extension Spark_Connect_AnalyzePlanResponse.DDLParse: SwiftProtobuf.Message, Swi
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.SameSemantics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.SameSemantics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".SameSemantics"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}result\0")
 
@@ -5142,7 +5142,7 @@ extension Spark_Connect_AnalyzePlanResponse.SameSemantics: SwiftProtobuf.Message
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.SemanticHash: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.SemanticHash: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".SemanticHash"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}result\0")
 
@@ -5172,7 +5172,7 @@ extension Spark_Connect_AnalyzePlanResponse.SemanticHash: SwiftProtobuf.Message,
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.Persist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.Persist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".Persist"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -5191,7 +5191,7 @@ extension Spark_Connect_AnalyzePlanResponse.Persist: SwiftProtobuf.Message, Swif
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.Unpersist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.Unpersist: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".Unpersist"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -5210,7 +5210,7 @@ extension Spark_Connect_AnalyzePlanResponse.Unpersist: SwiftProtobuf.Message, Sw
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.GetStorageLevel: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.GetStorageLevel: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".GetStorageLevel"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}storage_level\0")
 
@@ -5244,7 +5244,7 @@ extension Spark_Connect_AnalyzePlanResponse.GetStorageLevel: SwiftProtobuf.Messa
   }
 }
 
-extension Spark_Connect_AnalyzePlanResponse.JsonToDDL: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AnalyzePlanResponse.JsonToDDL: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AnalyzePlanResponse.protoMessageName + ".JsonToDDL"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}ddl_string\0")
 
@@ -5274,7 +5274,7 @@ extension Spark_Connect_AnalyzePlanResponse.JsonToDDL: SwiftProtobuf.Message, Sw
   }
 }
 
-extension Spark_Connect_ExecutePlanRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExecutePlanRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{1}plan\0\u{3}client_type\0\u{3}request_options\0\u{3}operation_id\0\u{1}tags\0\u{3}client_observed_server_side_session_id\0")
 
@@ -5393,7 +5393,7 @@ extension Spark_Connect_ExecutePlanRequest: SwiftProtobuf.Message, SwiftProtobuf
   }
 }
 
-extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanRequest.protoMessageName + ".RequestOption"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}reattach_options\0\u{3}result_chunking_options\0\u{2}e\u{f}extension\0")
 
@@ -5477,7 +5477,7 @@ extension Spark_Connect_ExecutePlanRequest.RequestOption: SwiftProtobuf.Message,
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExecutePlanResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}arrow_batch\0\u{2}\u{2}metrics\0\u{3}sql_command_result\0\u{3}observed_metrics\0\u{1}schema\0\u{3}write_stream_operation_start_result\0\u{3}streaming_query_command_result\0\u{3}get_resources_command_result\0\u{3}streaming_query_manager_command_result\0\u{3}operation_id\0\u{3}response_id\0\u{3}result_complete\0\u{3}server_side_session_id\0\u{3}streaming_query_listener_events_result\0\u{3}create_resource_profile_command_result\0\u{3}execution_progress\0\u{3}checkpoint_command_result\0\u{3}ml_command_result\0\u{3}pipeline_event_result\0\u{3}pipeline_command_result\0\u{3}pipeline_query_function_execution_signal\0\u{2}P\u{f}extension\0")
 
@@ -5817,7 +5817,7 @@ extension Spark_Connect_ExecutePlanResponse: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.SqlCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.SqlCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".SqlCommandResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0")
 
@@ -5851,7 +5851,7 @@ extension Spark_Connect_ExecutePlanResponse.SqlCommandResult: SwiftProtobuf.Mess
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ArrowBatch"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}row_count\0\u{1}data\0\u{3}start_offset\0\u{3}chunk_index\0\u{3}num_chunks_in_batch\0")
 
@@ -5905,7 +5905,7 @@ extension Spark_Connect_ExecutePlanResponse.ArrowBatch: SwiftProtobuf.Message, S
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.Metrics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.Metrics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".Metrics"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}metrics\0")
 
@@ -5935,7 +5935,7 @@ extension Spark_Connect_ExecutePlanResponse.Metrics: SwiftProtobuf.Message, Swif
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.Metrics.MetricObject: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.Metrics.MetricObject: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.Metrics.protoMessageName + ".MetricObject"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{3}plan_id\0\u{1}parent\0\u{3}execution_metrics\0")
 
@@ -5980,7 +5980,7 @@ extension Spark_Connect_ExecutePlanResponse.Metrics.MetricObject: SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.Metrics.MetricValue: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.Metrics.MetricValue: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.Metrics.protoMessageName + ".MetricValue"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}value\0\u{3}metric_type\0")
 
@@ -6020,7 +6020,7 @@ extension Spark_Connect_ExecutePlanResponse.Metrics.MetricValue: SwiftProtobuf.M
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.ObservedMetrics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.ObservedMetrics: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ObservedMetrics"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}values\0\u{1}keys\0\u{3}plan_id\0\u{3}root_error_idx\0\u{1}errors\0")
 
@@ -6079,7 +6079,7 @@ extension Spark_Connect_ExecutePlanResponse.ObservedMetrics: SwiftProtobuf.Messa
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.ResultComplete: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.ResultComplete: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ResultComplete"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -6098,7 +6098,7 @@ extension Spark_Connect_ExecutePlanResponse.ResultComplete: SwiftProtobuf.Messag
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.ExecutionProgress: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.ExecutionProgress: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.protoMessageName + ".ExecutionProgress"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}stages\0\u{3}num_inflight_tasks\0")
 
@@ -6133,7 +6133,7 @@ extension Spark_Connect_ExecutePlanResponse.ExecutionProgress: SwiftProtobuf.Mes
   }
 }
 
-extension Spark_Connect_ExecutePlanResponse.ExecutionProgress.StageInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecutePlanResponse.ExecutionProgress.StageInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ExecutePlanResponse.ExecutionProgress.protoMessageName + ".StageInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}stage_id\0\u{3}num_tasks\0\u{3}num_completed_tasks\0\u{3}input_bytes_read\0\u{1}done\0")
 
@@ -6183,7 +6183,7 @@ extension Spark_Connect_ExecutePlanResponse.ExecutionProgress.StageInfo: SwiftPr
   }
 }
 
-extension Spark_Connect_KeyValue: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_KeyValue: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".KeyValue"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}key\0\u{1}value\0")
 
@@ -6222,7 +6222,7 @@ extension Spark_Connect_KeyValue: SwiftProtobuf.Message, SwiftProtobuf._MessageI
   }
 }
 
-extension Spark_Connect_ConfigRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ConfigRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{1}operation\0\u{3}client_type\0\u{4}\u{4}client_observed_server_side_session_id\0")
 
@@ -6276,7 +6276,7 @@ extension Spark_Connect_ConfigRequest: SwiftProtobuf.Message, SwiftProtobuf._Mes
   }
 }
 
-extension Spark_Connect_ConfigRequest.Operation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest.Operation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".Operation"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}set\0\u{1}get\0\u{3}get_with_default\0\u{3}get_option\0\u{3}get_all\0\u{1}unset\0\u{3}is_modifiable\0")
 
@@ -6428,7 +6428,7 @@ extension Spark_Connect_ConfigRequest.Operation: SwiftProtobuf.Message, SwiftPro
   }
 }
 
-extension Spark_Connect_ConfigRequest.Set: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest.Set: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".Set"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pairs\0\u{1}silent\0")
 
@@ -6467,7 +6467,7 @@ extension Spark_Connect_ConfigRequest.Set: SwiftProtobuf.Message, SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_ConfigRequest.Get: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest.Get: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".Get"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}keys\0")
 
@@ -6497,7 +6497,7 @@ extension Spark_Connect_ConfigRequest.Get: SwiftProtobuf.Message, SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_ConfigRequest.GetWithDefault: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest.GetWithDefault: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".GetWithDefault"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pairs\0")
 
@@ -6527,7 +6527,7 @@ extension Spark_Connect_ConfigRequest.GetWithDefault: SwiftProtobuf.Message, Swi
   }
 }
 
-extension Spark_Connect_ConfigRequest.GetOption: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest.GetOption: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".GetOption"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}keys\0")
 
@@ -6557,7 +6557,7 @@ extension Spark_Connect_ConfigRequest.GetOption: SwiftProtobuf.Message, SwiftPro
   }
 }
 
-extension Spark_Connect_ConfigRequest.GetAll: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest.GetAll: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".GetAll"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}prefix\0")
 
@@ -6591,7 +6591,7 @@ extension Spark_Connect_ConfigRequest.GetAll: SwiftProtobuf.Message, SwiftProtob
   }
 }
 
-extension Spark_Connect_ConfigRequest.Unset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest.Unset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".Unset"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}keys\0")
 
@@ -6621,7 +6621,7 @@ extension Spark_Connect_ConfigRequest.Unset: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Spark_Connect_ConfigRequest.IsModifiable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigRequest.IsModifiable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ConfigRequest.protoMessageName + ".IsModifiable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}keys\0")
 
@@ -6651,7 +6651,7 @@ extension Spark_Connect_ConfigRequest.IsModifiable: SwiftProtobuf.Message, Swift
   }
 }
 
-extension Spark_Connect_ConfigResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ConfigResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ConfigResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{1}pairs\0\u{1}warnings\0\u{3}server_side_session_id\0")
 
@@ -6696,7 +6696,7 @@ extension Spark_Connect_ConfigResponse: SwiftProtobuf.Message, SwiftProtobuf._Me
   }
 }
 
-extension Spark_Connect_AddArtifactsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AddArtifactsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AddArtifactsRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{1}batch\0\u{3}begin_chunk\0\u{1}chunk\0\u{3}client_type\0\u{3}client_observed_server_side_session_id\0")
 
@@ -6800,7 +6800,7 @@ extension Spark_Connect_AddArtifactsRequest: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Spark_Connect_AddArtifactsRequest.ArtifactChunk: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AddArtifactsRequest.ArtifactChunk: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsRequest.protoMessageName + ".ArtifactChunk"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}data\0\u{1}crc\0")
 
@@ -6835,7 +6835,7 @@ extension Spark_Connect_AddArtifactsRequest.ArtifactChunk: SwiftProtobuf.Message
   }
 }
 
-extension Spark_Connect_AddArtifactsRequest.SingleChunkArtifact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AddArtifactsRequest.SingleChunkArtifact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsRequest.protoMessageName + ".SingleChunkArtifact"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}data\0")
 
@@ -6874,7 +6874,7 @@ extension Spark_Connect_AddArtifactsRequest.SingleChunkArtifact: SwiftProtobuf.M
   }
 }
 
-extension Spark_Connect_AddArtifactsRequest.Batch: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AddArtifactsRequest.Batch: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsRequest.protoMessageName + ".Batch"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}artifacts\0")
 
@@ -6904,7 +6904,7 @@ extension Spark_Connect_AddArtifactsRequest.Batch: SwiftProtobuf.Message, SwiftP
   }
 }
 
-extension Spark_Connect_AddArtifactsRequest.BeginChunkedArtifact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AddArtifactsRequest.BeginChunkedArtifact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsRequest.protoMessageName + ".BeginChunkedArtifact"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{3}total_bytes\0\u{3}num_chunks\0\u{3}initial_chunk\0")
 
@@ -6953,7 +6953,7 @@ extension Spark_Connect_AddArtifactsRequest.BeginChunkedArtifact: SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_AddArtifactsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AddArtifactsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".AddArtifactsResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}artifacts\0\u{3}session_id\0\u{3}server_side_session_id\0")
 
@@ -6993,7 +6993,7 @@ extension Spark_Connect_AddArtifactsResponse: SwiftProtobuf.Message, SwiftProtob
   }
 }
 
-extension Spark_Connect_AddArtifactsResponse.ArtifactSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_AddArtifactsResponse.ArtifactSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_AddArtifactsResponse.protoMessageName + ".ArtifactSummary"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{3}is_crc_successful\0")
 
@@ -7028,7 +7028,7 @@ extension Spark_Connect_AddArtifactsResponse.ArtifactSummary: SwiftProtobuf.Mess
   }
 }
 
-extension Spark_Connect_ArtifactStatusesRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ArtifactStatusesRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ArtifactStatusesRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{1}names\0\u{3}client_observed_server_side_session_id\0")
 
@@ -7082,7 +7082,7 @@ extension Spark_Connect_ArtifactStatusesRequest: SwiftProtobuf.Message, SwiftPro
   }
 }
 
-extension Spark_Connect_ArtifactStatusesResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ArtifactStatusesResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ArtifactStatusesResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}statuses\0\u{3}session_id\0\u{3}server_side_session_id\0")
 
@@ -7122,7 +7122,7 @@ extension Spark_Connect_ArtifactStatusesResponse: SwiftProtobuf.Message, SwiftPr
   }
 }
 
-extension Spark_Connect_ArtifactStatusesResponse.ArtifactStatus: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ArtifactStatusesResponse.ArtifactStatus: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ArtifactStatusesResponse.protoMessageName + ".ArtifactStatus"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}exists\0")
 
@@ -7152,7 +7152,7 @@ extension Spark_Connect_ArtifactStatusesResponse.ArtifactStatus: SwiftProtobuf.M
   }
 }
 
-extension Spark_Connect_InterruptRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_InterruptRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".InterruptRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{3}interrupt_type\0\u{3}operation_tag\0\u{3}operation_id\0\u{3}client_observed_server_side_session_id\0")
 
@@ -7234,11 +7234,11 @@ extension Spark_Connect_InterruptRequest: SwiftProtobuf.Message, SwiftProtobuf._
   }
 }
 
-extension Spark_Connect_InterruptRequest.InterruptType: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_InterruptRequest.InterruptType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0INTERRUPT_TYPE_UNSPECIFIED\0\u{1}INTERRUPT_TYPE_ALL\0\u{1}INTERRUPT_TYPE_TAG\0\u{1}INTERRUPT_TYPE_OPERATION_ID\0")
 }
 
-extension Spark_Connect_InterruptResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_InterruptResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".InterruptResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}interrupted_ids\0\u{3}server_side_session_id\0")
 
@@ -7278,7 +7278,7 @@ extension Spark_Connect_InterruptResponse: SwiftProtobuf.Message, SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_ReattachOptions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ReattachOptions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReattachOptions"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}reattachable\0")
 
@@ -7308,7 +7308,7 @@ extension Spark_Connect_ReattachOptions: SwiftProtobuf.Message, SwiftProtobuf._M
   }
 }
 
-extension Spark_Connect_ResultChunkingOptions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ResultChunkingOptions: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ResultChunkingOptions"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}allow_arrow_batch_chunking\0\u{3}preferred_arrow_chunk_size\0")
 
@@ -7347,7 +7347,7 @@ extension Spark_Connect_ResultChunkingOptions: SwiftProtobuf.Message, SwiftProto
   }
 }
 
-extension Spark_Connect_ReattachExecuteRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ReattachExecuteRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReattachExecuteRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}operation_id\0\u{3}client_type\0\u{3}last_response_id\0\u{3}client_observed_server_side_session_id\0")
 
@@ -7406,7 +7406,7 @@ extension Spark_Connect_ReattachExecuteRequest: SwiftProtobuf.Message, SwiftProt
   }
 }
 
-extension Spark_Connect_ReleaseExecuteRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ReleaseExecuteRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReleaseExecuteRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}operation_id\0\u{3}client_type\0\u{3}release_all\0\u{3}release_until\0\u{3}client_observed_server_side_session_id\0")
 
@@ -7498,7 +7498,7 @@ extension Spark_Connect_ReleaseExecuteRequest: SwiftProtobuf.Message, SwiftProto
   }
 }
 
-extension Spark_Connect_ReleaseExecuteRequest.ReleaseAll: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ReleaseExecuteRequest.ReleaseAll: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ReleaseExecuteRequest.protoMessageName + ".ReleaseAll"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -7517,7 +7517,7 @@ extension Spark_Connect_ReleaseExecuteRequest.ReleaseAll: SwiftProtobuf.Message,
   }
 }
 
-extension Spark_Connect_ReleaseExecuteRequest.ReleaseUntil: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ReleaseExecuteRequest.ReleaseUntil: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_ReleaseExecuteRequest.protoMessageName + ".ReleaseUntil"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}response_id\0")
 
@@ -7547,7 +7547,7 @@ extension Spark_Connect_ReleaseExecuteRequest.ReleaseUntil: SwiftProtobuf.Messag
   }
 }
 
-extension Spark_Connect_ReleaseExecuteResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ReleaseExecuteResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReleaseExecuteResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}operation_id\0\u{3}server_side_session_id\0")
 
@@ -7591,7 +7591,7 @@ extension Spark_Connect_ReleaseExecuteResponse: SwiftProtobuf.Message, SwiftProt
   }
 }
 
-extension Spark_Connect_ReleaseSessionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ReleaseSessionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReleaseSessionRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{3}allow_reconnect\0")
 
@@ -7640,7 +7640,7 @@ extension Spark_Connect_ReleaseSessionRequest: SwiftProtobuf.Message, SwiftProto
   }
 }
 
-extension Spark_Connect_ReleaseSessionResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ReleaseSessionResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ReleaseSessionResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}server_side_session_id\0")
 
@@ -7675,7 +7675,7 @@ extension Spark_Connect_ReleaseSessionResponse: SwiftProtobuf.Message, SwiftProt
   }
 }
 
-extension Spark_Connect_FetchErrorDetailsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".FetchErrorDetailsRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}error_id\0\u{3}client_type\0\u{3}client_observed_server_side_session_id\0")
 
@@ -7729,7 +7729,7 @@ extension Spark_Connect_FetchErrorDetailsRequest: SwiftProtobuf.Message, SwiftPr
   }
 }
 
-extension Spark_Connect_FetchErrorDetailsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".FetchErrorDetailsResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}root_error_idx\0\u{1}errors\0\u{3}server_side_session_id\0\u{3}session_id\0")
 
@@ -7778,7 +7778,7 @@ extension Spark_Connect_FetchErrorDetailsResponse: SwiftProtobuf.Message, SwiftP
   }
 }
 
-extension Spark_Connect_FetchErrorDetailsResponse.StackTraceElement: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsResponse.StackTraceElement: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".StackTraceElement"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}declaring_class\0\u{3}method_name\0\u{3}file_name\0\u{3}line_number\0")
 
@@ -7827,7 +7827,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.StackTraceElement: SwiftProtob
   }
 }
 
-extension Spark_Connect_FetchErrorDetailsResponse.QueryContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsResponse.QueryContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".QueryContext"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}object_type\0\u{3}object_name\0\u{3}start_index\0\u{3}stop_index\0\u{1}fragment\0\u{3}call_site\0\u{1}summary\0\u{4}\u{3}context_type\0")
 
@@ -7892,11 +7892,11 @@ extension Spark_Connect_FetchErrorDetailsResponse.QueryContext: SwiftProtobuf.Me
   }
 }
 
-extension Spark_Connect_FetchErrorDetailsResponse.QueryContext.ContextType: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsResponse.QueryContext.ContextType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0SQL\0\u{1}DATAFRAME\0")
 }
 
-extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".SparkThrowable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}error_class\0\u{3}message_parameters\0\u{3}query_contexts\0\u{3}sql_state\0\u{3}breaking_change_info\0")
 
@@ -7950,7 +7950,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.SparkThrowable: SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".BreakingChangeInfo"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}migration_message\0\u{3}mitigation_config\0\u{3}needs_audit\0")
 
@@ -7994,7 +7994,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.BreakingChangeInfo: SwiftProto
   }
 }
 
-extension Spark_Connect_FetchErrorDetailsResponse.MitigationConfig: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsResponse.MitigationConfig: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".MitigationConfig"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}key\0\u{1}value\0")
 
@@ -8029,7 +8029,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.MitigationConfig: SwiftProtobu
   }
 }
 
-extension Spark_Connect_FetchErrorDetailsResponse.Error: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_FetchErrorDetailsResponse.Error: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_FetchErrorDetailsResponse.protoMessageName + ".Error"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}error_type_hierarchy\0\u{1}message\0\u{3}stack_trace\0\u{3}cause_idx\0\u{3}spark_throwable\0")
 
@@ -8083,7 +8083,7 @@ extension Spark_Connect_FetchErrorDetailsResponse.Error: SwiftProtobuf.Message, 
   }
 }
 
-extension Spark_Connect_CheckpointCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CheckpointCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CheckpointCommandResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0")
 
@@ -8117,7 +8117,7 @@ extension Spark_Connect_CheckpointCommandResult: SwiftProtobuf.Message, SwiftPro
   }
 }
 
-extension Spark_Connect_CloneSessionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CloneSessionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CloneSessionRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{3}new_session_id\0\u{3}client_observed_server_side_session_id\0")
 
@@ -8171,7 +8171,7 @@ extension Spark_Connect_CloneSessionRequest: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Spark_Connect_CloneSessionResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CloneSessionResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CloneSessionResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}server_side_session_id\0\u{3}new_session_id\0\u{3}new_server_side_session_id\0")
 
@@ -8216,7 +8216,7 @@ extension Spark_Connect_CloneSessionResponse: SwiftProtobuf.Message, SwiftProtob
   }
 }
 
-extension Spark_Connect_GetStatusRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetStatusRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetStatusRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}user_context\0\u{3}client_type\0\u{3}client_observed_server_side_session_id\0\u{3}operation_status\0\u{2}b\u{f}extensions\0")
 
@@ -8275,7 +8275,7 @@ extension Spark_Connect_GetStatusRequest: SwiftProtobuf.Message, SwiftProtobuf._
   }
 }
 
-extension Spark_Connect_GetStatusRequest.OperationStatusRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetStatusRequest.OperationStatusRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_GetStatusRequest.protoMessageName + ".OperationStatusRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}operation_ids\0\u{2}f\u{f}extensions\0")
 
@@ -8310,7 +8310,7 @@ extension Spark_Connect_GetStatusRequest.OperationStatusRequest: SwiftProtobuf.M
   }
 }
 
-extension Spark_Connect_GetStatusResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetStatusResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetStatusResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}session_id\0\u{3}server_side_session_id\0\u{3}operation_statuses\0\u{2}d\u{f}extensions\0")
 
@@ -8355,7 +8355,7 @@ extension Spark_Connect_GetStatusResponse: SwiftProtobuf.Message, SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_GetStatusResponse.OperationStatus: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetStatusResponse.OperationStatus: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_GetStatusResponse.protoMessageName + ".OperationStatus"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}operation_id\0\u{1}state\0\u{2}e\u{f}extensions\0")
 
@@ -8395,6 +8395,6 @@ extension Spark_Connect_GetStatusResponse.OperationStatus: SwiftProtobuf.Message
   }
 }
 
-extension Spark_Connect_GetStatusResponse.OperationStatus.OperationState: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetStatusResponse.OperationStatus.OperationState: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0OPERATION_STATE_UNSPECIFIED\0\u{1}OPERATION_STATE_UNKNOWN\0\u{1}OPERATION_STATE_RUNNING\0\u{1}OPERATION_STATE_TERMINATING\0\u{1}OPERATION_STATE_SUCCEEDED\0\u{1}OPERATION_STATE_FAILED\0\u{1}OPERATION_STATE_CANCELLED\0")
 }
