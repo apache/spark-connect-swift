@@ -811,7 +811,11 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
 
-    /// The fully qualified name of the flow being updated.
+    /// (Deprecated) The fully qualified name of the flow being updated.
+    ///
+    /// This field is deprecated since Spark 4.2+. Use flow_identifier field instead.
+    ///
+    /// NOTE: This field was marked as deprecated in the .proto file.
     var flowName: String {
       get {_flowName ?? String()}
       set {_flowName = newValue}
@@ -820,6 +824,16 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
     var hasFlowName: Bool {self._flowName != nil}
     /// Clears the value of `flowName`. Subsequent reads from it will return its default value.
     mutating func clearFlowName() {self._flowName = nil}
+
+    /// The fully qualified identifier of the flow being updated.
+    var flowIdentifier: Spark_Connect_ResolvedIdentifier {
+      get {_flowIdentifier ?? Spark_Connect_ResolvedIdentifier()}
+      set {_flowIdentifier = newValue}
+    }
+    /// Returns true if `flowIdentifier` has been explicitly set.
+    var hasFlowIdentifier: Bool {self._flowIdentifier != nil}
+    /// Clears the value of `flowIdentifier`. Subsequent reads from it will return its default value.
+    mutating func clearFlowIdentifier() {self._flowIdentifier = nil}
 
     /// The ID of the graph this flow belongs to.
     var dataflowGraphID: String {
@@ -846,6 +860,7 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
     init() {}
 
     fileprivate var _flowName: String? = nil
+    fileprivate var _flowIdentifier: Spark_Connect_ResolvedIdentifier? = nil
     fileprivate var _dataflowGraphID: String? = nil
     fileprivate var _relation: Spark_Connect_Relation? = nil
   }
@@ -1076,7 +1091,15 @@ nonisolated struct Spark_Connect_PipelineQueryFunctionExecutionSignal: Sendable 
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
+  /// (Deprecated) The name of flows that are ready to be re-evaluated.
+  ///
+  /// This field is deprecated since Spark 4.2+. Use flow_identifiers field instead.
+  ///
+  /// NOTE: This field was marked as deprecated in the .proto file.
   var flowNames: [String] = []
+
+  /// The identifier of flows that are ready to be re-evaluated
+  var flowIdentifiers: [Spark_Connect_ResolvedIdentifier] = []
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -1109,7 +1132,11 @@ nonisolated struct Spark_Connect_PipelineAnalysisContext: Sendable {
   /// Clears the value of `definitionPath`. Subsequent reads from it will return its default value.
   mutating func clearDefinitionPath() {self._definitionPath = nil}
 
-  /// The name of the Flow involved in this analysis
+  /// (Deprecated) The name of the Flow involved in this analysis
+  ///
+  /// This field is deprecated since Spark 4.2+. Use flow_identifier field instead.
+  ///
+  /// NOTE: This field was marked as deprecated in the .proto file.
   var flowName: String {
     get {_flowName ?? String()}
     set {_flowName = newValue}
@@ -1118,6 +1145,16 @@ nonisolated struct Spark_Connect_PipelineAnalysisContext: Sendable {
   var hasFlowName: Bool {self._flowName != nil}
   /// Clears the value of `flowName`. Subsequent reads from it will return its default value.
   mutating func clearFlowName() {self._flowName = nil}
+
+  /// The identifier of the Flow involved in this analysis
+  var flowIdentifier: Spark_Connect_ResolvedIdentifier {
+    get {_flowIdentifier ?? Spark_Connect_ResolvedIdentifier()}
+    set {_flowIdentifier = newValue}
+  }
+  /// Returns true if `flowIdentifier` has been explicitly set.
+  var hasFlowIdentifier: Bool {self._flowIdentifier != nil}
+  /// Clears the value of `flowIdentifier`. Subsequent reads from it will return its default value.
+  mutating func clearFlowIdentifier() {self._flowIdentifier = nil}
 
   /// Reserved field for protocol extensions.
   var `extension`: [SwiftProtobuf.Google_Protobuf_Any] = []
@@ -1129,6 +1166,7 @@ nonisolated struct Spark_Connect_PipelineAnalysisContext: Sendable {
   fileprivate var _dataflowGraphID: String? = nil
   fileprivate var _definitionPath: String? = nil
   fileprivate var _flowName: String? = nil
+  fileprivate var _flowIdentifier: Spark_Connect_ResolvedIdentifier? = nil
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -2057,7 +2095,7 @@ nonisolated extension Spark_Connect_PipelineCommand.GetQueryFunctionExecutionSig
 
 nonisolated extension Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineFlowQueryFunctionResult"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}flow_name\0\u{3}dataflow_graph_id\0\u{1}relation\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}flow_name\0\u{3}dataflow_graph_id\0\u{1}relation\0\u{3}flow_identifier\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2068,6 +2106,7 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResul
       case 1: try { try decoder.decodeSingularStringField(value: &self._flowName) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self._dataflowGraphID) }()
       case 3: try { try decoder.decodeSingularMessageField(value: &self._relation) }()
+      case 4: try { try decoder.decodeSingularMessageField(value: &self._flowIdentifier) }()
       default: break
       }
     }
@@ -2087,11 +2126,15 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResul
     try { if let v = self._relation {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
     } }()
+    try { if let v = self._flowIdentifier {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResult, rhs: Spark_Connect_PipelineCommand.DefineFlowQueryFunctionResult) -> Bool {
     if lhs._flowName != rhs._flowName {return false}
+    if lhs._flowIdentifier != rhs._flowIdentifier {return false}
     if lhs._dataflowGraphID != rhs._dataflowGraphID {return false}
     if lhs._relation != rhs._relation {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
@@ -2409,7 +2452,7 @@ nonisolated extension Spark_Connect_SourceCodeLocation: SwiftProtobuf.Message, S
 
 nonisolated extension Spark_Connect_PipelineQueryFunctionExecutionSignal: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineQueryFunctionExecutionSignal"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}flow_names\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}flow_names\0\u{3}flow_identifiers\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2418,6 +2461,7 @@ nonisolated extension Spark_Connect_PipelineQueryFunctionExecutionSignal: SwiftP
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeRepeatedStringField(value: &self.flowNames) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.flowIdentifiers) }()
       default: break
       }
     }
@@ -2427,11 +2471,15 @@ nonisolated extension Spark_Connect_PipelineQueryFunctionExecutionSignal: SwiftP
     if !self.flowNames.isEmpty {
       try visitor.visitRepeatedStringField(value: self.flowNames, fieldNumber: 1)
     }
+    if !self.flowIdentifiers.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.flowIdentifiers, fieldNumber: 2)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Spark_Connect_PipelineQueryFunctionExecutionSignal, rhs: Spark_Connect_PipelineQueryFunctionExecutionSignal) -> Bool {
     if lhs.flowNames != rhs.flowNames {return false}
+    if lhs.flowIdentifiers != rhs.flowIdentifiers {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -2439,7 +2487,7 @@ nonisolated extension Spark_Connect_PipelineQueryFunctionExecutionSignal: SwiftP
 
 nonisolated extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PipelineAnalysisContext"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}definition_path\0\u{3}flow_name\0\u{2}d\u{f}extension\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}definition_path\0\u{3}flow_name\0\u{3}flow_identifier\0\u{2}c\u{f}extension\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2450,6 +2498,7 @@ nonisolated extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Messa
       case 1: try { try decoder.decodeSingularStringField(value: &self._dataflowGraphID) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self._definitionPath) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self._flowName) }()
+      case 4: try { try decoder.decodeSingularMessageField(value: &self._flowIdentifier) }()
       case 999: try { try decoder.decodeRepeatedMessageField(value: &self.`extension`) }()
       default: break
       }
@@ -2470,6 +2519,9 @@ nonisolated extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Messa
     try { if let v = self._flowName {
       try visitor.visitSingularStringField(value: v, fieldNumber: 3)
     } }()
+    try { if let v = self._flowIdentifier {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    } }()
     if !self.`extension`.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.`extension`, fieldNumber: 999)
     }
@@ -2480,6 +2532,7 @@ nonisolated extension Spark_Connect_PipelineAnalysisContext: SwiftProtobuf.Messa
     if lhs._dataflowGraphID != rhs._dataflowGraphID {return false}
     if lhs._definitionPath != rhs._definitionPath {return false}
     if lhs._flowName != rhs._flowName {return false}
+    if lhs._flowIdentifier != rhs._flowIdentifier {return false}
     if lhs.`extension` != rhs.`extension` {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true

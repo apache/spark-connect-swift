@@ -416,6 +416,14 @@ nonisolated struct Spark_Connect_Relation: @unchecked Sendable {
     set {_uniqueStorage()._relType = .chunkedCachedLocalRelation(newValue)}
   }
 
+  var relationChanges: Spark_Connect_RelationChanges {
+    get {
+      if case .relationChanges(let v)? = _storage._relType {return v}
+      return Spark_Connect_RelationChanges()
+    }
+    set {_uniqueStorage()._relType = .relationChanges(newValue)}
+  }
+
   /// NA functions
   var fillNa: Spark_Connect_NAFill {
     get {
@@ -589,6 +597,7 @@ nonisolated struct Spark_Connect_Relation: @unchecked Sendable {
     case unresolvedTableValuedFunction(Spark_Connect_UnresolvedTableValuedFunction)
     case lateralJoin(Spark_Connect_LateralJoin)
     case chunkedCachedLocalRelation(Spark_Connect_ChunkedCachedLocalRelation)
+    case relationChanges(Spark_Connect_RelationChanges)
     /// NA functions
     case fillNa(Spark_Connect_NAFill)
     case dropNa(Spark_Connect_NADrop)
@@ -1047,6 +1056,33 @@ nonisolated struct Spark_Connect_Read: Sendable {
     fileprivate var _schema: String? = nil
     fileprivate var _sourceName: String? = nil
   }
+
+  init() {}
+}
+
+/// Reads Change Data Capture (CDC) changes for a named table.
+///
+/// This corresponds to the `DataFrameReader.changes()` or `DataStreamReader.changes()` API.
+/// CDC-specific options (startingVersion, endingVersion, startingTimestamp, endingTimestamp,
+/// deduplicationMode, computeUpdates, etc.) are passed in the options map.
+nonisolated struct Spark_Connect_RelationChanges: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required) Unparsed identifier for the table.
+  var unparsedIdentifier: String = String()
+
+  /// Options for the CDC query. The map key is case insensitive.
+  /// Supported keys include: startingVersion, endingVersion, startingTimestamp,
+  /// endingTimestamp, deduplicationMode, computeUpdates, startingBoundInclusive,
+  /// endingBoundInclusive.
+  var options: Dictionary<String,String> = [:]
+
+  /// (Optional) Indicates if this is a streaming CDC read.
+  var isStreaming: Bool = false
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 }
@@ -3542,7 +3578,7 @@ nonisolated struct Spark_Connect_Parse: @unchecked Sendable {
   /// Clears the value of `schema`. Subsequent reads from it will return its default value.
   mutating func clearSchema() {_uniqueStorage()._schema = nil}
 
-  /// Options for the csv/json parser. The map key is case insensitive.
+  /// Options for the csv/json/xml parser. The map key is case insensitive.
   var options: Dictionary<String,String> {
     get {_storage._options}
     set {_uniqueStorage()._options = newValue}
@@ -3555,6 +3591,7 @@ nonisolated struct Spark_Connect_Parse: @unchecked Sendable {
     case unspecified // = 0
     case csv // = 1
     case json // = 2
+    case xml // = 3
     case UNRECOGNIZED(Int)
 
     init() {
@@ -3566,6 +3603,7 @@ nonisolated struct Spark_Connect_Parse: @unchecked Sendable {
       case 0: self = .unspecified
       case 1: self = .csv
       case 2: self = .json
+      case 3: self = .xml
       default: self = .UNRECOGNIZED(rawValue)
       }
     }
@@ -3575,6 +3613,7 @@ nonisolated struct Spark_Connect_Parse: @unchecked Sendable {
       case .unspecified: return 0
       case .csv: return 1
       case .json: return 2
+      case .xml: return 3
       case .UNRECOGNIZED(let i): return i
       }
     }
@@ -3584,6 +3623,7 @@ nonisolated struct Spark_Connect_Parse: @unchecked Sendable {
       .unspecified,
       .csv,
       .json,
+      .xml,
     ]
 
   }
@@ -3755,7 +3795,7 @@ fileprivate nonisolated let _protobuf_package = "spark.connect"
 
 nonisolated extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Relation"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}common\0\u{1}read\0\u{1}project\0\u{1}filter\0\u{1}join\0\u{3}set_op\0\u{1}sort\0\u{1}limit\0\u{1}aggregate\0\u{1}sql\0\u{3}local_relation\0\u{1}sample\0\u{1}offset\0\u{1}deduplicate\0\u{1}range\0\u{3}subquery_alias\0\u{1}repartition\0\u{3}to_df\0\u{3}with_columns_renamed\0\u{3}show_string\0\u{1}drop\0\u{1}tail\0\u{3}with_columns\0\u{1}hint\0\u{1}unpivot\0\u{3}to_schema\0\u{3}repartition_by_expression\0\u{3}map_partitions\0\u{3}collect_metrics\0\u{1}parse\0\u{3}group_map\0\u{3}co_group_map\0\u{3}with_watermark\0\u{3}apply_in_pandas_with_state\0\u{3}html_string\0\u{3}cached_local_relation\0\u{3}cached_remote_relation\0\u{3}common_inline_user_defined_table_function\0\u{3}as_of_join\0\u{3}common_inline_user_defined_data_source\0\u{3}with_relations\0\u{1}transpose\0\u{3}unresolved_table_valued_function\0\u{3}lateral_join\0\u{3}chunked_cached_local_relation\0\u{4}-fill_na\0\u{3}drop_na\0\u{1}replace\0\u{2}\u{8}summary\0\u{1}crosstab\0\u{1}describe\0\u{1}cov\0\u{1}corr\0\u{3}approx_quantile\0\u{3}freq_items\0\u{3}sample_by\0\u{2}]\u{1}catalog\0\u{4}d\u{1}ml_relation\0\u{2}z\u{a}extension\0\u{1}unknown\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}common\0\u{1}read\0\u{1}project\0\u{1}filter\0\u{1}join\0\u{3}set_op\0\u{1}sort\0\u{1}limit\0\u{1}aggregate\0\u{1}sql\0\u{3}local_relation\0\u{1}sample\0\u{1}offset\0\u{1}deduplicate\0\u{1}range\0\u{3}subquery_alias\0\u{1}repartition\0\u{3}to_df\0\u{3}with_columns_renamed\0\u{3}show_string\0\u{1}drop\0\u{1}tail\0\u{3}with_columns\0\u{1}hint\0\u{1}unpivot\0\u{3}to_schema\0\u{3}repartition_by_expression\0\u{3}map_partitions\0\u{3}collect_metrics\0\u{1}parse\0\u{3}group_map\0\u{3}co_group_map\0\u{3}with_watermark\0\u{3}apply_in_pandas_with_state\0\u{3}html_string\0\u{3}cached_local_relation\0\u{3}cached_remote_relation\0\u{3}common_inline_user_defined_table_function\0\u{3}as_of_join\0\u{3}common_inline_user_defined_data_source\0\u{3}with_relations\0\u{1}transpose\0\u{3}unresolved_table_valued_function\0\u{3}lateral_join\0\u{3}chunked_cached_local_relation\0\u{3}relation_changes\0\u{4},fill_na\0\u{3}drop_na\0\u{1}replace\0\u{2}\u{8}summary\0\u{1}crosstab\0\u{1}describe\0\u{1}cov\0\u{1}corr\0\u{3}approx_quantile\0\u{3}freq_items\0\u{3}sample_by\0\u{2}]\u{1}catalog\0\u{4}d\u{1}ml_relation\0\u{2}z\u{a}extension\0\u{1}unknown\0")
 
   fileprivate class _StorageClass {
     var _common: Spark_Connect_RelationCommon? = nil
@@ -4363,6 +4403,19 @@ nonisolated extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtob
             _storage._relType = .chunkedCachedLocalRelation(v)
           }
         }()
+        case 46: try {
+          var v: Spark_Connect_RelationChanges?
+          var hadOneofValue = false
+          if let current = _storage._relType {
+            hadOneofValue = true
+            if case .relationChanges(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._relType = .relationChanges(v)
+          }
+        }()
         case 90: try {
           var v: Spark_Connect_NAFill?
           var hadOneofValue = false
@@ -4749,6 +4802,10 @@ nonisolated extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtob
       case .chunkedCachedLocalRelation?: try {
         guard case .chunkedCachedLocalRelation(let v)? = _storage._relType else { preconditionFailure() }
         try visitor.visitSingularMessageField(value: v, fieldNumber: 45)
+      }()
+      case .relationChanges?: try {
+        guard case .relationChanges(let v)? = _storage._relType else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 46)
       }()
       case .fillNa?: try {
         guard case .fillNa(let v)? = _storage._relType else { preconditionFailure() }
@@ -5551,6 +5608,46 @@ nonisolated extension Spark_Connect_Read.DataSource: SwiftProtobuf.Message, Swif
     if lhs.paths != rhs.paths {return false}
     if lhs.predicates != rhs.predicates {return false}
     if lhs._sourceName != rhs._sourceName {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_RelationChanges: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".RelationChanges"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}unparsed_identifier\0\u{1}options\0\u{3}is_streaming\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.unparsedIdentifier) }()
+      case 2: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.options) }()
+      case 3: try { try decoder.decodeSingularBoolField(value: &self.isStreaming) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.unparsedIdentifier.isEmpty {
+      try visitor.visitSingularStringField(value: self.unparsedIdentifier, fieldNumber: 1)
+    }
+    if !self.options.isEmpty {
+      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: self.options, fieldNumber: 2)
+    }
+    if self.isStreaming != false {
+      try visitor.visitSingularBoolField(value: self.isStreaming, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_RelationChanges, rhs: Spark_Connect_RelationChanges) -> Bool {
+    if lhs.unparsedIdentifier != rhs.unparsedIdentifier {return false}
+    if lhs.options != rhs.options {return false}
+    if lhs.isStreaming != rhs.isStreaming {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -9988,7 +10085,7 @@ nonisolated extension Spark_Connect_Parse: SwiftProtobuf.Message, SwiftProtobuf.
 }
 
 nonisolated extension Spark_Connect_Parse.ParseFormat: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0PARSE_FORMAT_UNSPECIFIED\0\u{1}PARSE_FORMAT_CSV\0\u{1}PARSE_FORMAT_JSON\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0PARSE_FORMAT_UNSPECIFIED\0\u{1}PARSE_FORMAT_CSV\0\u{1}PARSE_FORMAT_JSON\0\u{1}PARSE_FORMAT_XML\0")
 }
 
 nonisolated extension Spark_Connect_AsOfJoin: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
