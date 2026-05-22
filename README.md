@@ -11,7 +11,7 @@ For example, a user can develop and ship a lightweight Swift-based SparkPi app.
 **Docker Image Size**
 |     Name      | Image Size |
 | ------------- | ---------- |
-| `apache/spark:4.1.1-python3`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark/4.1.1-python3?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark/tags?page=1&name=4.1.1-python3) |
+| `apache/spark:4.1.2-python3`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark/4.1.2-python3?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark/tags?page=1&name=4.1.2-python3) |
 | `pyspark-connect`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark-connect-swift/pyspark-connect?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark-connect-swift/tags?page=1&name=pyspark-connect) |
 | `Swift`-based SparkPi | [![Docker Image Size](https://img.shields.io/docker/image-size/apache/spark-connect-swift/pi?style=flat-square&logo=docker)](https://hub.docker.com/r/apache/spark-connect-swift/tags?page=1&name=pi) |
 
@@ -23,7 +23,7 @@ For example, a user can develop and ship a lightweight Swift-based SparkPi app.
 
 ## Requirements
 
-- [Apache Spark 4.1.1 (January 2026)](https://github.com/apache/spark/releases/tag/v4.1.1)
+- [Apache Spark 4.1.2 (May 2026)](https://github.com/apache/spark/releases/tag/v4.1.2)
 - [Swift 6.3.1 (April 2026)](https://swift.org)
 - [gRPC Swift 2.4 (April 2026)](https://github.com/grpc/grpc-swift-2/releases/tag/2.4.0)
 - [gRPC Swift Protobuf 2.4.0 (May 2026)](https://github.com/grpc/grpc-swift-protobuf/releases/tag/2.4.0)
@@ -100,7 +100,7 @@ Run your Swift application.
 ```bash
 $ swift run
 ...
-Connected to Apache Spark 4.1.1 Server
+Connected to Apache Spark 4.1.2 Server
 EXECUTE: DROP TABLE IF EXISTS t
 EXECUTE: CREATE TABLE IF NOT EXISTS t(a INT) USING ORC
 EXECUTE: INSERT INTO t VALUES (1), (2), (3)

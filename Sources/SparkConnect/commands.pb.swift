@@ -36,7 +36,7 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
@@ -44,7 +44,7 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
 /// The enum used for client side streaming query listener event
 /// There is no QueryStartedEvent defined here,
 /// it is added as a field in WriteStreamOperationStartResult
-enum Spark_Connect_StreamingQueryEventType: SwiftProtobuf.Enum, Swift.CaseIterable {
+nonisolated enum Spark_Connect_StreamingQueryEventType: SwiftProtobuf.Enum, Swift.CaseIterable {
   typealias RawValue = Int
   case queryProgressUnspecified // = 0
   case queryProgressEvent // = 1
@@ -88,7 +88,7 @@ enum Spark_Connect_StreamingQueryEventType: SwiftProtobuf.Enum, Swift.CaseIterab
 
 /// A [[Command]] is an operation that is executed by the server that does not directly consume or
 /// produce a relational result.
-struct Spark_Connect_Command: Sendable {
+nonisolated struct Spark_Connect_Command: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -259,7 +259,7 @@ struct Spark_Connect_Command: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_CommandType: Equatable, Sendable {
+  nonisolated enum OneOf_CommandType: Equatable, Sendable {
     case registerFunction(Spark_Connect_CommonInlineUserDefinedFunction)
     case writeOperation(Spark_Connect_WriteOperation)
     case createDataframeView(Spark_Connect_CreateDataFrameViewCommand)
@@ -294,7 +294,7 @@ struct Spark_Connect_Command: Sendable {
 /// and the result will be collected and returned as part of a LocalRelation. If the result is
 /// not a command, the operation will simply return a SQL Relation. This allows the client to be
 /// almost oblivious to the server-side behavior.
-struct Spark_Connect_SqlCommand: Sendable {
+nonisolated struct Spark_Connect_SqlCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -344,7 +344,7 @@ struct Spark_Connect_SqlCommand: Sendable {
 }
 
 /// A command that can create DataFrame global temp view or local temp view.
-struct Spark_Connect_CreateDataFrameViewCommand: Sendable {
+nonisolated struct Spark_Connect_CreateDataFrameViewCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -379,7 +379,7 @@ struct Spark_Connect_CreateDataFrameViewCommand: Sendable {
 }
 
 /// As writes are not directly handled during analysis and planning, they are modeled as commands.
-struct Spark_Connect_WriteOperation: Sendable {
+nonisolated struct Spark_Connect_WriteOperation: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -460,13 +460,13 @@ struct Spark_Connect_WriteOperation: Sendable {
   /// The destination of the write operation can be either a path or a table.
   /// If the destination is neither a path nor a table, such as jdbc and noop,
   /// the `save_type` should not be set.
-  enum OneOf_SaveType: Equatable, Sendable {
+  nonisolated enum OneOf_SaveType: Equatable, Sendable {
     case path(String)
     case table(Spark_Connect_WriteOperation.SaveTable)
 
   }
 
-  enum SaveMode: SwiftProtobuf.Enum, Swift.CaseIterable {
+  nonisolated enum SaveMode: SwiftProtobuf.Enum, Swift.CaseIterable {
     typealias RawValue = Int
     case unspecified // = 0
     case append // = 1
@@ -512,7 +512,7 @@ struct Spark_Connect_WriteOperation: Sendable {
 
   }
 
-  struct SaveTable: Sendable {
+  nonisolated struct SaveTable: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -525,7 +525,7 @@ struct Spark_Connect_WriteOperation: Sendable {
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    enum TableSaveMethod: SwiftProtobuf.Enum, Swift.CaseIterable {
+    nonisolated enum TableSaveMethod: SwiftProtobuf.Enum, Swift.CaseIterable {
       typealias RawValue = Int
       case unspecified // = 0
       case saveAsTable // = 1
@@ -566,7 +566,7 @@ struct Spark_Connect_WriteOperation: Sendable {
     init() {}
   }
 
-  struct BucketBy: Sendable {
+  nonisolated struct BucketBy: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -588,7 +588,7 @@ struct Spark_Connect_WriteOperation: Sendable {
 }
 
 /// As writes are not directly handled during analysis and planning, they are modeled as commands.
-struct Spark_Connect_WriteOperationV2: Sendable {
+nonisolated struct Spark_Connect_WriteOperationV2: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -645,7 +645,7 @@ struct Spark_Connect_WriteOperationV2: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum Mode: SwiftProtobuf.Enum, Swift.CaseIterable {
+  nonisolated enum Mode: SwiftProtobuf.Enum, Swift.CaseIterable {
     typealias RawValue = Int
     case unspecified // = 0
     case create // = 1
@@ -708,7 +708,7 @@ struct Spark_Connect_WriteOperationV2: Sendable {
 
 /// Starts write stream operation as streaming query. Query ID and Run ID of the streaming
 /// query are returned.
-struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
+nonisolated struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -841,7 +841,7 @@ struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Trigger: Equatable, Sendable {
+  nonisolated enum OneOf_Trigger: Equatable, Sendable {
     case processingTimeInterval(String)
     case availableNow(Bool)
     case once(Bool)
@@ -851,7 +851,7 @@ struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
   }
 
   /// The destination is optional. When set, it can be a path or a table name.
-  enum OneOf_SinkDestination: Equatable, Sendable {
+  nonisolated enum OneOf_SinkDestination: Equatable, Sendable {
     case path(String)
     case tableName(String)
 
@@ -862,7 +862,7 @@ struct Spark_Connect_WriteStreamOperationStart: @unchecked Sendable {
   fileprivate var _storage = _StorageClass.defaultInstance
 }
 
-struct Spark_Connect_StreamingForeachFunction: Sendable {
+nonisolated struct Spark_Connect_StreamingForeachFunction: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -887,7 +887,7 @@ struct Spark_Connect_StreamingForeachFunction: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Function: Equatable, Sendable {
+  nonisolated enum OneOf_Function: Equatable, Sendable {
     case pythonFunction(Spark_Connect_PythonUDF)
     case scalaFunction(Spark_Connect_ScalarScalaUDF)
 
@@ -896,7 +896,7 @@ struct Spark_Connect_StreamingForeachFunction: Sendable {
   init() {}
 }
 
-struct Spark_Connect_WriteStreamOperationStartResult: Sendable {
+nonisolated struct Spark_Connect_WriteStreamOperationStartResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -935,7 +935,7 @@ struct Spark_Connect_WriteStreamOperationStartResult: Sendable {
 /// A tuple that uniquely identifies an instance of streaming query run. It consists of `id` that
 /// persists across the streaming runs and `run_id` that changes between each run of the
 /// streaming query that resumes from the checkpoint.
-struct Spark_Connect_StreamingQueryInstanceId: Sendable {
+nonisolated struct Spark_Connect_StreamingQueryInstanceId: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -956,7 +956,7 @@ struct Spark_Connect_StreamingQueryInstanceId: Sendable {
 }
 
 /// Commands for a streaming query.
-struct Spark_Connect_StreamingQueryCommand: Sendable {
+nonisolated struct Spark_Connect_StreamingQueryCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1049,7 +1049,7 @@ struct Spark_Connect_StreamingQueryCommand: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// See documentation for the corresponding API method in StreamingQuery.
-  enum OneOf_Command: Equatable, Sendable {
+  nonisolated enum OneOf_Command: Equatable, Sendable {
     /// status() API.
     case status(Bool)
     /// lastProgress() API.
@@ -1069,7 +1069,7 @@ struct Spark_Connect_StreamingQueryCommand: Sendable {
 
   }
 
-  struct ExplainCommand: Sendable {
+  nonisolated struct ExplainCommand: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1083,7 +1083,7 @@ struct Spark_Connect_StreamingQueryCommand: Sendable {
     init() {}
   }
 
-  struct AwaitTerminationCommand: Sendable {
+  nonisolated struct AwaitTerminationCommand: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1110,7 +1110,7 @@ struct Spark_Connect_StreamingQueryCommand: Sendable {
 }
 
 /// Response for commands on a streaming query.
-struct Spark_Connect_StreamingQueryCommandResult: Sendable {
+nonisolated struct Spark_Connect_StreamingQueryCommandResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1169,7 +1169,7 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_ResultType: Equatable, Sendable {
+  nonisolated enum OneOf_ResultType: Equatable, Sendable {
     case status(Spark_Connect_StreamingQueryCommandResult.StatusResult)
     case recentProgress(Spark_Connect_StreamingQueryCommandResult.RecentProgressResult)
     case explain(Spark_Connect_StreamingQueryCommandResult.ExplainResult)
@@ -1178,7 +1178,7 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
 
   }
 
-  struct StatusResult: Sendable {
+  nonisolated struct StatusResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1197,7 +1197,7 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
     init() {}
   }
 
-  struct RecentProgressResult: Sendable {
+  nonisolated struct RecentProgressResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1210,7 +1210,7 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
     init() {}
   }
 
-  struct ExplainResult: Sendable {
+  nonisolated struct ExplainResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1223,7 +1223,7 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
     init() {}
   }
 
-  struct ExceptionResult: Sendable {
+  nonisolated struct ExceptionResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1268,7 +1268,7 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
     fileprivate var _stackTrace: String? = nil
   }
 
-  struct AwaitTerminationResult: Sendable {
+  nonisolated struct AwaitTerminationResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1286,7 +1286,7 @@ struct Spark_Connect_StreamingQueryCommandResult: Sendable {
 }
 
 /// Commands for the streaming query manager.
-struct Spark_Connect_StreamingQueryManagerCommand: Sendable {
+nonisolated struct Spark_Connect_StreamingQueryManagerCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1360,7 +1360,7 @@ struct Spark_Connect_StreamingQueryManagerCommand: Sendable {
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// See documentation for the corresponding API method in StreamingQueryManager.
-  enum OneOf_Command: Equatable, Sendable {
+  nonisolated enum OneOf_Command: Equatable, Sendable {
     /// active() API, returns a list of active queries.
     case active(Bool)
     /// get() API, returns the StreamingQuery identified by id.
@@ -1378,7 +1378,7 @@ struct Spark_Connect_StreamingQueryManagerCommand: Sendable {
 
   }
 
-  struct AwaitAnyTerminationCommand: Sendable {
+  nonisolated struct AwaitAnyTerminationCommand: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1400,7 +1400,7 @@ struct Spark_Connect_StreamingQueryManagerCommand: Sendable {
     fileprivate var _timeoutMs: Int64? = nil
   }
 
-  struct StreamingQueryListenerCommand: Sendable {
+  nonisolated struct StreamingQueryListenerCommand: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1429,7 +1429,7 @@ struct Spark_Connect_StreamingQueryManagerCommand: Sendable {
 }
 
 /// Response for commands on the streaming query manager.
-struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
+nonisolated struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1494,7 +1494,7 @@ struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_ResultType: Equatable, Sendable {
+  nonisolated enum OneOf_ResultType: Equatable, Sendable {
     case active(Spark_Connect_StreamingQueryManagerCommandResult.ActiveResult)
     case query(Spark_Connect_StreamingQueryManagerCommandResult.StreamingQueryInstance)
     case awaitAnyTermination(Spark_Connect_StreamingQueryManagerCommandResult.AwaitAnyTerminationResult)
@@ -1505,7 +1505,7 @@ struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
 
   }
 
-  struct ActiveResult: Sendable {
+  nonisolated struct ActiveResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1517,7 +1517,7 @@ struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
     init() {}
   }
 
-  struct StreamingQueryInstance: Sendable {
+  nonisolated struct StreamingQueryInstance: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1550,7 +1550,7 @@ struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
     fileprivate var _name: String? = nil
   }
 
-  struct AwaitAnyTerminationResult: Sendable {
+  nonisolated struct AwaitAnyTerminationResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1562,7 +1562,7 @@ struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
     init() {}
   }
 
-  struct StreamingQueryListenerInstance: Sendable {
+  nonisolated struct StreamingQueryListenerInstance: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1574,7 +1574,7 @@ struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
     init() {}
   }
 
-  struct ListStreamingQueryListenerResult: Sendable {
+  nonisolated struct ListStreamingQueryListenerResult: Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
@@ -1595,7 +1595,7 @@ struct Spark_Connect_StreamingQueryManagerCommandResult: Sendable {
 /// listener is removed from the client.
 /// The add_listener_bus_listener command will only be set true in the first case.
 /// The remove_listener_bus_listener command will only be set true in the second case.
-struct Spark_Connect_StreamingQueryListenerBusCommand: Sendable {
+nonisolated struct Spark_Connect_StreamingQueryListenerBusCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1620,7 +1620,7 @@ struct Spark_Connect_StreamingQueryListenerBusCommand: Sendable {
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  enum OneOf_Command: Equatable, Sendable {
+  nonisolated enum OneOf_Command: Equatable, Sendable {
     case addListenerBusListener(Bool)
     case removeListenerBusListener(Bool)
 
@@ -1630,7 +1630,7 @@ struct Spark_Connect_StreamingQueryListenerBusCommand: Sendable {
 }
 
 /// The protocol for the returned events in the long-running response channel.
-struct Spark_Connect_StreamingQueryListenerEvent: Sendable {
+nonisolated struct Spark_Connect_StreamingQueryListenerEvent: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1646,7 +1646,7 @@ struct Spark_Connect_StreamingQueryListenerEvent: Sendable {
   init() {}
 }
 
-struct Spark_Connect_StreamingQueryListenerEventsResult: Sendable {
+nonisolated struct Spark_Connect_StreamingQueryListenerEventsResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1670,7 +1670,7 @@ struct Spark_Connect_StreamingQueryListenerEventsResult: Sendable {
 }
 
 /// Command to get the output of 'SparkContext.resources'
-struct Spark_Connect_GetResourcesCommand: Sendable {
+nonisolated struct Spark_Connect_GetResourcesCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1681,7 +1681,7 @@ struct Spark_Connect_GetResourcesCommand: Sendable {
 }
 
 /// Response for command 'GetResourcesCommand'.
-struct Spark_Connect_GetResourcesCommandResult: Sendable {
+nonisolated struct Spark_Connect_GetResourcesCommandResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1694,7 +1694,7 @@ struct Spark_Connect_GetResourcesCommandResult: Sendable {
 }
 
 /// Command to create ResourceProfile
-struct Spark_Connect_CreateResourceProfileCommand: Sendable {
+nonisolated struct Spark_Connect_CreateResourceProfileCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1717,7 +1717,7 @@ struct Spark_Connect_CreateResourceProfileCommand: Sendable {
 }
 
 /// Response for command 'CreateResourceProfileCommand'.
-struct Spark_Connect_CreateResourceProfileCommandResult: Sendable {
+nonisolated struct Spark_Connect_CreateResourceProfileCommandResult: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1731,7 +1731,7 @@ struct Spark_Connect_CreateResourceProfileCommandResult: Sendable {
 }
 
 /// Command to remove `CashedRemoteRelation`
-struct Spark_Connect_RemoveCachedRemoteRelationCommand: Sendable {
+nonisolated struct Spark_Connect_RemoveCachedRemoteRelationCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1753,7 +1753,7 @@ struct Spark_Connect_RemoveCachedRemoteRelationCommand: Sendable {
   fileprivate var _relation: Spark_Connect_CachedRemoteRelation? = nil
 }
 
-struct Spark_Connect_CheckpointCommand: Sendable {
+nonisolated struct Spark_Connect_CheckpointCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1793,7 +1793,7 @@ struct Spark_Connect_CheckpointCommand: Sendable {
   fileprivate var _storageLevel: Spark_Connect_StorageLevel? = nil
 }
 
-struct Spark_Connect_MergeIntoTableCommand: Sendable {
+nonisolated struct Spark_Connect_MergeIntoTableCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1842,7 +1842,7 @@ struct Spark_Connect_MergeIntoTableCommand: Sendable {
 }
 
 /// Execute an arbitrary string command inside an external execution engine
-struct Spark_Connect_ExecuteExternalCommand: Sendable {
+nonisolated struct Spark_Connect_ExecuteExternalCommand: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -1863,13 +1863,13 @@ struct Spark_Connect_ExecuteExternalCommand: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "spark.connect"
+fileprivate nonisolated let _protobuf_package = "spark.connect"
 
-extension Spark_Connect_StreamingQueryEventType: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryEventType: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0QUERY_PROGRESS_UNSPECIFIED\0\u{1}QUERY_PROGRESS_EVENT\0\u{1}QUERY_TERMINATED_EVENT\0\u{1}QUERY_IDLE_EVENT\0")
 }
 
-extension Spark_Connect_Command: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_Command: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Command"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}register_function\0\u{3}write_operation\0\u{3}create_dataframe_view\0\u{3}write_operation_v2\0\u{3}sql_command\0\u{3}write_stream_operation_start\0\u{3}streaming_query_command\0\u{3}get_resources_command\0\u{3}streaming_query_manager_command\0\u{3}register_table_function\0\u{3}streaming_query_listener_bus_command\0\u{3}register_data_source\0\u{3}create_resource_profile_command\0\u{3}checkpoint_command\0\u{3}remove_cached_remote_relation_command\0\u{3}merge_into_table_command\0\u{3}ml_command\0\u{3}execute_external_command\0\u{3}pipeline_command\0\u{2}T\u{f}extension\0")
 
@@ -2242,7 +2242,7 @@ extension Spark_Connect_Command: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
   }
 }
 
-extension Spark_Connect_SqlCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_SqlCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SqlCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sql\0\u{1}args\0\u{3}pos_args\0\u{3}named_arguments\0\u{3}pos_arguments\0\u{1}input\0")
 
@@ -2301,7 +2301,7 @@ extension Spark_Connect_SqlCommand: SwiftProtobuf.Message, SwiftProtobuf._Messag
   }
 }
 
-extension Spark_Connect_CreateDataFrameViewCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CreateDataFrameViewCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CreateDataFrameViewCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}name\0\u{3}is_global\0\u{1}replace\0")
 
@@ -2350,7 +2350,7 @@ extension Spark_Connect_CreateDataFrameViewCommand: SwiftProtobuf.Message, Swift
   }
 }
 
-extension Spark_Connect_WriteOperation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteOperation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WriteOperation"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}source\0\u{1}path\0\u{1}table\0\u{1}mode\0\u{3}sort_column_names\0\u{3}partitioning_columns\0\u{3}bucket_by\0\u{1}options\0\u{3}clustering_columns\0")
 
@@ -2452,11 +2452,11 @@ extension Spark_Connect_WriteOperation: SwiftProtobuf.Message, SwiftProtobuf._Me
   }
 }
 
-extension Spark_Connect_WriteOperation.SaveMode: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteOperation.SaveMode: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0SAVE_MODE_UNSPECIFIED\0\u{1}SAVE_MODE_APPEND\0\u{1}SAVE_MODE_OVERWRITE\0\u{1}SAVE_MODE_ERROR_IF_EXISTS\0\u{1}SAVE_MODE_IGNORE\0")
 }
 
-extension Spark_Connect_WriteOperation.SaveTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteOperation.SaveTable: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_WriteOperation.protoMessageName + ".SaveTable"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}table_name\0\u{3}save_method\0")
 
@@ -2491,11 +2491,11 @@ extension Spark_Connect_WriteOperation.SaveTable: SwiftProtobuf.Message, SwiftPr
   }
 }
 
-extension Spark_Connect_WriteOperation.SaveTable.TableSaveMethod: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteOperation.SaveTable.TableSaveMethod: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0TABLE_SAVE_METHOD_UNSPECIFIED\0\u{1}TABLE_SAVE_METHOD_SAVE_AS_TABLE\0\u{1}TABLE_SAVE_METHOD_INSERT_INTO\0")
 }
 
-extension Spark_Connect_WriteOperation.BucketBy: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteOperation.BucketBy: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_WriteOperation.protoMessageName + ".BucketBy"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}bucket_column_names\0\u{3}num_buckets\0")
 
@@ -2530,7 +2530,7 @@ extension Spark_Connect_WriteOperation.BucketBy: SwiftProtobuf.Message, SwiftPro
   }
 }
 
-extension Spark_Connect_WriteOperationV2: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteOperationV2: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WriteOperationV2"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}table_name\0\u{1}provider\0\u{3}partitioning_columns\0\u{1}options\0\u{3}table_properties\0\u{1}mode\0\u{3}overwrite_condition\0\u{3}clustering_columns\0")
 
@@ -2604,11 +2604,11 @@ extension Spark_Connect_WriteOperationV2: SwiftProtobuf.Message, SwiftProtobuf._
   }
 }
 
-extension Spark_Connect_WriteOperationV2.Mode: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteOperationV2.Mode: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0MODE_UNSPECIFIED\0\u{1}MODE_CREATE\0\u{1}MODE_OVERWRITE\0\u{1}MODE_OVERWRITE_PARTITIONS\0\u{1}MODE_APPEND\0\u{1}MODE_REPLACE\0\u{1}MODE_CREATE_OR_REPLACE\0")
 }
 
-extension Spark_Connect_WriteStreamOperationStart: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteStreamOperationStart: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WriteStreamOperationStart"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}format\0\u{1}options\0\u{3}partitioning_column_names\0\u{3}processing_time_interval\0\u{3}available_now\0\u{1}once\0\u{3}continuous_checkpoint_interval\0\u{3}output_mode\0\u{3}query_name\0\u{1}path\0\u{3}table_name\0\u{3}foreach_writer\0\u{3}foreach_batch\0\u{3}clustering_column_names\0\u{4}U\u{1}real_time_batch_duration\0")
 
@@ -2829,7 +2829,7 @@ extension Spark_Connect_WriteStreamOperationStart: SwiftProtobuf.Message, SwiftP
   }
 }
 
-extension Spark_Connect_StreamingForeachFunction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingForeachFunction: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingForeachFunction"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}python_function\0\u{3}scala_function\0")
 
@@ -2896,7 +2896,7 @@ extension Spark_Connect_StreamingForeachFunction: SwiftProtobuf.Message, SwiftPr
   }
 }
 
-extension Spark_Connect_WriteStreamOperationStartResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_WriteStreamOperationStartResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WriteStreamOperationStartResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}query_id\0\u{1}name\0\u{3}query_started_event_json\0")
 
@@ -2940,7 +2940,7 @@ extension Spark_Connect_WriteStreamOperationStartResult: SwiftProtobuf.Message, 
   }
 }
 
-extension Spark_Connect_StreamingQueryInstanceId: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryInstanceId: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingQueryInstanceId"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{3}run_id\0")
 
@@ -2975,7 +2975,7 @@ extension Spark_Connect_StreamingQueryInstanceId: SwiftProtobuf.Message, SwiftPr
   }
 }
 
-extension Spark_Connect_StreamingQueryCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingQueryCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}query_id\0\u{1}status\0\u{3}last_progress\0\u{3}recent_progress\0\u{1}stop\0\u{3}process_all_available\0\u{1}explain\0\u{1}exception\0\u{3}await_termination\0")
 
@@ -3119,7 +3119,7 @@ extension Spark_Connect_StreamingQueryCommand: SwiftProtobuf.Message, SwiftProto
   }
 }
 
-extension Spark_Connect_StreamingQueryCommand.ExplainCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommand.ExplainCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryCommand.protoMessageName + ".ExplainCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}extended\0")
 
@@ -3149,7 +3149,7 @@ extension Spark_Connect_StreamingQueryCommand.ExplainCommand: SwiftProtobuf.Mess
   }
 }
 
-extension Spark_Connect_StreamingQueryCommand.AwaitTerminationCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommand.AwaitTerminationCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryCommand.protoMessageName + ".AwaitTerminationCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{4}\u{2}timeout_ms\0")
 
@@ -3183,7 +3183,7 @@ extension Spark_Connect_StreamingQueryCommand.AwaitTerminationCommand: SwiftProt
   }
 }
 
-extension Spark_Connect_StreamingQueryCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingQueryCommandResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}query_id\0\u{1}status\0\u{3}recent_progress\0\u{1}explain\0\u{1}exception\0\u{3}await_termination\0")
 
@@ -3306,7 +3306,7 @@ extension Spark_Connect_StreamingQueryCommandResult: SwiftProtobuf.Message, Swif
   }
 }
 
-extension Spark_Connect_StreamingQueryCommandResult.StatusResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommandResult.StatusResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryCommandResult.protoMessageName + ".StatusResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}status_message\0\u{3}is_data_available\0\u{3}is_trigger_active\0\u{3}is_active\0")
 
@@ -3351,7 +3351,7 @@ extension Spark_Connect_StreamingQueryCommandResult.StatusResult: SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_StreamingQueryCommandResult.RecentProgressResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommandResult.RecentProgressResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryCommandResult.protoMessageName + ".RecentProgressResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{4}\u{5}recent_progress_json\0")
 
@@ -3381,7 +3381,7 @@ extension Spark_Connect_StreamingQueryCommandResult.RecentProgressResult: SwiftP
   }
 }
 
-extension Spark_Connect_StreamingQueryCommandResult.ExplainResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommandResult.ExplainResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryCommandResult.protoMessageName + ".ExplainResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}result\0")
 
@@ -3411,7 +3411,7 @@ extension Spark_Connect_StreamingQueryCommandResult.ExplainResult: SwiftProtobuf
   }
 }
 
-extension Spark_Connect_StreamingQueryCommandResult.ExceptionResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommandResult.ExceptionResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryCommandResult.protoMessageName + ".ExceptionResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}exception_message\0\u{3}error_class\0\u{3}stack_trace\0")
 
@@ -3455,7 +3455,7 @@ extension Spark_Connect_StreamingQueryCommandResult.ExceptionResult: SwiftProtob
   }
 }
 
-extension Spark_Connect_StreamingQueryCommandResult.AwaitTerminationResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryCommandResult.AwaitTerminationResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryCommandResult.protoMessageName + ".AwaitTerminationResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}terminated\0")
 
@@ -3485,7 +3485,7 @@ extension Spark_Connect_StreamingQueryCommandResult.AwaitTerminationResult: Swif
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingQueryManagerCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}active\0\u{3}get_query\0\u{3}await_any_termination\0\u{3}reset_terminated\0\u{3}add_listener\0\u{3}remove_listener\0\u{3}list_listeners\0")
 
@@ -3617,7 +3617,7 @@ extension Spark_Connect_StreamingQueryManagerCommand: SwiftProtobuf.Message, Swi
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommand.AwaitAnyTerminationCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommand.AwaitAnyTerminationCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryManagerCommand.protoMessageName + ".AwaitAnyTerminationCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}timeout_ms\0")
 
@@ -3651,7 +3651,7 @@ extension Spark_Connect_StreamingQueryManagerCommand.AwaitAnyTerminationCommand:
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommand.StreamingQueryListenerCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommand.StreamingQueryListenerCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryManagerCommand.protoMessageName + ".StreamingQueryListenerCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}listener_payload\0\u{3}python_listener_payload\0\u{1}id\0")
 
@@ -3695,7 +3695,7 @@ extension Spark_Connect_StreamingQueryManagerCommand.StreamingQueryListenerComma
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingQueryManagerCommandResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}active\0\u{1}query\0\u{3}await_any_termination\0\u{3}reset_terminated\0\u{3}add_listener\0\u{3}remove_listener\0\u{3}list_listeners\0")
 
@@ -3832,7 +3832,7 @@ extension Spark_Connect_StreamingQueryManagerCommandResult: SwiftProtobuf.Messag
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommandResult.ActiveResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommandResult.ActiveResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryManagerCommandResult.protoMessageName + ".ActiveResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}active_queries\0")
 
@@ -3862,7 +3862,7 @@ extension Spark_Connect_StreamingQueryManagerCommandResult.ActiveResult: SwiftPr
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommandResult.StreamingQueryInstance: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommandResult.StreamingQueryInstance: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryManagerCommandResult.protoMessageName + ".StreamingQueryInstance"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}name\0")
 
@@ -3901,7 +3901,7 @@ extension Spark_Connect_StreamingQueryManagerCommandResult.StreamingQueryInstanc
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommandResult.AwaitAnyTerminationResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommandResult.AwaitAnyTerminationResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryManagerCommandResult.protoMessageName + ".AwaitAnyTerminationResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}terminated\0")
 
@@ -3931,7 +3931,7 @@ extension Spark_Connect_StreamingQueryManagerCommandResult.AwaitAnyTerminationRe
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommandResult.StreamingQueryListenerInstance: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommandResult.StreamingQueryListenerInstance: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryManagerCommandResult.protoMessageName + ".StreamingQueryListenerInstance"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}listener_payload\0")
 
@@ -3961,7 +3961,7 @@ extension Spark_Connect_StreamingQueryManagerCommandResult.StreamingQueryListene
   }
 }
 
-extension Spark_Connect_StreamingQueryManagerCommandResult.ListStreamingQueryListenerResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryManagerCommandResult.ListStreamingQueryListenerResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_StreamingQueryManagerCommandResult.protoMessageName + ".ListStreamingQueryListenerResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}listener_ids\0")
 
@@ -3991,7 +3991,7 @@ extension Spark_Connect_StreamingQueryManagerCommandResult.ListStreamingQueryLis
   }
 }
 
-extension Spark_Connect_StreamingQueryListenerBusCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryListenerBusCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingQueryListenerBusCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}add_listener_bus_listener\0\u{3}remove_listener_bus_listener\0")
 
@@ -4048,7 +4048,7 @@ extension Spark_Connect_StreamingQueryListenerBusCommand: SwiftProtobuf.Message,
   }
 }
 
-extension Spark_Connect_StreamingQueryListenerEvent: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryListenerEvent: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingQueryListenerEvent"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}event_json\0\u{3}event_type\0")
 
@@ -4083,7 +4083,7 @@ extension Spark_Connect_StreamingQueryListenerEvent: SwiftProtobuf.Message, Swif
   }
 }
 
-extension Spark_Connect_StreamingQueryListenerEventsResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_StreamingQueryListenerEventsResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".StreamingQueryListenerEventsResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}events\0\u{3}listener_bus_listener_added\0")
 
@@ -4122,7 +4122,7 @@ extension Spark_Connect_StreamingQueryListenerEventsResult: SwiftProtobuf.Messag
   }
 }
 
-extension Spark_Connect_GetResourcesCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetResourcesCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetResourcesCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap()
 
@@ -4141,7 +4141,7 @@ extension Spark_Connect_GetResourcesCommand: SwiftProtobuf.Message, SwiftProtobu
   }
 }
 
-extension Spark_Connect_GetResourcesCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_GetResourcesCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".GetResourcesCommandResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}resources\0")
 
@@ -4171,7 +4171,7 @@ extension Spark_Connect_GetResourcesCommandResult: SwiftProtobuf.Message, SwiftP
   }
 }
 
-extension Spark_Connect_CreateResourceProfileCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CreateResourceProfileCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CreateResourceProfileCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}profile\0")
 
@@ -4205,7 +4205,7 @@ extension Spark_Connect_CreateResourceProfileCommand: SwiftProtobuf.Message, Swi
   }
 }
 
-extension Spark_Connect_CreateResourceProfileCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CreateResourceProfileCommandResult: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CreateResourceProfileCommandResult"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}profile_id\0")
 
@@ -4235,7 +4235,7 @@ extension Spark_Connect_CreateResourceProfileCommandResult: SwiftProtobuf.Messag
   }
 }
 
-extension Spark_Connect_RemoveCachedRemoteRelationCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_RemoveCachedRemoteRelationCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RemoveCachedRemoteRelationCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0")
 
@@ -4269,7 +4269,7 @@ extension Spark_Connect_RemoveCachedRemoteRelationCommand: SwiftProtobuf.Message
   }
 }
 
-extension Spark_Connect_CheckpointCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_CheckpointCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CheckpointCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}relation\0\u{1}local\0\u{1}eager\0\u{3}storage_level\0")
 
@@ -4318,7 +4318,7 @@ extension Spark_Connect_CheckpointCommand: SwiftProtobuf.Message, SwiftProtobuf.
   }
 }
 
-extension Spark_Connect_MergeIntoTableCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_MergeIntoTableCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".MergeIntoTableCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}target_table_name\0\u{3}source_table_plan\0\u{3}merge_condition\0\u{3}match_actions\0\u{3}not_matched_actions\0\u{3}not_matched_by_source_actions\0\u{3}with_schema_evolution\0")
 
@@ -4382,7 +4382,7 @@ extension Spark_Connect_MergeIntoTableCommand: SwiftProtobuf.Message, SwiftProto
   }
 }
 
-extension Spark_Connect_ExecuteExternalCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Spark_Connect_ExecuteExternalCommand: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ExecuteExternalCommand"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}runner\0\u{1}command\0\u{1}options\0")
 
