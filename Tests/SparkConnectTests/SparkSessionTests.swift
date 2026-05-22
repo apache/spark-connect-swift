@@ -100,7 +100,7 @@ struct SparkSessionTests {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
     let version = await spark.version
-    #expect(version.starts(with: "4.") || version.starts(with: "3.5."))
+    #expect(version.starts(with: "4."))
     await spark.stop()
   }
 
