@@ -482,6 +482,20 @@ public actor Catalog: Sendable {
     try await df.count()
   }
 
+  /// Removes all rows from the table.
+  /// - Parameter tableName: A qualified or unqualified name that designates a table.
+  /// If no database identifier is provided, it refers to a table in the current database.
+  public func truncateTable(_ tableName: String) async throws {
+    let df = getDataFrame({
+      var truncateTable = Spark_Connect_TruncateTable()
+      truncateTable.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .truncateTable(truncateTable)
+      return catalog
+    })
+    try await df.count()
+  }
+
   /// Invalidates and refreshes all the cached data (and the associated metadata) for any ``DataFrame``
   /// that contains the given data source path. Path matching is by checking for sub-directories,
   /// i.e. "/" would invalidate everything that is cached and "/test/parent" would invalidate

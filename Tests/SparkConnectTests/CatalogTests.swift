@@ -504,6 +504,25 @@ struct CatalogTests {
   }
 
   @Test
+  func truncateTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.range(10).write.saveAsTable(tableName)
+        #expect(try await spark.table(tableName).count() == 10)
+        try await spark.catalog.truncateTable(tableName)
+        #expect(try await spark.table(tableName).count() == 0)
+      })
+
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
+        try await spark.catalog.truncateTable("not_exist_table")
+      }
+    }
+    await spark.stop()
+  }
+
+  @Test
   func refreshByPath() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
