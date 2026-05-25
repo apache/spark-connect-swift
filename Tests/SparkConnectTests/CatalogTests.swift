@@ -110,6 +110,45 @@ struct CatalogTests {
   }
 
   @Test
+  func createDatabase() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let dbName = "DB_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withDatabase(spark, dbName)({
+        #expect(try await spark.catalog.databaseExists(dbName) == false)
+        try await spark.catalog.createDatabase(dbName)
+        #expect(try await spark.catalog.databaseExists(dbName))
+
+        try await #require(throws: Error.self) {
+          try await spark.catalog.createDatabase(dbName)
+        }
+        try await spark.catalog.createDatabase(dbName, ifNotExists: true)
+      })
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func dropDatabase() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let dbName = "DB_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withDatabase(spark, dbName)({
+        try await spark.catalog.createDatabase(dbName)
+        #expect(try await spark.catalog.databaseExists(dbName))
+        try await spark.catalog.dropDatabase(dbName)
+        #expect(try await spark.catalog.databaseExists(dbName) == false)
+
+        try await #require(throws: SparkConnectError.SchemaNotFound) {
+          try await spark.catalog.dropDatabase(dbName)
+        }
+        try await spark.catalog.dropDatabase(dbName, ifExists: true)
+      })
+    }
+    await spark.stop()
+  }
+
+  @Test
   func databaseExists() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.catalog.databaseExists("default"))
