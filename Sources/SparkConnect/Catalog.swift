@@ -74,6 +74,10 @@ public struct Function: Sendable, Equatable {
   public var isTemporary: Bool
 }
 
+public struct TablePartition: Sendable, Equatable {
+  public var partition: String
+}
+
 /// Interface through which the user may create, drop, alter or query underlying databases, tables, functions etc.
 /// To access this, use ``SparkSession.catalog``.
 public actor Catalog: Sendable {
@@ -428,6 +432,23 @@ public actor Catalog: Sendable {
       return catalog
     })
     return df
+  }
+
+  /// Returns a list of partitions for the given table.
+  /// - Parameter tableName: a qualified or unqualified name that designates a table. If no database
+  /// identifier is provided, it refers to a table in the current database.
+  /// - Returns: A list of ``TablePartition``.
+  public func listPartitions(_ tableName: String) async throws -> [TablePartition] {
+    let df = getDataFrame({
+      var listPartitions = Spark_Connect_ListPartitions()
+      listPartitions.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.listPartitions = listPartitions
+      return catalog
+    })
+    return try await df.collect().map {
+      try TablePartition(partition: $0[0] as! String)
+    }
   }
 
   /// Check if the function with the specified name exists. This can either be a temporary function

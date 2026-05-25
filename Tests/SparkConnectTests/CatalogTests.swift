@@ -309,6 +309,26 @@ struct CatalogTests {
   }
 
   @Test
+  func listPartitions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.sql(
+          "CREATE TABLE \(tableName) (id INT, p INT) USING parquet PARTITIONED BY (p)"
+        ).count()
+        #expect(try await spark.catalog.listPartitions(tableName).isEmpty)
+
+        try await spark.sql("INSERT INTO \(tableName) VALUES (1, 1), (2, 2)").count()
+        let partitions = try await spark.catalog.listPartitions(tableName)
+        #expect(partitions.count == 2)
+        #expect(Set(partitions.map { $0.partition }) == Set(["p=1", "p=2"]))
+      })
+    }
+    await spark.stop()
+  }
+
+  @Test
   func functionExists() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.catalog.functionExists("base64"))
