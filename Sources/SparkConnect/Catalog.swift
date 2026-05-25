@@ -241,6 +241,36 @@ public actor Catalog: Sendable {
     }
   }
 
+  /// Returns a list of views in the given database (or the current database).
+  /// - Parameters:
+  ///   - dbName: The name of the database to list views from.
+  ///   - pattern: The pattern that the view name needs to match.
+  /// - Returns: A list of ``SparkTable``.
+  public func listViews(dbName: String? = nil, pattern: String? = nil) async throws -> [SparkTable]
+  {
+    let df = getDataFrame({
+      var listViews = Spark_Connect_ListViews()
+      if let dbName {
+        listViews.dbName = dbName
+      }
+      if let pattern {
+        listViews.pattern = pattern
+      }
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .listViews(listViews)
+      return catalog
+    })
+    return try await df.collect().map {
+      try SparkTable(
+        name: $0[0] as! String,
+        catalog: $0[1] as? String,
+        namespace: $0[2] as? [String],
+        description: $0[3] as? String,
+        tableType: $0[4] as! String,
+        isTemporary: $0[5] as! Bool)
+    }
+  }
+
   /// Creates a table from the given path and returns the corresponding ``DataFrame``.
   /// - Parameters:
   ///   - tableName: A qualified or unqualified name that designates a table. If no database
