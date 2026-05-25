@@ -409,6 +409,46 @@ struct CatalogTests {
   }
 
   @Test
+  func dropTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.range(1).write.saveAsTable(tableName)
+        #expect(try await spark.catalog.tableExists(tableName))
+        try await spark.catalog.dropTable(tableName)
+        #expect(try await spark.catalog.tableExists(tableName) == false)
+      })
+
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
+        try await spark.catalog.dropTable("non_exist_table")
+      }
+      try await spark.catalog.dropTable("non_exist_table", ifExists: true)
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func dropView() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, viewName)({
+        try await spark.sql("CREATE VIEW \(viewName) AS SELECT 1").count()
+        #expect(try await spark.catalog.tableExists(viewName))
+        try await spark.catalog.dropView(viewName)
+        #expect(try await spark.catalog.tableExists(viewName) == false)
+      })
+
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
+        try await spark.catalog.dropView("non_exist_view")
+      }
+      try await spark.catalog.dropView("non_exist_view", ifExists: true)
+    }
+    await spark.stop()
+  }
+
+  @Test
   func cacheTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")

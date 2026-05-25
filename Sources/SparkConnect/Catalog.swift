@@ -552,4 +552,40 @@ public actor Catalog: Sendable {
     })
     return try await df.collect()[0].getAsBool(0)
   }
+
+  /// Drops the table with the given table name in the catalog.
+  /// - Parameters:
+  ///   - tableName: The name of the table to be dropped.
+  ///   - ifExists: If true, no exception is thrown if the table does not exist.
+  ///   - purge: If true, the table is purged.
+  public func dropTable(
+    _ tableName: String, ifExists: Bool = false, purge: Bool = false
+  ) async throws {
+    let df = getDataFrame({
+      var dropTable = Spark_Connect_DropTable()
+      dropTable.tableName = tableName
+      dropTable.ifExists = ifExists
+      dropTable.purge = purge
+      var catalog = Spark_Connect_Catalog()
+      catalog.dropTable = dropTable
+      return catalog
+    })
+    try await df.count()
+  }
+
+  /// Drops the view with the given view name in the catalog.
+  /// - Parameters:
+  ///   - viewName: The name of the view to be dropped.
+  ///   - ifExists: If true, no exception is thrown if the view does not exist.
+  public func dropView(_ viewName: String, ifExists: Bool = false) async throws {
+    let df = getDataFrame({
+      var dropView = Spark_Connect_DropView()
+      dropView.viewName = viewName
+      dropView.ifExists = ifExists
+      var catalog = Spark_Connect_Catalog()
+      catalog.dropView = dropView
+      return catalog
+    })
+    try await df.count()
+  }
 }
