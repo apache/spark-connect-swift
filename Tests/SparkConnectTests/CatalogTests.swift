@@ -571,6 +571,25 @@ struct CatalogTests {
   }
 
   @Test
+  func getCreateTableString() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.range(1).write.saveAsTable(tableName)
+        let stmt = try await spark.catalog.getCreateTableString(tableName)
+        #expect(stmt.contains("CREATE TABLE"))
+        #expect(stmt.contains(tableName))
+      })
+
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
+        try await spark.catalog.getCreateTableString("not_exist_table")
+      }
+    }
+    await spark.stop()
+  }
+
+  @Test
   func truncateTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await spark.version >= "4.2" {

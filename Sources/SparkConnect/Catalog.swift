@@ -401,6 +401,25 @@ public actor Catalog: Sendable {
     return properties
   }
 
+  /// Returns the CREATE TABLE statement string for the given table.
+  /// - Parameters:
+  ///   - tableName: A qualified or unqualified name that designates a table.
+  ///   - asSerde: If true, returns the CREATE TABLE statement in Hive `SERDE` format.
+  /// - Returns: The CREATE TABLE statement string.
+  public func getCreateTableString(_ tableName: String, asSerde: Bool = false) async throws
+    -> String
+  {
+    let df = getDataFrame({
+      var getCreateTableString = Spark_Connect_GetCreateTableString()
+      getCreateTableString.tableName = tableName
+      getCreateTableString.asSerde = asSerde
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .getCreateTableString(getCreateTableString)
+      return catalog
+    })
+    return try await df.collect()[0][0] as! String
+  }
+
   /// Check if the table or view with the specified name exists. This can either be a temporary
   /// view or a table/view.
   /// - Parameter tableName: a qualified or unqualified name that designates a table/view. It follows the same
