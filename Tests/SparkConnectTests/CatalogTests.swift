@@ -191,6 +191,31 @@ struct CatalogTests {
   }
 
   @Test
+  func listViews() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      #expect(try await spark.catalog.listViews().count == 0)
+
+      let viewName = ("VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: ""))
+        .lowercased()
+      try await SQLHelper.withTempView(spark, viewName)({
+        try await spark.range(1).createTempView(viewName)
+
+        let views = try await spark.catalog.listViews()
+        #expect(views.count == 1)
+        #expect(views[0].name == viewName)
+        #expect(views[0].catalog == nil)
+        #expect(views[0].namespace == [])
+        #expect(views[0].description == nil)
+        #expect(views[0].isTemporary == true)
+        #expect(try await spark.catalog.listViews(pattern: "*") == views)
+        #expect(try await spark.catalog.listViews(pattern: "non_exist").count == 0)
+      })
+    }
+    await spark.stop()
+  }
+
+  @Test
   func getTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
 
