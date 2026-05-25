@@ -71,3 +71,7 @@ fastlane/test_output
 *.swp
 *~
 .DS_Store
+
+## Python
+*.pyc
+*.pyo
