@@ -239,6 +239,28 @@ struct CatalogTests {
   }
 
   @Test
+  func getTableProperties() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let tableName = ("TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: ""))
+        .lowercased()
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.sql(
+          "CREATE TABLE \(tableName) (id INT) TBLPROPERTIES ('k1'='v1', 'k2'='v2')"
+        ).count()
+        let properties = try await spark.catalog.getTableProperties(tableName)
+        #expect(properties["k1"] == "v1")
+        #expect(properties["k2"] == "v2")
+      })
+
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
+        try await spark.catalog.getTableProperties("not_exist_table")
+      }
+    }
+    await spark.stop()
+  }
+
+  @Test
   func createTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
