@@ -383,6 +383,24 @@ public actor Catalog: Sendable {
     }.first!
   }
 
+  /// Get the table properties of the table with the specified name.
+  /// - Parameter tableName: a qualified or unqualified name that designates a table.
+  /// - Returns: A dictionary of table properties.
+  public func getTableProperties(_ tableName: String) async throws -> [String: String] {
+    let df = getDataFrame({
+      var getTableProperties = Spark_Connect_GetTableProperties()
+      getTableProperties.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .getTableProperties(getTableProperties)
+      return catalog
+    })
+    var properties: [String: String] = [:]
+    for row in try await df.collect() {
+      properties[try row.get(0) as! String] = try row.get(1) as? String
+    }
+    return properties
+  }
+
   /// Check if the table or view with the specified name exists. This can either be a temporary
   /// view or a table/view.
   /// - Parameter tableName: a qualified or unqualified name that designates a table/view. It follows the same
