@@ -161,6 +161,54 @@ public actor Catalog: Sendable {
     try await df.count()
   }
 
+  /// Creates a database with the specified name.
+  /// - Parameters:
+  ///   - dbName: name of the database to create.
+  ///   - ifNotExists: if true, no error is thrown if the database already exists.
+  ///   - properties: additional database properties.
+  public func createDatabase(
+    _ dbName: String,
+    ifNotExists: Bool = false,
+    properties: [String: String]? = nil
+  ) async throws {
+    let df = getDataFrame({
+      var createDatabase = Spark_Connect_CreateDatabase()
+      createDatabase.dbName = dbName
+      createDatabase.ifNotExists = ifNotExists
+      if let properties {
+        for (k, v) in properties {
+          createDatabase.properties[k] = v
+        }
+      }
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .createDatabase(createDatabase)
+      return catalog
+    })
+    try await df.count()
+  }
+
+  /// Drops the database with the specified name.
+  /// - Parameters:
+  ///   - dbName: name of the database to drop.
+  ///   - ifExists: if true, no error is thrown if the database does not exist.
+  ///   - cascade: if true, drops the database and all its tables/functions.
+  public func dropDatabase(
+    _ dbName: String,
+    ifExists: Bool = false,
+    cascade: Bool = false
+  ) async throws {
+    let df = getDataFrame({
+      var dropDatabase = Spark_Connect_DropDatabase()
+      dropDatabase.dbName = dbName
+      dropDatabase.ifExists = ifExists
+      dropDatabase.cascade = cascade
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .dropDatabase(dropDatabase)
+      return catalog
+    })
+    try await df.count()
+  }
+
   /// Returns a list of databases available across all sessions.
   /// - Parameter pattern: The pattern that the database name needs to match.
   /// - Returns: A list of ``Database``.
