@@ -584,6 +584,20 @@ public actor Catalog: Sendable {
     try await df.count()
   }
 
+  /// Recovers all the partitions in the directory of a table and update the catalog.
+  /// - Parameter tableName: A qualified or unqualified name that designates a table.
+  /// If no database identifier is provided, it refers to a table in the current database.
+  public func recoverPartitions(_ tableName: String) async throws {
+    let df = getDataFrame({
+      var recoverPartitions = Spark_Connect_RecoverPartitions()
+      recoverPartitions.tableName = tableName
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .recoverPartitions(recoverPartitions)
+      return catalog
+    })
+    try await df.count()
+  }
+
   /// Analyzes the given table to compute statistics that can be used by the query optimizer.
   /// - Parameters:
   ///   - tableName: A qualified or unqualified name that designates a table.

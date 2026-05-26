@@ -609,6 +609,23 @@ struct CatalogTests {
   }
 
   @Test
+  func recoverPartitions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      try await spark.sql(
+        "CREATE TABLE \(tableName) (id INT) USING PARQUET PARTITIONED BY (p INT)"
+      ).count()
+      try await spark.catalog.recoverPartitions(tableName)
+    })
+
+    try await #require(throws: SparkConnectError.TableOrViewNotFound) {
+      try await spark.catalog.recoverPartitions("not_exist_table")
+    }
+    await spark.stop()
+  }
+
+  @Test
   func analyzeTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await spark.version >= "4.2" {
