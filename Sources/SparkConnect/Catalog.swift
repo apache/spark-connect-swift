@@ -293,6 +293,37 @@ public actor Catalog: Sendable {
     }
   }
 
+  /// Returns a list of functions registered in the specified database (or the current database).
+  /// This includes all temporary functions.
+  /// - Parameters:
+  ///   - dbName: An optional database name. Defaults to the current database.
+  ///   - pattern: The pattern that the function name needs to match.
+  /// - Returns: A list of ``Function``.
+  public func listFunctions(dbName: String? = nil, pattern: String? = nil) async throws -> [Function]
+  {
+    let df = getDataFrame({
+      var listFunctions = Spark_Connect_ListFunctions()
+      if let dbName {
+        listFunctions.dbName = dbName
+      }
+      if let pattern {
+        listFunctions.pattern = pattern
+      }
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .listFunctions(listFunctions)
+      return catalog
+    })
+    return try await df.collect().map {
+      try Function(
+        name: $0[0] as! String,
+        catalog: $0[1] as? String,
+        namespace: $0[2] as? [String],
+        description: $0[3] as? String,
+        className: ($0[4] as? String) ?? "",
+        isTemporary: $0[5] as! Bool)
+    }
+  }
+
   /// Returns a list of views in the given database (or the current database).
   /// - Parameters:
   ///   - dbName: The name of the database to list views from.
