@@ -235,3 +235,31 @@ jobs:
         cd -
         swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release
+
+  integration-test-mac-spark41-iceberg:
+    runs-on: macos-26
+    timeout-minutes: 20
+    env:
+      SPARK_LOCAL_IP: localhost
+      SPARK_ICEBERG_TEST_ENABLED: "true"
+    steps:
+    - uses: actions/checkout@v6
+    - name: Select Xcode 26.5
+      run: sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
+    - name: Install Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: zulu
+        java-version: 21
+    - name: Build
+      run: swift test --filter NOTHING -c release
+    - name: Test
+      run: |
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.2/spark-4.1.2-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.1.2-bin-hadoop3.tgz && rm spark-4.1.2-bin-hadoop3.tgz
+        mv spark-4.1.2-bin-hadoop3 /tmp/spark
+        cd /tmp/spark/sbin
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.1.2,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        cd -
+        swift test --filter DataFrameWriterV2Tests -c release
+        swift test --filter IcebergTest -c release
