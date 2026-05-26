@@ -210,6 +210,27 @@ public actor DataFrameReader: Sendable {
     return load(paths)
   }
 
+  /// Loads a JSON dataset and returns the result as a ``DataFrame``.
+  /// The input ``DataFrame`` must have a single string column whose values are JSON documents.
+  /// - Parameter jsonDataset: A ``DataFrame`` with a single string column.
+  /// - Returns: A ``DataFrame``.
+  public func json(_ jsonDataset: DataFrame) async -> DataFrame {
+    var parse = Parse()
+    parse.format = .json
+    parse.options = self.extraOptions.toStringDictionary()
+    if case .root(let input) = await jsonDataset.plan.opType {
+      parse.input = input
+    }
+
+    var relation = Relation()
+    relation.parse = parse
+
+    var plan = Plan()
+    plan.opType = .root(relation)
+
+    return DataFrame(spark: sparkSession, plan: plan)
+  }
+
   /// Loads an XML file and returns the result as a ``DataFrame``.
   /// - Parameter path: A path string
   /// - Returns: A ``DataFrame``.
