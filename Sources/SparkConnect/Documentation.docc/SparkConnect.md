@@ -18,8 +18,33 @@ SparkConnect is a modern Swift library that provides a native interface to Apach
 ### Getting Started
 
 - <doc:GettingStarted>
+- <doc:Examples>
+
+### Sessions
+
 - ``SparkSession``
 
-### DataFrame Operations
+### DataFrames
 
 - ``DataFrame``
+- ``GroupedData``
+- ``Row``
+- ``StorageLevel``
+
+### Data I/O
+
+- ``DataFrameReader``
+- ``DataFrameWriter``
+- ``MergeIntoWriter``
+
+### Catalog & Configuration
+
+- ``Catalog``
+- ``RuntimeConf``
+
+### Streaming
+
+- ``DataStreamReader``
+- ``DataStreamWriter``
+- ``StreamingQuery``
+- ``StreamingQueryManager``
