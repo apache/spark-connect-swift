@@ -34,17 +34,25 @@ let csvDf = spark.read.csv("path/to/file.csv")
 ### Creating Sessions
 
 - ``builder``
+- ``newSession()``
 - ``stop()``
+
+### Session Information
+
+- ``version``
 
 ### DataFrame Operations
 
 - ``emptyDataFrame``
+- ``range(_:)``
 - ``range(_:_:_:)``
 - ``sql(_:)``
+- ``table(_:)``
 
 ### Data I/O
 
 - ``read``
+- ``readStream``
 
 ### Configuration
 
@@ -63,3 +71,17 @@ let csvDf = spark.read.csv("path/to/file.csv")
 - ``interruptAll()``
 - ``interruptTag(_:)``
 - ``interruptOperation(_:)``
+
+### Artifacts & External Commands
+
+- ``addArtifact(_:)``
+- ``addArtifacts(_:)``
+- ``executeCommand(_:_:_:)``
+
+### Streaming
+
+- ``streams``
+
+### Utilities
+
+- ``time(_:)``

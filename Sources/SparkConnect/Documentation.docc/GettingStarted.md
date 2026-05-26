@@ -99,3 +99,22 @@ csvDf.write
     .mode("overwrite")
     .orc("path/to/output")
 ```
+
+### 5. Catalog Operations
+
+```swift
+// Create / drop databases
+try await spark.catalog.createDatabase("demo", ifNotExists: true)
+
+// Discover tables, views, and functions
+let tables = try await spark.catalog.listTables(pattern: "*")
+let views  = try await spark.catalog.listViews()
+let funcs  = try await spark.catalog.listFunctions(pattern: "to_*")
+
+// Inspect a specific function
+let fn = try await spark.catalog.getFunction("to_date")
+
+// Partition maintenance and table statistics
+try await spark.catalog.recoverPartitions("my_partitioned_table")
+try await spark.catalog.analyzeTable("my_table", noScan: true)
+```
