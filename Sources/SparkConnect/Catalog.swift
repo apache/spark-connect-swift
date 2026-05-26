@@ -488,6 +488,55 @@ public actor Catalog: Sendable {
     }
   }
 
+  /// Get the function with the specified name. This function can be a temporary function or a
+  /// function. It follows the same resolution rule with SQL: search for built-in/temp functions
+  /// first then functions in the current database (namespace).
+  /// - Parameter functionName: name of the function to get.
+  /// - Returns: The function found by the name.
+  public func getFunction(_ functionName: String) async throws -> Function {
+    let df = getDataFrame({
+      var getFunction = Spark_Connect_GetFunction()
+      getFunction.functionName = functionName
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .getFunction(getFunction)
+      return catalog
+    })
+    return try await df.collect().map {
+      try Function(
+        name: $0[0] as! String,
+        catalog: $0[1] as? String,
+        namespace: $0[2] as? [String],
+        description: $0[3] as? String,
+        className: $0[4] as! String,
+        isTemporary: $0[5] as! Bool)
+    }.first!
+  }
+
+  /// Get the function with the specified name in the specified database.
+  /// - Parameters:
+  ///   - dbName: an unqualified name that designates a database.
+  ///   - functionName: an unqualified name that designates a function.
+  /// - Returns: The function found by the name in the specified database.
+  public func getFunction(_ dbName: String, _ functionName: String) async throws -> Function {
+    let df = getDataFrame({
+      var getFunction = Spark_Connect_GetFunction()
+      getFunction.functionName = functionName
+      getFunction.dbName = dbName
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .getFunction(getFunction)
+      return catalog
+    })
+    return try await df.collect().map {
+      try Function(
+        name: $0[0] as! String,
+        catalog: $0[1] as? String,
+        namespace: $0[2] as? [String],
+        description: $0[3] as? String,
+        className: $0[4] as! String,
+        isTemporary: $0[5] as! Bool)
+    }.first!
+  }
+
   /// Check if the function with the specified name exists. This can either be a temporary function
   /// or a function.
   /// - Parameter functionName: a qualified or unqualified name that designates a function. It follows the same
