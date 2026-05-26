@@ -584,6 +584,22 @@ public actor Catalog: Sendable {
     try await df.count()
   }
 
+  /// Analyzes the given table to compute statistics that can be used by the query optimizer.
+  /// - Parameters:
+  ///   - tableName: A qualified or unqualified name that designates a table.
+  ///   - noScan: If true, only basic statistics (row count) are computed without scanning the data.
+  public func analyzeTable(_ tableName: String, noScan: Bool = false) async throws {
+    let df = getDataFrame({
+      var analyzeTable = Spark_Connect_AnalyzeTable()
+      analyzeTable.tableName = tableName
+      analyzeTable.noScan = noScan
+      var catalog = Spark_Connect_Catalog()
+      catalog.catType = .analyzeTable(analyzeTable)
+      return catalog
+    })
+    try await df.count()
+  }
+
   /// Invalidates and refreshes all the cached data (and the associated metadata) for any ``DataFrame``
   /// that contains the given data source path. Path matching is by checking for sub-directories,
   /// i.e. "/" would invalidate everything that is cached and "/test/parent" would invalidate

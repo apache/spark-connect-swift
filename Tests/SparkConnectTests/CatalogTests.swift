@@ -609,6 +609,24 @@ struct CatalogTests {
   }
 
   @Test
+  func analyzeTable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.range(10).write.saveAsTable(tableName)
+        try await spark.catalog.analyzeTable(tableName)
+        try await spark.catalog.analyzeTable(tableName, noScan: true)
+      })
+
+      try await #require(throws: SparkConnectError.TableOrViewNotFound) {
+        try await spark.catalog.analyzeTable("not_exist_table")
+      }
+    }
+    await spark.stop()
+  }
+
+  @Test
   func refreshByPath() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
