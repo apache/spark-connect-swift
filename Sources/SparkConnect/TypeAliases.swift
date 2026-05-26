@@ -45,6 +45,7 @@ typealias NamedTable = Spark_Connect_Read.NamedTable
 typealias OneOf_Analyze = AnalyzePlanRequest.OneOf_Analyze
 typealias OneOf_CatType = Spark_Connect_Catalog.OneOf_CatType
 typealias OutputType = Spark_Connect_OutputType
+typealias Parse = Spark_Connect_Parse
 typealias Plan = Spark_Connect_Plan
 typealias Project = Spark_Connect_Project
 typealias Range = Spark_Connect_Range

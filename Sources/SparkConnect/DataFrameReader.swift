@@ -226,6 +226,27 @@ public actor DataFrameReader: Sendable {
     return load(paths)
   }
 
+  /// Loads an XML dataset and returns the result as a ``DataFrame``.
+  /// The input ``DataFrame`` must have a single string column whose values are XML documents.
+  /// - Parameter xmlDataset: A ``DataFrame`` with a single string column.
+  /// - Returns: A ``DataFrame``.
+  public func xml(_ xmlDataset: DataFrame) async -> DataFrame {
+    var parse = Parse()
+    parse.format = .xml
+    parse.options = self.extraOptions.toStringDictionary()
+    if case .root(let input) = await xmlDataset.plan.opType {
+      parse.input = input
+    }
+
+    var relation = Relation()
+    relation.parse = parse
+
+    var plan = Plan()
+    plan.opType = .root(relation)
+
+    return DataFrame(spark: sparkSession, plan: plan)
+  }
+
   /// Loads an ORC file and returns the result as a ``DataFrame``.
   /// - Parameter path: A path string
   /// - Returns: A ``DataFrame``.

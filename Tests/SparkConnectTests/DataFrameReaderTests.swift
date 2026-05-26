@@ -62,6 +62,20 @@ struct DataFrameReaderTests {
   }
 
   @Test
+  func xmlDataset() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2.0" {
+      let xmlDF = try await spark.sql(
+        "SELECT * FROM VALUES "
+          + "('<person><name>Alice</name><age>25</age></person>'), "
+          + "('<person><name>Bob</name><age>30</age></person>') AS T(value)"
+      )
+      #expect(try await spark.read.option("rowTag", "person").xml(xmlDF).count() == 2)
+    }
+    await spark.stop()
+  }
+
+  @Test
   func orc() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let path = "../examples/src/main/resources/users.orc"
