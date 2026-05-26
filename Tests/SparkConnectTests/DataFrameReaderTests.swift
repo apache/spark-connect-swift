@@ -50,6 +50,20 @@ struct DataFrameReaderTests {
   }
 
   @Test
+  func jsonDataset() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2.0" {
+      let jsonDF = try await spark.sql(
+        "SELECT * FROM VALUES "
+          + "('{\"name\":\"Alice\",\"age\":25}'), "
+          + "('{\"name\":\"Bob\",\"age\":30}') AS T(value)"
+      )
+      #expect(try await spark.read.json(jsonDF).count() == 2)
+    }
+    await spark.stop()
+  }
+
+  @Test
   func xml() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await spark.version >= "4.0.0" {
