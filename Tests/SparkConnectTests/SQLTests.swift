@@ -101,7 +101,9 @@ struct SQLTests {
   ]
 
   let queriesForSpark42Only: [String] = [
-    "time.sql"
+    "geography.sql",
+    "geometry.sql",
+    "time.sql",
   ]
 
   @Test
