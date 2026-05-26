@@ -194,6 +194,27 @@ public actor DataFrameReader: Sendable {
     return load(paths)
   }
 
+  /// Loads a CSV dataset and returns the result as a ``DataFrame``.
+  /// The input ``DataFrame`` must have a single string column whose values are CSV records.
+  /// - Parameter csvDataset: A ``DataFrame`` with a single string column.
+  /// - Returns: A ``DataFrame``.
+  public func csv(_ csvDataset: DataFrame) async -> DataFrame {
+    var parse = Parse()
+    parse.format = .csv
+    parse.options = self.extraOptions.toStringDictionary()
+    if case .root(let input) = await csvDataset.plan.opType {
+      parse.input = input
+    }
+
+    var relation = Relation()
+    relation.parse = parse
+
+    var plan = Plan()
+    plan.opType = .root(relation)
+
+    return DataFrame(spark: sparkSession, plan: plan)
+  }
+
   /// Loads a JSON file and returns the result as a ``DataFrame``.
   /// - Parameter path: A path string
   /// - Returns: A ``DataFrame``.

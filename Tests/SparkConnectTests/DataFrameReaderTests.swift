@@ -40,6 +40,20 @@ struct DataFrameReaderTests {
   }
 
   @Test
+  func csvDataset() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2.0" {
+      let csvDF = try await spark.sql(
+        "SELECT * FROM VALUES "
+          + "('Alice,25'), "
+          + "('Bob,30') AS T(value)"
+      )
+      #expect(try await spark.read.csv(csvDF).count() == 2)
+    }
+    await spark.stop()
+  }
+
+  @Test
   func json() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let path = "../examples/src/main/resources/people.json"
