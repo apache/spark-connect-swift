@@ -363,6 +363,24 @@ struct CatalogTests {
   }
 
   @Test
+  func getFunction() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+
+    let function = try await spark.catalog.getFunction("base64")
+    #expect(function.name == "base64")
+    #expect(function.isTemporary)
+    #expect(!function.className.isEmpty)
+
+    try await #require(throws: (any Error).self) {
+      try await spark.catalog.getFunction("non_exist_function")
+    }
+    try await #require(throws: (any Error).self) {
+      try await spark.catalog.getFunction("default", "non_exist_function")
+    }
+    await spark.stop()
+  }
+
+  @Test
   func createTempView() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
