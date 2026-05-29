@@ -93,7 +93,7 @@ jobs:
             Unable to detect the workflow run for testing the changes in your PR.
 
             1. If you did not enable GitHub Actions in your forked repository, please enable it by clicking the button as shown in the image below. See also [Managing Github Actions Settings for a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository) for more details.
-            2. It is possible your branch is based on the old \`main\` branch in Apache Spark, please sync your branch to the latest main branch. For example as below:
+            2. It is possible your branch is based on the old \`main\` branch in Apache Spark Connect Client for Swift, please sync your branch to the latest main branch. For example as below:
                 \`\`\`bash
                 git fetch upstream
                 git rebase upstream/main
