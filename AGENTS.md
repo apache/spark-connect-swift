@@ -46,8 +46,10 @@ catalog, ML) over gRPC, exchanging results in Apache Arrow format.
 - `Examples/` — runnable sample apps (`pi`, `spark-sql`, `stream`, `web`, `app`,
   `pyspark-connect`), each with its own `Package.swift` and `Dockerfile`.
 - `dev/` — Python maintainer scripts (JIRA + PR merge tooling).
-- `.github/workflows/build_and_test.yml` — CI: license check, multi-platform
-  build, and integration tests.
+- `.github/workflows/build_main.yml` — CI entry point: runs on push to all
+  branches and calls the reusable `build_and_test.yml` (license check,
+  multi-platform build, integration tests). `notify_test_workflow.yml` and
+  `update_build_status.yml` mirror forked-repo CI results onto PR checks.
 
 ## Build
 
