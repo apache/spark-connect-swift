@@ -183,4 +183,71 @@ struct IcebergTests {
 
     await spark.stop()
   }
+
+  // New syntaxes from SPARK-51207 (SPIP: Constraints in DSv2)
+  @Test
+  func primary_key() async throws {
+    guard icebergEnabled else { return }
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version.starts(with: "4.1") {
+      let tableName =
+        "\(ICEBERG_DATABASE).TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.sql("CREATE TABLE \(tableName)(a INT, PRIMARY KEY(a)) USING ICEBERG").count()
+        try await spark.sql("INSERT INTO \(tableName) VALUES (1), (2)").count()
+      })
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func foreign_key() async throws {
+    guard icebergEnabled else { return }
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version.starts(with: "4.1") {
+      let tableName1 =
+        "\(ICEBERG_DATABASE).TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      let tableName2 =
+        "\(ICEBERG_DATABASE).TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName1, tableName2)({
+        try await spark.sql("CREATE TABLE \(tableName1)(id INT) USING ICEBERG").count()
+        try await spark.sql(
+          "CREATE TABLE \(tableName2)(fk INT, FOREIGN KEY(fk) REFERENCES \(tableName1)(id)) USING ICEBERG"
+        ).count()
+      })
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func unique() async throws {
+    guard icebergEnabled else { return }
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version.starts(with: "4.1") {
+      let tableName =
+        "\(ICEBERG_DATABASE).TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.sql("CREATE TABLE \(tableName)(a INT UNIQUE) USING ICEBERG").count()
+        try await spark.sql("INSERT INTO \(tableName) VALUES (1), (2)").count()
+      })
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func check() async throws {
+    guard icebergEnabled else { return }
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version.starts(with: "4.1") {
+      let tableName =
+        "\(ICEBERG_DATABASE).TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await SQLHelper.withTable(spark, tableName)({
+        try await spark.sql(
+          "CREATE TABLE \(tableName)(a INT, CONSTRAINT c1 CHECK (a > 0)) USING ICEBERG"
+        ).count()
+        try await spark.sql("INSERT INTO \(tableName) VALUES (-1)").count()
+      })
+    }
+    await spark.stop()
+  }
 }
