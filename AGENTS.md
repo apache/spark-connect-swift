@@ -128,3 +128,11 @@ This repo follows standard Apache Spark process.
 - Test failures are usually "no server" or version mismatch, not code bugs —
   confirm a Spark Connect server is running and reachable at `SPARK_REMOTE`.
 - Keep dependency versions as `exact` pins.
+
+## Security
+
+Security model: [SECURITY.md](./SECURITY.md)
+
+Agents that scan this repository should consult `SECURITY.md`
+for the project's threat model, in-scope / out-of-scope
+declarations, and known non-findings before reporting issues.
