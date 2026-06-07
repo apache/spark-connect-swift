@@ -66,6 +66,33 @@ public actor DataFrameStatFunctions: Sendable {
     return try await collectDouble { SparkConnectClient.getStatCorr($0, col1, col2, method) }
   }
 
+  /// Returns a stratified sample without replacement based on the fraction given on each stratum.
+  /// - Parameters:
+  ///   - col: The name of the column that defines the strata.
+  ///   - fractions: The sampling fraction for each stratum. If a stratum is not specified, its
+  ///   fraction is treated as zero. Each fraction must be in `[0, 1]`.
+  ///   - seed: The random seed.
+  /// - Returns: A ``DataFrame`` representing the stratified sample.
+  public func sampleBy<T: Sendable & Hashable>(
+    _ col: String, _ fractions: [T: Double], _ seed: Int64
+  ) async -> DataFrame {
+    let fractionLiterals = fractions.map { (stratumLiteral($0.key), $0.value) }
+    return await transform { SparkConnectClient.getStatSampleBy($0, col, fractionLiterals, seed) }
+  }
+
+  /// Returns a stratified sample without replacement based on the fraction given on each stratum,
+  /// using a random seed.
+  /// - Parameters:
+  ///   - col: The name of the column that defines the strata.
+  ///   - fractions: The sampling fraction for each stratum. If a stratum is not specified, its
+  ///   fraction is treated as zero. Each fraction must be in `[0, 1]`.
+  /// - Returns: A ``DataFrame`` representing the stratified sample.
+  public func sampleBy<T: Sendable & Hashable>(
+    _ col: String, _ fractions: [T: Double]
+  ) async -> DataFrame {
+    return await sampleBy(col, fractions, Int64.random(in: Int64.min...Int64.max))
+  }
+
   // MARK: - Helpers
 
   /// Builds a single-value ``DataFrame`` from this ``DataFrame``'s plan using the given plan
@@ -74,6 +101,36 @@ public actor DataFrameStatFunctions: Sendable {
     let plan = await df.getPlan() as! Plan
     let result = DataFrame(spark: await df.spark, plan: f(plan.root))
     return try await result.collect()[0].get(0) as! Double
+  }
+
+  /// Builds a new ``DataFrame`` from this ``DataFrame``'s plan using the given plan builder.
+  private func transform(_ f: (Relation) -> Plan) async -> DataFrame {
+    let plan = await df.getPlan() as! Plan
+    return DataFrame(spark: await df.spark, plan: f(plan.root))
+  }
+
+  /// Converts a `sampleBy` stratum value to an ``ExpressionLiteral``.
+  private func stratumLiteral(_ value: Sendable) -> ExpressionLiteral {
+    var literal = ExpressionLiteral()
+    switch value {
+    case let value as Bool:
+      literal.boolean = value
+    case let value as Int:
+      literal.long = Int64(value)
+    case let value as Int32:
+      literal.integer = value
+    case let value as Int64:
+      literal.long = value
+    case let value as Float:
+      literal.float = value
+    case let value as Double:
+      literal.double = value
+    case let value as String:
+      literal.string = value
+    default:
+      literal.string = value as! String
+    }
+    return literal
   }
 }
 

@@ -57,4 +57,19 @@ struct DataFrameStatFunctionsTests {
     #expect(try await df.stat.corr("c1", "c2", method: "pearson") == 1.0)
     await spark.stop()
   }
+
+  @Test
+  func sampleBy() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Strata 0, 1, 2 each have 33 rows.
+    let df = try await spark.sql("SELECT id % 3 AS key FROM range(0, 99)")
+    // A fraction of 1.0 keeps every row of a stratum; an unspecified stratum (or 0.0) keeps none,
+    // so the result count is deterministic regardless of the seed.
+    #expect(try await df.stat.sampleBy("key", [0: 1.0, 1: 0.0], 0).count() == 33)
+    // `Int64` strata are also supported.
+    #expect(try await df.stat.sampleBy("key", [Int64(0): 1.0, Int64(2): 1.0], 0).count() == 66)
+    // The seed is optional.
+    #expect(try await df.stat.sampleBy("key", [0: 1.0, 1: 1.0, 2: 1.0]).count() == 99)
+    await spark.stop()
+  }
 }
