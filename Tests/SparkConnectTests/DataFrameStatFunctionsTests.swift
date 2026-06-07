@@ -24,6 +24,21 @@ import Testing
 @Suite(.serialized)
 struct DataFrameStatFunctionsTests {
   @Test
+  func crosstab() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT * FROM VALUES (1, 1), (1, 2), (2, 1), (2, 1) AS T(c1, c2)")
+    let ct = try await df.stat.crosstab("c1", "c2")
+    let columns = try await ct.columns
+    // The name of the first column is `<col1>_<col2>`.
+    #expect(columns[0] == "c1_c2")
+    // The remaining column names are the distinct values of `col2`.
+    #expect(Set(columns.dropFirst()) == ["1", "2"])
+    // One row per distinct value of `col1`.
+    #expect(try await ct.count() == 2)
+    await spark.stop()
+  }
+
+  @Test
   func cov() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.sql("SELECT * FROM VALUES (1, 2), (2, 4), (3, 6) AS T(c1, c2)")
