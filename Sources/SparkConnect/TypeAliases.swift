@@ -67,6 +67,7 @@ typealias StructType = Spark_Connect_DataType.Struct
 typealias Tail = Spark_Connect_Tail
 typealias UserContext = Spark_Connect_UserContext
 typealias UnresolvedAttribute = Spark_Connect_Expression.UnresolvedAttribute
+typealias WithColumns = Spark_Connect_WithColumns
 typealias WithColumnsRenamed = Spark_Connect_WithColumnsRenamed
 typealias WriteOperation = Spark_Connect_WriteOperation
 typealias WriteOperationV2 = Spark_Connect_WriteOperationV2

@@ -557,6 +557,18 @@ public actor SparkConnectClient {
     return createPlan { $0.withColumnsRenamed = withColumnsRenamed }
   }
 
+  static func getWithColumns(_ child: Relation, _ colsMap: [String: String]) -> Plan {
+    var withColumns = WithColumns()
+    withColumns.input = child
+    withColumns.aliases = colsMap.map { (name, expr) in
+      var alias = Spark_Connect_Expression.Alias()
+      alias.expr = expr.toExpression
+      alias.name = [name]
+      return alias
+    }
+    return createPlan { $0.withColumns = withColumns }
+  }
+
   static func getFilter(_ child: Relation, _ conditionExpr: String) -> Plan {
     var filter = Filter()
     filter.input = child
