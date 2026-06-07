@@ -142,6 +142,25 @@ extension DataFrame {
       spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, colsMap))
   }
 
+  /// Returns a new ``DataFrame`` by adding a column or replacing the existing column that has the
+  /// same name.
+  /// - Parameters:
+  ///   - colName: A new column name.
+  ///   - expr: A SQL expression string for the new column.
+  /// - Returns: A ``DataFrame`` with the new or replaced column.
+  public func withColumn(_ colName: String, _ expr: String) -> DataFrame {
+    return withColumns([colName: expr])
+  }
+
+  /// Returns a new ``DataFrame`` by adding columns or replacing the existing columns that have the
+  /// same names.
+  /// - Parameter colsMap: A dictionary of column name and SQL expression string.
+  /// - Returns: A ``DataFrame`` with the new or replaced columns.
+  public func withColumns(_ colsMap: [String: String]) -> DataFrame {
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getWithColumns(self.plan.root, colsMap))
+  }
+
   // MARK: - Filtering and Sorting
 
   /// Filters rows using the given condition.

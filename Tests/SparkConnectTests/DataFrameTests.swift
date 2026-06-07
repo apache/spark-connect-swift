@@ -284,6 +284,21 @@ struct DataFrameTests {
   }
 
   @Test
+  func withColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Add a new column.
+    #expect(try await spark.range(1).withColumn("b", "id + 1").columns == ["id", "b"])
+    #expect(try await spark.range(1).withColumn("b", "id + 1").collect() == [Row(0, 1)])
+    // Replace an existing column in place.
+    #expect(try await spark.range(1).withColumn("id", "id + 1").columns == ["id"])
+    #expect(try await spark.range(1).withColumn("id", "id + 1").collect() == [Row(1)])
+    // Map overload: replace multiple existing columns (positions are preserved).
+    let df = try await spark.sql("SELECT 1 a, 2 b")
+    #expect(try await df.withColumns(["a": "a + 10", "b": "b + 20"]).collect() == [Row(11, 22)])
+    await spark.stop()
+  }
+
+  @Test
   func drop() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.sql("SELECT 1 a, 2 b, 3 c, 4 d")
