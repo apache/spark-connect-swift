@@ -66,6 +66,21 @@ public actor DataFrameStatFunctions: Sendable {
     return try await collectDouble { SparkConnectClient.getStatCorr($0, col1, col2, method) }
   }
 
+  /// Finds frequent items for columns, possibly with false positives. Uses the frequent element
+  /// count algorithm described in "https://doi.org/10.1145/762471.762473", proposed by Karp,
+  /// Schenker, and Papadimitriou.
+  /// - Parameters:
+  ///   - cols: The names of the columns to search frequent items in.
+  ///   - support: The minimum frequency for an item to be considered `frequent`. Should be greater
+  ///     than 1e-4.
+  /// - Returns: A ``DataFrame`` with the frequent items for each column. The output columns are
+  ///   named `{column}_freqItems`.
+  public func freqItems(_ cols: [String], support: Double = 0.01) async throws -> DataFrame {
+    let plan = await df.getPlan() as! Plan
+    return DataFrame(
+      spark: await df.spark, plan: SparkConnectClient.getFreqItems(plan.root, cols, support))
+  }
+
   // MARK: - Helpers
 
   /// Builds a single-value ``DataFrame`` from this ``DataFrame``'s plan using the given plan
