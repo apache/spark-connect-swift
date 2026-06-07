@@ -659,6 +659,44 @@ public actor SparkConnectClient {
     return createPlan { $0.tail = tail }
   }
 
+  static func getNAFill(
+    _ child: Relation, _ cols: [String], _ values: [ExpressionLiteral]
+  ) -> Plan {
+    var fillNa = Spark_Connect_NAFill()
+    fillNa.input = child
+    fillNa.cols = cols
+    fillNa.values = values
+    return createPlan { $0.fillNa = fillNa }
+  }
+
+  static func getNADrop(
+    _ child: Relation, _ cols: [String], _ minNonNulls: Int32?
+  ) -> Plan {
+    var dropNa = Spark_Connect_NADrop()
+    dropNa.input = child
+    dropNa.cols = cols
+    if let minNonNulls {
+      dropNa.minNonNulls = minNonNulls
+    }
+    return createPlan { $0.dropNa = dropNa }
+  }
+
+  static func getNAReplace(
+    _ child: Relation, _ cols: [String],
+    _ replacements: [(ExpressionLiteral, ExpressionLiteral)]
+  ) -> Plan {
+    var replace = Spark_Connect_NAReplace()
+    replace.input = child
+    replace.cols = cols
+    replace.replacements = replacements.map {
+      var replacement = Spark_Connect_NAReplace.Replacement()
+      replacement.oldValue = $0.0
+      replacement.newValue = $0.1
+      return replacement
+    }
+    return createPlan { $0.replace = replace }
+  }
+
   var result: [ExecutePlanResponse] = []
   private func addResponse(_ response: ExecutePlanResponse) {
     self.result.append(response)
