@@ -639,6 +639,17 @@ public actor SparkConnectClient {
     return createPlan { $0.corr = corr }
   }
 
+  static func getStatApproxQuantile(
+    _ child: Relation, _ cols: [String], _ probabilities: [Double], _ relativeError: Double
+  ) -> Plan {
+    var approxQuantile = Spark_Connect_StatApproxQuantile()
+    approxQuantile.input = child
+    approxQuantile.cols = cols
+    approxQuantile.probabilities = probabilities
+    approxQuantile.relativeError = relativeError
+    return createPlan { $0.approxQuantile = approxQuantile }
+  }
+
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
     var sort = Sort()
     sort.input = child

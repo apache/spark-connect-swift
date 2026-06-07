@@ -19,8 +19,7 @@
 
 /// Statistic functions for ``DataFrame``s.
 ///
-/// Use ``DataFrame/stat`` to access this. It mirrors PySpark's `DataFrameStatFunctions`
-/// (`df.stat.crosstab`, `df.stat.cov`, `df.stat.corr`).
+/// Use ``DataFrame/stat`` to access this. It mirrors PySpark's `DataFrameStatFunctions`.
 public actor DataFrameStatFunctions: Sendable {
   let df: DataFrame
 
@@ -64,6 +63,41 @@ public actor DataFrameStatFunctions: Sendable {
     _ col1: String, _ col2: String, method: String = "pearson"
   ) async throws -> Double {
     return try await collectDouble { SparkConnectClient.getStatCorr($0, col1, col2, method) }
+  }
+
+  /// Calculates the approximate quantiles of a numerical column of a ``DataFrame``.
+  /// - Parameters:
+  ///   - col: The name of the numerical column.
+  ///   - probabilities: A list of quantile probabilities. Each number must belong to `[0, 1]`.
+  ///     For example, 0 is the minimum, 0.5 is the median, 1 is the maximum.
+  ///   - relativeError: The relative target precision to achieve (greater than or equal to 0).
+  ///     If set to zero, the exact quantiles are computed, which could be very expensive. Note that
+  ///     values greater than 1 are accepted but give the same result as 1.
+  /// - Returns: The approximate quantiles at the given probabilities.
+  public func approxQuantile(
+    _ col: String, _ probabilities: [Double], _ relativeError: Double
+  ) async throws -> [Double] {
+    return try await approxQuantile([col], probabilities, relativeError)[0]
+  }
+
+  /// Calculates the approximate quantiles of numerical columns of a ``DataFrame``.
+  /// - Parameters:
+  ///   - cols: The names of the numerical columns.
+  ///   - probabilities: A list of quantile probabilities. Each number must belong to `[0, 1]`.
+  ///     For example, 0 is the minimum, 0.5 is the median, 1 is the maximum.
+  ///   - relativeError: The relative target precision to achieve (greater than or equal to 0).
+  ///     If set to zero, the exact quantiles are computed, which could be very expensive. Note that
+  ///     values greater than 1 are accepted but give the same result as 1.
+  /// - Returns: The approximate quantiles at the given probabilities of each column.
+  public func approxQuantile(
+    _ cols: [String], _ probabilities: [Double], _ relativeError: Double
+  ) async throws -> [[Double]] {
+    let plan = await df.getPlan() as! Plan
+    let result = DataFrame(
+      spark: await df.spark,
+      plan: SparkConnectClient.getStatApproxQuantile(plan.root, cols, probabilities, relativeError))
+    let quantilesPerColumn = try await result.collect()[0].get(0) as! [any Sendable]
+    return quantilesPerColumn.map { ($0 as! [any Sendable]).map { $0 as! Double } }
   }
 
   // MARK: - Helpers
