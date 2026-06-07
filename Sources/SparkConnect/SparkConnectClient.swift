@@ -612,6 +612,25 @@ public actor SparkConnectClient {
     return createPlan { $0.summary = summary }
   }
 
+  static func getStatCov(_ child: Relation, _ col1: String, _ col2: String) -> Plan {
+    var cov = Spark_Connect_StatCov()
+    cov.input = child
+    cov.col1 = col1
+    cov.col2 = col2
+    return createPlan { $0.cov = cov }
+  }
+
+  static func getStatCorr(
+    _ child: Relation, _ col1: String, _ col2: String, _ method: String
+  ) -> Plan {
+    var corr = Spark_Connect_StatCorr()
+    corr.input = child
+    corr.col1 = col1
+    corr.col2 = col2
+    corr.method = method
+    return createPlan { $0.corr = corr }
+  }
+
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
     var sort = Sort()
     sort.input = child
