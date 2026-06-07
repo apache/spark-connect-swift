@@ -20,12 +20,28 @@
 /// Statistic functions for ``DataFrame``s.
 ///
 /// Use ``DataFrame/stat`` to access this. It mirrors PySpark's `DataFrameStatFunctions`
-/// (`df.stat.cov`, `df.stat.corr`).
+/// (`df.stat.crosstab`, `df.stat.cov`, `df.stat.corr`).
 public actor DataFrameStatFunctions: Sendable {
   let df: DataFrame
 
   init(df: DataFrame) {
     self.df = df
+  }
+
+  /// Computes a pair-wise frequency table of the given columns. Also known as a contingency table.
+  /// The number of distinct values for each column should be less than `1e4`. At most `1e6` non-zero
+  /// pair frequencies will be returned. The first column of each row will be the distinct values of
+  /// `col1` and the column names will be the distinct values of `col2`. The name of the first column
+  /// will be `<col1>_<col2>`. Counts will be returned as `Long`s. Pairs that have no occurrences will
+  /// have zero as their counts.
+  /// - Parameters:
+  ///   - col1: The name of the first column. Distinct items will make the first item of each row.
+  ///   - col2: The name of the second column. Distinct items will make the column names of the ``DataFrame``.
+  /// - Returns: A ``DataFrame`` containing the contingency table.
+  public func crosstab(_ col1: String, _ col2: String) async throws -> DataFrame {
+    let plan = await df.getPlan() as! Plan
+    return DataFrame(
+      spark: await df.spark, plan: SparkConnectClient.getStatCrosstab(plan.root, col1, col2))
   }
 
   /// Calculates the sample covariance of two numerical columns of a ``DataFrame``.

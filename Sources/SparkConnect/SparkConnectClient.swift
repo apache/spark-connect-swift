@@ -612,6 +612,14 @@ public actor SparkConnectClient {
     return createPlan { $0.summary = summary }
   }
 
+  static func getStatCrosstab(_ child: Relation, _ col1: String, _ col2: String) -> Plan {
+    var crosstab = Spark_Connect_StatCrosstab()
+    crosstab.input = child
+    crosstab.col1 = col1
+    crosstab.col2 = col2
+    return createPlan { $0.crosstab = crosstab }
+  }
+
   static func getStatCov(_ child: Relation, _ col1: String, _ col2: String) -> Plan {
     var cov = Spark_Connect_StatCov()
     cov.input = child
