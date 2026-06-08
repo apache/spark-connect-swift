@@ -650,6 +650,24 @@ public actor SparkConnectClient {
     return createPlan { $0.approxQuantile = approxQuantile }
   }
 
+  static func getStatSampleBy(
+    _ child: Relation, _ col: String, _ fractions: [(ExpressionLiteral, Double)], _ seed: Int64
+  ) -> Plan {
+    var sampleBy = Spark_Connect_StatSampleBy()
+    sampleBy.input = child
+    var colExpr = Spark_Connect_Expression()
+    colExpr.exprType = .unresolvedAttribute(col.toUnresolvedAttribute)
+    sampleBy.col = colExpr
+    sampleBy.fractions = fractions.map {
+      var fraction = Spark_Connect_StatSampleBy.Fraction()
+      fraction.stratum = $0.0
+      fraction.fraction = $0.1
+      return fraction
+    }
+    sampleBy.seed = seed
+    return createPlan { $0.sampleBy = sampleBy }
+  }
+
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
     var sort = Sort()
     sort.input = child
