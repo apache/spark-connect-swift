@@ -85,4 +85,16 @@ struct DataFrameStatFunctionsTests {
     #expect(try await df.stat.sampleBy("key", [0: 1.0, 1: 1.0, 2: 1.0]).count() == 99)
     await spark.stop()
   }
+
+  @Test
+  func freqItems() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT * FROM VALUES (1, 2), (1, 2), (1, 2) AS T(a, b)")
+    // The result is a single-row `DataFrame` whose columns are named `{column}_freqItems`.
+    #expect(try await df.stat.freqItems(["a", "b"]).columns == ["a_freqItems", "b_freqItems"])
+    #expect(try await df.stat.freqItems(["a", "b"]).collect() == [Row(Array([1]), Array([2]))])
+    // `support` can be specified explicitly.
+    #expect(try await df.stat.freqItems(["a"], support: 0.5).collect() == [Row(Array([1]))])
+    await spark.stop()
+  }
 }

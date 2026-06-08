@@ -668,6 +668,14 @@ public actor SparkConnectClient {
     return createPlan { $0.sampleBy = sampleBy }
   }
 
+  static func getFreqItems(_ child: Relation, _ cols: [String], _ support: Double) -> Plan {
+    var freqItems = Spark_Connect_StatFreqItems()
+    freqItems.input = child
+    freqItems.cols = cols
+    freqItems.support = support
+    return createPlan { $0.freqItems = freqItems }
+  }
+
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
     var sort = Sort()
     sort.input = child
