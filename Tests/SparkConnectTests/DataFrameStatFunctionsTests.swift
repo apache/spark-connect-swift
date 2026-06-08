@@ -57,4 +57,17 @@ struct DataFrameStatFunctionsTests {
     #expect(try await df.stat.corr("c1", "c2", method: "pearson") == 1.0)
     await spark.stop()
   }
+
+  @Test
+  func approxQuantile() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(
+      "SELECT * FROM VALUES (1, 10), (2, 20), (3, 30), (4, 40), (5, 50) AS T(c1, c2)")
+    // Single column: exact quantiles (relativeError 0) at min, median, max.
+    #expect(try await df.stat.approxQuantile("c1", [0.0, 0.5, 1.0], 0.0) == [1.0, 3.0, 5.0])
+    // Multiple columns: one array of quantiles per column.
+    let quantiles = try await df.stat.approxQuantile(["c1", "c2"], [0.0, 0.5, 1.0], 0.0)
+    #expect(quantiles == [[1.0, 3.0, 5.0], [10.0, 30.0, 50.0]])
+    await spark.stop()
+  }
 }
