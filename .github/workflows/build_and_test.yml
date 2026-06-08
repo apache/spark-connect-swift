@@ -230,6 +230,11 @@ jobs:
         mv spark-4.0.2-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.2,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        # Iceberg jars are resolved at startup, so wait until the server is ready.
+        for i in $(seq 1 12); do
+          grep -q "Spark Connect server started at" /tmp/spark/logs/*.out 2>/dev/null && break
+          sleep 5
+        done
         cd -
         swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release
@@ -258,6 +263,11 @@ jobs:
         mv spark-4.1.2-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.1.2,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        # Iceberg jars are resolved at startup, so wait until the server is ready.
+        for i in $(seq 1 12); do
+          grep -q "Spark Connect server started at" /tmp/spark/logs/*.out 2>/dev/null && break
+          sleep 5
+        done
         cd -
         swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release
