@@ -159,7 +159,7 @@ jobs:
         tar xvfz spark-4.2.0-bin-hadoop3.tgz && rm spark-4.2.0-bin-hadoop3.tgz
         mv spark-4.2.0-bin-hadoop3/ /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh -c spark.sql.geospatial.enabled=true -c spark.sql.timeType.enabled=true
+        ./start-connect-server.sh -c spark.sql.timeType.enabled=true
         cd -
         swift test --no-parallel -c release
 
