@@ -43,7 +43,7 @@ catalog, ML) over gRPC, exchanging results in Apache Arrow format.
   - `Documentation.docc/` — DocC docs (published to Swift Package Index).
 - `Tests/SparkConnectTests/` — test suite (Swift Testing). `Resources/queries/`
   holds golden SQL result files.
-- `Examples/` — runnable sample apps (`pi`, `spark-sql`, `stream`, `web`, `app`,
+- `Examples/` — runnable sample apps (`pi`, `spark-sql`, `stream`, `app`,
   `pyspark-connect`), each with its own `Package.swift` and `Dockerfile`.
 - `dev/` — Python maintainer scripts (JIRA + PR merge tooling).
 - `.github/workflows/build_main.yml` — CI entry point: runs on push to all
