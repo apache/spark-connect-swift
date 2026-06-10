@@ -124,6 +124,6 @@ SELECT * FROM t
 +---+
 ```
 
-You can find more complete examples including `Spark SQL REPL`, `Web Server` and `Streaming` applications in the [Examples](https://github.com/apache/spark-connect-swift/tree/main/Examples) directory.
+You can find more complete examples including `Spark SQL REPL` and `Streaming` applications in the [Examples](https://github.com/apache/spark-connect-swift/tree/main/Examples) directory.
 
 This library also supports `SPARK_REMOTE` environment variable to specify the [Spark Connect connection string](https://spark.apache.org/docs/latest/spark-connect-overview.html#set-sparkremote-environment-variable) in order to provide more options.
