@@ -631,6 +631,42 @@ struct DataFrameTests {
   }
 
   @Test
+  func nearestByJoin() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let version = await spark.version
+    if version >= "4.2", !version.contains("preview") {
+      let users = try await spark.sql(
+        "SELECT * FROM VALUES (1, 10.0), (2, 20.0), (3, 30.0) AS T(user_id, score)")
+      let products = try await spark.sql(
+        "SELECT * FROM VALUES ('A', 11.0), ('B', 22.0), ('C', 5.0) AS S(product, pscore)")
+
+      let distance = await users.nearestByJoin(
+        products,
+        rankingExpression: "abs(score - pscore)",
+        numResults: 2,
+        mode: "approx",
+        direction: "distance"
+      ).select("user_id", "product").orderBy("user_id", "product")
+      #expect(
+        try await distance.collect() == [
+          Row(1, "A"), Row(1, "C"),
+          Row(2, "A"), Row(2, "B"),
+          Row(3, "A"), Row(3, "B"),
+        ])
+
+      let similarity = await users.nearestByJoin(
+        products,
+        rankingExpression: "-abs(score - pscore)",
+        numResults: 1,
+        mode: "approx",
+        direction: "similarity"
+      ).select("user_id", "product").orderBy("user_id")
+      #expect(try await similarity.collect() == [Row(1, "A"), Row(2, "B"), Row(3, "B")])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func except() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1, 3)

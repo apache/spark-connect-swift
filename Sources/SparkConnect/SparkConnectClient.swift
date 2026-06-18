@@ -1035,6 +1035,22 @@ public actor SparkConnectClient {
     return createPlan { $0.lateralJoin = lateralJoin }
   }
 
+  static func getNearestByJoin(
+    _ left: Relation, _ right: Relation,
+    rankingExpression: String, numResults: Int32,
+    mode: String, direction: String, joinType: String
+  ) -> Plan {
+    var nearestByJoin = NearestByJoin()
+    nearestByJoin.left = left
+    nearestByJoin.right = right
+    nearestByJoin.rankingExpression = rankingExpression.toExpression
+    nearestByJoin.numResults = numResults
+    nearestByJoin.mode = mode
+    nearestByJoin.direction = direction
+    nearestByJoin.joinType = joinType
+    return createPlan { $0.nearestByJoin = nearestByJoin }
+  }
+
   static func getSetOperation(
     _ left: Relation, _ right: Relation, _ opType: SetOpType, isAll: Bool = false,
     byName: Bool = false, allowMissingColumns: Bool = false
