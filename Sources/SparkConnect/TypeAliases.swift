@@ -42,6 +42,7 @@ typealias MapType = Spark_Connect_DataType.Map
 typealias MergeAction = Spark_Connect_MergeAction
 typealias MergeIntoTableCommand = Spark_Connect_MergeIntoTableCommand
 typealias NamedTable = Spark_Connect_Read.NamedTable
+typealias NearestByJoin = Spark_Connect_NearestByJoin
 typealias OneOf_Analyze = AnalyzePlanRequest.OneOf_Analyze
 typealias OneOf_CatType = Spark_Connect_Catalog.OneOf_CatType
 typealias OutputType = Spark_Connect_OutputType

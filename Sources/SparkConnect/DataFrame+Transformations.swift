@@ -474,6 +474,40 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: plan)
   }
 
+  /// Nearest-by top-K ranking join with another ``DataFrame``.
+  ///
+  /// For each row on the left (query) side, returns up to `numResults` rows from `right`
+  /// (the base side), ranked by `rankingExpression`.
+  ///
+  /// - Parameters:
+  ///   - right: The base ``DataFrame`` to search for matches.
+  ///   - rankingExpression: A scalar expression string used to rank candidate rows.
+  ///   - numResults: Maximum number of matches per left row. Must be between 1 and 100000.
+  ///   - mode: Search algorithm contract. One of `approx`, `exact`.
+  ///   - direction: Ranking direction. One of `distance`, `similarity`.
+  ///   - joinType: One of `inner` (default), `leftouter`.
+  /// - Returns: A ``DataFrame``.
+  public func nearestByJoin(
+    _ right: DataFrame,
+    rankingExpression: String,
+    numResults: Int32,
+    mode: String,
+    direction: String,
+    joinType: String = "inner"
+  ) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getNearestByJoin(
+      self.plan.root,
+      rightPlan,
+      rankingExpression: rankingExpression,
+      numResults: numResults,
+      mode: mode,
+      direction: direction,
+      joinType: joinType
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
   // MARK: - Set Operations
 
   /// Returns a new `DataFrame` containing rows in this `DataFrame` but not in another `DataFrame`.
