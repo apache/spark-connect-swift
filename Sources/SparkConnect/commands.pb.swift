@@ -453,6 +453,9 @@ nonisolated struct Spark_Connect_WriteOperation: Sendable {
   /// (Optional) Columns used for clustering the table.
   var clusteringColumns: [String] = []
 
+  /// (Optional) Whether schema evolution is enabled for the write.
+  var withSchemaEvolution: Bool = false
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   /// (Optional)
@@ -642,6 +645,9 @@ nonisolated struct Spark_Connect_WriteOperationV2: Sendable {
 
   /// (Optional) Columns used for clustering the table.
   var clusteringColumns: [String] = []
+
+  /// (Optional) Whether schema evolution is enabled for the write.
+  var withSchemaEvolution: Bool = false
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -2352,7 +2358,7 @@ nonisolated extension Spark_Connect_CreateDataFrameViewCommand: SwiftProtobuf.Me
 
 nonisolated extension Spark_Connect_WriteOperation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WriteOperation"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}source\0\u{1}path\0\u{1}table\0\u{1}mode\0\u{3}sort_column_names\0\u{3}partitioning_columns\0\u{3}bucket_by\0\u{1}options\0\u{3}clustering_columns\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{1}source\0\u{1}path\0\u{1}table\0\u{1}mode\0\u{3}sort_column_names\0\u{3}partitioning_columns\0\u{3}bucket_by\0\u{1}options\0\u{3}clustering_columns\0\u{3}with_schema_evolution\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2389,6 +2395,7 @@ nonisolated extension Spark_Connect_WriteOperation: SwiftProtobuf.Message, Swift
       case 8: try { try decoder.decodeSingularMessageField(value: &self._bucketBy) }()
       case 9: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.options) }()
       case 10: try { try decoder.decodeRepeatedStringField(value: &self.clusteringColumns) }()
+      case 11: try { try decoder.decodeSingularBoolField(value: &self.withSchemaEvolution) }()
       default: break
       }
     }
@@ -2434,6 +2441,9 @@ nonisolated extension Spark_Connect_WriteOperation: SwiftProtobuf.Message, Swift
     if !self.clusteringColumns.isEmpty {
       try visitor.visitRepeatedStringField(value: self.clusteringColumns, fieldNumber: 10)
     }
+    if self.withSchemaEvolution != false {
+      try visitor.visitSingularBoolField(value: self.withSchemaEvolution, fieldNumber: 11)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -2447,6 +2457,7 @@ nonisolated extension Spark_Connect_WriteOperation: SwiftProtobuf.Message, Swift
     if lhs._bucketBy != rhs._bucketBy {return false}
     if lhs.options != rhs.options {return false}
     if lhs.clusteringColumns != rhs.clusteringColumns {return false}
+    if lhs.withSchemaEvolution != rhs.withSchemaEvolution {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -2532,7 +2543,7 @@ nonisolated extension Spark_Connect_WriteOperation.BucketBy: SwiftProtobuf.Messa
 
 nonisolated extension Spark_Connect_WriteOperationV2: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".WriteOperationV2"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}table_name\0\u{1}provider\0\u{3}partitioning_columns\0\u{1}options\0\u{3}table_properties\0\u{1}mode\0\u{3}overwrite_condition\0\u{3}clustering_columns\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}input\0\u{3}table_name\0\u{1}provider\0\u{3}partitioning_columns\0\u{1}options\0\u{3}table_properties\0\u{1}mode\0\u{3}overwrite_condition\0\u{3}clustering_columns\0\u{3}with_schema_evolution\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2549,6 +2560,7 @@ nonisolated extension Spark_Connect_WriteOperationV2: SwiftProtobuf.Message, Swi
       case 7: try { try decoder.decodeSingularEnumField(value: &self.mode) }()
       case 8: try { try decoder.decodeSingularMessageField(value: &self._overwriteCondition) }()
       case 9: try { try decoder.decodeRepeatedStringField(value: &self.clusteringColumns) }()
+      case 10: try { try decoder.decodeSingularBoolField(value: &self.withSchemaEvolution) }()
       default: break
       }
     }
@@ -2586,6 +2598,9 @@ nonisolated extension Spark_Connect_WriteOperationV2: SwiftProtobuf.Message, Swi
     if !self.clusteringColumns.isEmpty {
       try visitor.visitRepeatedStringField(value: self.clusteringColumns, fieldNumber: 9)
     }
+    if self.withSchemaEvolution != false {
+      try visitor.visitSingularBoolField(value: self.withSchemaEvolution, fieldNumber: 10)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -2599,6 +2614,7 @@ nonisolated extension Spark_Connect_WriteOperationV2: SwiftProtobuf.Message, Swi
     if lhs.mode != rhs.mode {return false}
     if lhs._overwriteCondition != rhs._overwriteCondition {return false}
     if lhs.clusteringColumns != rhs.clusteringColumns {return false}
+    if lhs.withSchemaEvolution != rhs.withSchemaEvolution {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
