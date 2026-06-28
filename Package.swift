@@ -34,7 +34,7 @@ let package = Package(
       targets: ["SparkConnect"])
   ],
   dependencies: [
-    .package(url: "https://github.com/grpc/grpc-swift-2.git", exact: "2.4.1"),
+    .package(url: "https://github.com/grpc/grpc-swift-2.git", exact: "2.4.2"),
     .package(url: "https://github.com/grpc/grpc-swift-protobuf.git", exact: "2.4.1"),
     .package(url: "https://github.com/grpc/grpc-swift-nio-transport.git", exact: "2.8.0"),
     .package(url: "https://github.com/google/flatbuffers.git", exact: "25.12.19-2026-02-06-03fffb2"),
