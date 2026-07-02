@@ -44,8 +44,8 @@ public actor SparkSession {
   /// Create a session that uses the specified connection string and userID.
   /// - Parameters:
   ///   - connection: a string in a patter, `sc://{host}:{port}`
-  init(_ connection: String) {
-    self.client = SparkConnectClient(remote: connection)
+  init(_ connection: String) throws {
+    self.client = try SparkConnectClient(remote: connection)
     // Since `Session ID` belongs to `SparkSession`, we handle this here.
     if connection.contains(regexSessionID) {
       self.sessionID = connection.firstMatch(of: regexSessionID)!.1.lowercased()
@@ -604,7 +604,7 @@ public actor SparkSession {
     /// - Returns: A newly created ``SparkSession``.
     func create() async throws -> SparkSession {
       let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost:15002"
-      let session = SparkSession(sparkConf["spark.remote"] ?? remote)
+      let session = try SparkSession(sparkConf["spark.remote"] ?? remote)
       let response = try await session.client.connect(session.sessionID)
       await session.setVersion(response.sparkVersion.version)
       let isSuccess = try await session.client.setConf(map: sparkConf)
