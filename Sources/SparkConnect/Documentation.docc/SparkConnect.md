@@ -19,6 +19,7 @@ SparkConnect is a modern Swift library that provides a native interface to Apach
 
 - <doc:GettingStarted>
 - <doc:Examples>
+- <doc:SecurityGuide>
 
 ### Sessions
 
