@@ -155,7 +155,8 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.2.0-rc4-bin/spark-4.2.0-bin-hadoop3.tgz
+        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.2.0-rc5-bin/spark-4.2.0-bin-hadoop3.tgz
+        echo "3b36907aea8f9a4104fec1f99b5478af2472978813a28df37e05b673ee163b880d908ac1396a11c3bb369a36244b0c9f05ed6d8bcbe24070dc25ed43d7ff7c09  spark-4.2.0-bin-hadoop3.tgz" | shasum -a 512 -c
         tar xvfz spark-4.2.0-bin-hadoop3.tgz && rm spark-4.2.0-bin-hadoop3.tgz
         mv spark-4.2.0-bin-hadoop3/ /tmp/spark
         cd /tmp/spark/sbin
