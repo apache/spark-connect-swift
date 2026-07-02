@@ -33,7 +33,7 @@ struct RuntimeConfTests {
 
   @Test
   func get() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
 
@@ -48,7 +48,7 @@ struct RuntimeConfTests {
 
   @Test
   func getWithDefault() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
     #expect(try await conf.get("spark.sql.adaptive.customCostEvaluatorClass", "XYZ") == "XYZ")
@@ -58,7 +58,7 @@ struct RuntimeConfTests {
 
   @Test
   func getOption() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
     #expect(try await conf.getOption("spark.app.name") != nil)
@@ -68,7 +68,7 @@ struct RuntimeConfTests {
 
   @Test
   func set() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
     try await conf.set("spark.test.key1", "value1")
@@ -78,7 +78,7 @@ struct RuntimeConfTests {
 
   @Test
   func reset() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
 
@@ -99,7 +99,7 @@ struct RuntimeConfTests {
 
   @Test
   func getAll() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
     let map = try await conf.getAll()
@@ -113,7 +113,7 @@ struct RuntimeConfTests {
 
   @Test
   func isModifiable() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let conf = RuntimeConf(client)
     #expect(try await conf.isModifiable("spark.sql.adaptive.customCostEvaluatorClass"))

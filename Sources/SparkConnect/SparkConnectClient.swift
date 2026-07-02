@@ -42,8 +42,13 @@ public actor SparkConnectClient {
   /// Create a client to use GRPCClient.
   /// - Parameters:
   ///   - remote: A string to connect `Spark Connect` server.
-  init(remote: String) {
-    self.url = URL(string: remote)!
+  /// - Throws: `SparkConnectError.InvalidArgument` if `remote` is not a valid `sc://` connection
+  /// string or a parameter has no value.
+  init(remote: String) throws {
+    guard let url = URL(string: remote), url.scheme == "sc" else {
+      throw SparkConnectError.InvalidArgument
+    }
+    self.url = url
     self.host = url.host() ?? "localhost"
     self.port = self.url.port ?? 15002
     var token: String? = nil
@@ -54,7 +59,10 @@ public actor SparkConnectClient {
       var userName = processInfo.environment["SPARK_USER"] ?? ""
     #endif
     for param in self.url.path.split(separator: ";").dropFirst().filter({ !$0.isEmpty }) {
-      let kv = param.split(separator: "=")
+      let kv = param.split(separator: "=", maxSplits: 1)
+      guard kv.count == 2 else {
+        throw SparkConnectError.InvalidArgument
+      }
       switch String(kv[0]).lowercased() {
       case URIParams.PARAM_SESSION_ID:
         // SparkSession handles this.
@@ -70,8 +78,9 @@ public actor SparkConnectClient {
           self.useTLS = true
         }
       default:
-        // Print warning and ignore
-        print("Unknown parameter: \(param)")
+        // Print warning and ignore. Note that the parameter value is not printed
+        // in order to prevent accidental credential exposure.
+        print("Unknown parameter: \(kv[0])")
       }
     }
     self.token = token ?? ProcessInfo.processInfo.environment["SPARK_CONNECT_AUTHENTICATE_TOKEN"]

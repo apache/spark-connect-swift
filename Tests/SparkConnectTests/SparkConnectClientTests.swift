@@ -33,13 +33,13 @@ struct SparkConnectClientTests {
 
   @Test
   func createAndStop() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     await client.stop()
   }
 
   @Test
   func parameters() async throws {
-    let client = SparkConnectClient(
+    let client = try SparkConnectClient(
       remote: "sc://host1:123/;tOkeN=abcd;user_ID=test;USER_agent=myagent")
     #expect(await client.token == "abcd")
     #expect(await client.userContext.userID == "test")
@@ -50,8 +50,35 @@ struct SparkConnectClientTests {
   }
 
   @Test
+  func parameterWithBase64Token() async throws {
+    let client = try SparkConnectClient(remote: "sc://host1:123/;token=abcd==")
+    #expect(await client.token == "abcd==")
+    await client.stop()
+  }
+
+  @Test
+  func invalidRemote() async throws {
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try SparkConnectClient(remote: "http://host1:123")
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try SparkConnectClient(remote: "host1:123")
+    }
+  }
+
+  @Test
+  func parameterWithoutValue() async throws {
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try SparkConnectClient(remote: "sc://host1:123/;token=")
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try SparkConnectClient(remote: "sc://host1:123/;use_ssl")
+    }
+  }
+
+  @Test
   func connectWithInvalidUUID() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await #require(throws: SparkConnectError.InvalidSessionID) {
       try await client.connect("not-a-uuid-format")
     }
@@ -60,14 +87,14 @@ struct SparkConnectClientTests {
 
   @Test
   func connect() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     await client.stop()
   }
 
   @Test
   func tags() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let plan = await client.getPlanRange(0, 1, 1)
 
@@ -83,7 +110,7 @@ struct SparkConnectClientTests {
 
   @Test
   func ddlParse() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     #expect(try await client.ddlParse("a int").simpleString == "struct<a:int>")
     await client.stop()
@@ -91,7 +118,7 @@ struct SparkConnectClientTests {
 
   @Test
   func jsonToDdl() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     let response = try await client.connect(UUID().uuidString)
     if response.sparkVersion.version.starts(with: "4.") {
       let json =
@@ -103,7 +130,7 @@ struct SparkConnectClientTests {
 
   @Test
   func createDataflowGraph() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     let response = try await client.connect(UUID().uuidString)
     if response.sparkVersion.version.starts(with: "4.1") {
       let dataflowGraphID = try await client.createDataflowGraph()
@@ -114,7 +141,7 @@ struct SparkConnectClientTests {
 
   // @Test
   func startRun() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     let response = try await client.connect(UUID().uuidString)
 
     try await #require(throws: SparkConnectError.InvalidArgument) {
@@ -131,7 +158,7 @@ struct SparkConnectClientTests {
 
   // @Test
   func defineOutput() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     let response = try await client.connect(UUID().uuidString)
 
     try await #require(throws: SparkConnectError.InvalidArgument) {
@@ -153,7 +180,7 @@ struct SparkConnectClientTests {
 
   // @Test
   func defineFlow() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     let response = try await client.connect(UUID().uuidString)
 
     try await #require(throws: SparkConnectError.InvalidArgument) {
@@ -171,7 +198,7 @@ struct SparkConnectClientTests {
 
   @Test
   func defineSqlGraphElements() async throws {
-    let client = SparkConnectClient(remote: TEST_REMOTE)
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
     let response = try await client.connect(UUID().uuidString)
 
     try await #require(throws: SparkConnectError.InvalidArgument) {
