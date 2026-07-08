@@ -51,21 +51,37 @@ extension DataFrame {
           let ipcStreamBytes = m.arrowBatch.data
           if !ipcStreamBytes.isEmpty && m.arrowBatch.rowCount > 0 {
             let IPC_CONTINUATION_TOKEN = Int32(-1)
+            let totalSize = Int64(ipcStreamBytes.count)
             // Schema
-            assert(ipcStreamBytes[0..<4].int32 == IPC_CONTINUATION_TOKEN)
+            guard totalSize >= 8,
+              ipcStreamBytes[0..<4].int32 == IPC_CONTINUATION_TOKEN
+            else {
+              throw SparkConnectError.InvalidArrowData
+            }
             let schemaSize = Int64(ipcStreamBytes[4..<8].int32)
+            guard schemaSize >= 0, 8 + schemaSize + 4 <= totalSize else {
+              throw SparkConnectError.InvalidArrowData
+            }
             let schema = Data(ipcStreamBytes[8..<(8 + schemaSize)])
 
             // Arrow IPC Data
-            assert(
-              ipcStreamBytes[(8 + schemaSize)..<(8 + schemaSize + 4)].int32
-                == IPC_CONTINUATION_TOKEN)
+            guard ipcStreamBytes[(8 + schemaSize)..<(8 + schemaSize + 4)].int32
+              == IPC_CONTINUATION_TOKEN
+            else {
+              throw SparkConnectError.InvalidArrowData
+            }
             var pos: Int64 = 8 + schemaSize + 4
+            guard pos + 4 <= totalSize else {
+              throw SparkConnectError.InvalidArrowData
+            }
             let dataHeaderSize = Int64(ipcStreamBytes[pos..<(pos + 4)].int32)
             pos += 4
+            guard dataHeaderSize >= 0, pos + dataHeaderSize + 8 <= totalSize else {
+              throw SparkConnectError.InvalidArrowData
+            }
             let dataHeader = Data(ipcStreamBytes[pos..<(pos + dataHeaderSize)])
             pos += dataHeaderSize
-            let dataBodySize = Int64(ipcStreamBytes.count) - pos - 8
+            let dataBodySize = totalSize - pos - 8
             let dataBody = Data(ipcStreamBytes[pos..<(pos + dataBodySize)])
 
             // Read ArrowBatches
@@ -196,8 +212,9 @@ extension DataFrame {
   ///   - vertical: If set to true, prints output rows vertically (one line per column value).
   public func show(_ numRows: Int32, _ truncate: Int32, _ vertical: Bool = false) async throws {
     let rows = try await showString(numRows, truncate, vertical).collect()
-    assert(rows.count == 1)
-    assert(rows[0].length == 1)
+    guard rows.count == 1, rows[0].length == 1 else {
+      throw SparkConnectError.InvalidArrowData
+    }
     print(try rows[0].get(0) as! String)
   }
 

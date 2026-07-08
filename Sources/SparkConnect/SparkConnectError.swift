@@ -23,6 +23,7 @@ public enum SparkConnectError: Error {
   case ColumnNotFound
   case DataSourceNotFound
   case InvalidArgument
+  case InvalidArrowData
   case InvalidSessionID
   case InvalidType
   case InvalidViewName

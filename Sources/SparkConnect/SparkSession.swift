@@ -608,7 +608,9 @@ public actor SparkSession {
       let response = try await session.client.connect(session.sessionID)
       await session.setVersion(response.sparkVersion.version)
       let isSuccess = try await session.client.setConf(map: sparkConf)
-      assert(isSuccess)
+      guard isSuccess else {
+        throw SparkConnectError.InvalidArgument
+      }
       return session
     }
 
