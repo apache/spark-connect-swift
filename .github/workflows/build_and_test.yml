@@ -47,6 +47,16 @@ jobs:
     - name: Build
       run: swift build -c release
 
+  build-ubuntu-swift64:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v6
+    - name: Build
+      run: |
+        docker run swiftlang/swift:nightly-6.4.x-amazonlinux2023 uname -a
+        docker run -v $PWD:/spark -w /spark swiftlang/swift:nightly-6.4.x-amazonlinux2023 swift build
+
   build-ubuntu-latest:
     runs-on: ubuntu-latest
     timeout-minutes: 20
