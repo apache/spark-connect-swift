@@ -123,7 +123,7 @@ jobs:
       run: |
         docker run -d --name spark -p 15003:15002 -e SPARK_NO_DAEMONIZE=1 \
           --entrypoint /opt/spark/sbin/start-connect-server.sh \
-          apache/spark:4.2.0-preview5-scala \
+          apache/spark:4.2.0-scala-java25 \
           -c spark.sql.geospatial.enabled=true \
           -c spark.sql.timeType.enabled=true
     - name: Test

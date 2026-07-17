@@ -78,7 +78,7 @@ Start a local Spark Connect server first (default endpoint `sc://localhost:15002
 
 ```bash
 docker run -it --rm -p 15002:15002 -e SPARK_NO_DAEMONIZE=1 \
-  apache/spark:4.2.0-preview5 bash -c /opt/spark/sbin/start-connect-server.sh
+  apache/spark:4.2.0 bash -c /opt/spark/sbin/start-connect-server.sh
 ```
 
 Environment variables that gate behavior:
