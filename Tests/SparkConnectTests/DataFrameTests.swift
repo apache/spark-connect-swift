@@ -634,7 +634,7 @@ struct DataFrameTests {
   func nearestByJoin() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let version = await spark.version
-    if version >= "4.2", !version.contains("preview") {
+    if version >= "4.2" {
       let users = try await spark.sql(
         "SELECT * FROM VALUES (1, 10.0), (2, 20.0), (3, 30.0) AS T(user_id, score)")
       let products = try await spark.sql(
