@@ -7,7 +7,7 @@ This document provides an overview of the example applications inside [Examples]
 Start a Spark Connect Server:
 
 ```bash
-docker run -it --rm -p 15002:15002 apache/spark:4.1.2 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
+docker run -it --rm -p 15002:15002 apache/spark:4.2.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
 ```
 
 ## Basic Application Example
