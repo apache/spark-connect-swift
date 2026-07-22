@@ -81,5 +81,4 @@ Pi is roughly 3.1426151426151425
   - [Basic Application](https://github.com/apache/spark-connect-swift/tree/main/Examples/app)
   - [Pi Calculation](https://github.com/apache/spark-connect-swift/tree/main/Examples/pi)
   - [Structured Streaming](https://github.com/apache/spark-connect-swift/tree/main/Examples/stream)
-  - [HTTP Web Server](https://github.com/apache/spark-connect-swift/tree/main/Examples/web)
 - [Spark Connect Overview](https://spark.apache.org/docs/latest/spark-connect-overview.html#spark-connect-overview)
