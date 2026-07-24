@@ -233,6 +233,17 @@ public actor DataFrame: Sendable {
     self.plan = sqlText.toSparkConnectPlan(args)
   }
 
+  deinit {
+    // `deinit` cannot be `async`, so send `RemoveCachedRemoteRelationCommand` best-effort
+    // in a detached task like Scala and Python Spark Connect clients.
+    if case .cachedRemoteRelation(let cachedRemoteRelation) = plan.root.relType {
+      let client = spark.client
+      Task {
+        try? await client.removeCachedRemoteRelation(cachedRemoteRelation)
+      }
+    }
+  }
+
   public func getPlan() -> Sendable {
     return self.plan
   }

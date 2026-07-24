@@ -82,4 +82,20 @@ struct DataFrameInternalTests {
         """)
     await spark.stop()
   }
+
+  @Test
+  func removeCachedRemoteRelation() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.0.0" {
+      let df = try await spark.range(10).localCheckpoint()
+      #expect(try await df.count() == 10)
+      let cachedRemoteRelation = await df.plan.root.cachedRemoteRelation
+      try await spark.client.removeCachedRemoteRelation(cachedRemoteRelation)
+      // The `DataFrame` is no longer queryable after the server-side cached relation is removed.
+      try await #require(throws: Error.self) {
+        try await df.count()
+      }
+    }
+    await spark.stop()
+  }
 }

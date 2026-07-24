@@ -1195,6 +1195,15 @@ public actor SparkConnectClient {
     return Self.createPlan { $0.cachedRemoteRelation = cachedRemoteRelation }
   }
 
+  func removeCachedRemoteRelation(_ relation: Spark_Connect_CachedRemoteRelation) async throws {
+    var removeCommand = Spark_Connect_RemoveCachedRemoteRelationCommand()
+    removeCommand.relation = relation
+
+    var command = Spark_Connect_Command()
+    command.removeCachedRemoteRelationCommand = removeCommand
+    _ = try await execute(self.sessionID!, command)
+  }
+
   static func getWithWatermark(
     _ child: Relation,
     _ eventTime: String,
