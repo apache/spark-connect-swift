@@ -178,6 +178,19 @@ struct SparkConnectClientTests {
     await client.stop()
   }
 
+  @Test
+  func getDefineFlow() async throws {
+    let dataflowGraphID = UUID().uuidString
+    var relation = Relation()
+    relation.range.end = 10
+    let defineFlow = SparkConnectClient.getDefineFlow(dataflowGraphID, "f1", "ds1", relation)
+    #expect(defineFlow.dataflowGraphID == dataflowGraphID)
+    #expect(defineFlow.flowName == "f1")
+    #expect(defineFlow.targetDatasetName == "ds1")
+    #expect(defineFlow.relationFlowDetails.hasRelation)
+    #expect(defineFlow.relationFlowDetails.relation == relation)
+  }
+
   // @Test
   func defineFlow() async throws {
     let client = try SparkConnectClient(remote: TEST_REMOTE)
