@@ -29,11 +29,29 @@ public actor GroupedData {
   }
 
   public func agg(_ exprs: String...) async -> DataFrame {
+    return await buildAggregate(exprs.map { $0.toExpression })
+  }
+
+  /// Computes aggregates using the given ``Column`` expressions.
+  ///
+  /// ```swift
+  /// let df2 = await df.groupBy("department")
+  ///     .agg(count(col("*")).alias("employee_count"), avg(col("salary")))
+  /// ```
+  /// - Parameters:
+  ///   - expr: A ``Column`` expression.
+  ///   - exprs: Additional ``Column`` expressions.
+  /// - Returns: A ``DataFrame``.
+  public func agg(_ expr: Column, _ exprs: Column...) async -> DataFrame {
+    return await buildAggregate(([expr] + exprs).map { $0.expr })
+  }
+
+  private func buildAggregate(_ exprs: [Spark_Connect_Expression]) async -> DataFrame {
     var aggregate = Aggregate()
     aggregate.input = await (self.df.getPlan() as! Plan).root
     aggregate.groupType = self.groupType
     aggregate.groupingExpressions = self.groupingCols.map { $0.toExpression }
-    aggregate.aggregateExpressions = exprs.map { $0.toExpression }
+    aggregate.aggregateExpressions = exprs
     var relation = Relation()
     relation.aggregate = aggregate
     var plan = Plan()

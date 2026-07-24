@@ -33,6 +33,20 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
   }
 
+  /// Projects a set of ``Column`` expressions and returns a new ``DataFrame``.
+  ///
+  /// ```swift
+  /// let df2 = df.select(col("name"), col("age").cast("long").alias("age_long"))
+  /// ```
+  /// - Parameters:
+  ///   - col: A ``Column`` expression.
+  ///   - cols: Additional ``Column`` expressions.
+  /// - Returns: A ``DataFrame`` with subset of columns.
+  public func select(_ col: Column, _ cols: Column...) -> DataFrame {
+    let exprs = ([col] + cols).map { $0.expr }
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, exprs))
+  }
+
   /// Selects a subset of existing columns using column names.
   /// - Parameter cols: Column names
   /// - Returns: A ``DataFrame`` with subset of columns.
@@ -781,14 +795,14 @@ extension DataFrame {
   ///
   /// ```swift
   /// // Group by single column
-  /// let byDept = df.groupBy("department")
-  ///     .agg(count("*").alias("employee_count"))
+  /// let byDept = await df.groupBy("department")
+  ///     .agg("count(*) AS employee_count")
   ///
   /// // Group by multiple columns
-  /// let byDeptAndLocation = df.groupBy("department", "location")
+  /// let byDeptAndLocation = await df.groupBy("department", "location")
   ///     .agg(
-  ///         avg("salary").alias("avg_salary"),
-  ///         max("salary").alias("max_salary")
+  ///         "avg(salary) AS avg_salary",
+  ///         "max(salary) AS max_salary"
   ///     )
   /// ```
   ///
