@@ -168,6 +168,20 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
     }
   }
 
+  private func loadNullData(
+    _ loadInfo: DataLoadInfo,
+    field: org_apache_arrow_flatbuf_Field
+  )
+    -> Result<ArrowArrayHolder, ArrowError>
+  {
+    guard let node = loadInfo.batchData.nextNode() else {
+      return .failure(.invalid("Node not found"))
+    }
+
+    // Arrow Null arrays carry no validity or data buffers.
+    return makeNullHolder(UInt(node.length))
+  }
+
   private func loadPrimitiveData(
     _ loadInfo: DataLoadInfo,
     field: org_apache_arrow_flatbuf_Field
@@ -244,6 +258,8 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
     -> Result<ArrowArrayHolder, ArrowError>
   {
     switch field.typeType {
+    case .null:
+      return loadNullData(loadInfo, field: field)
     case .struct_:
       return loadStructData(loadInfo, field: field)
     case .list:

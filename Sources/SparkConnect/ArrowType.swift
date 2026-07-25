@@ -240,6 +240,7 @@ public class ArrowType {
   public static let ArrowTimestamp = Info.timeInfo(ArrowTypeId.timestamp)
   public static let ArrowStruct = Info.complexInfo(ArrowTypeId.strct)
   public static let ArrowList = Info.complexInfo(ArrowTypeId.list)
+  public static let ArrowNull = Info.primitiveInfo(ArrowTypeId.null)
 
   public init(_ info: ArrowType.Info) {
     self.info = info
@@ -374,6 +375,8 @@ public class ArrowType {
     case .string:
       return MemoryLayout<Int8>.stride
     case .strct, .list:
+      return 0
+    case .null:
       return 0
     default:
       fatalError("Stride requested for unknown type: \(self)")

@@ -191,6 +191,16 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectNull() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.sql("SELECT null").collect() == [Row(nil)])
+    #expect(try await spark.sql("SELECT null, 1").collect() == [Row(nil, 1)])
+    #expect(try await spark.sql("SELECT null FROM RANGE(2)").collect() == [Row(nil), Row(nil)])
+    #expect(try await spark.sql("SELECT struct(null)").collect().count == 1)
+    await spark.stop()
+  }
+
+  @Test
   func selectNone() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let emptySchema = try await spark.range(1).select().schema

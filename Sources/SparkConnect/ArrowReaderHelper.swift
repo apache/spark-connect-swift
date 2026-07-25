@@ -150,6 +150,21 @@ private func makeBoolHolder(
   }
 }
 
+func makeNullHolder(
+  _ length: UInt
+) -> Result<ArrowArrayHolder, ArrowError> {
+  do {
+    let arrowType = ArrowType(ArrowType.ArrowNull)
+    let arrowData = try ArrowData(
+      arrowType, buffers: [], children: [], nullCount: length, length: length)
+    return .success(ArrowArrayHolderImpl(try NullArray(arrowData)))
+  } catch let error as ArrowError {
+    return .failure(error)
+  } catch {
+    return .failure(.unknownError("\(error)"))
+  }
+}
+
 private func makeFixedHolder<T>(
   _: T.Type, field: ArrowField, buffers: [ArrowBuffer],
   nullCount: UInt
@@ -277,6 +292,8 @@ func findArrowType(  // swiftlint:disable:this cyclomatic_complexity function_bo
 ) -> ArrowType {
   let type = field.typeType
   switch type {
+  case .null:
+    return ArrowType(ArrowType.ArrowNull)
   case .int:
     let intType = field.type(type: org_apache_arrow_flatbuf_Int.self)!
     let bitWidth = intType.bitWidth

@@ -128,6 +128,8 @@ public class ArrowArrayHolderImpl: ArrowArrayHolder {
       return try ArrowArrayHolderImpl(NestedArray(with))
     case .list:
       return try ArrowArrayHolderImpl(NestedArray(with))
+    case .null:
+      return try ArrowArrayHolderImpl(NullArray(with))
     default:
       throw ArrowError.invalid("Array not found for type: \(arrowType)")
     }
@@ -171,6 +173,13 @@ public class ArrowArray<T>: AsString, AnyArray {
     }
 
     return self[index]!
+  }
+}
+
+/// @nodoc
+public class NullArray: ArrowArray<Any> {
+  public override subscript(_ index: UInt) -> Any? {
+    return nil
   }
 }
 
