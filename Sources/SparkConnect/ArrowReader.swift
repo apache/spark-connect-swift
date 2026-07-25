@@ -462,9 +462,12 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
         return .failure(error)
       }
     case .recordbatch:
+      guard let messageSchema = result.messageSchema, let arrowSchema = result.schema else {
+        return .failure(.invalid("Record batch received before schema"))
+      }
       let rbMessage = message.header(type: org_apache_arrow_flatbuf_RecordBatch.self)!
       let recordBatchResult = try loadRecordBatch(
-        rbMessage, schema: result.messageSchema!, arrowSchema: result.schema!,
+        rbMessage, schema: messageSchema, arrowSchema: arrowSchema,
         data: dataBody, messageEndOffset: 0
       )
       switch recordBatchResult {

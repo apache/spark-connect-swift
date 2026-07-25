@@ -87,8 +87,16 @@ extension DataFrame {
             // Read ArrowBatches
             let reader = ArrowReader()
             let arrowResult = ArrowReader.makeArrowReaderResult()
-            _ = reader.fromMessage(schema, dataBody: Data(), result: arrowResult)
-            _ = reader.fromMessage(dataHeader, dataBody: dataBody, result: arrowResult)
+            if case .failure(let error) = reader.fromMessage(
+              schema, dataBody: Data(), result: arrowResult)
+            {
+              throw error
+            }
+            if case .failure(let error) = reader.fromMessage(
+              dataHeader, dataBody: dataBody, result: arrowResult)
+            {
+              throw error
+            }
             await self.addBatches(arrowResult.batches)
           }
         }
