@@ -1135,6 +1135,25 @@ public actor SparkConnectClient {
     return createPlan { $0.repartitionByExpression = repartitionByExpression }
   }
 
+  static func getRepartitionByRange(
+    _ child: Relation, _ partitionExprs: [String], _ numPartitions: Int32? = nil
+  ) -> Plan {
+    var repartitionByExpression = RepartitionByExpression()
+    repartitionByExpression.input = child
+    repartitionByExpression.partitionExprs = partitionExprs.map {
+      var sortOrder = Spark_Connect_Expression.SortOrder()
+      sortOrder.child.exprType = .unresolvedAttribute($0.toUnresolvedAttribute)
+      sortOrder.direction = .ascending
+      var expression = Spark_Connect_Expression()
+      expression.exprType = .sortOrder(sortOrder)
+      return expression
+    }
+    if let numPartitions {
+      repartitionByExpression.numPartitions = numPartitions
+    }
+    return createPlan { $0.repartitionByExpression = repartitionByExpression }
+  }
+
   static func getUnpivot(
     _ child: Relation,
     _ ids: [String],

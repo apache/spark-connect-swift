@@ -820,6 +820,22 @@ struct DataFrameTests {
   }
 
   @Test
+  func repartitionByRange() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tmpDir = "/tmp/" + UUID().uuidString
+    let df = try await spark.range(2025)
+    for n in [1, 3, 5] as [Int32] {
+      try await df.repartitionByRange(n, "id").write.mode("overwrite").orc(tmpDir)
+      #expect(try await spark.read.orc(tmpDir).inputFiles().count == n)
+    }
+    try await spark.range(1).repartitionByRange(10, "id").write.mode("overwrite").orc(tmpDir)
+    #expect(try await spark.read.orc(tmpDir).inputFiles().count < 10)
+    try await spark.range(1).repartitionByRange("id").write.mode("overwrite").orc(tmpDir)
+    #expect(try await spark.read.orc(tmpDir).inputFiles().count < 10)
+    await spark.stop()
+  }
+
+  @Test
   func coalesce() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let tmpDir = "/tmp/" + UUID().uuidString

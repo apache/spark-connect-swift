@@ -715,6 +715,34 @@ extension DataFrame {
       numPartitions: numPartitions, partitionExprs: partitionExprs)
   }
 
+  private func buildRepartitionByRange(numPartitions: Int32?, partitionExprs: [String])
+    -> DataFrame
+  {
+    let plan = SparkConnectClient.getRepartitionByRange(
+      self.plan.root, partitionExprs, numPartitions)
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Returns a new ``DataFrame`` partitioned by the given partitioning expressions, using
+  /// `spark.sql.shuffle.partitions` as number of partitions. The resulting Dataset is range
+  /// partitioned.
+  /// - Parameter partitionExprs: The partition expression strings.
+  /// - Returns: A `DataFrame`.
+  public func repartitionByRange(_ partitionExprs: String...) -> DataFrame {
+    return buildRepartitionByRange(numPartitions: nil, partitionExprs: partitionExprs)
+  }
+
+  /// Returns a new ``DataFrame`` partitioned by the given partitioning expressions into
+  /// `numPartitions`. The resulting Dataset is range partitioned.
+  /// - Parameters:
+  ///   - numPartitions: The number of partitions.
+  ///   - partitionExprs: The partition expression strings.
+  /// - Returns: A `DataFrame`.
+  public func repartitionByRange(_ numPartitions: Int32, _ partitionExprs: String...) -> DataFrame {
+    return buildRepartitionByRange(
+      numPartitions: numPartitions, partitionExprs: partitionExprs)
+  }
+
   /// Returns a new ``DataFrame`` that has exactly `numPartitions` partitions, when the fewer partitions
   /// are requested. If a larger number of partitions is requested, it will stay at the current
   /// number of partitions. Similar to coalesce defined on an `RDD`, this operation results in a
