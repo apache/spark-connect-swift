@@ -882,6 +882,75 @@ struct DataFrameTests {
   }
 
   @Test
+  func groupByCount() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(DEALER_TABLE).groupBy("city").count().orderBy("city")
+    #expect(try await df.columns == ["city", "count"])
+    #expect(
+      try await df.collect() == [Row("Dublin", 3), Row("Fremont", 3), Row("San Jose", 2)])
+    await spark.stop()
+  }
+
+  @Test
+  func groupBySum() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(DEALER_TABLE).groupBy("city").sum("quantity", "id")
+      .orderBy("city")
+    #expect(try await df.columns == ["city", "sum(quantity)", "sum(id)"])
+    #expect(
+      try await df.collect() == [
+        Row("Dublin", 33, 600), Row("Fremont", 32, 300), Row("San Jose", 13, 600),
+      ])
+    await spark.stop()
+  }
+
+  @Test
+  func groupByAvg() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = [Row("Dublin", 200.0), Row("Fremont", 100.0), Row("San Jose", 300.0)]
+    let df = try await spark.sql(DEALER_TABLE).groupBy("city").avg("id").orderBy("city")
+    #expect(try await df.columns == ["city", "avg(id)"])
+    #expect(try await df.collect() == expected)
+    let df2 = try await spark.sql(DEALER_TABLE).groupBy("city").mean("id").orderBy("city")
+    #expect(try await df2.columns == ["city", "avg(id)"])
+    #expect(try await df2.collect() == expected)
+    await spark.stop()
+  }
+
+  @Test
+  func groupByMinMax() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(DEALER_TABLE).groupBy("city").min("quantity").orderBy("city")
+    #expect(try await df.columns == ["city", "min(quantity)"])
+    #expect(
+      try await df.collect() == [Row("Dublin", 3), Row("Fremont", 7), Row("San Jose", 5)])
+    let df2 = try await spark.sql(DEALER_TABLE).groupBy("city").max("quantity").orderBy("city")
+    #expect(try await df2.columns == ["city", "max(quantity)"])
+    #expect(
+      try await df2.collect() == [Row("Dublin", 20), Row("Fremont", 15), Row("San Jose", 8)])
+    await spark.stop()
+  }
+
+  @Test
+  func rollupCount() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql(DEALER_TABLE).rollup("city").count().orderBy("city").collect()
+    #expect(
+      rows == [Row("Dublin", 3), Row("Fremont", 3), Row("San Jose", 2), Row(nil, 8)])
+    await spark.stop()
+  }
+
+  @Test
+  func cubeSum() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql(DEALER_TABLE).cube("city").sum("quantity").orderBy("city")
+      .collect()
+    #expect(
+      rows == [Row("Dublin", 33), Row("Fremont", 32), Row("San Jose", 13), Row(nil, 78)])
+    await spark.stop()
+  }
+
+  @Test
   func rollup() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let rows = try await spark.sql(DEALER_TABLE).rollup("city", "car_model")

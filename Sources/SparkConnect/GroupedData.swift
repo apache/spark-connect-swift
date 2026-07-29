@@ -46,6 +46,59 @@ public actor GroupedData {
     return await buildAggregate(([expr] + exprs).map { $0.expr })
   }
 
+  /// Counts the number of records for each group. The resulting ``DataFrame`` will also contain
+  /// the grouping columns and a `count` column.
+  /// - Returns: A ``DataFrame``.
+  public func count() async -> DataFrame {
+    return await buildAggregate([SparkConnect.count(lit(Int32(1))).alias("count").expr])
+  }
+
+  /// Computes the sum for each numeric column for each group. The resulting ``DataFrame`` will
+  /// also contain the grouping columns.
+  /// - Parameter colNames: Column names to aggregate.
+  /// - Returns: A ``DataFrame``.
+  public func sum(_ colNames: String...) async -> DataFrame {
+    return await aggregateColumns(colNames, SparkConnect.sum)
+  }
+
+  /// Computes the average for each numeric column for each group. The resulting ``DataFrame``
+  /// will also contain the grouping columns.
+  /// - Parameter colNames: Column names to aggregate.
+  /// - Returns: A ``DataFrame``.
+  public func avg(_ colNames: String...) async -> DataFrame {
+    return await aggregateColumns(colNames, SparkConnect.avg)
+  }
+
+  /// Computes the average for each numeric column for each group. This is an alias of `avg`.
+  /// The resulting ``DataFrame`` will also contain the grouping columns.
+  /// - Parameter colNames: Column names to aggregate.
+  /// - Returns: A ``DataFrame``.
+  public func mean(_ colNames: String...) async -> DataFrame {
+    return await aggregateColumns(colNames, SparkConnect.avg)
+  }
+
+  /// Computes the min value for each numeric column for each group. The resulting ``DataFrame``
+  /// will also contain the grouping columns.
+  /// - Parameter colNames: Column names to aggregate.
+  /// - Returns: A ``DataFrame``.
+  public func min(_ colNames: String...) async -> DataFrame {
+    return await aggregateColumns(colNames, SparkConnect.min)
+  }
+
+  /// Computes the max value for each numeric column for each group. The resulting ``DataFrame``
+  /// will also contain the grouping columns.
+  /// - Parameter colNames: Column names to aggregate.
+  /// - Returns: A ``DataFrame``.
+  public func max(_ colNames: String...) async -> DataFrame {
+    return await aggregateColumns(colNames, SparkConnect.max)
+  }
+
+  private func aggregateColumns(
+    _ colNames: [String], _ function: (Column) -> Column
+  ) async -> DataFrame {
+    return await buildAggregate(colNames.map { function(col($0)).expr })
+  }
+
   private func buildAggregate(_ exprs: [Spark_Connect_Expression]) async -> DataFrame {
     var aggregate = Aggregate()
     aggregate.input = await (self.df.getPlan() as! Plan).root
