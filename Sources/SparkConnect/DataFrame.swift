@@ -222,7 +222,7 @@ public actor DataFrame: Sendable {
   init(spark: SparkSession, sqlText: String, _ posArgs: [Sendable]? = nil) async throws {
     self.spark = spark
     if let posArgs {
-      self.plan = sqlText.toSparkConnectPlan(posArgs)
+      self.plan = try sqlText.toSparkConnectPlan(posArgs)
     } else {
       self.plan = sqlText.toSparkConnectPlan
     }
@@ -230,7 +230,7 @@ public actor DataFrame: Sendable {
 
   init(spark: SparkSession, sqlText: String, _ args: [String: Sendable]) async throws {
     self.spark = spark
-    self.plan = sqlText.toSparkConnectPlan(args)
+    self.plan = try sqlText.toSparkConnectPlan(args)
   }
 
   deinit {
