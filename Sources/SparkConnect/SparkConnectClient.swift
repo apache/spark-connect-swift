@@ -566,6 +566,16 @@ public actor SparkConnectClient {
     return createPlan { $0.project = project }
   }
 
+  static func getCollectMetrics(
+    _ child: Relation, _ name: String, _ metrics: [Spark_Connect_Expression]
+  ) -> Plan {
+    var collectMetrics = CollectMetrics()
+    collectMetrics.input = child
+    collectMetrics.name = name
+    collectMetrics.metrics = metrics
+    return createPlan { $0.collectMetrics = collectMetrics }
+  }
+
   static func getWithColumnRenamed(_ child: Relation, _ colsMap: [String: String]) -> Plan {
     var withColumnsRenamed = WithColumnsRenamed()
     withColumnsRenamed.input = child

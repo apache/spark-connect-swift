@@ -20,6 +20,7 @@ typealias ActionType = Spark_Connect_MergeAction.ActionType
 typealias Aggregate = Spark_Connect_Aggregate
 typealias AnalyzePlanRequest = Spark_Connect_AnalyzePlanRequest
 typealias AnalyzePlanResponse = Spark_Connect_AnalyzePlanResponse
+typealias CollectMetrics = Spark_Connect_CollectMetrics
 typealias Command = Spark_Connect_Command
 typealias ConfigRequest = Spark_Connect_ConfigRequest
 typealias DataSource = Spark_Connect_Read.DataSource

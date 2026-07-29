@@ -83,6 +83,25 @@ extension DataFrame {
       spark: self.spark, plan: SparkConnectClient.getProjectExprs(self.plan.root, exprs))
   }
 
+  /// Defines (named) metrics to observe on the ``DataFrame``. This method returns an 'observed'
+  /// ``DataFrame`` that returns the same result as the input, and computes the defined aggregates
+  /// (metrics) on all the data that is flowing through the ``DataFrame`` at that point.
+  /// Each metric ``Column`` must either contain a literal, or one or more aggregate functions.
+  ///
+  /// ```swift
+  /// let observedDf = df.observe("my_metrics", count(col("*")), max(col("id")))
+  /// ```
+  /// - Parameters:
+  ///   - name: The name of the observed metrics.
+  ///   - expr: A metric ``Column`` expression to compute.
+  ///   - exprs: Additional metric ``Column`` expressions.
+  /// - Returns: An observed ``DataFrame``.
+  public func observe(_ name: String, _ expr: Column, _ exprs: Column...) -> DataFrame {
+    let metrics = ([expr] + exprs).map { $0.expr }
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getCollectMetrics(self.plan.root, name, metrics))
+  }
+
   /// Returns a new Dataset with a column dropped. This is a no-op if schema doesn't contain column name.
   /// - Parameter cols: Column names
   /// - Returns: A ``DataFrame`` with subset of columns.

@@ -283,6 +283,16 @@ struct DataFrameTests {
   }
 
   @Test
+  func observe() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(10).observe("my_metrics", sum(col("id")), max(col("id")))
+    #expect(try await df.columns == ["id"])
+    #expect(try await df.count() == 10)
+    #expect(try await df.collect().count == 10)
+    await spark.stop()
+  }
+
+  @Test
   func withColumnRenamed() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(1).withColumnRenamed("id", "id2").columns == ["id2"])
