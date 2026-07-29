@@ -730,6 +730,13 @@ public actor SparkConnectClient {
     return createPlan { $0.offset = offset }
   }
 
+  static func getSubqueryAlias(_ child: Relation, _ alias: String) -> Plan {
+    var subqueryAlias = Spark_Connect_SubqueryAlias()
+    subqueryAlias.input = child
+    subqueryAlias.alias = alias
+    return createPlan { $0.subqueryAlias = subqueryAlias }
+  }
+
   static func getSample(
     _ child: Relation, _ withReplacement: Bool, _ lowerBound: Double, _ upperBound: Double,
     _ seed: Int64, _ deterministicOrder: Bool = false

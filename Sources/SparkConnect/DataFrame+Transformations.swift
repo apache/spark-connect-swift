@@ -288,6 +288,22 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getOffset(self.plan.root, n))
   }
 
+  /// Returns a new ``DataFrame`` with an alias set. This is useful to disambiguate columns
+  /// with the same name in self-joins.
+  ///
+  /// ```swift
+  /// let df1 = df.alias("l")
+  /// let df2 = df.alias("r")
+  /// let joined = await df1.join(df2, joinExprs: "l.id = r.id")
+  /// ```
+  ///
+  /// - Parameter alias: The alias name.
+  /// - Returns: An aliased ``DataFrame``.
+  public func alias(_ alias: String) -> DataFrame {
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getSubqueryAlias(self.plan.root, alias))
+  }
+
   /// Returns a new ``Dataset`` by sampling a fraction of rows, using a user-supplied seed.
   /// - Parameters:
   ///   - withReplacement: Sample with replacement or not.

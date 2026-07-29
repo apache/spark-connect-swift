@@ -648,6 +648,17 @@ struct DataFrameTests {
   }
 
   @Test
+  func alias() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(3)
+    #expect(try await df.alias("a").select("a.id").collect() == [Row(0), Row(1), Row(2)])
+
+    let joined = try await df.alias("l").join(df.alias("r"), joinExprs: "l.id = r.id")
+    #expect(try await joined.orderBy("l.id").collect() == [Row(0, 0), Row(1, 1), Row(2, 2)])
+    await spark.stop()
+  }
+
+  @Test
   func lateralJoin() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await spark.version.starts(with: "4.") {
