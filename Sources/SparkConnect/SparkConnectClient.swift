@@ -42,8 +42,13 @@ public actor SparkConnectClient {
   /// Create a client to use GRPCClient.
   /// - Parameters:
   ///   - remote: A string to connect `Spark Connect` server.
-  init(remote: String) {
-    self.url = URL(string: remote)!
+  /// - Throws: `SparkConnectError.InvalidArgument` if `remote` is not a valid `sc://` connection
+  /// string or a parameter has no value.
+  init(remote: String) throws {
+    guard let url = URL(string: remote), url.scheme == "sc" else {
+      throw SparkConnectError.InvalidArgument
+    }
+    self.url = url
     self.host = url.host() ?? "localhost"
     self.port = self.url.port ?? 15002
     var token: String? = nil
@@ -54,7 +59,10 @@ public actor SparkConnectClient {
       var userName = processInfo.environment["SPARK_USER"] ?? ""
     #endif
     for param in self.url.path.split(separator: ";").dropFirst().filter({ !$0.isEmpty }) {
-      let kv = param.split(separator: "=")
+      let kv = param.split(separator: "=", maxSplits: 1)
+      guard kv.count == 2 else {
+        throw SparkConnectError.InvalidArgument
+      }
       switch String(kv[0]).lowercased() {
       case URIParams.PARAM_SESSION_ID:
         // SparkSession handles this.
@@ -70,8 +78,9 @@ public actor SparkConnectClient {
           self.useTLS = true
         }
       default:
-        // Print warning and ignore
-        print("Unknown parameter: \(param)")
+        // Print warning and ignore. Note that the parameter value is not printed
+        // in order to prevent accidental credential exposure.
+        print("Unknown parameter: \(kv[0])")
       }
     }
     self.token = token ?? ProcessInfo.processInfo.environment["SPARK_CONNECT_AUTHENTICATE_TOKEN"]
@@ -535,6 +544,13 @@ public actor SparkConnectClient {
     return createPlan { $0.project = project }
   }
 
+  static func getProject(_ child: Relation, _ exprs: [Spark_Connect_Expression]) -> Plan {
+    var project = Project()
+    project.input = child
+    project.expressions = exprs
+    return createPlan { $0.project = project }
+  }
+
   static func getToSchema(_ child: Relation, _ schema: Spark_Connect_DataType) -> Plan {
     var toSchema = Spark_Connect_ToSchema()
     toSchema.input = child
@@ -555,6 +571,18 @@ public actor SparkConnectClient {
     withColumnsRenamed.input = child
     withColumnsRenamed.renameColumnsMap = colsMap
     return createPlan { $0.withColumnsRenamed = withColumnsRenamed }
+  }
+
+  static func getWithColumns(_ child: Relation, _ colsMap: [String: String]) -> Plan {
+    var withColumns = WithColumns()
+    withColumns.input = child
+    withColumns.aliases = colsMap.map { (name, expr) in
+      var alias = Spark_Connect_Expression.Alias()
+      alias.expr = expr.toExpression
+      alias.name = [name]
+      return alias
+    }
+    return createPlan { $0.withColumns = withColumns }
   }
 
   static func getFilter(_ child: Relation, _ conditionExpr: String) -> Plan {
@@ -598,6 +626,70 @@ public actor SparkConnectClient {
     summary.input = child
     summary.statistics = statistics
     return createPlan { $0.summary = summary }
+  }
+
+  static func getStatCrosstab(_ child: Relation, _ col1: String, _ col2: String) -> Plan {
+    var crosstab = Spark_Connect_StatCrosstab()
+    crosstab.input = child
+    crosstab.col1 = col1
+    crosstab.col2 = col2
+    return createPlan { $0.crosstab = crosstab }
+  }
+
+  static func getStatCov(_ child: Relation, _ col1: String, _ col2: String) -> Plan {
+    var cov = Spark_Connect_StatCov()
+    cov.input = child
+    cov.col1 = col1
+    cov.col2 = col2
+    return createPlan { $0.cov = cov }
+  }
+
+  static func getStatCorr(
+    _ child: Relation, _ col1: String, _ col2: String, _ method: String
+  ) -> Plan {
+    var corr = Spark_Connect_StatCorr()
+    corr.input = child
+    corr.col1 = col1
+    corr.col2 = col2
+    corr.method = method
+    return createPlan { $0.corr = corr }
+  }
+
+  static func getStatApproxQuantile(
+    _ child: Relation, _ cols: [String], _ probabilities: [Double], _ relativeError: Double
+  ) -> Plan {
+    var approxQuantile = Spark_Connect_StatApproxQuantile()
+    approxQuantile.input = child
+    approxQuantile.cols = cols
+    approxQuantile.probabilities = probabilities
+    approxQuantile.relativeError = relativeError
+    return createPlan { $0.approxQuantile = approxQuantile }
+  }
+
+  static func getStatSampleBy(
+    _ child: Relation, _ col: String, _ fractions: [(ExpressionLiteral, Double)], _ seed: Int64
+  ) -> Plan {
+    var sampleBy = Spark_Connect_StatSampleBy()
+    sampleBy.input = child
+    var colExpr = Spark_Connect_Expression()
+    colExpr.exprType = .unresolvedAttribute(col.toUnresolvedAttribute)
+    sampleBy.col = colExpr
+    sampleBy.fractions = fractions.map {
+      var fraction = Spark_Connect_StatSampleBy.Fraction()
+      fraction.stratum = $0.0
+      fraction.fraction = $0.1
+      return fraction
+    }
+    sampleBy.seed = seed
+    return createPlan { $0.sampleBy = sampleBy }
+  }
+
+  static func getFreqItems(_ child: Relation, _ cols: [String], _ support: Double) -> Plan {
+    var freqItems = Spark_Connect_StatFreqItems()
+    freqItems.input = child
+    freqItems.cols = cols
+    freqItems.support = support
+    return createPlan { $0.freqItems = freqItems }
   }
 
   static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
@@ -645,6 +737,44 @@ public actor SparkConnectClient {
     tail.input = child
     tail.limit = n
     return createPlan { $0.tail = tail }
+  }
+
+  static func getNAFill(
+    _ child: Relation, _ cols: [String], _ values: [ExpressionLiteral]
+  ) -> Plan {
+    var fillNa = Spark_Connect_NAFill()
+    fillNa.input = child
+    fillNa.cols = cols
+    fillNa.values = values
+    return createPlan { $0.fillNa = fillNa }
+  }
+
+  static func getNADrop(
+    _ child: Relation, _ cols: [String], _ minNonNulls: Int32?
+  ) -> Plan {
+    var dropNa = Spark_Connect_NADrop()
+    dropNa.input = child
+    dropNa.cols = cols
+    if let minNonNulls {
+      dropNa.minNonNulls = minNonNulls
+    }
+    return createPlan { $0.dropNa = dropNa }
+  }
+
+  static func getNAReplace(
+    _ child: Relation, _ cols: [String],
+    _ replacements: [(ExpressionLiteral, ExpressionLiteral)]
+  ) -> Plan {
+    var replace = Spark_Connect_NAReplace()
+    replace.input = child
+    replace.cols = cols
+    replace.replacements = replacements.map {
+      var replacement = Spark_Connect_NAReplace.Replacement()
+      replacement.oldValue = $0.0
+      replacement.newValue = $0.1
+      return replacement
+    }
+    return createPlan { $0.replace = replace }
   }
 
   var result: [ExecutePlanResponse] = []
@@ -921,6 +1051,22 @@ public actor SparkConnectClient {
     return createPlan { $0.lateralJoin = lateralJoin }
   }
 
+  static func getNearestByJoin(
+    _ left: Relation, _ right: Relation,
+    rankingExpression: String, numResults: Int32,
+    mode: String, direction: String, joinType: String
+  ) -> Plan {
+    var nearestByJoin = NearestByJoin()
+    nearestByJoin.left = left
+    nearestByJoin.right = right
+    nearestByJoin.rankingExpression = rankingExpression.toExpression
+    nearestByJoin.numResults = numResults
+    nearestByJoin.mode = mode
+    nearestByJoin.direction = direction
+    nearestByJoin.joinType = joinType
+    return createPlan { $0.nearestByJoin = nearestByJoin }
+  }
+
   static func getSetOperation(
     _ left: Relation, _ right: Relation, _ opType: SetOpType, isAll: Bool = false,
     byName: Bool = false, allowMissingColumns: Bool = false
@@ -1054,6 +1200,15 @@ public actor SparkConnectClient {
     let response = try await execute(self.sessionID!, command)
     let cachedRemoteRelation = response.first!.checkpointCommandResult.relation
     return Self.createPlan { $0.cachedRemoteRelation = cachedRemoteRelation }
+  }
+
+  func removeCachedRemoteRelation(_ relation: Spark_Connect_CachedRemoteRelation) async throws {
+    var removeCommand = Spark_Connect_RemoveCachedRemoteRelationCommand()
+    removeCommand.relation = relation
+
+    var command = Spark_Connect_Command()
+    command.removeCachedRemoteRelationCommand = removeCommand
+    _ = try await execute(self.sessionID!, command)
   }
 
   static func getWithWatermark(
@@ -1196,6 +1351,20 @@ public actor SparkConnectClient {
     }
   }
 
+  static func getDefineFlow(
+    _ dataflowGraphID: String,
+    _ flowName: String,
+    _ targetDatasetName: String,
+    _ relation: Relation
+  ) -> Spark_Connect_PipelineCommand.DefineFlow {
+    var defineFlow = Spark_Connect_PipelineCommand.DefineFlow()
+    defineFlow.dataflowGraphID = dataflowGraphID
+    defineFlow.flowName = flowName
+    defineFlow.targetDatasetName = targetDatasetName
+    defineFlow.relationFlowDetails.relation = relation
+    return defineFlow
+  }
+
   @discardableResult
   func defineFlow(
     _ dataflowGraphID: String,
@@ -1208,11 +1377,8 @@ public actor SparkConnectClient {
         throw SparkConnectError.InvalidArgument
       }
 
-      var defineFlow = Spark_Connect_PipelineCommand.DefineFlow()
-      defineFlow.dataflowGraphID = dataflowGraphID
-      defineFlow.flowName = flowName
-      defineFlow.targetDatasetName = targetDatasetName
-      // defineFlow.relation = relation
+      let defineFlow = SparkConnectClient.getDefineFlow(
+        dataflowGraphID, flowName, targetDatasetName, relation)
 
       var pipelineCommand = Spark_Connect_PipelineCommand()
       pipelineCommand.commandType = .defineFlow(defineFlow)

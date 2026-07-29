@@ -7,7 +7,7 @@ This document provides an overview of the example applications inside [Examples]
 Start a Spark Connect Server:
 
 ```bash
-docker run -it --rm -p 15002:15002 apache/spark:4.1.2 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
+docker run -it --rm -p 15002:15002 apache/spark:4.2.0 bash -c "/opt/spark/sbin/start-connect-server.sh --wait -c spark.log.level=ERROR"
 ```
 
 ## Basic Application Example
@@ -120,42 +120,6 @@ swift run
 ```
 
 Type text into the Netcat terminal to see real-time word counting in the `Spark Connect Server` container output.
-
-## Web Application Example
-
-The web application example showcases how to integrate Spark Connect Swift with a web server using the Vapor framework.
-
-### Key Features
-
-- HTTP server integration with Vapor
-- REST API endpoints
-- Spark session management within web requests
-- Version information retrieval
-
-### How to Run
-
-Build and run the application:
-
-```bash
-# Using Docker
-docker build -t apache/spark-connect-swift:web .
-docker run -it --rm -p 8080:8080 -e SPARK_REMOTE=sc://host.docker.internal:15002 apache/spark-connect-swift:web
-
-# From source code
-swift run
-```
-
-Access the web application:
-
-```bash
-# Root endpoint
-$ curl http://127.0.0.1:8080/
-Welcome to the Swift world. Say hello!%
-
-# Spark-powered endpoint
-curl http://127.0.0.1:8080/hello
-Hi, this is powered by the Apache Spark 4.1.2.%
-```
 
 ## Development Environment
 

@@ -35,7 +35,7 @@ extension String {
     return plan
   }
 
-  private func toExpression(_ value: Sendable) -> Spark_Connect_Expression {
+  private func toExpression(_ value: Sendable) throws -> Spark_Connect_Expression {
     var literal = ExpressionLiteral()
     switch value {
     case let value as Bool:
@@ -50,20 +50,40 @@ extension String {
       literal.long = value
     case let value as Int:
       literal.long = Int64(value)
+    case let value as Float:
+      literal.float = value
+    case let value as Double:
+      literal.double = value
+    case let value as Decimal:
+      var decimal = ExpressionLiteral.Decimal()
+      decimal.value = "\(value)"
+      literal.decimal = decimal
     case let value as String:
       literal.string = value
+    case let value as Data:
+      literal.binary = value
+    case let value as Date:
+      // `Date` is an absolute point in time, so it maps to Spark's `TIMESTAMP`
+      // (microseconds since the UNIX epoch), not `DATE`.
+      literal.timestamp = Int64(value.timeIntervalSince1970 * 1_000_000)
     default:
-      literal.string = value as! String
+      if case Optional<Any>.none = value as Any {
+        var dataType = DataType()
+        dataType.null = DataType.NULL()
+        literal.null = dataType
+      } else {
+        throw SparkConnectError.InvalidType
+      }
     }
     var expr = Spark_Connect_Expression()
     expr.literal = literal
     return expr
   }
 
-  func toSparkConnectPlan(_ posArguments: [Sendable]) -> Plan {
+  func toSparkConnectPlan(_ posArguments: [Sendable]) throws -> Plan {
     var sql = Spark_Connect_SQL()
     sql.query = self
-    sql.posArguments = posArguments.map { toExpression($0) }
+    sql.posArguments = try posArguments.map { try toExpression($0) }
     var relation = Relation()
     relation.sql = sql
     var plan = Plan()
@@ -71,10 +91,10 @@ extension String {
     return plan
   }
 
-  func toSparkConnectPlan(_ namedArguments: [String: Sendable]) -> Plan {
+  func toSparkConnectPlan(_ namedArguments: [String: Sendable]) throws -> Plan {
     var sql = Spark_Connect_SQL()
     sql.query = self
-    sql.namedArguments = namedArguments.mapValues { toExpression($0) }
+    sql.namedArguments = try namedArguments.mapValues { try toExpression($0) }
     var relation = Relation()
     relation.sql = sql
     var plan = Plan()

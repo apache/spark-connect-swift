@@ -149,6 +149,42 @@ struct SparkSessionTests {
   }
 
   @Test
+  func sqlWithMoreParameterTypes() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version.starts(with: "4.") {
+      // Use at most 4 positional parameters per query because Spark Connect
+      // servers (up to 4.2.0) bind 5 or more positional parameters in the wrong order.
+      #expect(
+        try await spark.sql(
+          "SELECT typeof(?), typeof(?), typeof(?)", Float(1.0), 2.0, Decimal(string: "3.1")!
+        ).collect() == [Row("float", "double", "decimal(2,1)")])
+      #expect(
+        try await spark.sql(
+          "SELECT typeof(?), typeof(?), typeof(?)", Data([1, 2, 3]), Date(), nil as String?
+        ).collect() == [Row("binary", "timestamp", "void")])
+      #expect(try await spark.sql("SELECT ? * ?", Float(2.0), 3.0).collect() == [Row(6.0)])
+      #expect(
+        try await spark.sql("SELECT CAST(:x AS STRING)", args: ["x": nil as String?]).collect()
+          == [Row(nil)])
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func sqlWithUnsupportedParameterType() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    await #expect(throws: SparkConnectError.InvalidType) {
+      try await spark.sql("SELECT ?", [1, 2])
+    }
+    await #expect(throws: SparkConnectError.InvalidType) {
+      try await spark.sql("SELECT :x", args: ["x": [1, 2]])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func addInvalidArtifact() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()

@@ -58,4 +58,38 @@ struct StreamingQueryTests {
     }
     await spark.stop()
   }
+
+  @Test
+  func exception() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+
+    // Prepare directories
+    let input = "/tmp/input-" + UUID().uuidString
+    let checkpoint = "/tmp/checkpoint-" + UUID().uuidString
+    let output = "/tmp/output-" + UUID().uuidString
+    try await spark.range(2025).write.orc(input)
+
+    // Start a streaming query
+    let query =
+      try await spark
+      .readStream
+      .schema("id LONG")
+      .orc(input)
+      .writeStream
+      .option("checkpointLocation", checkpoint)
+      .outputMode("append")
+      .format("orc")
+      .trigger(Trigger.ProcessingTime(1000))
+      .start(output)
+    #expect(try await query.isActive)
+
+    // A query without any exception returns nil.
+    #expect(try await query.exception() == nil)
+
+    try await query.stop()
+    #expect(try await query.isActive == false)
+    #expect(try await query.exception() == nil)
+
+    await spark.stop()
+  }
 }

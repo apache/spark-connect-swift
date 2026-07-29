@@ -191,6 +191,16 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectNull() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.sql("SELECT null").collect() == [Row(nil)])
+    #expect(try await spark.sql("SELECT null, 1").collect() == [Row(nil, 1)])
+    #expect(try await spark.sql("SELECT null FROM RANGE(2)").collect() == [Row(nil), Row(nil)])
+    #expect(try await spark.sql("SELECT struct(null)").collect().count == 1)
+    await spark.stop()
+  }
+
+  @Test
   func selectNone() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let emptySchema = try await spark.range(1).select().schema
@@ -280,6 +290,21 @@ struct DataFrameTests {
     #expect(try await df.withColumnRenamed(["a": "x", "c": "z"]).columns == ["x", "b", "z", "d"])
     // Ignore unknown column names.
     #expect(try await df.withColumnRenamed(["unknown": "x"]).columns == ["a", "b", "c", "d"])
+    await spark.stop()
+  }
+
+  @Test
+  func withColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Add a new column.
+    #expect(try await spark.range(1).withColumn("b", "id + 1").columns == ["id", "b"])
+    #expect(try await spark.range(1).withColumn("b", "id + 1").collect() == [Row(0, 1)])
+    // Replace an existing column in place.
+    #expect(try await spark.range(1).withColumn("id", "id + 1").columns == ["id"])
+    #expect(try await spark.range(1).withColumn("id", "id + 1").collect() == [Row(1)])
+    // Map overload: replace multiple existing columns (positions are preserved).
+    let df = try await spark.sql("SELECT 1 a, 2 b")
+    #expect(try await df.withColumns(["a": "a + 10", "b": "b + 20"]).collect() == [Row(11, 22)])
     await spark.stop()
   }
 
@@ -611,6 +636,42 @@ struct DataFrameTests {
       #expect(
         try await df1.lateralJoin(df2, joinExprs: "T.b = S.b", joinType: "inner").collect()
           == expected)
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func nearestByJoin() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let version = await spark.version
+    if version >= "4.2" {
+      let users = try await spark.sql(
+        "SELECT * FROM VALUES (1, 10.0), (2, 20.0), (3, 30.0) AS T(user_id, score)")
+      let products = try await spark.sql(
+        "SELECT * FROM VALUES ('A', 11.0), ('B', 22.0), ('C', 5.0) AS S(product, pscore)")
+
+      let distance = await users.nearestByJoin(
+        products,
+        rankingExpression: "abs(score - pscore)",
+        numResults: 2,
+        mode: "approx",
+        direction: "distance"
+      ).select("user_id", "product").orderBy("user_id", "product")
+      #expect(
+        try await distance.collect() == [
+          Row(1, "A"), Row(1, "C"),
+          Row(2, "A"), Row(2, "B"),
+          Row(3, "A"), Row(3, "B"),
+        ])
+
+      let similarity = await users.nearestByJoin(
+        products,
+        rankingExpression: "-abs(score - pscore)",
+        numResults: 1,
+        mode: "approx",
+        direction: "similarity"
+      ).select("user_id", "product").orderBy("user_id")
+      #expect(try await similarity.collect() == [Row(1, "A"), Row(2, "B"), Row(3, "B")])
     }
     await spark.stop()
   }

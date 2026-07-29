@@ -83,10 +83,13 @@ public actor StreamingQuery: Sendable {
   }
 
   /// Returns the ``StreamingQueryException`` if the query was terminated by an exception.
-  /// - Returns: A ``StreamingQueryException``.
+  /// - Returns: A ``StreamingQueryException`` if the query was terminated by an exception, `nil` otherwise.
   public func exception() async throws -> StreamingQueryException? {
     let response = try await executeCommand(StreamingQueryCommand.OneOf_Command.exception(true))
     let result = response.first!.streamingQueryCommandResult.exception
+    guard result.hasExceptionMessage else {
+      return nil
+    }
     return StreamingQueryException(
       exceptionMessage: result.exceptionMessage,
       errorClass: result.errorClass,

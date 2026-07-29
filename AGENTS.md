@@ -21,7 +21,7 @@ catalog, ML) over gRPC, exchanging results in Apache Arrow format.
 - **Swift 6.3.2+** with Swift Package Manager (`swift-tools-version: 6.3.2`).
 - **Platforms**: macOS 15+, iOS 18+, watchOS 11+, tvOS 18+, and Linux
   (built and tested on Ubuntu x86_64 & arm64 with the Swift 6.3.2 toolchain).
-- **Server**: Apache Spark 4.x Connect server (tested against 4.0.2 / 4.1.2 / 4.2.0-preview).
+- **Server**: Apache Spark 4.x Connect server (tested against 4.0.3 / 4.1.2 / 4.2.0).
 - **Dependencies** (all pinned with `exact` in [Package.swift](Package.swift)):
   `grpc-swift-2`, `grpc-swift-protobuf`, `grpc-swift-nio-transport`,
   `flatbuffers`, `swift-system`. Keep version bumps as `exact` pins, never
@@ -43,7 +43,7 @@ catalog, ML) over gRPC, exchanging results in Apache Arrow format.
   - `Documentation.docc/` — DocC docs (published to Swift Package Index).
 - `Tests/SparkConnectTests/` — test suite (Swift Testing). `Resources/queries/`
   holds golden SQL result files.
-- `Examples/` — runnable sample apps (`pi`, `spark-sql`, `stream`, `web`, `app`,
+- `Examples/` — runnable sample apps (`pi`, `spark-sql`, `stream`, `app`,
   `pyspark-connect`), each with its own `Package.swift` and `Dockerfile`.
 - `dev/` — Python maintainer scripts (JIRA + PR merge tooling).
 - `.github/workflows/build_main.yml` — CI entry point: runs on push to all
@@ -78,7 +78,7 @@ Start a local Spark Connect server first (default endpoint `sc://localhost:15002
 
 ```bash
 docker run -it --rm -p 15002:15002 -e SPARK_NO_DAEMONIZE=1 \
-  apache/spark:4.2.0-preview5 bash -c /opt/spark/sbin/start-connect-server.sh
+  apache/spark:4.2.0 bash -c /opt/spark/sbin/start-connect-server.sh
 ```
 
 Environment variables that gate behavior:
@@ -128,3 +128,11 @@ This repo follows standard Apache Spark process.
 - Test failures are usually "no server" or version mismatch, not code bugs —
   confirm a Spark Connect server is running and reachable at `SPARK_REMOTE`.
 - Keep dependency versions as `exact` pins.
+
+## Security
+
+Security model: [SECURITY.md](./SECURITY.md)
+
+Agents that scan this repository should consult `SECURITY.md`
+for the project's threat model, in-scope / out-of-scope
+declarations, and known non-findings before reporting issues.

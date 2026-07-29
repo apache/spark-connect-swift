@@ -450,81 +450,95 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
   }
 
   /// Request to define a flow targeting a dataset.
-  nonisolated struct DefineFlow: Sendable {
+  nonisolated struct DefineFlow: @unchecked Sendable {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
 
     /// The graph to attach this flow to.
     var dataflowGraphID: String {
-      get {_dataflowGraphID ?? String()}
-      set {_dataflowGraphID = newValue}
+      get {_storage._dataflowGraphID ?? String()}
+      set {_uniqueStorage()._dataflowGraphID = newValue}
     }
     /// Returns true if `dataflowGraphID` has been explicitly set.
-    var hasDataflowGraphID: Bool {self._dataflowGraphID != nil}
+    var hasDataflowGraphID: Bool {_storage._dataflowGraphID != nil}
     /// Clears the value of `dataflowGraphID`. Subsequent reads from it will return its default value.
-    mutating func clearDataflowGraphID() {self._dataflowGraphID = nil}
+    mutating func clearDataflowGraphID() {_uniqueStorage()._dataflowGraphID = nil}
 
     /// Name of the flow. For standalone flows, this must be a single-part name.
     var flowName: String {
-      get {_flowName ?? String()}
-      set {_flowName = newValue}
+      get {_storage._flowName ?? String()}
+      set {_uniqueStorage()._flowName = newValue}
     }
     /// Returns true if `flowName` has been explicitly set.
-    var hasFlowName: Bool {self._flowName != nil}
+    var hasFlowName: Bool {_storage._flowName != nil}
     /// Clears the value of `flowName`. Subsequent reads from it will return its default value.
-    mutating func clearFlowName() {self._flowName = nil}
+    mutating func clearFlowName() {_uniqueStorage()._flowName = nil}
 
     /// Name of the dataset this flow writes to. Can be partially or fully qualified.
     var targetDatasetName: String {
-      get {_targetDatasetName ?? String()}
-      set {_targetDatasetName = newValue}
+      get {_storage._targetDatasetName ?? String()}
+      set {_uniqueStorage()._targetDatasetName = newValue}
     }
     /// Returns true if `targetDatasetName` has been explicitly set.
-    var hasTargetDatasetName: Bool {self._targetDatasetName != nil}
+    var hasTargetDatasetName: Bool {_storage._targetDatasetName != nil}
     /// Clears the value of `targetDatasetName`. Subsequent reads from it will return its default value.
-    mutating func clearTargetDatasetName() {self._targetDatasetName = nil}
+    mutating func clearTargetDatasetName() {_uniqueStorage()._targetDatasetName = nil}
 
     /// SQL configurations set when running this flow.
-    var sqlConf: Dictionary<String,String> = [:]
+    var sqlConf: Dictionary<String,String> {
+      get {_storage._sqlConf}
+      set {_uniqueStorage()._sqlConf = newValue}
+    }
 
     /// Identifier for the client making the request. The server uses this to determine what flow
     /// evaluation request stream to dispatch evaluation requests to for this flow.
     var clientID: String {
-      get {_clientID ?? String()}
-      set {_clientID = newValue}
+      get {_storage._clientID ?? String()}
+      set {_uniqueStorage()._clientID = newValue}
     }
     /// Returns true if `clientID` has been explicitly set.
-    var hasClientID: Bool {self._clientID != nil}
+    var hasClientID: Bool {_storage._clientID != nil}
     /// Clears the value of `clientID`. Subsequent reads from it will return its default value.
-    mutating func clearClientID() {self._clientID = nil}
+    mutating func clearClientID() {_uniqueStorage()._clientID = nil}
 
     /// The location in source code that this flow was defined.
     var sourceCodeLocation: Spark_Connect_SourceCodeLocation {
-      get {_sourceCodeLocation ?? Spark_Connect_SourceCodeLocation()}
-      set {_sourceCodeLocation = newValue}
+      get {_storage._sourceCodeLocation ?? Spark_Connect_SourceCodeLocation()}
+      set {_uniqueStorage()._sourceCodeLocation = newValue}
     }
     /// Returns true if `sourceCodeLocation` has been explicitly set.
-    var hasSourceCodeLocation: Bool {self._sourceCodeLocation != nil}
+    var hasSourceCodeLocation: Bool {_storage._sourceCodeLocation != nil}
     /// Clears the value of `sourceCodeLocation`. Subsequent reads from it will return its default value.
-    mutating func clearSourceCodeLocation() {self._sourceCodeLocation = nil}
+    mutating func clearSourceCodeLocation() {_uniqueStorage()._sourceCodeLocation = nil}
 
-    var details: Spark_Connect_PipelineCommand.DefineFlow.OneOf_Details? = nil
+    var details: OneOf_Details? {
+      get {return _storage._details}
+      set {_uniqueStorage()._details = newValue}
+    }
 
     var relationFlowDetails: Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails {
       get {
-        if case .relationFlowDetails(let v)? = details {return v}
+        if case .relationFlowDetails(let v)? = _storage._details {return v}
         return Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails()
       }
-      set {details = .relationFlowDetails(newValue)}
+      set {_uniqueStorage()._details = .relationFlowDetails(newValue)}
+    }
+
+    var autoCdcFlowDetails: Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetails {
+      get {
+        if case .autoCdcFlowDetails(let v)? = _storage._details {return v}
+        return Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetails()
+      }
+      set {_uniqueStorage()._details = .autoCdcFlowDetails(newValue)}
     }
 
     var `extension`: SwiftProtobuf.Google_Protobuf_Any {
       get {
-        if case .extension(let v)? = details {return v}
+        if case .extension(let v)? = _storage._details {return v}
         return SwiftProtobuf.Google_Protobuf_Any()
       }
-      set {details = .extension(newValue)}
+      set {_uniqueStorage()._details = .extension(newValue)}
     }
 
     /// If true, define the flow as a one-time flow, such as for backfill.
@@ -533,19 +547,55 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
     ///     the flow will run again.
     ///   - The flow function must be a batch DataFrame, not a streaming DataFrame.
     var once: Bool {
-      get {_once ?? false}
-      set {_once = newValue}
+      get {_storage._once ?? false}
+      set {_uniqueStorage()._once = newValue}
     }
     /// Returns true if `once` has been explicitly set.
-    var hasOnce: Bool {self._once != nil}
+    var hasOnce: Bool {_storage._once != nil}
     /// Clears the value of `once`. Subsequent reads from it will return its default value.
-    mutating func clearOnce() {self._once = nil}
+    mutating func clearOnce() {_uniqueStorage()._once = nil}
 
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     nonisolated enum OneOf_Details: Equatable, Sendable {
       case relationFlowDetails(Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails)
+      case autoCdcFlowDetails(Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetails)
       case `extension`(SwiftProtobuf.Google_Protobuf_Any)
+
+    }
+
+    /// SCD Type for Auto CDC target tables.
+    nonisolated enum SCDType: SwiftProtobuf.Enum, Swift.CaseIterable {
+      typealias RawValue = Int
+      case unspecified // = 0
+      case scdType1 // = 1
+      case UNRECOGNIZED(Int)
+
+      init() {
+        self = .unspecified
+      }
+
+      init?(rawValue: Int) {
+        switch rawValue {
+        case 0: self = .unspecified
+        case 1: self = .scdType1
+        default: self = .UNRECOGNIZED(rawValue)
+        }
+      }
+
+      var rawValue: Int {
+        switch self {
+        case .unspecified: return 0
+        case .scdType1: return 1
+        case .UNRECOGNIZED(let i): return i
+        }
+      }
+
+      // The compiler won't synthesize support with the UNRECOGNIZED case.
+      static let allCases: [Spark_Connect_PipelineCommand.DefineFlow.SCDType] = [
+        .unspecified,
+        .scdType1,
+      ]
 
     }
 
@@ -573,6 +623,80 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
       fileprivate var _relation: Spark_Connect_Relation? = nil
     }
 
+    /// Details for Auto CDC flows.
+    nonisolated struct AutoCdcFlowDetails: Sendable {
+      // SwiftProtobuf.Message conformance is added in an extension below. See the
+      // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+      // methods supported on all messages.
+
+      /// The name of the CDC source to stream from.
+      var source: String {
+        get {_source ?? String()}
+        set {_source = newValue}
+      }
+      /// Returns true if `source` has been explicitly set.
+      var hasSource: Bool {self._source != nil}
+      /// Clears the value of `source`. Subsequent reads from it will return its default value.
+      mutating func clearSource() {self._source = nil}
+
+      /// Column(s) that uniquely identify a row in source and target data.
+      var keys: [Spark_Connect_Expression] = []
+
+      /// Expression to order the source data.
+      var sequenceBy: Spark_Connect_Expression {
+        get {_sequenceBy ?? Spark_Connect_Expression()}
+        set {_sequenceBy = newValue}
+      }
+      /// Returns true if `sequenceBy` has been explicitly set.
+      var hasSequenceBy: Bool {self._sequenceBy != nil}
+      /// Clears the value of `sequenceBy`. Subsequent reads from it will return its default value.
+      mutating func clearSequenceBy() {self._sequenceBy = nil}
+
+      /// Delete condition for the merged operation.
+      var applyAsDeletes: Spark_Connect_Expression {
+        get {_applyAsDeletes ?? Spark_Connect_Expression()}
+        set {_applyAsDeletes = newValue}
+      }
+      /// Returns true if `applyAsDeletes` has been explicitly set.
+      var hasApplyAsDeletes: Bool {self._applyAsDeletes != nil}
+      /// Clears the value of `applyAsDeletes`. Subsequent reads from it will return its default value.
+      mutating func clearApplyAsDeletes() {self._applyAsDeletes = nil}
+
+      /// Truncate condition for the merged operation.
+      var applyAsTruncates: Spark_Connect_Expression {
+        get {_applyAsTruncates ?? Spark_Connect_Expression()}
+        set {_applyAsTruncates = newValue}
+      }
+      /// Returns true if `applyAsTruncates` has been explicitly set.
+      var hasApplyAsTruncates: Bool {self._applyAsTruncates != nil}
+      /// Clears the value of `applyAsTruncates`. Subsequent reads from it will return its default value.
+      mutating func clearApplyAsTruncates() {self._applyAsTruncates = nil}
+
+      /// Columns included in the output table.
+      var columnList: [Spark_Connect_Expression] = []
+
+      /// Columns excluded from the output table.
+      var exceptColumnList: [Spark_Connect_Expression] = []
+
+      /// SCD Type for target table.
+      var storedAsScdType: Spark_Connect_PipelineCommand.DefineFlow.SCDType = .unspecified
+
+      /// Subset of columns to ignore null in updates.
+      var ignoreNullUpdatesColumnList: [Spark_Connect_Expression] = []
+
+      /// Subset of columns excluded from ignoring null in updates.
+      var ignoreNullUpdatesExceptColumnList: [Spark_Connect_Expression] = []
+
+      var unknownFields = SwiftProtobuf.UnknownStorage()
+
+      init() {}
+
+      fileprivate var _source: String? = nil
+      fileprivate var _sequenceBy: Spark_Connect_Expression? = nil
+      fileprivate var _applyAsDeletes: Spark_Connect_Expression? = nil
+      fileprivate var _applyAsTruncates: Spark_Connect_Expression? = nil
+    }
+
     nonisolated struct Response: Sendable {
       // SwiftProtobuf.Message conformance is added in an extension below. See the
       // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -597,12 +721,7 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
 
     init() {}
 
-    fileprivate var _dataflowGraphID: String? = nil
-    fileprivate var _flowName: String? = nil
-    fileprivate var _targetDatasetName: String? = nil
-    fileprivate var _clientID: String? = nil
-    fileprivate var _sourceCodeLocation: Spark_Connect_SourceCodeLocation? = nil
-    fileprivate var _once: Bool? = nil
+    fileprivate var _storage = _StorageClass.defaultInstance
   }
 
   /// Request to execute all flows for a single output (dataset or sink) remotely.
@@ -1690,99 +1809,174 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineOutput.SinkDetails: Sw
 
 nonisolated extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.protoMessageName + ".DefineFlow"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}flow_name\0\u{3}target_dataset_name\0\u{3}sql_conf\0\u{3}client_id\0\u{3}source_code_location\0\u{3}relation_flow_details\0\u{1}once\0\u{2}_\u{f}extension\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}dataflow_graph_id\0\u{3}flow_name\0\u{3}target_dataset_name\0\u{3}sql_conf\0\u{3}client_id\0\u{3}source_code_location\0\u{3}relation_flow_details\0\u{1}once\0\u{4}\u{2}auto_cdc_flow_details\0\u{2}]\u{f}extension\0")
+
+  fileprivate class _StorageClass {
+    var _dataflowGraphID: String? = nil
+    var _flowName: String? = nil
+    var _targetDatasetName: String? = nil
+    var _sqlConf: Dictionary<String,String> = [:]
+    var _clientID: String? = nil
+    var _sourceCodeLocation: Spark_Connect_SourceCodeLocation? = nil
+    var _details: Spark_Connect_PipelineCommand.DefineFlow.OneOf_Details?
+    var _once: Bool? = nil
+
+      // This property is used as the initial default value for new instances of the type.
+      // The type itself is protecting the reference to its storage via CoW semantics.
+      // This will force a copy to be made of this reference when the first mutation occurs;
+      // hence, it is safe to mark this as `nonisolated(unsafe)`.
+      static nonisolated(unsafe) let defaultInstance = _StorageClass()
+
+    private init() {}
+
+    init(copying source: _StorageClass) {
+      _dataflowGraphID = source._dataflowGraphID
+      _flowName = source._flowName
+      _targetDatasetName = source._targetDatasetName
+      _sqlConf = source._sqlConf
+      _clientID = source._clientID
+      _sourceCodeLocation = source._sourceCodeLocation
+      _details = source._details
+      _once = source._once
+    }
+  }
+
+  fileprivate mutating func _uniqueStorage() -> _StorageClass {
+    if !isKnownUniquelyReferenced(&_storage) {
+      _storage = _StorageClass(copying: _storage)
+    }
+    return _storage
+  }
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self._dataflowGraphID) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self._flowName) }()
-      case 3: try { try decoder.decodeSingularStringField(value: &self._targetDatasetName) }()
-      case 4: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &self.sqlConf) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self._clientID) }()
-      case 6: try { try decoder.decodeSingularMessageField(value: &self._sourceCodeLocation) }()
-      case 7: try {
-        var v: Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails?
-        var hadOneofValue = false
-        if let current = self.details {
-          hadOneofValue = true
-          if case .relationFlowDetails(let m) = current {v = m}
+    _ = _uniqueStorage()
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      while let fieldNumber = try decoder.nextFieldNumber() {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every case branch when no optimizations are
+        // enabled. https://github.com/apple/swift-protobuf/issues/1034
+        switch fieldNumber {
+        case 1: try { try decoder.decodeSingularStringField(value: &_storage._dataflowGraphID) }()
+        case 2: try { try decoder.decodeSingularStringField(value: &_storage._flowName) }()
+        case 3: try { try decoder.decodeSingularStringField(value: &_storage._targetDatasetName) }()
+        case 4: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: &_storage._sqlConf) }()
+        case 5: try { try decoder.decodeSingularStringField(value: &_storage._clientID) }()
+        case 6: try { try decoder.decodeSingularMessageField(value: &_storage._sourceCodeLocation) }()
+        case 7: try {
+          var v: Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails?
+          var hadOneofValue = false
+          if let current = _storage._details {
+            hadOneofValue = true
+            if case .relationFlowDetails(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._details = .relationFlowDetails(v)
+          }
+        }()
+        case 8: try { try decoder.decodeSingularBoolField(value: &_storage._once) }()
+        case 10: try {
+          var v: Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetails?
+          var hadOneofValue = false
+          if let current = _storage._details {
+            hadOneofValue = true
+            if case .autoCdcFlowDetails(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._details = .autoCdcFlowDetails(v)
+          }
+        }()
+        case 999: try {
+          var v: SwiftProtobuf.Google_Protobuf_Any?
+          var hadOneofValue = false
+          if let current = _storage._details {
+            hadOneofValue = true
+            if case .extension(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._details = .extension(v)
+          }
+        }()
+        default: break
         }
-        try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {
-          if hadOneofValue {try decoder.handleConflictingOneOf()}
-          self.details = .relationFlowDetails(v)
-        }
-      }()
-      case 8: try { try decoder.decodeSingularBoolField(value: &self._once) }()
-      case 999: try {
-        var v: SwiftProtobuf.Google_Protobuf_Any?
-        var hadOneofValue = false
-        if let current = self.details {
-          hadOneofValue = true
-          if case .extension(let m) = current {v = m}
-        }
-        try decoder.decodeSingularMessageField(value: &v)
-        if let v = v {
-          if hadOneofValue {try decoder.handleConflictingOneOf()}
-          self.details = .extension(v)
-        }
-      }()
-      default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._dataflowGraphID {
-      try visitor.visitSingularStringField(value: v, fieldNumber: 1)
-    } }()
-    try { if let v = self._flowName {
-      try visitor.visitSingularStringField(value: v, fieldNumber: 2)
-    } }()
-    try { if let v = self._targetDatasetName {
-      try visitor.visitSingularStringField(value: v, fieldNumber: 3)
-    } }()
-    if !self.sqlConf.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: self.sqlConf, fieldNumber: 4)
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every if/case branch local when no optimizations
+      // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+      // https://github.com/apple/swift-protobuf/issues/1182
+      try { if let v = _storage._dataflowGraphID {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 1)
+      } }()
+      try { if let v = _storage._flowName {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 2)
+      } }()
+      try { if let v = _storage._targetDatasetName {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 3)
+      } }()
+      if !_storage._sqlConf.isEmpty {
+        try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufString>.self, value: _storage._sqlConf, fieldNumber: 4)
+      }
+      try { if let v = _storage._clientID {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 5)
+      } }()
+      try { if let v = _storage._sourceCodeLocation {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
+      } }()
+      try { if case .relationFlowDetails(let v)? = _storage._details {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
+      } }()
+      try { if let v = _storage._once {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 8)
+      } }()
+      switch _storage._details {
+      case .autoCdcFlowDetails?: try {
+        guard case .autoCdcFlowDetails(let v)? = _storage._details else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 10)
+      }()
+      case .extension?: try {
+        guard case .extension(let v)? = _storage._details else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 999)
+      }()
+      default: break
+      }
     }
-    try { if let v = self._clientID {
-      try visitor.visitSingularStringField(value: v, fieldNumber: 5)
-    } }()
-    try { if let v = self._sourceCodeLocation {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
-    } }()
-    try { if case .relationFlowDetails(let v)? = self.details {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
-    } }()
-    try { if let v = self._once {
-      try visitor.visitSingularBoolField(value: v, fieldNumber: 8)
-    } }()
-    try { if case .extension(let v)? = self.details {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 999)
-    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Spark_Connect_PipelineCommand.DefineFlow, rhs: Spark_Connect_PipelineCommand.DefineFlow) -> Bool {
-    if lhs._dataflowGraphID != rhs._dataflowGraphID {return false}
-    if lhs._flowName != rhs._flowName {return false}
-    if lhs._targetDatasetName != rhs._targetDatasetName {return false}
-    if lhs.sqlConf != rhs.sqlConf {return false}
-    if lhs._clientID != rhs._clientID {return false}
-    if lhs._sourceCodeLocation != rhs._sourceCodeLocation {return false}
-    if lhs.details != rhs.details {return false}
-    if lhs._once != rhs._once {return false}
+    if lhs._storage !== rhs._storage {
+      let storagesAreEqual: Bool = withExtendedLifetime((lhs._storage, rhs._storage)) { (_args: (_StorageClass, _StorageClass)) in
+        let _storage = _args.0
+        let rhs_storage = _args.1
+        if _storage._dataflowGraphID != rhs_storage._dataflowGraphID {return false}
+        if _storage._flowName != rhs_storage._flowName {return false}
+        if _storage._targetDatasetName != rhs_storage._targetDatasetName {return false}
+        if _storage._sqlConf != rhs_storage._sqlConf {return false}
+        if _storage._clientID != rhs_storage._clientID {return false}
+        if _storage._sourceCodeLocation != rhs_storage._sourceCodeLocation {return false}
+        if _storage._details != rhs_storage._details {return false}
+        if _storage._once != rhs_storage._once {return false}
+        return true
+      }
+      if !storagesAreEqual {return false}
+    }
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
+}
+
+nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.SCDType: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0SCD_TYPE_UNSPECIFIED\0\u{1}SCD_TYPE_1\0")
 }
 
 nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
@@ -1814,6 +2008,85 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlow
 
   static func ==(lhs: Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails, rhs: Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails) -> Bool {
     if lhs._relation != rhs._relation {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_PipelineCommand.DefineFlow.protoMessageName + ".AutoCdcFlowDetails"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}source\0\u{1}keys\0\u{3}sequence_by\0\u{4}\u{3}apply_as_deletes\0\u{3}apply_as_truncates\0\u{3}column_list\0\u{3}except_column_list\0\u{3}stored_as_scd_type\0\u{4}\u{4}ignore_null_updates_column_list\0\u{3}ignore_null_updates_except_column_list\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self._source) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.keys) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._sequenceBy) }()
+      case 6: try { try decoder.decodeSingularMessageField(value: &self._applyAsDeletes) }()
+      case 7: try { try decoder.decodeSingularMessageField(value: &self._applyAsTruncates) }()
+      case 8: try { try decoder.decodeRepeatedMessageField(value: &self.columnList) }()
+      case 9: try { try decoder.decodeRepeatedMessageField(value: &self.exceptColumnList) }()
+      case 10: try { try decoder.decodeSingularEnumField(value: &self.storedAsScdType) }()
+      case 14: try { try decoder.decodeRepeatedMessageField(value: &self.ignoreNullUpdatesColumnList) }()
+      case 15: try { try decoder.decodeRepeatedMessageField(value: &self.ignoreNullUpdatesExceptColumnList) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._source {
+      try visitor.visitSingularStringField(value: v, fieldNumber: 1)
+    } }()
+    if !self.keys.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.keys, fieldNumber: 2)
+    }
+    try { if let v = self._sequenceBy {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
+    try { if let v = self._applyAsDeletes {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
+    } }()
+    try { if let v = self._applyAsTruncates {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
+    } }()
+    if !self.columnList.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.columnList, fieldNumber: 8)
+    }
+    if !self.exceptColumnList.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.exceptColumnList, fieldNumber: 9)
+    }
+    if self.storedAsScdType != .unspecified {
+      try visitor.visitSingularEnumField(value: self.storedAsScdType, fieldNumber: 10)
+    }
+    if !self.ignoreNullUpdatesColumnList.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.ignoreNullUpdatesColumnList, fieldNumber: 14)
+    }
+    if !self.ignoreNullUpdatesExceptColumnList.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.ignoreNullUpdatesExceptColumnList, fieldNumber: 15)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetails, rhs: Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetails) -> Bool {
+    if lhs._source != rhs._source {return false}
+    if lhs.keys != rhs.keys {return false}
+    if lhs._sequenceBy != rhs._sequenceBy {return false}
+    if lhs._applyAsDeletes != rhs._applyAsDeletes {return false}
+    if lhs._applyAsTruncates != rhs._applyAsTruncates {return false}
+    if lhs.columnList != rhs.columnList {return false}
+    if lhs.exceptColumnList != rhs.exceptColumnList {return false}
+    if lhs.storedAsScdType != rhs.storedAsScdType {return false}
+    if lhs.ignoreNullUpdatesColumnList != rhs.ignoreNullUpdatesColumnList {return false}
+    if lhs.ignoreNullUpdatesExceptColumnList != rhs.ignoreNullUpdatesExceptColumnList {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

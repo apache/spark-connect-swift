@@ -147,7 +147,9 @@ public actor DataFrameWriter: Sendable {
     var write = f()
 
     // Cannot both be set
-    assert(!(!write.path.isEmpty && !write.table.tableName.isEmpty))
+    guard write.path.isEmpty || write.table.tableName.isEmpty else {
+      throw SparkConnectError.InvalidArgument
+    }
 
     let plan = await self.df.getPlan() as! Plan
     write.input = plan.root

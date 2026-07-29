@@ -33,6 +33,20 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
   }
 
+  /// Projects a set of ``Column`` expressions and returns a new ``DataFrame``.
+  ///
+  /// ```swift
+  /// let df2 = df.select(col("name"), col("age").cast("long").alias("age_long"))
+  /// ```
+  /// - Parameters:
+  ///   - col: A ``Column`` expression.
+  ///   - cols: Additional ``Column`` expressions.
+  /// - Returns: A ``DataFrame`` with subset of columns.
+  public func select(_ col: Column, _ cols: Column...) -> DataFrame {
+    let exprs = ([col] + cols).map { $0.expr }
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, exprs))
+  }
+
   /// Selects a subset of existing columns using column names.
   /// - Parameter cols: Column names
   /// - Returns: A ``DataFrame`` with subset of columns.
@@ -140,6 +154,25 @@ extension DataFrame {
   public func withColumnRenamed(_ colsMap: [String: String]) -> DataFrame {
     return DataFrame(
       spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, colsMap))
+  }
+
+  /// Returns a new ``DataFrame`` by adding a column or replacing the existing column that has the
+  /// same name.
+  /// - Parameters:
+  ///   - colName: A new column name.
+  ///   - expr: A SQL expression string for the new column.
+  /// - Returns: A ``DataFrame`` with the new or replaced column.
+  public func withColumn(_ colName: String, _ expr: String) -> DataFrame {
+    return withColumns([colName: expr])
+  }
+
+  /// Returns a new ``DataFrame`` by adding columns or replacing the existing columns that have the
+  /// same names.
+  /// - Parameter colsMap: A dictionary of column name and SQL expression string.
+  /// - Returns: A ``DataFrame`` with the new or replaced columns.
+  public func withColumns(_ colsMap: [String: String]) -> DataFrame {
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getWithColumns(self.plan.root, colsMap))
   }
 
   // MARK: - Filtering and Sorting
@@ -455,6 +488,40 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: plan)
   }
 
+  /// Nearest-by top-K ranking join with another ``DataFrame``.
+  ///
+  /// For each row on the left (query) side, returns up to `numResults` rows from `right`
+  /// (the base side), ranked by `rankingExpression`.
+  ///
+  /// - Parameters:
+  ///   - right: The base ``DataFrame`` to search for matches.
+  ///   - rankingExpression: A scalar expression string used to rank candidate rows.
+  ///   - numResults: Maximum number of matches per left row. Must be between 1 and 100000.
+  ///   - mode: Search algorithm contract. One of `approx`, `exact`.
+  ///   - direction: Ranking direction. One of `distance`, `similarity`.
+  ///   - joinType: One of `inner` (default), `leftouter`.
+  /// - Returns: A ``DataFrame``.
+  public func nearestByJoin(
+    _ right: DataFrame,
+    rankingExpression: String,
+    numResults: Int32,
+    mode: String,
+    direction: String,
+    joinType: String = "inner"
+  ) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getNearestByJoin(
+      self.plan.root,
+      rightPlan,
+      rankingExpression: rankingExpression,
+      numResults: numResults,
+      mode: mode,
+      direction: direction,
+      joinType: joinType
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
   // MARK: - Set Operations
 
   /// Returns a new `DataFrame` containing rows in this `DataFrame` but not in another `DataFrame`.
@@ -728,14 +795,14 @@ extension DataFrame {
   ///
   /// ```swift
   /// // Group by single column
-  /// let byDept = df.groupBy("department")
-  ///     .agg(count("*").alias("employee_count"))
+  /// let byDept = await df.groupBy("department")
+  ///     .agg("count(*) AS employee_count")
   ///
   /// // Group by multiple columns
-  /// let byDeptAndLocation = df.groupBy("department", "location")
+  /// let byDeptAndLocation = await df.groupBy("department", "location")
   ///     .agg(
-  ///         avg("salary").alias("avg_salary"),
-  ///         max("salary").alias("max_salary")
+  ///         "avg(salary) AS avg_salary",
+  ///         "max(salary) AS max_salary"
   ///     )
   /// ```
   ///

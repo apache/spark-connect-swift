@@ -55,7 +55,7 @@ public struct SparkTable: Sendable, Equatable {
   }
 }
 
-public struct Column: Sendable, Equatable {
+public struct CatalogColumn: Sendable, Equatable {
   public var name: String
   public var description: String?
   public var dataType: String

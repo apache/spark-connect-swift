@@ -31,7 +31,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
       - name: Check license header
-        uses: apache/skywalking-eyes@main
+        uses: apache/skywalking-eyes@61275cc80d0798a405cb070f7d3a8aaf7cf2c2c1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -47,6 +47,16 @@ jobs:
     - name: Build
       run: swift build -c release
 
+  build-ubuntu-swift64:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v6
+    - name: Build
+      run: |
+        docker run swiftlang/swift:nightly-6.4.x-amazonlinux2023 uname -a
+        docker run -v $PWD:/spark -w /spark swiftlang/swift:nightly-6.4.x-amazonlinux2023 swift build
+
   build-ubuntu-latest:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -54,8 +64,8 @@ jobs:
     - uses: actions/checkout@v6
     - name: Build
       run: |
-        docker run swift:6.3.2 uname -a
-        docker run -v $PWD:/spark -w /spark swift:6.3.2 swift build -c release
+        docker run swift:6.3.3 uname -a
+        docker run -v $PWD:/spark -w /spark swift:6.3.3 swift build -c release
 
   build-ubuntu-arm:
     runs-on: ubuntu-24.04-arm
@@ -64,8 +74,8 @@ jobs:
     - uses: actions/checkout@v6
     - name: Build
       run: |
-        docker run swift:6.3.2 uname -a
-        docker run -v $PWD:/spark -w /spark swift:6.3.2 swift build -c release
+        docker run swift:6.3.3 uname -a
+        docker run -v $PWD:/spark -w /spark swift:6.3.3 swift build -c release
 
   integration-test-ubuntu:
     runs-on: ubuntu-latest
@@ -73,7 +83,7 @@ jobs:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
       spark:
-        image: apache/spark:4.0.2
+        image: apache/spark:4.0.3-scala
         env:
           SPARK_NO_DAEMONIZE: 1
         ports:
@@ -83,8 +93,8 @@ jobs:
     - uses: actions/checkout@v6
     - name: Build
       run: |
-        docker run swift:6.3.2 uname -a
-        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.3.2 swift test --no-parallel -c release
+        docker run swift:6.3.3 uname -a
+        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.3.3 swift test --no-parallel -c release
 
   integration-test-ubuntu-spark41:
     runs-on: ubuntu-latest
@@ -102,8 +112,8 @@ jobs:
     - uses: actions/checkout@v6
     - name: Build
       run: |
-        docker run swift:6.3.2 uname -a
-        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.3.2 swift test --no-parallel -c release
+        docker run swift:6.3.3 uname -a
+        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.3.3 swift test --no-parallel -c release
 
   integration-test-ubuntu-spark42:
     runs-on: ubuntu-latest
@@ -113,13 +123,13 @@ jobs:
       run: |
         docker run -d --name spark -p 15003:15002 -e SPARK_NO_DAEMONIZE=1 \
           --entrypoint /opt/spark/sbin/start-connect-server.sh \
-          apache/spark:4.2.0-preview5-scala \
+          apache/spark:4.2.0-scala-java25 \
           -c spark.sql.geospatial.enabled=true \
           -c spark.sql.timeType.enabled=true
     - name: Test
       run: |
-        docker run swift:6.3.2 uname -a
-        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.3.2 swift test --no-parallel -c release
+        docker run swift:6.3.3 uname -a
+        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.3.3 swift test --no-parallel -c release
 
   integration-test-mac-spark41:
     runs-on: macos-26
@@ -155,11 +165,12 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.2.0-preview5/spark-4.2.0-preview5-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.2.0-preview5-bin-hadoop3.tgz && rm spark-4.2.0-preview5-bin-hadoop3.tgz
-        mv spark-4.2.0-preview5-bin-hadoop3/ /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.2.0/spark-4.2.0-bin-hadoop3.tgz?action=download
+        echo "3a6559e8546ff387db8fe7a04b8fe4008853b467b972c2e343df8e14a81450534777719fc5d4998dd96519a86fdf9de140cee753c61e2e94db044d5f9555ddc4  spark-4.2.0-bin-hadoop3.tgz" | shasum -a 512 -c
+        tar xvfz spark-4.2.0-bin-hadoop3.tgz && rm spark-4.2.0-bin-hadoop3.tgz
+        mv spark-4.2.0-bin-hadoop3/ /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh -c spark.sql.geospatial.enabled=true -c spark.sql.timeType.enabled=true
+        ./start-connect-server.sh -c spark.sql.timeType.enabled=true
         cd -
         swift test --no-parallel -c release
 
@@ -176,9 +187,9 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.2/spark-4.0.2-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.2-bin-hadoop3.tgz && rm spark-4.0.2-bin-hadoop3.tgz
-        mv spark-4.0.2-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.3/spark-4.0.3-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.0.3-bin-hadoop3.tgz && rm spark-4.0.3-bin-hadoop3.tgz
+        mv spark-4.0.3-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
@@ -225,11 +236,16 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.2/spark-4.0.2-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.2-bin-hadoop3.tgz && rm spark-4.0.2-bin-hadoop3.tgz
-        mv spark-4.0.2-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.3/spark-4.0.3-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.0.3-bin-hadoop3.tgz && rm spark-4.0.3-bin-hadoop3.tgz
+        mv spark-4.0.3-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.2,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.3,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        # Iceberg jars are resolved at startup, so wait until the server is ready.
+        for i in $(seq 1 12); do
+          grep -q "Spark Connect server started at" /tmp/spark/logs/*.out 2>/dev/null && break
+          sleep 5
+        done
         cd -
         swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release
@@ -258,6 +274,11 @@ jobs:
         mv spark-4.1.2-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.1.2,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        # Iceberg jars are resolved at startup, so wait until the server is ready.
+        for i in $(seq 1 12); do
+          grep -q "Spark Connect server started at" /tmp/spark/logs/*.out 2>/dev/null && break
+          sleep 5
+        done
         cd -
         swift test --filter DataFrameWriterV2Tests -c release
         swift test --filter IcebergTest -c release

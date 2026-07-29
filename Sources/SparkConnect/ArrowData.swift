@@ -70,6 +70,9 @@ public class ArrowData {
   }
 
   public func isNull(_ at: UInt) -> Bool {
+    if self.type.id == .null {
+      return true
+    }
     let nullBuffer = buffers[0]
     return nullBuffer.length > 0 && !BitUtility.isSet(at, buffer: nullBuffer)
   }
