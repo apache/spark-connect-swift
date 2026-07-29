@@ -702,7 +702,7 @@ public actor SparkConnectClient {
     return createPlan { $0.freqItems = freqItems }
   }
 
-  static func getSort(_ child: Relation, _ cols: [String]) -> Plan {
+  static func getSort(_ child: Relation, _ cols: [String], _ isGlobal: Bool = true) -> Plan {
     var sort = Sort()
     sort.input = child
     let expressions: [Spark_Connect_Expression.SortOrder] = cols.map {
@@ -712,7 +712,7 @@ public actor SparkConnectClient {
       return expression
     }
     sort.order = expressions
-    sort.isGlobal = true
+    sort.isGlobal = isGlobal
     return createPlan { $0.sort = sort }
   }
 

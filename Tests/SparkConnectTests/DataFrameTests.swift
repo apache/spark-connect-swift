@@ -437,6 +437,16 @@ struct DataFrameTests {
   }
 
   @Test
+  func sortWithinPartitions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = Array((1...10).map { Row($0) })
+    #expect(
+      try await spark.range(10, 0, -1).repartition(1).sortWithinPartitions("id").collect()
+        == expected)
+    await spark.stop()
+  }
+
+  @Test
   func table() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("DROP TABLE IF EXISTS t").count() == 0)

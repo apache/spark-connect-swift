@@ -260,6 +260,15 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
   }
 
+  /// Returns a new ``DataFrame`` with each partition sorted by the specified column(s).
+  /// This is the same operation as `SORT BY` in SQL (Hive QL).
+  /// - Parameter cols: Column names.
+  /// - Returns: A ``DataFrame`` with each partition sorted.
+  public func sortWithinPartitions(_ cols: String...) -> DataFrame {
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols, false))
+  }
+
   /// Limits the result count to the number specified.
   ///
   /// This transformation is often used for:
