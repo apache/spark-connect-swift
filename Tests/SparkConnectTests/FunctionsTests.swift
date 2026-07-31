@@ -231,6 +231,84 @@ struct FunctionsTests {
   }
 
   @Test
+  func predicates() throws {
+    let isNull = col("a").isNull().expr
+    #expect(isNull.unresolvedFunction.functionName == "isnull")
+    #expect(isNull.unresolvedFunction.arguments.count == 1)
+    #expect(isNull.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+
+    let isNotNull = col("a").isNotNull().expr
+    #expect(isNotNull.unresolvedFunction.functionName == "isnotnull")
+    #expect(isNotNull.unresolvedFunction.arguments.count == 1)
+
+    let isin = col("a").isin(1, 2, "x").expr
+    #expect(isin.unresolvedFunction.functionName == "in")
+    #expect(isin.unresolvedFunction.arguments.count == 4)
+    #expect(isin.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+    #expect(isin.unresolvedFunction.arguments[1].literal.long == 1)
+    #expect(isin.unresolvedFunction.arguments[3].literal.string == "x")
+
+    let eqNullSafe = col("a").eqNullSafe(col("b")).expr
+    #expect(eqNullSafe.unresolvedFunction.functionName == "<=>")
+    #expect(eqNullSafe.unresolvedFunction.arguments.count == 2)
+    #expect(col("a").eqNullSafe("x").expr.unresolvedFunction.arguments[1].literal.string == "x")
+  }
+
+  @Test
+  func between() throws {
+    // Composed as (a >= 1) and (a <= 10)
+    let expr = col("a").between(1, 10).expr
+    #expect(expr.unresolvedFunction.functionName == "and")
+    let lower = expr.unresolvedFunction.arguments[0].unresolvedFunction
+    #expect(lower.functionName == ">=")
+    #expect(lower.arguments[1].literal.long == 1)
+    let upper = expr.unresolvedFunction.arguments[1].unresolvedFunction
+    #expect(upper.functionName == "<=")
+    #expect(upper.arguments[1].literal.long == 10)
+
+    #expect(col("a").between(col("b"), col("c")).expr.unresolvedFunction.functionName == "and")
+    #expect(col("a").between(col("b"), 10).expr.unresolvedFunction.functionName == "and")
+    #expect(col("a").between(1, col("c")).expr.unresolvedFunction.functionName == "and")
+  }
+
+  @Test
+  func stringMethods() throws {
+    for (column, name) in [
+      (col("a").like("x%"), "like"),
+      (col("a").rlike("^x"), "rlike"),
+      (col("a").ilike("x%"), "ilike"),
+      (col("a").contains(col("b")), "contains"),
+      (col("a").contains("x"), "contains"),
+      (col("a").startsWith(col("b")), "startswith"),
+      (col("a").startsWith("x"), "startswith"),
+      (col("a").endsWith(col("b")), "endswith"),
+      (col("a").endsWith("x"), "endswith"),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments.count == 2)
+      #expect(expr.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+    }
+
+    let substr = col("a").substr(1, 3).expr
+    #expect(substr.unresolvedFunction.functionName == "substr")
+    #expect(substr.unresolvedFunction.arguments.count == 3)
+    #expect(substr.unresolvedFunction.arguments[1].literal.long == 1)
+    #expect(substr.unresolvedFunction.arguments[2].literal.long == 3)
+  }
+
+  @Test
+  func extraction() throws {
+    let item = col("a").getItem(0).expr
+    #expect(item.unresolvedExtractValue.child.unresolvedAttribute.unparsedIdentifier == "a")
+    #expect(item.unresolvedExtractValue.extraction.literal.long == 0)
+
+    let field = col("a").getField("b").expr
+    #expect(field.unresolvedExtractValue.child.unresolvedAttribute.unparsedIdentifier == "a")
+    #expect(field.unresolvedExtractValue.extraction.literal.string == "b")
+  }
+
+  @Test
   func selectColumns() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(3).select(col("id"), col("id").cast("string").alias("id_string"))
@@ -289,6 +367,49 @@ struct FunctionsTests {
         (-col("id")).alias("negated")
       ).orderBy("id").collect()
     #expect(rows == [Row(2, 0, 2, -1), Row(3, 1, 4, -2), Row(4, 2, 6, -3)])
+    await spark.stop()
+  }
+
+  @Test
+  func filterWithPredicates() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(
+      "SELECT * FROM VALUES ('Alice', 20), ('Bob', NULL), (NULL, 30) T(name, age)")
+    #expect(try await df.filter(col("name").isNull()).count() == 1)
+    #expect(try await df.filter(col("name").isNotNull()).count() == 2)
+    #expect(try await df.filter(col("age").isin(20, 30)).count() == 2)
+    #expect(try await df.filter(col("age").between(20, 30)).count() == 2)
+    #expect(try await df.filter(col("name").isNotNull() && col("age").between(20, 30)).count() == 1)
+
+    let pairs = try await spark.sql("SELECT * FROM VALUES ('a', 'a'), (NULL, NULL), ('a', NULL) T(x, y)")
+    #expect(try await pairs.filter(col("x").eqNullSafe(col("y"))).count() == 2)
+    #expect(try await pairs.filter(col("x").eqNullSafe("a")).count() == 2)
+    await spark.stop()
+  }
+
+  @Test
+  func filterWithStringMethods() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT * FROM VALUES ('Alice'), ('Bob'), ('Charlie') T(name)")
+    #expect(try await df.filter(col("name").like("Al%")).count() == 1)
+    #expect(try await df.filter(col("name").rlike("^.o.$")).count() == 1)
+    #expect(try await df.filter(col("name").ilike("alice")).count() == 1)
+    #expect(try await df.filter(col("name").contains("li")).count() == 2)
+    #expect(try await df.filter(col("name").startsWith("B")).count() == 1)
+    #expect(try await df.filter(col("name").endsWith("e")).count() == 2)
+    await spark.stop()
+  }
+
+  @Test
+  func selectWithSubstrAndExtraction() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(
+      "SELECT 'Alice' AS name, array(1, 2, 3) AS arr, map('k', 10) AS m, named_struct('a', 7) AS s")
+    #expect(try await df.select(col("name").substr(1, 3)).collect() == [Row("Ali")])
+    #expect(try await df.select(col("name").substr(lit(2), lit(3))).collect() == [Row("lic")])
+    let rows = try await df.select(
+      col("arr").getItem(0), col("m").getItem("k"), col("s").getField("a")).collect()
+    #expect(rows == [Row(1, 10, 7)])
     await spark.stop()
   }
 }

@@ -86,6 +86,228 @@ public struct Column: Sendable {
     return Column(expr)
   }
 
+  // MARK: - Predicates
+
+  /// Returns an expression that is true if this column is null.
+  ///
+  /// ```swift
+  /// df.filter(col("name").isNull())
+  /// ```
+  /// - Returns: A ``Column`` testing for null.
+  public func isNull() -> Column {
+    return Column.fn("isnull", self)
+  }
+
+  /// Returns an expression that is true if this column is not null.
+  ///
+  /// ```swift
+  /// df.filter(col("name").isNotNull())
+  /// ```
+  /// - Returns: A ``Column`` testing for non-null.
+  public func isNotNull() -> Column {
+    return Column.fn("isnotnull", self)
+  }
+
+  /// Returns an expression that is true if this column's value is contained in
+  /// the given values.
+  ///
+  /// ```swift
+  /// df.filter(col("age").isin(20, 30))
+  /// ```
+  /// - Parameter values: Literal values to test against.
+  /// - Returns: A ``Column`` testing for membership.
+  public func isin(_ values: any SparkLiteral...) -> Column {
+    return Column.fn("in", [self] + values.map { $0.toLiteralColumn })
+  }
+
+  /// Returns an expression that is true if this column is between the given
+  /// lower and upper bounds, inclusive.
+  ///
+  /// ```swift
+  /// df.filter(col("age").between(20, 30))
+  /// ```
+  /// - Parameters:
+  ///   - lower: A lower bound.
+  ///   - upper: An upper bound.
+  /// - Returns: A ``Column`` testing for the range.
+  public func between(_ lower: Column, _ upper: Column) -> Column {
+    return (self >= lower) && (self <= upper)
+  }
+
+  /// Returns an expression that is true if this column is between the given
+  /// lower and upper bounds, inclusive.
+  public func between(_ lower: Column, _ upper: some SparkLiteral) -> Column {
+    return (self >= lower) && (self <= upper)
+  }
+
+  /// Returns an expression that is true if this column is between the given
+  /// lower and upper bounds, inclusive.
+  public func between(_ lower: some SparkLiteral, _ upper: Column) -> Column {
+    return (self >= lower) && (self <= upper)
+  }
+
+  /// Returns an expression that is true if this column is between the given
+  /// lower and upper bounds, inclusive.
+  public func between(_ lower: some SparkLiteral, _ upper: some SparkLiteral) -> Column {
+    return (self >= lower) && (self <= upper)
+  }
+
+  /// Returns a null-safe equality test expression. Unlike `==`, this returns
+  /// `true` when both sides are null.
+  ///
+  /// ```swift
+  /// df.filter(col("name").eqNullSafe(col("nickname")))
+  /// ```
+  /// - Parameter other: A ``Column`` to compare with.
+  /// - Returns: A ``Column`` testing for null-safe equality.
+  public func eqNullSafe(_ other: Column) -> Column {
+    return Column.fn("<=>", self, other)
+  }
+
+  /// Returns a null-safe equality test expression against a literal value.
+  public func eqNullSafe(_ other: some SparkLiteral) -> Column {
+    return eqNullSafe(other.toLiteralColumn)
+  }
+
+  // MARK: - String methods
+
+  /// Returns a SQL `LIKE` expression.
+  ///
+  /// ```swift
+  /// df.filter(col("name").like("Al%"))
+  /// ```
+  /// - Parameter pattern: A SQL LIKE pattern.
+  /// - Returns: A ``Column`` testing for the pattern match.
+  public func like(_ pattern: String) -> Column {
+    return Column.fn("like", self, pattern.toLiteralColumn)
+  }
+
+  /// Returns a SQL `RLIKE` expression (LIKE with regex).
+  ///
+  /// ```swift
+  /// df.filter(col("name").rlike("^Al.*"))
+  /// ```
+  /// - Parameter pattern: A regular expression.
+  /// - Returns: A ``Column`` testing for the regex match.
+  public func rlike(_ pattern: String) -> Column {
+    return Column.fn("rlike", self, pattern.toLiteralColumn)
+  }
+
+  /// Returns a SQL `ILIKE` expression (case insensitive LIKE).
+  ///
+  /// ```swift
+  /// df.filter(col("name").ilike("al%"))
+  /// ```
+  /// - Parameter pattern: A SQL LIKE pattern.
+  /// - Returns: A ``Column`` testing for the case-insensitive pattern match.
+  public func ilike(_ pattern: String) -> Column {
+    return Column.fn("ilike", self, pattern.toLiteralColumn)
+  }
+
+  /// Returns an expression that is true if this column contains the other value.
+  ///
+  /// ```swift
+  /// df.filter(col("name").contains("li"))
+  /// ```
+  /// - Parameter other: A ``Column`` to search for.
+  /// - Returns: A ``Column`` testing for containment.
+  public func contains(_ other: Column) -> Column {
+    return Column.fn("contains", self, other)
+  }
+
+  /// Returns an expression that is true if this column contains the literal value.
+  public func contains(_ other: some SparkLiteral) -> Column {
+    return contains(other.toLiteralColumn)
+  }
+
+  /// Returns an expression that is true if this column starts with the other value.
+  ///
+  /// ```swift
+  /// df.filter(col("name").startsWith("Al"))
+  /// ```
+  /// - Parameter other: A ``Column`` prefix.
+  /// - Returns: A ``Column`` testing for the prefix match.
+  public func startsWith(_ other: Column) -> Column {
+    return Column.fn("startswith", self, other)
+  }
+
+  /// Returns an expression that is true if this column starts with the literal string.
+  public func startsWith(_ literal: String) -> Column {
+    return startsWith(literal.toLiteralColumn)
+  }
+
+  /// Returns an expression that is true if this column ends with the other value.
+  ///
+  /// ```swift
+  /// df.filter(col("name").endsWith("ce"))
+  /// ```
+  /// - Parameter other: A ``Column`` suffix.
+  /// - Returns: A ``Column`` testing for the suffix match.
+  public func endsWith(_ other: Column) -> Column {
+    return Column.fn("endswith", self, other)
+  }
+
+  /// Returns an expression that is true if this column ends with the literal string.
+  public func endsWith(_ literal: String) -> Column {
+    return endsWith(literal.toLiteralColumn)
+  }
+
+  /// Returns a substring expression.
+  ///
+  /// ```swift
+  /// df.select(col("name").substr(lit(1), lit(3)))
+  /// ```
+  /// - Parameters:
+  ///   - startPos: A starting position (1-based).
+  ///   - len: A substring length.
+  /// - Returns: A ``Column`` of the substring.
+  public func substr(_ startPos: Column, _ len: Column) -> Column {
+    return Column.fn("substr", self, startPos, len)
+  }
+
+  /// Returns a substring expression.
+  ///
+  /// ```swift
+  /// df.select(col("name").substr(1, 3))
+  /// ```
+  public func substr(_ startPos: Int, _ len: Int) -> Column {
+    return substr(startPos.toLiteralColumn, len.toLiteralColumn)
+  }
+
+  // MARK: - Extraction
+
+  /// Returns an expression that gets an item at the given position out of an
+  /// array, or gets a value by the given key out of a map.
+  ///
+  /// ```swift
+  /// df.select(col("arr").getItem(0), col("map").getItem("key"))
+  /// ```
+  /// - Parameter key: An array position (0-based) or a map key.
+  /// - Returns: A ``Column`` of the extracted value.
+  public func getItem(_ key: some SparkLiteral) -> Column {
+    return extractValue(key.toLiteralColumn)
+  }
+
+  /// Returns an expression that gets a field by the given name in a struct.
+  ///
+  /// ```swift
+  /// df.select(col("struct").getField("a"))
+  /// ```
+  /// - Parameter name: A field name.
+  /// - Returns: A ``Column`` of the extracted field.
+  public func getField(_ name: String) -> Column {
+    return extractValue(name.toLiteralColumn)
+  }
+
+  private func extractValue(_ extraction: Column) -> Column {
+    var extractValue = Spark_Connect_Expression.UnresolvedExtractValue()
+    extractValue.child = self.expr
+    extractValue.extraction = extraction.expr
+    var expr = Spark_Connect_Expression()
+    expr.unresolvedExtractValue = extractValue
+    return Column(expr)
+  }
+
   private func sortOrder(
     _ direction: Spark_Connect_Expression.SortOrder.SortDirection,
     _ nullOrdering: Spark_Connect_Expression.SortOrder.NullOrdering
@@ -100,6 +322,10 @@ public struct Column: Sendable {
   }
 
   private static func fn(_ name: String, _ args: Column...) -> Column {
+    return fn(name, args)
+  }
+
+  private static func fn(_ name: String, _ args: [Column]) -> Column {
     var function = Spark_Connect_Expression.UnresolvedFunction()
     function.functionName = name
     function.arguments = args.map { $0.expr }
