@@ -252,6 +252,16 @@ func fn(_ name: String, _ args: Column...) -> Column {
   return Column(expr)
 }
 
+func fn(_ name: String, _ args: [Column], isDistinct: Bool = false) -> Column {
+  var function = Spark_Connect_Expression.UnresolvedFunction()
+  function.functionName = name
+  function.arguments = args.map { $0.expr }
+  function.isDistinct = isDistinct
+  var expr = Spark_Connect_Expression()
+  expr.unresolvedFunction = function
+  return Column(expr)
+}
+
 private func litColumn(_ literal: ExpressionLiteral) -> Column {
   var expr = Spark_Connect_Expression()
   expr.literal = literal
