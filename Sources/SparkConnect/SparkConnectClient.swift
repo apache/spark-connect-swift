@@ -595,6 +595,18 @@ public actor SparkConnectClient {
     return createPlan { $0.withColumns = withColumns }
   }
 
+  static func getWithColumns(
+    _ child: Relation, _ colName: String, _ expr: Spark_Connect_Expression
+  ) -> Plan {
+    var withColumns = WithColumns()
+    withColumns.input = child
+    var alias = Spark_Connect_Expression.Alias()
+    alias.expr = expr
+    alias.name = [colName]
+    withColumns.aliases = [alias]
+    return createPlan { $0.withColumns = withColumns }
+  }
+
   static func getFilter(_ child: Relation, _ conditionExpr: String) -> Plan {
     var filter = Filter()
     filter.input = child
@@ -613,6 +625,13 @@ public actor SparkConnectClient {
     var drop = Drop()
     drop.input = child
     drop.columnNames = columnNames
+    return createPlan { $0.drop = drop }
+  }
+
+  static func getDrop(_ child: Relation, _ columns: [Spark_Connect_Expression]) -> Plan {
+    var drop = Drop()
+    drop.input = child
+    drop.columns = columns
     return createPlan { $0.drop = drop }
   }
 
@@ -719,6 +738,25 @@ public actor SparkConnectClient {
       return expression
     }
     sort.order = expressions
+    sort.isGlobal = isGlobal
+    return createPlan { $0.sort = sort }
+  }
+
+  static func getSort(
+    _ child: Relation, _ exprs: [Spark_Connect_Expression], _ isGlobal: Bool = true
+  ) -> Plan {
+    var sort = Sort()
+    sort.input = child
+    sort.order = exprs.map {
+      if case .sortOrder(let sortOrder) = $0.exprType {
+        return sortOrder
+      }
+      var sortOrder = Spark_Connect_Expression.SortOrder()
+      sortOrder.child = $0
+      sortOrder.direction = .ascending
+      sortOrder.nullOrdering = .sortNullsFirst
+      return sortOrder
+    }
     sort.isGlobal = isGlobal
     return createPlan { $0.sort = sort }
   }
@@ -1060,6 +1098,18 @@ public actor SparkConnectClient {
       join.usingColumns = usingColumns
     }
     // join.joinDataType = Join.JoinDataType()
+    return createPlan { $0.join = join }
+  }
+
+  static func getJoin(
+    _ left: Relation, _ right: Relation, _ joinType: JoinType,
+    joinCondition: Spark_Connect_Expression
+  ) -> Plan {
+    var join = Join()
+    join.left = left
+    join.right = right
+    join.joinType = joinType
+    join.joinCondition = joinCondition
     return createPlan { $0.join = join }
   }
 

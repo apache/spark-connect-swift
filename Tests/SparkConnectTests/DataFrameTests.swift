@@ -319,6 +319,19 @@ struct DataFrameTests {
   }
 
   @Test
+  func withColumnWithColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Add a new column.
+    #expect(try await spark.range(1).withColumn("b", col("id") + 1).columns == ["id", "b"])
+    #expect(try await spark.range(2).withColumn("doubled", col("id") * 2).collect()
+      == [Row(0, 0), Row(1, 2)])
+    // Replace an existing column in place.
+    #expect(try await spark.range(1).withColumn("id", col("id") + 1).columns == ["id"])
+    #expect(try await spark.range(1).withColumn("id", col("id") + 1).collect() == [Row(1)])
+    await spark.stop()
+  }
+
+  @Test
   func drop() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.sql("SELECT 1 a, 2 b, 3 c, 4 d")
@@ -326,6 +339,17 @@ struct DataFrameTests {
     #expect(try await df.drop("b", "c").columns == ["a", "d"])
     // Ignore unknown column names.
     #expect(try await df.drop("x", "y").columns == ["a", "b", "c", "d"])
+    await spark.stop()
+  }
+
+  @Test
+  func dropWithColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT 1 a, 2 b, 3 c, 4 d")
+    #expect(try await df.drop(col("a")).columns == ["b", "c", "d"])
+    #expect(try await df.drop(col("b"), col("c")).columns == ["a", "d"])
+    // Ignore unknown columns.
+    #expect(try await df.drop(col("x"), col("y")).columns == ["a", "b", "c", "d"])
     await spark.stop()
   }
 
@@ -429,10 +453,35 @@ struct DataFrameTests {
   }
 
   @Test
+  func sortWithColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = Array((1...10).map { Row($0) })
+    #expect(try await spark.range(10, 0, -1).sort(col("id")).collect() == expected)
+    #expect(try await spark.range(1, 11).sort(col("id").desc()).collect()
+      == Array(expected.reversed()))
+    // Mix a sort order expression and a plain column.
+    let df = try await spark.sql("SELECT * FROM VALUES (1, 'a'), (2, 'c'), (1, 'b') T(a, b)")
+    #expect(try await df.sort(col("a").desc(), col("b")).collect()
+      == [Row(2, "c"), Row(1, "a"), Row(1, "b")])
+    await spark.stop()
+  }
+
+  @Test
   func orderBy() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let expected = Array((1...10).map { Row($0) })
     #expect(try await spark.range(10, 0, -1).orderBy("id").collect() == expected)
+    await spark.stop()
+  }
+
+  @Test
+  func orderByWithColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = Array((1...10).map { Row($0) })
+    #expect(try await spark.range(10, 0, -1).orderBy(col("id")).collect() == expected)
+    #expect(try await spark.range(10, 0, -1).orderBy(col("id").asc()).collect() == expected)
+    #expect(try await spark.range(1, 11).orderBy(col("id").desc()).collect()
+      == Array(expected.reversed()))
     await spark.stop()
   }
 
@@ -443,6 +492,19 @@ struct DataFrameTests {
     #expect(
       try await spark.range(10, 0, -1).repartition(1).sortWithinPartitions("id").collect()
         == expected)
+    await spark.stop()
+  }
+
+  @Test
+  func sortWithinPartitionsWithColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = Array((1...10).map { Row($0) })
+    #expect(
+      try await spark.range(10, 0, -1).repartition(1).sortWithinPartitions(col("id")).collect()
+        == expected)
+    #expect(
+      try await spark.range(1, 11).repartition(1).sortWithinPartitions(col("id").desc()).collect()
+        == Array(expected.reversed()))
     await spark.stop()
   }
 
@@ -654,6 +716,26 @@ struct DataFrameTests {
     #expect(try await df1.join(df2, joinExprs: "T.b = S.b").collect() == expected)
     #expect(
       try await df1.join(df2, joinExprs: "T.b = S.b", joinType: "inner").collect() == expected)
+    await spark.stop()
+  }
+
+  @Test
+  func joinWithColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df1 = try await spark.sql("SELECT * FROM VALUES ('a', 1), ('b', 2) AS T(a, b)")
+    let df2 = try await spark.sql("SELECT * FROM VALUES ('c', 2), ('d', 3) AS S(c, b)")
+    let expected = [Row("b", 2, "c", 2)]
+    #expect(try await df1.join(df2, joinExprs: col("T.b") == col("S.b")).collect() == expected)
+    #expect(
+      try await df1.join(df2, joinExprs: col("T.b") == col("S.b"), joinType: "inner").collect()
+        == expected)
+    #expect(
+      try await df1.join(df2, joinExprs: col("T.b") == col("S.b"), joinType: "left").collect()
+        == [Row("a", 1, nil, nil), Row("b", 2, "c", 2)])
+
+    let df = try await spark.range(3)
+    let joined = try await df.alias("l").join(df.alias("r"), joinExprs: col("l.id") == col("r.id"))
+    #expect(try await joined.orderBy(col("l.id")).collect() == [Row(0, 0), Row(1, 1), Row(2, 2)])
     await spark.stop()
   }
 

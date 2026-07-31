@@ -109,6 +109,21 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getDrop(self.plan.root, cols))
   }
 
+  /// Returns a new Dataset with columns dropped.
+  /// This is a no-op if schema doesn't contain the column expressions.
+  ///
+  /// ```swift
+  /// let df2 = df.drop(col("a"), col("b"))
+  /// ```
+  /// - Parameters:
+  ///   - col: A ``Column`` to drop.
+  ///   - cols: Additional ``Column``s to drop.
+  /// - Returns: A ``DataFrame`` without the given columns.
+  public func drop(_ col: Column, _ cols: Column...) -> DataFrame {
+    let exprs = ([col] + cols).map { $0.expr }
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getDrop(self.plan.root, exprs))
+  }
+
   /// Returns a new ``DataFrame`` that contains only the unique rows from this ``DataFrame``.
   /// This is an alias for `distinct`. If column names are given, Spark considers only those columns.
   /// - Parameter cols: Column names
@@ -183,6 +198,22 @@ extension DataFrame {
   /// - Returns: A ``DataFrame`` with the new or replaced column.
   public func withColumn(_ colName: String, _ expr: String) -> DataFrame {
     return withColumns([colName: expr])
+  }
+
+  /// Returns a new ``DataFrame`` by adding a column or replacing the existing column that has the
+  /// same name.
+  ///
+  /// ```swift
+  /// let df2 = df.withColumn("doubled", col("id") * 2)
+  /// ```
+  /// - Parameters:
+  ///   - colName: A new column name.
+  ///   - col: A ``Column`` expression for the new column.
+  /// - Returns: A ``DataFrame`` with the new or replaced column.
+  public func withColumn(_ colName: String, _ col: Column) -> DataFrame {
+    return DataFrame(
+      spark: self.spark,
+      plan: SparkConnectClient.getWithColumns(self.plan.root, colName, col.expr))
   }
 
   /// Returns a new ``DataFrame`` by adding columns or replacing the existing columns that have the
@@ -280,11 +311,41 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
   }
 
+  /// Returns a new ``DataFrame`` sorted by the specified ``Column`` expressions.
+  /// Columns without an explicit sort order are sorted in ascending order.
+  ///
+  /// ```swift
+  /// let sorted = df.sort(col("department"), col("salary").desc())
+  /// ```
+  /// - Parameters:
+  ///   - col: A ``Column`` or sort order expression to sort by.
+  ///   - cols: Additional ``Column`` or sort order expressions.
+  /// - Returns: A new DataFrame sorted by the specified columns
+  public func sort(_ col: Column, _ cols: Column...) -> DataFrame {
+    let exprs = ([col] + cols).map { $0.expr }
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, exprs))
+  }
+
   /// Return a new ``DataFrame`` sorted by the specified column(s).
   /// - Parameter cols: Column names.
   /// - Returns: A sorted ``DataFrame``
   public func orderBy(_ cols: String...) -> DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols))
+  }
+
+  /// Return a new ``DataFrame`` sorted by the specified ``Column`` expressions.
+  /// Columns without an explicit sort order are sorted in ascending order.
+  ///
+  /// ```swift
+  /// let sorted = df.orderBy(col("id").desc())
+  /// ```
+  /// - Parameters:
+  ///   - col: A ``Column`` or sort order expression to sort by.
+  ///   - cols: Additional ``Column`` or sort order expressions.
+  /// - Returns: A sorted ``DataFrame``
+  public func orderBy(_ col: Column, _ cols: Column...) -> DataFrame {
+    let exprs = ([col] + cols).map { $0.expr }
+    return DataFrame(spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, exprs))
   }
 
   /// Returns a new ``DataFrame`` with each partition sorted by the specified column(s).
@@ -294,6 +355,23 @@ extension DataFrame {
   public func sortWithinPartitions(_ cols: String...) -> DataFrame {
     return DataFrame(
       spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, cols, false))
+  }
+
+  /// Returns a new ``DataFrame`` with each partition sorted by the specified ``Column``
+  /// expressions. Columns without an explicit sort order are sorted in ascending order.
+  /// This is the same operation as `SORT BY` in SQL (Hive QL).
+  ///
+  /// ```swift
+  /// let sorted = df.sortWithinPartitions(col("id").desc())
+  /// ```
+  /// - Parameters:
+  ///   - col: A ``Column`` or sort order expression to sort by.
+  ///   - cols: Additional ``Column`` or sort order expressions.
+  /// - Returns: A ``DataFrame`` with each partition sorted.
+  public func sortWithinPartitions(_ col: Column, _ cols: Column...) -> DataFrame {
+    let exprs = ([col] + cols).map { $0.expr }
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getSort(self.plan.root, exprs, false))
   }
 
   /// Limits the result count to the number specified.
@@ -501,6 +579,36 @@ extension DataFrame {
       rightPlan,
       joinType.toJoinType,
       joinCondition: joinExprs
+    )
+    return DataFrame(spark: self.spark, plan: plan)
+  }
+
+  /// Inner join with another `DataFrame`, using the given join expression.
+  ///
+  /// ```swift
+  /// let joined = df1.alias("a").join(df2.alias("b"), joinExprs: col("a.id") == col("b.id"))
+  /// ```
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - joinExprs: A join expression ``Column``.
+  /// - Returns: A `DataFrame`.
+  public func join(_ right: DataFrame, joinExprs: Column) async -> DataFrame {
+    return await join(right, joinExprs: joinExprs, joinType: "inner")
+  }
+
+  /// Join with another `DataFrame`, using the given join expression and join type.
+  /// - Parameters:
+  ///   - right: Right side of the join operation.
+  ///   - joinExprs: A join expression ``Column``.
+  ///   - joinType: A join type name.
+  /// - Returns: A `DataFrame`.
+  public func join(_ right: DataFrame, joinExprs: Column, joinType: String) async -> DataFrame {
+    let rightPlan = await (right.getPlan() as! Plan).root
+    let plan = SparkConnectClient.getJoin(
+      self.plan.root,
+      rightPlan,
+      joinType.toJoinType,
+      joinCondition: joinExprs.expr
     )
     return DataFrame(spark: self.spark, plan: plan)
   }
