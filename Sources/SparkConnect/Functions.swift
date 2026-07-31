@@ -243,7 +243,7 @@ public func when(_ condition: Column, _ value: some SparkLiteral) -> Column {
   return when(condition, value.toLiteralColumn)
 }
 
-private func fn(_ name: String, _ args: Column...) -> Column {
+func fn(_ name: String, _ args: Column...) -> Column {
   var function = Spark_Connect_Expression.UnresolvedFunction()
   function.functionName = name
   function.arguments = args.map { $0.expr }
