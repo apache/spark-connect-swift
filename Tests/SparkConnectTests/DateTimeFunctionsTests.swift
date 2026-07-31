@@ -271,10 +271,17 @@ struct DateTimeFunctionsTests {
     let df = try await spark.sql("SELECT '2025-05-01' AS s, TIMESTAMP'2025-05-01 12:34:56' AS t")
     let dates = try await df.select(
       to_date(col("s")).cast("string"), to_date(col("s"), "yyyy-MM-dd").cast("string"),
-      try_to_date(col("s")).cast("string"), try_to_date(lit("abc")),
       make_date(lit(2025), lit(5), lit(1)).cast("string")
     ).collect()
-    #expect(dates == [Row("2025-05-01", "2025-05-01", "2025-05-01", nil, "2025-05-01")])
+    #expect(dates == [Row("2025-05-01", "2025-05-01", "2025-05-01")])
+
+    if await spark.version >= "4.1" {
+      let tryDates = try await df.select(
+        try_to_date(col("s")).cast("string"), try_to_date(col("s"), "yyyy-MM-dd").cast("string"),
+        try_to_date(lit("abc"))
+      ).collect()
+      #expect(tryDates == [Row("2025-05-01", "2025-05-01", nil)])
+    }
 
     let timestamps = try await df.select(
       to_timestamp(col("t")).cast("string"), to_timestamp(lit("2025-05-01"), "yyyy-MM-dd").cast("string"),
