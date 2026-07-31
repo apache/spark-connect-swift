@@ -217,6 +217,32 @@ public func max(_ col: Column) -> Column {
   return fn("max", col)
 }
 
+// MARK: - Condition functions
+
+/// Evaluates a list of conditions and returns one of multiple possible result expressions.
+/// If `otherwise` is not defined at the end, null is returned for unmatched conditions.
+///
+/// ```swift
+/// df.select(when(col("age") > 21, "adult").otherwise("minor").alias("group"))
+/// ```
+/// - Parameters:
+///   - condition: A condition ``Column``.
+///   - value: A value ``Column`` to return when the condition is true.
+/// - Returns: A ``Column``.
+public func when(_ condition: Column, _ value: Column) -> Column {
+  return fn("when", condition, value)
+}
+
+/// Evaluates a list of conditions and returns one of multiple possible result expressions.
+/// If `otherwise` is not defined at the end, null is returned for unmatched conditions.
+/// - Parameters:
+///   - condition: A condition ``Column``.
+///   - value: A literal value to return when the condition is true.
+/// - Returns: A ``Column``.
+public func when(_ condition: Column, _ value: some SparkLiteral) -> Column {
+  return when(condition, value.toLiteralColumn)
+}
+
 private func fn(_ name: String, _ args: Column...) -> Column {
   var function = Spark_Connect_Expression.UnresolvedFunction()
   function.functionName = name
