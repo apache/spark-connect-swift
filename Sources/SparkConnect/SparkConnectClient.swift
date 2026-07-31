@@ -602,6 +602,13 @@ public actor SparkConnectClient {
     return createPlan { $0.filter = filter }
   }
 
+  static func getFilter(_ child: Relation, _ condition: Spark_Connect_Expression) -> Plan {
+    var filter = Filter()
+    filter.input = child
+    filter.condition = condition
+    return createPlan { $0.filter = filter }
+  }
+
   static func getDrop(_ child: Relation, _ columnNames: [String]) -> Plan {
     var drop = Drop()
     drop.input = child

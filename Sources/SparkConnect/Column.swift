@@ -98,4 +98,103 @@ public struct Column: Sendable {
     expr.sortOrder = sortOrder
     return Column(expr)
   }
+
+  private static func fn(_ name: String, _ args: Column...) -> Column {
+    var function = Spark_Connect_Expression.UnresolvedFunction()
+    function.functionName = name
+    function.arguments = args.map { $0.expr }
+    var expr = Spark_Connect_Expression()
+    expr.unresolvedFunction = function
+    return Column(expr)
+  }
+
+  // MARK: - Comparison operators
+
+  /// Returns an equality test expression. Note that this returns a ``Column``
+  /// expression evaluated by Spark, not a `Bool`.
+  ///
+  /// ```swift
+  /// df.filter(col("name") == lit("Alice"))
+  /// ```
+  public static func == (lhs: Column, rhs: Column) -> Column {
+    return fn("=", lhs, rhs)
+  }
+
+  /// Returns an inequality test expression.
+  public static func != (lhs: Column, rhs: Column) -> Column {
+    return fn("!", fn("=", lhs, rhs))
+  }
+
+  /// Returns a less-than test expression.
+  public static func < (lhs: Column, rhs: Column) -> Column {
+    return fn("<", lhs, rhs)
+  }
+
+  /// Returns a less-than-or-equal test expression.
+  public static func <= (lhs: Column, rhs: Column) -> Column {
+    return fn("<=", lhs, rhs)
+  }
+
+  /// Returns a greater-than test expression.
+  public static func > (lhs: Column, rhs: Column) -> Column {
+    return fn(">", lhs, rhs)
+  }
+
+  /// Returns a greater-than-or-equal test expression.
+  public static func >= (lhs: Column, rhs: Column) -> Column {
+    return fn(">=", lhs, rhs)
+  }
+
+  // MARK: - Logical operators
+
+  /// Returns a logical AND expression.
+  ///
+  /// ```swift
+  /// df.filter(col("age") > lit(21) && col("name") == lit("Alice"))
+  /// ```
+  public static func && (lhs: Column, rhs: Column) -> Column {
+    return fn("and", lhs, rhs)
+  }
+
+  /// Returns a logical OR expression.
+  public static func || (lhs: Column, rhs: Column) -> Column {
+    return fn("or", lhs, rhs)
+  }
+
+  /// Returns a logical NOT expression.
+  public static prefix func ! (col: Column) -> Column {
+    return fn("!", col)
+  }
+
+  // MARK: - Arithmetic operators
+
+  /// Returns an addition expression.
+  public static func + (lhs: Column, rhs: Column) -> Column {
+    return fn("+", lhs, rhs)
+  }
+
+  /// Returns a subtraction expression.
+  public static func - (lhs: Column, rhs: Column) -> Column {
+    return fn("-", lhs, rhs)
+  }
+
+  /// Returns a multiplication expression.
+  public static func * (lhs: Column, rhs: Column) -> Column {
+    return fn("*", lhs, rhs)
+  }
+
+  /// Returns a division expression.
+  public static func / (lhs: Column, rhs: Column) -> Column {
+    return fn("/", lhs, rhs)
+  }
+
+  /// Returns a modulo expression.
+  public static func % (lhs: Column, rhs: Column) -> Column {
+    return fn("%", lhs, rhs)
+  }
+
+  /// Returns a negation expression.
+  public static prefix func - (col: Column) -> Column {
+    return fn("negative", col)
+  }
 }

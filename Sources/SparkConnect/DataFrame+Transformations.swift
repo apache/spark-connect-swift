@@ -218,6 +218,19 @@ extension DataFrame {
       spark: self.spark, plan: SparkConnectClient.getFilter(self.plan.root, conditionExpr))
   }
 
+  /// Filters rows using the given ``Column`` condition.
+  ///
+  /// ```swift
+  /// let adults = df.filter(col("age") > lit(21) && col("name") == lit("Alice"))
+  /// ```
+  ///
+  /// - Parameter condition: A ``Column`` expression for filtering
+  /// - Returns: A new DataFrame containing only rows that match the condition
+  public func filter(_ condition: Column) -> DataFrame {
+    return DataFrame(
+      spark: self.spark, plan: SparkConnectClient.getFilter(self.plan.root, condition.expr))
+  }
+
   /// Filters rows using the given condition (alias for filter).
   ///
   /// This method is an alias for ``filter(_:)`` and behaves identically.
@@ -230,6 +243,20 @@ extension DataFrame {
   /// - Returns: A new DataFrame containing only rows that match the condition
   public func `where`(_ conditionExpr: String) -> DataFrame {
     return filter(conditionExpr)
+  }
+
+  /// Filters rows using the given ``Column`` condition (alias for filter).
+  ///
+  /// This method is an alias for ``filter(_:)-(Column)`` and behaves identically.
+  ///
+  /// ```swift
+  /// let highSalary = df.where(col("salary") > lit(100000))
+  /// ```
+  ///
+  /// - Parameter condition: A ``Column`` expression for filtering
+  /// - Returns: A new DataFrame containing only rows that match the condition
+  public func `where`(_ condition: Column) -> DataFrame {
+    return filter(condition)
   }
 
   /// Returns a new DataFrame sorted by the specified columns.

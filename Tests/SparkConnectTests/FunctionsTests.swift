@@ -108,6 +108,83 @@ struct FunctionsTests {
   }
 
   @Test
+  func comparisonOperators() throws {
+    for (column, name) in [
+      (col("a") == col("b"), "="),
+      (col("a") < col("b"), "<"),
+      (col("a") <= col("b"), "<="),
+      (col("a") > col("b"), ">"),
+      (col("a") >= col("b"), ">="),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments.count == 2)
+      #expect(expr.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+      #expect(expr.unresolvedFunction.arguments[1].unresolvedAttribute.unparsedIdentifier == "b")
+    }
+  }
+
+  @Test
+  func notEqualOperator() throws {
+    let expr = (col("a") != col("b")).expr
+    #expect(expr.unresolvedFunction.functionName == "!")
+    #expect(expr.unresolvedFunction.arguments.count == 1)
+    let inner = expr.unresolvedFunction.arguments[0].unresolvedFunction
+    #expect(inner.functionName == "=")
+    #expect(inner.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+    #expect(inner.arguments[1].unresolvedAttribute.unparsedIdentifier == "b")
+  }
+
+  @Test
+  func logicalOperators() throws {
+    for (column, name) in [
+      (col("a") && col("b"), "and"),
+      (col("a") || col("b"), "or"),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments.count == 2)
+    }
+
+    let not = (!col("a")).expr
+    #expect(not.unresolvedFunction.functionName == "!")
+    #expect(not.unresolvedFunction.arguments.count == 1)
+    #expect(not.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+  }
+
+  @Test
+  func arithmeticOperators() throws {
+    for (column, name) in [
+      (col("a") + col("b"), "+"),
+      (col("a") - col("b"), "-"),
+      (col("a") * col("b"), "*"),
+      (col("a") / col("b"), "/"),
+      (col("a") % col("b"), "%"),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments.count == 2)
+    }
+
+    let negate = (-col("a")).expr
+    #expect(negate.unresolvedFunction.functionName == "negative")
+    #expect(negate.unresolvedFunction.arguments.count == 1)
+    #expect(negate.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+  }
+
+  @Test
+  func operatorPrecedence() throws {
+    // Parsed as ((a > b) and (c = d)) or (not e)
+    let expr = (col("a") > col("b") && col("c") == col("d") || !col("e")).expr
+    #expect(expr.unresolvedFunction.functionName == "or")
+    let and = expr.unresolvedFunction.arguments[0].unresolvedFunction
+    #expect(and.functionName == "and")
+    #expect(and.arguments[0].unresolvedFunction.functionName == ">")
+    #expect(and.arguments[1].unresolvedFunction.functionName == "=")
+    #expect(expr.unresolvedFunction.arguments[1].unresolvedFunction.functionName == "!")
+  }
+
+  @Test
   func selectColumns() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(3).select(col("id"), col("id").cast("string").alias("id_string"))
@@ -123,6 +200,37 @@ struct FunctionsTests {
       .agg(count(col("*")).alias("cnt"), sum(col("id")), avg(col("id")))
       .orderBy("id").collect()
     #expect(rows == [Row(0, 1, 0, 0.0), Row(1, 1, 1, 1.0), Row(2, 1, 2, 2.0)])
+    await spark.stop()
+  }
+
+  @Test
+  func filterWithColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(10)
+    #expect(try await df.filter(col("id") == lit(3)).collect() == [Row(3)])
+    #expect(try await df.filter(col("id") != lit(3)).count() == 9)
+    #expect(try await df.filter(col("id") < lit(3)).count() == 3)
+    #expect(try await df.filter(col("id") <= lit(3)).count() == 4)
+    #expect(try await df.filter(col("id") > lit(7)).count() == 2)
+    #expect(try await df.filter(col("id") >= lit(7)).count() == 3)
+    #expect(try await df.filter(col("id") > lit(2) && col("id") < lit(5)).count() == 2)
+    #expect(try await df.filter(col("id") < lit(2) || col("id") > lit(7)).count() == 4)
+    #expect(try await df.filter(!(col("id") < lit(8))).count() == 2)
+    #expect(try await df.where(col("id") % lit(3) == lit(0)).count() == 4)
+    await spark.stop()
+  }
+
+  @Test
+  func selectWithOperators() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.range(1, 4)
+      .select(
+        (col("id") + lit(1)).alias("plus"),
+        (col("id") - lit(1)).alias("minus"),
+        (col("id") * lit(2)).alias("times"),
+        (-col("id")).alias("negated")
+      ).orderBy("id").collect()
+    #expect(rows == [Row(2, 0, 2, -1), Row(3, 1, 4, -2), Row(4, 2, 6, -3)])
     await spark.stop()
   }
 }
