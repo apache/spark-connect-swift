@@ -197,4 +197,140 @@ public struct Column: Sendable {
   public static prefix func - (col: Column) -> Column {
     return fn("negative", col)
   }
+
+  // MARK: - Literal operand overloads
+
+  /// Returns an equality test expression against a literal value.
+  ///
+  /// ```swift
+  /// df.filter(col("name") == "Alice")
+  /// ```
+  public static func == (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs == rhs.toLiteralColumn
+  }
+
+  /// Returns an equality test expression against a literal value.
+  public static func == (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn == rhs
+  }
+
+  /// Returns an inequality test expression against a literal value.
+  public static func != (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs != rhs.toLiteralColumn
+  }
+
+  /// Returns an inequality test expression against a literal value.
+  public static func != (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn != rhs
+  }
+
+  /// Returns a less-than test expression against a literal value.
+  public static func < (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs < rhs.toLiteralColumn
+  }
+
+  /// Returns a less-than test expression against a literal value.
+  public static func < (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn < rhs
+  }
+
+  /// Returns a less-than-or-equal test expression against a literal value.
+  public static func <= (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs <= rhs.toLiteralColumn
+  }
+
+  /// Returns a less-than-or-equal test expression against a literal value.
+  public static func <= (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn <= rhs
+  }
+
+  /// Returns a greater-than test expression against a literal value.
+  public static func > (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs > rhs.toLiteralColumn
+  }
+
+  /// Returns a greater-than test expression against a literal value.
+  public static func > (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn > rhs
+  }
+
+  /// Returns a greater-than-or-equal test expression against a literal value.
+  public static func >= (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs >= rhs.toLiteralColumn
+  }
+
+  /// Returns a greater-than-or-equal test expression against a literal value.
+  public static func >= (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn >= rhs
+  }
+
+  /// Returns a logical AND expression with a literal value.
+  public static func && (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs && rhs.toLiteralColumn
+  }
+
+  /// Returns a logical AND expression with a literal value.
+  public static func && (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn && rhs
+  }
+
+  /// Returns a logical OR expression with a literal value.
+  public static func || (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs || rhs.toLiteralColumn
+  }
+
+  /// Returns a logical OR expression with a literal value.
+  public static func || (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn || rhs
+  }
+
+  /// Returns an addition expression with a literal value.
+  public static func + (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs + rhs.toLiteralColumn
+  }
+
+  /// Returns an addition expression with a literal value.
+  public static func + (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn + rhs
+  }
+
+  /// Returns a subtraction expression with a literal value.
+  public static func - (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs - rhs.toLiteralColumn
+  }
+
+  /// Returns a subtraction expression with a literal value.
+  public static func - (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn - rhs
+  }
+
+  /// Returns a multiplication expression with a literal value.
+  public static func * (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs * rhs.toLiteralColumn
+  }
+
+  /// Returns a multiplication expression with a literal value.
+  public static func * (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn * rhs
+  }
+
+  /// Returns a division expression with a literal value.
+  public static func / (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs / rhs.toLiteralColumn
+  }
+
+  /// Returns a division expression with a literal value.
+  public static func / (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn / rhs
+  }
+
+  /// Returns a modulo expression with a literal value.
+  public static func % (lhs: Column, rhs: some SparkLiteral) -> Column {
+    return lhs % rhs.toLiteralColumn
+  }
+
+  /// Returns a modulo expression with a literal value.
+  public static func % (lhs: some SparkLiteral, rhs: Column) -> Column {
+    return lhs.toLiteralColumn % rhs
+  }
 }

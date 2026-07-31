@@ -112,6 +112,55 @@ public func lit(_ value: String) -> Column {
   return litColumn(literal)
 }
 
+/// A type that can be used as a literal operand of ``Column`` operators.
+///
+/// This allows Swift literals to be mixed with ``Column`` expressions directly
+/// without wrapping them in `lit`:
+///
+/// ```swift
+/// df.filter(col("age") > 21 && col("name") == "Alice")
+/// ```
+public protocol SparkLiteral {
+  /// A literal ``Column`` representation of this value.
+  var toLiteralColumn: Column { get }
+}
+
+extension Bool: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension Int8: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension Int16: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension Int32: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension Int64: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension Int: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension Float: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension Double: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension String: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
 /// Returns a sort expression based on the ascending order of the given column name.
 /// - Parameter name: A column name.
 /// - Returns: A ``Column`` with ascending sort order.

@@ -173,6 +173,52 @@ struct FunctionsTests {
   }
 
   @Test
+  func literalOperands() throws {
+    for (column, name) in [
+      (col("a") == "x", "="),
+      (col("a") < 1, "<"),
+      (col("a") <= 1, "<="),
+      (col("a") > 1, ">"),
+      (col("a") >= 1, ">="),
+      (col("a") && true, "and"),
+      (col("a") || true, "or"),
+      (col("a") + 1, "+"),
+      (col("a") - 1, "-"),
+      (col("a") * 1, "*"),
+      (col("a") / 1, "/"),
+      (col("a") % 1, "%"),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments.count == 2)
+      #expect(expr.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+      if case .literal = expr.unresolvedFunction.arguments[1].exprType {
+      } else {
+        Issue.record("Expected a literal argument: \(name)")
+      }
+    }
+
+    // The literal can also be used on the left-hand side.
+    let lhs = (21 < col("age")).expr
+    #expect(lhs.unresolvedFunction.functionName == "<")
+    #expect(lhs.unresolvedFunction.arguments[0].literal.long == 21)
+    #expect(lhs.unresolvedFunction.arguments[1].unresolvedAttribute.unparsedIdentifier == "age")
+  }
+
+  @Test
+  func literalOperandTypes() throws {
+    #expect((col("a") == true).expr.unresolvedFunction.arguments[1].literal.boolean == true)
+    #expect((col("a") == Int8(1)).expr.unresolvedFunction.arguments[1].literal.byte == 1)
+    #expect((col("a") == Int16(1)).expr.unresolvedFunction.arguments[1].literal.short == 1)
+    #expect((col("a") == Int32(1)).expr.unresolvedFunction.arguments[1].literal.integer == 1)
+    #expect((col("a") == Int64(1)).expr.unresolvedFunction.arguments[1].literal.long == 1)
+    #expect((col("a") == 1).expr.unresolvedFunction.arguments[1].literal.long == 1)
+    #expect((col("a") == Float(1.0)).expr.unresolvedFunction.arguments[1].literal.float == 1.0)
+    #expect((col("a") == 1.0).expr.unresolvedFunction.arguments[1].literal.double == 1.0)
+    #expect((col("a") == "x").expr.unresolvedFunction.arguments[1].literal.string == "x")
+  }
+
+  @Test
   func operatorPrecedence() throws {
     // Parsed as ((a > b) and (c = d)) or (not e)
     let expr = (col("a") > col("b") && col("c") == col("d") || !col("e")).expr
@@ -217,6 +263,18 @@ struct FunctionsTests {
     #expect(try await df.filter(col("id") < lit(2) || col("id") > lit(7)).count() == 4)
     #expect(try await df.filter(!(col("id") < lit(8))).count() == 2)
     #expect(try await df.where(col("id") % lit(3) == lit(0)).count() == 4)
+    await spark.stop()
+  }
+
+  @Test
+  func filterWithLiteralOperands() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(10)
+    #expect(try await df.filter(col("id") == 3).collect() == [Row(3)])
+    #expect(try await df.filter(col("id") > 2 && col("id") < 5).count() == 2)
+    #expect(try await df.filter(2 > col("id")).count() == 2)
+    #expect(try await df.where(col("id") % 3 == 0).count() == 4)
+    #expect(try await df.select((col("id") + 1).alias("plus")).filter(col("plus") == 10).count() == 1)
     await spark.stop()
   }
 
