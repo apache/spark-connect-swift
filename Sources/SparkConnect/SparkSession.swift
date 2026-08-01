@@ -108,6 +108,40 @@ public actor SparkSession {
     }
   }
 
+  /// The maximum size of a serialized `LocalRelation` which is the default value of
+  /// `spark.connect.grpc.maxInboundMessageSize` (128MiB).
+  static let maxLocalRelationSize = 128 * 1024 * 1024
+
+  /// Creates a ``DataFrame`` from the given local data with the specified schema.
+  ///
+  /// ```swift
+  /// let df = try await spark.createDataFrame(
+  ///   [[1, "Alice"], [2, "Bob"], [3, nil]], "id INT, name STRING")
+  /// ```
+  ///
+  /// The data is serialized into an `Apache Arrow` IPC stream and embedded into the plan as a
+  /// `LocalRelation`. The supported schema types are `BOOLEAN`, `TINYINT`, `SMALLINT`, `INT`,
+  /// `BIGINT`, `FLOAT`, `DOUBLE`, `STRING`, `BINARY`, `DATE`, and `TIMESTAMP`. `nil` values are
+  /// mapped to `NULL`. Since the serialized data is limited by the Spark Connect server's gRPC
+  /// message size limit (128MiB by default), ``SparkConnectError/LocalRelationTooLarge`` is
+  /// thrown for larger data.
+  ///
+  /// - Parameters:
+  ///   - data: An array of rows whose values are ordered like the schema fields.
+  ///   - schema: A DDL-formatted schema string, e.g. `id INT, name STRING`.
+  /// - Returns: A ``DataFrame`` instance.
+  public func createDataFrame(_ data: [[Sendable?]], _ schema: String) async throws -> DataFrame {
+    let dataType = try await client.ddlParse(schema)
+    guard case .struct(let structType) = dataType.kind else {
+      throw SparkConnectError.InvalidType
+    }
+    let ipcStream = try ConvertToArrow.toArrowIPCStream(data, structType)
+    guard ipcStream.count <= Self.maxLocalRelationSize else {
+      throw SparkConnectError.LocalRelationTooLarge
+    }
+    return await DataFrame(spark: self, plan: client.getLocalRelation(ipcStream, schema))
+  }
+
   /// Create a ``DataFrame`` with a single `Int64` column name `id`, containing elements in a
   /// range from 0 to `end` (exclusive) with step value 1.
   ///

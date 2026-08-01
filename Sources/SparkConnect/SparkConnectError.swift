@@ -27,6 +27,7 @@ public enum SparkConnectError: Error {
   case InvalidSessionID
   case InvalidType
   case InvalidViewName
+  case LocalRelationTooLarge
   case OutputTypeUnspecified
   case ParseSyntaxError
   case SchemaNotFound

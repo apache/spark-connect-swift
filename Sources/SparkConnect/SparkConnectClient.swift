@@ -395,6 +395,18 @@ public actor SparkConnectClient {
     return Self.createPlan { $0.localRelation = localRelation }
   }
 
+  /// Create a `Plan` with a `LocalRelation` containing the given `Apache Arrow` IPC stream.
+  /// - Parameters:
+  ///   - data: An `Apache Arrow` IPC stream.
+  ///   - schema: A DDL-formatted schema string.
+  /// - Returns: A `Plan` instance.
+  func getLocalRelation(_ data: Data, _ schema: String) -> Plan {
+    var localRelation = Spark_Connect_LocalRelation()
+    localRelation.data = data
+    localRelation.schema = schema
+    return Self.createPlan { $0.localRelation = localRelation }
+  }
+
   /// Create a `Plan` instance for `Range` relation.
   /// - Parameters:
   ///   - start: A start of the range.
