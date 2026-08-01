@@ -136,6 +136,25 @@ struct DataFrameTests {
   }
 
   @Test
+  func dtypesGeospatial() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      let expected = [
+        ("st_geomfromwkb(X'0101000000000000000000F03F0000000000000040')", "geometry(0)"),
+        (
+          "st_setsrid(st_geomfromwkb(X'0101000000000000000000F03F0000000000000040'), 4326)",
+          "geometry(4326)"
+        ),
+        ("st_geogfromwkb(X'0101000000000000000000F03F0000000000000040')", "geography(4326)"),
+      ]
+      for pair in expected {
+        #expect(try await spark.sql("SELECT \(pair.0)").dtypes[0].1 == pair.1)
+      }
+    }
+    await spark.stop()
+  }
+
+  @Test
   func array() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("SELECT array('a')").collect() == [Row(Array(["a"]))])

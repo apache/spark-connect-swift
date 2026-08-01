@@ -343,6 +343,18 @@ extension DataType {
         try self.map.toString()
       case .variant:
         "variant"
+      case .geometry:
+        if self.geometry.srid == -1 {
+          "geometry(any)"
+        } else {
+          "geometry(\(self.geometry.srid))"
+        }
+      case .geography:
+        if self.geography.srid == -1 {
+          "geography(any)"
+        } else {
+          "geography(\(self.geography.srid))"
+        }
       case .udt:
         self.udt.type
       case .unparsed:
