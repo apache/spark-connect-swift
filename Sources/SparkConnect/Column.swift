@@ -86,6 +86,37 @@ public struct Column: Sendable {
     return Column(expr)
   }
 
+  /// Defines a windowing column.
+  ///
+  /// ```swift
+  /// df.select(rank().over(Window.partitionBy("dept").orderBy("salary")))
+  /// ```
+  /// - Parameter window: A ``WindowSpec`` defining the partitioning, ordering, and frame.
+  /// - Returns: A ``Column``.
+  public func over(_ window: WindowSpec) -> Column {
+    var win = Spark_Connect_Expression.Window()
+    win.windowFunction = self.expr
+    win.partitionSpec = window.partitionSpec
+    win.orderSpec = window.orderSpec
+    if let frame = window.frame {
+      win.frameSpec = frame
+    }
+    var expr = Spark_Connect_Expression()
+    expr.window = win
+    return Column(expr)
+  }
+
+  /// Defines an empty analytic clause. In this case the analytic function is applied and
+  /// presented for all rows in the result set.
+  ///
+  /// ```swift
+  /// df.select(sum(col("price")).over())
+  /// ```
+  /// - Returns: A ``Column``.
+  public func over() -> Column {
+    return over(WindowSpec())
+  }
+
   // MARK: - Predicates
 
   /// Returns an expression that is true if this column is null.
