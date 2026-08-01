@@ -67,6 +67,62 @@ struct RowTests {
   }
 
   @Test
+  func fieldIndex() throws {
+    let row = Row(valueArray: [1, "a"], schema: RowSchema(["id", "name"]))
+    #expect(try row.fieldIndex("id") == 0)
+    #expect(try row.fieldIndex("name") == 1)
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.fieldIndex("nonexistent")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(1).fieldIndex("id")
+    }
+  }
+
+  @Test
+  func getByName() throws {
+    let row = Row(valueArray: [1, 1.1, "a", true], schema: RowSchema(["id", "value", "name", "flag"]))
+    #expect(try row.get("id") as! Int == 1)
+    #expect(try row.get("value") as! Double == 1.1)
+    #expect(try row.get("name") as! String == "a")
+    #expect(try row.get("flag") as! Bool == true)
+    #expect(try row["id"] as! Int == 1)
+    #expect(try row["name"] as! String == "a")
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.get("nonexistent")
+    }
+  }
+
+  @Test
+  func duplicateFieldNames() throws {
+    // Like Scala's `StructType.fieldIndex`, the last field wins for duplicate names.
+    let row = Row(valueArray: [1, 2], schema: RowSchema(["id", "id"]))
+    #expect(try row.fieldIndex("id") == 1)
+    #expect(try row.get("id") as! Int == 2)
+  }
+
+  @Test
+  func asDict() throws {
+    let row = Row(valueArray: [1, "a", nil], schema: RowSchema(["id", "name", "none"]))
+    let dict = try row.asDict()
+    #expect(dict.count == 3)
+    #expect(dict["id"] as! Int == 1)
+    #expect(dict["name"] as! String == "a")
+    #expect(dict.keys.contains("none"))
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(1).asDict()
+    }
+  }
+
+  @Test
+  func compareIgnoresSchema() {
+    #expect(Row(valueArray: [1, "a"], schema: RowSchema(["id", "name"])) == Row(1, "a"))
+    #expect(
+      Row(valueArray: [1], schema: RowSchema(["a"]))
+        == Row(valueArray: [1], schema: RowSchema(["b"])))
+  }
+
+  @Test
   func compare() {
     #expect(Row(nil) != Row())
     #expect(Row(nil) == Row(nil))

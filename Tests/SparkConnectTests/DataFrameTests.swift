@@ -534,6 +534,20 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectByName() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql(
+      "SELECT * FROM VALUES (1, 'abc'), (2, 'def') T(id, name)"
+    ).collect()
+    #expect(try rows[0].get("id") as! Int32 == 1)
+    #expect(try rows[0].get("name") as! String == "abc")
+    #expect(try rows[1]["id"] as! Int32 == 2)
+    #expect(try rows[1]["name"] as! String == "def")
+    #expect(try rows[0].fieldIndex("name") == 1)
+    await spark.stop()
+  }
+
+  @Test
   func collectMultiple() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1)

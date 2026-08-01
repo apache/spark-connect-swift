@@ -22,15 +22,34 @@ import FoundationEssentials
 import Foundation
 #endif
 
+/// A schema of ``Row`` holding the field names. Like Scala's `StructType`, a single
+/// `RowSchema` instance is shared by all ``Row``s of the same result.
+public final class RowSchema: Sendable {
+  public let fieldNames: [String]
+  let nameToIndex: [String: Int]
+
+  public init(_ fieldNames: [String]) {
+    self.fieldNames = fieldNames
+    var nameToIndex = [String: Int]()
+    for (index, name) in fieldNames.enumerated() {
+      nameToIndex[name] = index
+    }
+    self.nameToIndex = nameToIndex
+  }
+}
+
 public struct Row: Sendable, Equatable {
   let values: [Sendable?]
+  let schema: RowSchema?
 
   public init(_ values: Sendable?...) {
     self.values = values
+    self.schema = nil
   }
 
-  public init(valueArray: [Sendable?]) {
+  public init(valueArray: [Sendable?], schema: RowSchema? = nil) {
     self.values = valueArray
+    self.schema = schema
   }
 
   public static var empty: Row {
@@ -47,11 +66,52 @@ public struct Row: Sendable, Equatable {
     }
   }
 
+  public subscript(name: String) -> Sendable {
+    get throws {
+      return try get(name)
+    }
+  }
+
   public func get(_ i: Int) throws -> Sendable {
     if i < 0 || i >= self.length {
       throw SparkConnectError.InvalidArgument
     }
     return values[i]
+  }
+
+  /// Returns the value of the field with the given name.
+  /// - Parameter name: A field name.
+  /// - Returns: A value of the field.
+  public func get(_ name: String) throws -> Sendable {
+    return values[try fieldIndex(name)]
+  }
+
+  /// Returns the index of the field with the given name. If multiple fields have the same
+  /// name, the last one is returned like Scala's `StructType.fieldIndex`.
+  /// - Parameter name: A field name.
+  /// - Returns: An index of the field.
+  public func fieldIndex(_ name: String) throws -> Int {
+    guard let schema = self.schema else {
+      throw SparkConnectError.UnsupportedOperation
+    }
+    guard let index = schema.nameToIndex[name] else {
+      throw SparkConnectError.ColumnNotFound
+    }
+    return index
+  }
+
+  /// Returns the row as a dictionary from field names to values. If multiple fields have
+  /// the same name, the last value is used.
+  /// - Returns: A dictionary from field names to values.
+  public func asDict() throws -> [String: Sendable?] {
+    guard let schema = self.schema else {
+      throw SparkConnectError.UnsupportedOperation
+    }
+    var dict = [String: Sendable?]()
+    for (index, name) in schema.fieldNames.enumerated() {
+      dict.updateValue(values[index], forKey: name)
+    }
+    return dict
   }
 
   public func getAsBool(_ i: Int) throws -> Bool {

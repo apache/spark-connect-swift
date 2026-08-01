@@ -111,6 +111,7 @@ extension DataFrame {
 
     var result: [Row] = []
     for batch in self.batches {
+      let rowSchema = RowSchema(batch.schema.fields.map { $0.name })
       for i in 0..<batch.length {
         var values: [Sendable?] = []
         for column in batch.columns {
@@ -163,7 +164,7 @@ extension DataFrame {
             }
           }
         }
-        result.append(Row(valueArray: values))
+        result.append(Row(valueArray: values, schema: rowSchema))
       }
     }
 
