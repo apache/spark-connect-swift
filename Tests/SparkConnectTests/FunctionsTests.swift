@@ -60,6 +60,11 @@ struct FunctionsTests {
   }
 
   @Test
+  func exprFunction() throws {
+    #expect(expr("id + 1").expr.expressionString.expression == "id + 1")
+  }
+
+  @Test
   func alias() throws {
     let expr = col("id").alias("x").expr
     #expect(expr.alias.name == ["x"])
@@ -356,6 +361,17 @@ struct FunctionsTests {
       .agg(count(col("*")).alias("cnt"), sum(col("id")), avg(col("id")))
       .orderBy("id").collect()
     #expect(rows == [Row(0, 1, 0, 0.0), Row(1, 1, 1, 1.0), Row(2, 1, 2, 2.0)])
+    await spark.stop()
+  }
+
+  @Test
+  func selectWithExpr() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(3)
+    #expect(
+      try await df.select(expr("id + 1").alias("plus")).orderBy("plus").collect()
+        == [Row(1), Row(2), Row(3)])
+    #expect(try await df.filter(expr("id > 1")).count() == 1)
     await spark.stop()
   }
 

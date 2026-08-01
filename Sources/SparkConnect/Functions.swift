@@ -175,6 +175,18 @@ public func desc(_ name: String) -> Column {
   return Column(name).desc()
 }
 
+/// Parses the expression string into the column that it represents.
+///
+/// ```swift
+/// df.select(expr("id + 1"))
+/// ```
+///
+/// - Parameter sqlExpr: A SQL expression string.
+/// - Returns: A ``Column``.
+public func expr(_ sqlExpr: String) -> Column {
+  return Column(sqlExpr.toExpression)
+}
+
 /// Returns the number of items in a group.
 /// - Parameter col: A ``Column`` to count.
 /// - Returns: A ``Column``.
