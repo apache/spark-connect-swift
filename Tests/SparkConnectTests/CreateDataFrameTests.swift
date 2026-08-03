@@ -125,4 +125,18 @@ struct CreateDataFrameTests {
     }
     await spark.stop()
   }
+
+  @Test
+  func longStrings() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // A first string longer than the initial 64-byte buffer and a row count where
+    // `4 * rowCount` is a multiple of 64 in order to detect Arrow serialization regressions.
+    let value = String(repeating: "x", count: 200)
+    let data: [[Sendable?]] = (0..<16).map { (i: Int) in [i, value + String(i)] }
+    let rows = try await spark.createDataFrame(data, "id INT, value STRING").collect()
+    #expect(rows.count == 16)
+    #expect(try rows[0].get(1) as? String == value + "0")
+    #expect(try rows[15].get(1) as? String == value + "15")
+    await spark.stop()
+  }
 }

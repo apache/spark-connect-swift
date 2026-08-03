@@ -239,9 +239,9 @@ public class VariableBufferBuilder<T>: ValuesBufferBuilder<T>, ArrowBufferBuilde
     if index > 0 {
       currentIndex = self.offsets.rawPointer.advanced(by: offsetIndex).load(as: Int32.self)
       currentOffset += currentIndex
-      if currentOffset > self.values.length {
-        self.value_resize(UInt(currentOffset))
-      }
+    }
+    if currentOffset > self.values.length {
+      self.value_resize(UInt(currentOffset))
     }
 
     if isNull {
@@ -287,10 +287,15 @@ public class VariableBufferBuilder<T>: ValuesBufferBuilder<T>, ArrowBufferBuilde
     let length = self.length
     var values = ArrowBuffer.createBuffer(self.values.length, size: UInt(MemoryLayout<UInt8>.size))
     var nulls = ArrowBuffer.createBuffer(length / 8 + 1, size: UInt(MemoryLayout<UInt8>.size))
-    var offsets = ArrowBuffer.createBuffer(length, size: UInt(MemoryLayout<Int32>.size))
+    // The offsets buffer requires `length + 1` entries because each value `i` is read from the
+    // range `offsets[i]..<offsets[i + 1]`, while its buffer length must remain `length` because
+    // it is used as the array length.
+    let offsetsByteCount = Int(length + 1) * MemoryLayout<Int32>.stride
+    let offsetsBytes = [UInt8](
+      UnsafeRawBufferPointer(start: self.offsets.rawPointer, count: offsetsByteCount))
+    let offsets = ArrowBuffer.createBuffer(offsetsBytes, length: length)
     ArrowBuffer.copyCurrent(self.values, to: &values, len: values.capacity)
     ArrowBuffer.copyCurrent(self.nulls, to: &nulls, len: nulls.capacity)
-    ArrowBuffer.copyCurrent(self.offsets, to: &offsets, len: offsets.capacity)
     return [nulls, offsets, values]
   }
 }
