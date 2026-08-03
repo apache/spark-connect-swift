@@ -122,9 +122,10 @@ public actor SparkSession {
   /// The data is serialized into an `Apache Arrow` IPC stream and embedded into the plan as a
   /// `LocalRelation`. The supported schema types are `BOOLEAN`, `TINYINT`, `SMALLINT`, `INT`,
   /// `BIGINT`, `FLOAT`, `DOUBLE`, `STRING`, `BINARY`, `DATE`, and `TIMESTAMP`. `nil` values are
-  /// mapped to `NULL`. Since the serialized data is limited by the Spark Connect server's gRPC
-  /// message size limit (128MiB by default), ``SparkConnectError/LocalRelationTooLarge`` is
-  /// thrown for larger data.
+  /// mapped to `NULL`. When the serialized data is equal to or larger than
+  /// `spark.sql.session.localRelationCacheThreshold` (1MiB by default), it is uploaded to the
+  /// server as a `cache/` artifact and referenced by a `CachedLocalRelation` plan instead, so
+  /// it is not limited by the gRPC message size limit.
   ///
   /// - Parameters:
   ///   - data: An array of rows whose values are ordered like the schema fields.
@@ -136,6 +137,12 @@ public actor SparkSession {
       throw SparkConnectError.InvalidType
     }
     let ipcStream = try ConvertToArrow.toArrowIPCStream(data, structType)
+    let threshold = Int(
+      try await client.getConf("spark.sql.session.localRelationCacheThreshold"))!
+    if ipcStream.count >= threshold {
+      let hash = try await client.cacheLocalRelation(ipcStream, schema)
+      return await DataFrame(spark: self, plan: client.getCachedLocalRelation(hash))
+    }
     guard ipcStream.count <= Self.maxLocalRelationSize else {
       throw SparkConnectError.LocalRelationTooLarge
     }

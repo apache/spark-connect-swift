@@ -407,6 +407,17 @@ public actor SparkConnectClient {
     return Self.createPlan { $0.localRelation = localRelation }
   }
 
+  /// Create a `Plan` with a `CachedLocalRelation` referring to a `LocalRelation` cached in the
+  /// server-side session.
+  /// - Parameter hash: A SHA-256 hash of the serialized `LocalRelation`, returned by
+  ///   ``cacheLocalRelation(_:_:)``.
+  /// - Returns: A `Plan` instance.
+  func getCachedLocalRelation(_ hash: String) -> Plan {
+    var cachedLocalRelation = Spark_Connect_CachedLocalRelation()
+    cachedLocalRelation.hash = hash
+    return Self.createPlan { $0.cachedLocalRelation = cachedLocalRelation }
+  }
+
   /// Create a `Plan` instance for `Range` relation.
   /// - Parameters:
   ///   - start: A start of the range.

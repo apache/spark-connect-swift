@@ -147,4 +147,17 @@ extension SparkConnectClient {
     }
     return hash
   }
+
+  /// Cache a `LocalRelation` with the given `Apache Arrow` IPC stream as a `cache/` artifact
+  /// in the server-side session.
+  /// - Parameters:
+  ///   - data: An `Apache Arrow` IPC stream.
+  ///   - schema: A DDL-formatted schema string.
+  /// - Returns: A SHA-256 hash of the serialized `LocalRelation` as a lowercase hex string.
+  func cacheLocalRelation(_ data: Data, _ schema: String) async throws -> String {
+    var localRelation = Spark_Connect_LocalRelation()
+    localRelation.data = data
+    localRelation.schema = schema
+    return try await cacheArtifact(try localRelation.serializedData())
+  }
 }

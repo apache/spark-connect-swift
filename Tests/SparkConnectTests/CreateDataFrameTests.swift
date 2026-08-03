@@ -139,4 +139,22 @@ struct CreateDataFrameTests {
     #expect(try rows[15].get(1) as? String == value + "15")
     await spark.stop()
   }
+
+  @Test
+  func largeData() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Larger than `spark.sql.session.localRelationCacheThreshold` (1MiB by default) in order to
+    // exercise the `CachedLocalRelation`-based cache path.
+    let value = String(repeating: "x", count: 200)
+    let data: [[Sendable?]] = (0..<10000).map { [$0, value] }
+    let df = try await spark.createDataFrame(data, "id INT, value STRING")
+    #expect(try await df.count() == 10000)
+    #expect(try await df.selectExpr("sum(id)").collect() == [Row(Int64(49_995_000))])
+    #expect(try await df.filter("id = 9999").collect() == [Row(9999, value)])
+
+    // The second `createDataFrame` call with the same data skips the upload.
+    let df2 = try await spark.createDataFrame(data, "id INT, value STRING")
+    #expect(try await df2.count() == 10000)
+    await spark.stop()
+  }
 }
