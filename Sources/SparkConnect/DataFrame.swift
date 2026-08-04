@@ -305,19 +305,22 @@ public actor DataFrame: Sendable {
   }
 
   func withGPRC<Result: Sendable>(
+    retryable: Bool = true,
     _ f: (GRPCClient<GRPCNIOTransportHTTP2.HTTP2ClientTransport.Posix>) async throws -> Result
   ) async throws -> Result {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: spark.client.host, port: spark.client.port),
-        transportSecurity: spark.client.transportSecurity
-      ),
-      interceptors: spark.client.getIntercepters()
-    ) { client in
-      do {
-        return try await f(client)
-      } catch let error as RPCError where error.code == .internalError {
-        throw GrpcErrorConverter.convert(error) ?? error
+    try await withRetry(shouldRetry: { retryable && RetryPolicy.canRetry($0) }) {
+      try await withGRPCClient(
+        transport: .http2NIOPosix(
+          target: .dns(host: spark.client.host, port: spark.client.port),
+          transportSecurity: spark.client.transportSecurity
+        ),
+        interceptors: spark.client.getIntercepters()
+      ) { client in
+        do {
+          return try await f(client)
+        } catch let error as RPCError where error.code == .internalError {
+          throw GrpcErrorConverter.convert(error) ?? error
+        }
       }
     }
   }

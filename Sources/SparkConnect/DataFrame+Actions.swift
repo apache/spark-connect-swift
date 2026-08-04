@@ -36,68 +36,74 @@ extension DataFrame {
 
   /// Execute the plan and try to fill `schema` and `batches`.
   private func execute() async throws {
-    // Clear all existing batches.
-    self.batches.removeAll()
+    // `ExecutePlan` can have side effects on the server. Retry only until the first
+    // response arrives because the operation is not started before that.
+    let received = Atomic(false)
+    try await withRetry(shouldRetry: { !received.load(ordering: .relaxed) && RetryPolicy.canRetry($0) }) {
+      // Clear all existing batches.
+      self.batches.removeAll()
 
-    try await withGPRC { client in
-      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-      try await service.executePlan(spark.client.getExecutePlanRequest(plan)) {
-        response in
-        for try await m in response.messages {
-          if m.hasSchema {
-            // The original schema should arrive before ArrowBatches
-            await self.setSchema(m.schema)
-          }
-          let ipcStreamBytes = m.arrowBatch.data
-          if !ipcStreamBytes.isEmpty && m.arrowBatch.rowCount > 0 {
-            let IPC_CONTINUATION_TOKEN = Int32(-1)
-            let totalSize = Int64(ipcStreamBytes.count)
-            // Schema
-            guard totalSize >= 8,
-              ipcStreamBytes[0..<4].int32 == IPC_CONTINUATION_TOKEN
-            else {
-              throw SparkConnectError.InvalidArrowData
+      try await withGPRC(retryable: false) { client in
+        let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+        try await service.executePlan(spark.client.getExecutePlanRequest(plan)) {
+          response in
+          for try await m in response.messages {
+            received.store(true, ordering: .relaxed)
+            if m.hasSchema {
+              // The original schema should arrive before ArrowBatches
+              await self.setSchema(m.schema)
             }
-            let schemaSize = Int64(ipcStreamBytes[4..<8].int32)
-            guard schemaSize >= 0, 8 + schemaSize + 4 <= totalSize else {
-              throw SparkConnectError.InvalidArrowData
-            }
-            let schema = Data(ipcStreamBytes[8..<(8 + schemaSize)])
+            let ipcStreamBytes = m.arrowBatch.data
+            if !ipcStreamBytes.isEmpty && m.arrowBatch.rowCount > 0 {
+              let IPC_CONTINUATION_TOKEN = Int32(-1)
+              let totalSize = Int64(ipcStreamBytes.count)
+              // Schema
+              guard totalSize >= 8,
+                ipcStreamBytes[0..<4].int32 == IPC_CONTINUATION_TOKEN
+              else {
+                throw SparkConnectError.InvalidArrowData
+              }
+              let schemaSize = Int64(ipcStreamBytes[4..<8].int32)
+              guard schemaSize >= 0, 8 + schemaSize + 4 <= totalSize else {
+                throw SparkConnectError.InvalidArrowData
+              }
+              let schema = Data(ipcStreamBytes[8..<(8 + schemaSize)])
 
-            // Arrow IPC Data
-            guard ipcStreamBytes[(8 + schemaSize)..<(8 + schemaSize + 4)].int32
-              == IPC_CONTINUATION_TOKEN
-            else {
-              throw SparkConnectError.InvalidArrowData
-            }
-            var pos: Int64 = 8 + schemaSize + 4
-            guard pos + 4 <= totalSize else {
-              throw SparkConnectError.InvalidArrowData
-            }
-            let dataHeaderSize = Int64(ipcStreamBytes[pos..<(pos + 4)].int32)
-            pos += 4
-            guard dataHeaderSize >= 0, pos + dataHeaderSize + 8 <= totalSize else {
-              throw SparkConnectError.InvalidArrowData
-            }
-            let dataHeader = Data(ipcStreamBytes[pos..<(pos + dataHeaderSize)])
-            pos += dataHeaderSize
-            let dataBodySize = totalSize - pos - 8
-            let dataBody = Data(ipcStreamBytes[pos..<(pos + dataBodySize)])
+              // Arrow IPC Data
+              guard ipcStreamBytes[(8 + schemaSize)..<(8 + schemaSize + 4)].int32
+                == IPC_CONTINUATION_TOKEN
+              else {
+                throw SparkConnectError.InvalidArrowData
+              }
+              var pos: Int64 = 8 + schemaSize + 4
+              guard pos + 4 <= totalSize else {
+                throw SparkConnectError.InvalidArrowData
+              }
+              let dataHeaderSize = Int64(ipcStreamBytes[pos..<(pos + 4)].int32)
+              pos += 4
+              guard dataHeaderSize >= 0, pos + dataHeaderSize + 8 <= totalSize else {
+                throw SparkConnectError.InvalidArrowData
+              }
+              let dataHeader = Data(ipcStreamBytes[pos..<(pos + dataHeaderSize)])
+              pos += dataHeaderSize
+              let dataBodySize = totalSize - pos - 8
+              let dataBody = Data(ipcStreamBytes[pos..<(pos + dataBodySize)])
 
-            // Read ArrowBatches
-            let reader = ArrowReader()
-            let arrowResult = ArrowReader.makeArrowReaderResult()
-            if case .failure(let error) = reader.fromMessage(
-              schema, dataBody: Data(), result: arrowResult)
-            {
-              throw error
+              // Read ArrowBatches
+              let reader = ArrowReader()
+              let arrowResult = ArrowReader.makeArrowReaderResult()
+              if case .failure(let error) = reader.fromMessage(
+                schema, dataBody: Data(), result: arrowResult)
+              {
+                throw error
+              }
+              if case .failure(let error) = reader.fromMessage(
+                dataHeader, dataBody: dataBody, result: arrowResult)
+              {
+                throw error
+              }
+              await self.addBatches(arrowResult.batches)
             }
-            if case .failure(let error) = reader.fromMessage(
-              dataHeader, dataBody: dataBody, result: arrowResult)
-            {
-              throw error
-            }
-            await self.addBatches(arrowResult.batches)
           }
         }
       }
@@ -179,12 +185,18 @@ extension DataFrame {
   public func count() async throws -> Int64 {
     let counter = Atomic(Int64(0))
 
-    try await withGPRC { client in
-      let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
-      try await service.executePlan(spark.client.getExecutePlanRequest(plan)) {
-        response in
-        for try await m in response.messages {
-          counter.add(m.arrowBatch.rowCount, ordering: .relaxed)
+    // `ExecutePlan` can have side effects on the server. Retry only until the first
+    // response arrives because the operation is not started before that.
+    let received = Atomic(false)
+    try await withRetry(shouldRetry: { !received.load(ordering: .relaxed) && RetryPolicy.canRetry($0) }) {
+      try await withGPRC(retryable: false) { client in
+        let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
+        try await service.executePlan(spark.client.getExecutePlanRequest(plan)) {
+          response in
+          for try await m in response.messages {
+            received.store(true, ordering: .relaxed)
+            counter.add(m.arrowBatch.rowCount, ordering: .relaxed)
+          }
         }
       }
     }

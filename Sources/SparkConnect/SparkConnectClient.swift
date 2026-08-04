@@ -24,6 +24,7 @@ import Foundation
 import GRPCCore
 import GRPCNIOTransportHTTP2
 import GRPCProtobuf
+import Synchronization
 
 /// Conceptually the remote spark session that communicates with the server
 public actor SparkConnectClient {
@@ -133,19 +134,22 @@ public actor SparkConnectClient {
   }
 
   func withGPRC<Result: Sendable>(
+    retryable: Bool = true,
     _ f: (GRPCClient<GRPCNIOTransportHTTP2.HTTP2ClientTransport.Posix>) async throws -> Result
   ) async throws -> Result {
-    try await withGRPCClient(
-      transport: .http2NIOPosix(
-        target: .dns(host: self.host, port: self.port),
-        transportSecurity: self.transportSecurity
-      ),
-      interceptors: self.intercepters
-    ) { client in
-      do {
-        return try await f(client)
-      } catch let error as RPCError where error.code == .internalError {
-        throw GrpcErrorConverter.convert(error) ?? error
+    try await withRetry(shouldRetry: { retryable && RetryPolicy.canRetry($0) }) {
+      try await withGRPCClient(
+        transport: .http2NIOPosix(
+          target: .dns(host: self.host, port: self.port),
+          transportSecurity: self.transportSecurity
+        ),
+        interceptors: self.intercepters
+      ) { client in
+        do {
+          return try await f(client)
+        } catch let error as RPCError where error.code == .internalError {
+          throw GrpcErrorConverter.convert(error) ?? error
+        }
       }
     }
   }
@@ -854,15 +858,21 @@ public actor SparkConnectClient {
 
   @discardableResult
   func execute(_ sessionID: String, _ command: Command) async throws -> [ExecutePlanResponse] {
-    self.result.removeAll()
-    try await withGPRC { client in
-      let service = SparkConnectService.Client(wrapping: client)
-      var plan = Plan()
-      plan.opType = .command(command)
-      try await service.executePlan(getExecutePlanRequest(plan)) {
-        response in
-        for try await m in response.messages {
-          await self.addResponse(m)
+    // `ExecutePlan` can have side effects on the server. Retry only until the first
+    // response arrives because the operation is not started before that.
+    let received = Atomic(false)
+    try await withRetry(shouldRetry: { !received.load(ordering: .relaxed) && RetryPolicy.canRetry($0) }) {
+      self.result.removeAll()
+      try await withGPRC(retryable: false) { client in
+        let service = SparkConnectService.Client(wrapping: client)
+        var plan = Plan()
+        plan.opType = .command(command)
+        try await service.executePlan(getExecutePlanRequest(plan)) {
+          response in
+          for try await m in response.messages {
+            received.store(true, ordering: .relaxed)
+            await self.addResponse(m)
+          }
         }
       }
     }
