@@ -317,20 +317,7 @@ public actor DataFrame: Sendable {
       do {
         return try await f(client)
       } catch let error as RPCError where error.code == .internalError {
-        switch error.message {
-        case let m where m.contains("CATALOG_NOT_FOUND"):
-          throw SparkConnectError.CatalogNotFound
-        case let m where m.contains("SCHEMA_NOT_FOUND"):
-          throw SparkConnectError.SchemaNotFound
-        case let m where m.contains("TABLE_OR_VIEW_NOT_FOUND"):
-          throw SparkConnectError.TableOrViewNotFound
-        case let m where m.contains("UNRESOLVED_COLUMN.WITH_SUGGESTION"):
-          throw SparkConnectError.ColumnNotFound
-        case let m where m.contains("PARSE_SYNTAX_ERROR"):
-          throw SparkConnectError.ParseSyntaxError
-        default:
-          throw error
-        }
+        throw GrpcErrorConverter.convert(error) ?? error
       }
     }
   }

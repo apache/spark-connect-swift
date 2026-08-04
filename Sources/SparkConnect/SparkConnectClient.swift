@@ -145,24 +145,7 @@ public actor SparkConnectClient {
       do {
         return try await f(client)
       } catch let error as RPCError where error.code == .internalError {
-        switch error.message {
-        case let m where m.contains("INVALID_HANDLE.SESSION_CLOSED"):
-          throw SparkConnectError.SessionClosed
-        case let m where m.contains("SQL_CONF_NOT_FOUND"):
-          throw SparkConnectError.SqlConfNotFound
-        case let m where m.contains("TABLE_OR_VIEW_ALREADY_EXISTS"):
-          throw SparkConnectError.TableOrViewAlreadyExists
-        case let m where m.contains("TABLE_OR_VIEW_NOT_FOUND"):
-          throw SparkConnectError.TableOrViewNotFound
-        case let m where m.contains("Invalid view name:"):
-          throw SparkConnectError.InvalidViewName
-        case let m where m.contains("DATA_SOURCE_NOT_FOUND"):
-          throw SparkConnectError.DataSourceNotFound
-        case let m where m.contains("OUTPUT_TYPE_UNSPECIFIED"):
-          throw SparkConnectError.OutputTypeUnspecified
-        default:
-          throw error
-        }
+        throw GrpcErrorConverter.convert(error) ?? error
       }
     }
   }
@@ -1009,17 +992,8 @@ public actor SparkConnectClient {
           ddlParse.ddlString = ddlString
           return OneOf_Analyze.ddlParse(ddlParse)
         })
-      do {
-        let response = try await service.analyzePlan(request)
-        return response.ddlParse.parsed
-      } catch let error as RPCError where error.code == .internalError {
-        switch error.message {
-        case let m where m.contains("UNSUPPORTED_DATATYPE") || m.contains("INVALID_IDENTIFIER"):
-          throw SparkConnectError.InvalidType
-        default:
-          throw error
-        }
-      }
+      let response = try await service.analyzePlan(request)
+      return response.ddlParse.parsed
     }
   }
 
