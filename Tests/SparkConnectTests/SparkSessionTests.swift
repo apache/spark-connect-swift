@@ -172,6 +172,20 @@ struct SparkSessionTests {
   }
 
   @Test
+  func sqlWithTimeParameter() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      try await spark.conf.set("spark.sql.timeType.enabled", "true")
+      let time = try #require(LocalTime(hour: 12, minute: 34, second: 56, nanosecond: 123_456_000))
+      #expect(try await spark.sql("SELECT typeof(?)", time).collect() == [Row("time(6)")])
+      #expect(try await spark.sql("SELECT ?", time).collect() == [Row(time)])
+      #expect(try await spark.sql("SELECT :t", args: ["t": time]).collect() == [Row(time)])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func sqlWithUnsupportedParameterType() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()

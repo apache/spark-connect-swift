@@ -57,6 +57,9 @@ struct FunctionsTests {
     #expect(lit(Float(1.0)).expr.literal.float == 1.0)
     #expect(lit(1.0).expr.literal.double == 1.0)
     #expect(lit("a").expr.literal.string == "a")
+    let time = try #require(LocalTime(hour: 12, minute: 34, second: 56))
+    #expect(lit(time).expr.literal.time.nano == 45_296_000_000_000)
+    #expect(lit(time).expr.literal.time.precision == 6)
   }
 
   @Test
@@ -253,6 +256,10 @@ struct FunctionsTests {
     #expect((col("a") == Float(1.0)).expr.unresolvedFunction.arguments[1].literal.float == 1.0)
     #expect((col("a") == 1.0).expr.unresolvedFunction.arguments[1].literal.double == 1.0)
     #expect((col("a") == "x").expr.unresolvedFunction.arguments[1].literal.string == "x")
+    let time = try #require(LocalTime(hour: 12, minute: 34, second: 56))
+    #expect(
+      (col("a") == time).expr.unresolvedFunction.arguments[1].literal.time.nano
+        == 45_296_000_000_000)
   }
 
   @Test

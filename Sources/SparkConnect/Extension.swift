@@ -197,6 +197,9 @@ extension ExpressionLiteral {
       // `Date` is an absolute point in time, so it maps to Spark's `TIMESTAMP`
       // (microseconds since the UNIX epoch), not `DATE`.
       self.timestamp = Int64(value.timeIntervalSince1970 * 1_000_000)
+    case let value as LocalTime:
+      self.time.nano = value.nanoOfDay
+      self.time.precision = 6
     default:
       if case Optional<Any>.none = value as Any {
         var dataType = DataType()

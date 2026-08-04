@@ -198,6 +198,19 @@ struct DataFrameTests {
   }
 
   @Test
+  func selectTimeLiteral() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      try await spark.conf.set("spark.sql.timeType.enabled", "true")
+      let time = try #require(LocalTime(hour: 12, minute: 34, second: 56, nanosecond: 123_456_000))
+      let df = try await spark.range(1).select(lit(time))
+      #expect(try await df.dtypes[0].1 == "time(6)")
+      #expect(try await df.collect() == [Row(time)])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func array() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("SELECT array('a')").collect() == [Row(Array(["a"]))])

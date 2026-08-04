@@ -112,6 +112,16 @@ public func lit(_ value: String) -> Column {
   return litColumn(literal)
 }
 
+/// Creates a ``Column`` of literal value.
+/// - Parameter value: A literal value.
+/// - Returns: A ``Column``.
+public func lit(_ value: LocalTime) -> Column {
+  var literal = ExpressionLiteral()
+  literal.time.nano = value.nanoOfDay
+  literal.time.precision = 6
+  return litColumn(literal)
+}
+
 /// A type that can be used as a literal operand of ``Column`` operators.
 ///
 /// This allows Swift literals to be mixed with ``Column`` expressions directly
@@ -158,6 +168,10 @@ extension Double: SparkLiteral {
 }
 
 extension String: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension LocalTime: SparkLiteral {
   public var toLiteralColumn: Column { lit(self) }
 }
 
