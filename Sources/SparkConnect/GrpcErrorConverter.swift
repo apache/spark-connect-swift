@@ -30,26 +30,126 @@ import GRPCProtobuf
 /// It parses the `google.rpc.ErrorInfo` from the gRPC status details to classify errors by
 /// the Spark error class and to enrich ``SparkConnectError/Details-swift.struct`` with
 /// the error class, SQLSTATE, and message parameters. When the status details are missing,
-/// it falls back to classifying by the error message.
+/// it falls back to classifying by the error message. When the `ErrorInfo` provides an
+/// `errorId`, it additionally fetches the server-side error chain with the un-truncated
+/// messages and optional stack traces by the `FetchErrorDetails` RPC.
 enum GrpcErrorConverter {
-  /// Convert an ``RPCError`` into a ``SparkConnectError``.
-  /// - Parameter error: An ``RPCError`` from the server.
+  /// Convert an ``RPCError`` into a ``SparkConnectError`` after enriching it with the
+  /// server-side error chain fetched by an additional `FetchErrorDetails` RPC
+  /// like `org.apache.spark.sql.connect.client.GrpcExceptionConverter.fetchEnrichedError`.
+  /// The RPC call is best-effort at-most-once without retries, and any failure silently
+  /// falls back to the un-enriched conversion in order not to mask the original error.
+  /// - Parameters:
+  ///   - error: An ``RPCError`` from the server.
+  ///   - client: A connected gRPC client to send the `FetchErrorDetails` request.
+  ///   - sessionID: A session ID string. The enrichment is skipped if nil.
+  ///   - userContext: A ``UserContext`` of the session.
+  ///   - clientType: A client type string.
   /// - Returns: A ``SparkConnectError`` or nil if unclassifiable.
-  static func convert(_ error: RPCError) -> SparkConnectError? {
-    var details = SparkConnectError.Details(message: error.message)
-    if let status = try? error.unpackGoogleRPCStatus(),
-      let info = status.details.compactMap({ $0.errorInfo }).first
+  static func convert(
+    _ error: RPCError,
+    fetchingDetailsWith client: GRPCClient<some ClientTransport>,
+    sessionID: String?,
+    userContext: UserContext,
+    clientType: String
+  ) async -> SparkConnectError? {
+    var (details, errorID) = parse(error)
+    if let errorID, let sessionID,
+      let response = await fetchErrorDetails(
+        errorID, with: client, sessionID: sessionID, userContext: userContext,
+        clientType: clientType)
     {
-      details = SparkConnectError.Details(
-        message: status.message.isEmpty ? error.message : status.message,
-        errorClass: info.metadata["errorClass"],
-        sqlState: info.metadata["sqlState"],
-        messageParameters: messageParameters(from: info.metadata["messageParameters"]))
+      details = enrich(details, with: response)
     }
+    return classify(details)
+  }
+
+  /// Build ``SparkConnectError/Details-swift.struct`` from the `google.rpc.ErrorInfo` of
+  /// the gRPC status details, together with the server-side `errorId` if provided.
+  private static func parse(_ error: RPCError) -> (SparkConnectError.Details, errorID: String?) {
+    guard let status = try? error.unpackGoogleRPCStatus(),
+      let info = status.details.compactMap({ $0.errorInfo }).first
+    else {
+      return (SparkConnectError.Details(message: error.message), nil)
+    }
+    let details = SparkConnectError.Details(
+      message: status.message.isEmpty ? error.message : status.message,
+      errorClass: info.metadata["errorClass"],
+      sqlState: info.metadata["sqlState"],
+      messageParameters: messageParameters(from: info.metadata["messageParameters"]))
+    return (details, info.metadata["errorId"])
+  }
+
+  /// Classify ``SparkConnectError/Details-swift.struct`` into a ``SparkConnectError``
+  /// by the Spark error class first and by the error message as a fallback.
+  private static func classify(_ details: SparkConnectError.Details) -> SparkConnectError? {
     if let errorClass = details.errorClass, let converted = convert(errorClass, details) {
       return converted
     }
     return convert(byMessage: details.message, details)
+  }
+
+  /// Send a `FetchErrorDetails` request, returning nil on any failure.
+  private static func fetchErrorDetails(
+    _ errorID: String,
+    with client: GRPCClient<some ClientTransport>,
+    sessionID: String,
+    userContext: UserContext,
+    clientType: String
+  ) async -> FetchErrorDetailsResponse? {
+    let service = SparkConnectService.Client(wrapping: client)
+    var request = FetchErrorDetailsRequest()
+    request.sessionID = sessionID
+    request.userContext = userContext
+    request.clientType = clientType
+    request.errorID = errorID
+    return try? await service.fetchErrorDetails(request)
+  }
+
+  /// Merge a `FetchErrorDetailsResponse` into ``SparkConnectError/Details-swift.struct``.
+  /// The `errorClass` and `sqlState` from `ErrorInfo` take precedence to keep the
+  /// error classification stable, while the un-truncated message and the message
+  /// parameters of the root error replace the truncated ones.
+  private static func enrich(
+    _ details: SparkConnectError.Details, with response: FetchErrorDetailsResponse
+  ) -> SparkConnectError.Details {
+    guard response.hasRootErrorIdx else { return details }
+    let serverErrors = flatten(response)
+    guard let root = serverErrors.first else { return details }
+    return SparkConnectError.Details(
+      message: root.message.isEmpty ? details.message : root.message,
+      errorClass: details.errorClass ?? root.errorClass,
+      sqlState: details.sqlState ?? root.sqlState,
+      messageParameters: root.messageParameters.isEmpty
+        ? details.messageParameters : root.messageParameters,
+      serverErrors: serverErrors)
+  }
+
+  /// Flatten the `causeIdx`-linked errors of a `FetchErrorDetailsResponse` into an array
+  /// starting from the root error, guarding against out-of-range indices and cycles.
+  private static func flatten(
+    _ response: FetchErrorDetailsResponse
+  ) -> [SparkConnectError.ServerError] {
+    var serverErrors: [SparkConnectError.ServerError] = []
+    var visited = Set<Int>()
+    var index = Int(response.rootErrorIdx)
+    while response.errors.indices.contains(index), visited.insert(index).inserted {
+      let error = response.errors[index]
+      let throwable = error.hasSparkThrowable ? error.sparkThrowable : nil
+      serverErrors.append(
+        SparkConnectError.ServerError(
+          message: error.message,
+          errorTypeHierarchy: error.errorTypeHierarchy,
+          stackTrace: error.stackTrace.map {
+            "\($0.declaringClass).\($0.methodName)(\($0.fileName):\($0.lineNumber))"
+          },
+          errorClass: throwable?.hasErrorClass == true ? throwable?.errorClass : nil,
+          sqlState: throwable?.hasSqlState == true ? throwable?.sqlState : nil,
+          messageParameters: throwable?.messageParameters ?? [:]))
+      guard error.hasCauseIdx else { break }
+      index = Int(error.causeIdx)
+    }
+    return serverErrors
   }
 
   /// Classify by the Spark error class from `ErrorInfo`.

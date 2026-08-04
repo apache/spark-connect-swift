@@ -147,7 +147,9 @@ public actor SparkConnectClient {
         do {
           return try await f(client)
         } catch let error as RPCError where error.code == .internalError {
-          throw GrpcErrorConverter.convert(error) ?? error
+          throw await GrpcErrorConverter.convert(
+            error, fetchingDetailsWith: client, sessionID: self.sessionID,
+            userContext: self.userContext, clientType: self.clientType) ?? error
         }
       }
     }

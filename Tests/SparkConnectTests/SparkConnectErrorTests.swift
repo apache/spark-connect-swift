@@ -69,6 +69,38 @@ struct SparkConnectErrorTests {
   }
 
   @Test
+  func serverErrors() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let error = try await #require(throws: SparkConnectError.self) {
+      try await spark.sql("SELECT * FROM nonexistent_table_for_error_tests").count()
+    }
+    #expect(error == .TableOrViewNotFound)
+    let root = try #require(error.serverErrors.first)
+    #expect(root.errorTypeHierarchy.contains("org.apache.spark.sql.AnalysisException"))
+    #expect(root.message.contains("nonexistent_table_for_error_tests"))
+    #expect(root.errorClass == "TABLE_OR_VIEW_NOT_FOUND")
+    #expect(
+      root.messageParameters["relationName"]?.contains("nonexistent_table_for_error_tests")
+        ?? false)
+    await spark.stop()
+  }
+
+  @Test
+  func serverStackTrace() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    try await spark.conf.set("spark.sql.connect.serverStacktrace.enabled", "true")
+    let error = try await #require(throws: SparkConnectError.self) {
+      try await spark.sql("SELECT * FROM nonexistent_table_for_error_tests").count()
+    }
+    let root = try #require(error.serverErrors.first)
+    #expect(!root.stackTrace.isEmpty)
+    let stackTrace = try #require(error.serverStackTrace)
+    #expect(stackTrace.contains("AnalysisException"))
+    #expect(stackTrace.contains("\tat org.apache.spark."))
+    await spark.stop()
+  }
+
+  @Test
   func detailsPatternMatching() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     do {

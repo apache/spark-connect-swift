@@ -25,6 +25,40 @@
 /// Note that the equality of ``SparkConnectError`` compares only the error kind and
 /// ignores the attached ``SparkConnectError/Details-swift.struct``.
 public enum SparkConnectError: Error, Sendable, Equatable {
+  /// A server-side error fetched by the `FetchErrorDetails` RPC.
+  public struct ServerError: Sendable, Equatable {
+    /// The un-truncated error message.
+    public let message: String
+    /// The fully qualified names of the exception class and its parent classes.
+    public let errorTypeHierarchy: [String]
+    /// The server-side stack trace frames formatted as `declaringClass.methodName(fileName:line)`.
+    /// This is non-empty only if the SQL configuration
+    /// `spark.sql.connect.serverStacktrace.enabled` is true.
+    public let stackTrace: [String]
+    /// A Spark error class of this error if it is a `SparkThrowable`.
+    public let errorClass: String?
+    /// A SQLSTATE of this error if it is a `SparkThrowable`.
+    public let sqlState: String?
+    /// The message parameters of the error class.
+    public let messageParameters: [String: String]
+
+    public init(
+      message: String = "",
+      errorTypeHierarchy: [String] = [],
+      stackTrace: [String] = [],
+      errorClass: String? = nil,
+      sqlState: String? = nil,
+      messageParameters: [String: String] = [:]
+    ) {
+      self.message = message
+      self.errorTypeHierarchy = errorTypeHierarchy
+      self.stackTrace = stackTrace
+      self.errorClass = errorClass
+      self.sqlState = sqlState
+      self.messageParameters = messageParameters
+    }
+  }
+
   /// Detailed error information.
   public struct Details: Sendable, Equatable {
     /// An error message.
@@ -35,17 +69,40 @@ public enum SparkConnectError: Error, Sendable, Equatable {
     public let sqlState: String?
     /// The message parameters of the error class.
     public let messageParameters: [String: String]
+    /// The server-side error chain fetched by the `FetchErrorDetails` RPC.
+    /// The first element is the thrown error and the rest follow the cause chain in order.
+    /// This is empty if the server does not support the RPC or the fetch fails.
+    public let serverErrors: [ServerError]
 
     public init(
       message: String = "",
       errorClass: String? = nil,
       sqlState: String? = nil,
-      messageParameters: [String: String] = [:]
+      messageParameters: [String: String] = [:],
+      serverErrors: [ServerError] = []
     ) {
       self.message = message
       self.errorClass = errorClass
       self.sqlState = sqlState
       self.messageParameters = messageParameters
+      self.serverErrors = serverErrors
+    }
+
+    /// A multi-line string of the server-side error chain in the JVM stack trace style,
+    /// or nil if ``serverErrors`` is empty.
+    public var serverStackTrace: String? {
+      guard !serverErrors.isEmpty else { return nil }
+      var lines: [String] = []
+      for (index, error) in serverErrors.enumerated() {
+        let className = error.errorTypeHierarchy.first ?? ""
+        if index == 0 {
+          lines.append(className)
+        } else {
+          lines.append("Caused by: \(className): \(error.message)")
+        }
+        lines.append(contentsOf: error.stackTrace.map { "\tat \($0)" })
+      }
+      return lines.joined(separator: "\n")
     }
   }
 
@@ -118,6 +175,12 @@ public enum SparkConnectError: Error, Sendable, Equatable {
 
   /// The message parameters of the error class.
   public var messageParameters: [String: String] { details.messageParameters }
+
+  /// The server-side error chain fetched by the `FetchErrorDetails` RPC.
+  public var serverErrors: [ServerError] { details.serverErrors }
+
+  /// A multi-line string of the server-side error chain in the JVM stack trace style.
+  public var serverStackTrace: String? { details.serverStackTrace }
 
   private var caseName: String {
     switch self {
