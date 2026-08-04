@@ -83,7 +83,7 @@ jobs:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
       spark:
-        image: apache/spark:4.0.3-scala
+        image: apache/spark:4.0.4-scala
         env:
           SPARK_NO_DAEMONIZE: 1
         ports:
@@ -102,7 +102,7 @@ jobs:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
       spark:
-        image: apache/spark:4.1.2-scala
+        image: apache/spark:4.1.3-scala
         env:
           SPARK_NO_DAEMONIZE: 1
         ports:
@@ -144,9 +144,9 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.2/spark-4.1.2-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.1.2-bin-hadoop3.tgz && rm spark-4.1.2-bin-hadoop3.tgz
-        mv spark-4.1.2-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.3/spark-4.1.3-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.1.3-bin-hadoop3.tgz && rm spark-4.1.3-bin-hadoop3.tgz
+        mv spark-4.1.3-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
@@ -187,9 +187,9 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.3/spark-4.0.3-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.3-bin-hadoop3.tgz && rm spark-4.0.3-bin-hadoop3.tgz
-        mv spark-4.0.3-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.4/spark-4.0.4-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.0.4-bin-hadoop3.tgz && rm spark-4.0.4-bin-hadoop3.tgz
+        mv spark-4.0.4-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
@@ -209,9 +209,9 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.2/spark-4.1.2-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.1.2-bin-hadoop3.tgz && rm spark-4.1.2-bin-hadoop3.tgz
-        mv spark-4.1.2-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.3/spark-4.1.3-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.1.3-bin-hadoop3.tgz && rm spark-4.1.3-bin-hadoop3.tgz
+        mv spark-4.1.3-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
@@ -236,11 +236,11 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.3/spark-4.0.3-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.3-bin-hadoop3.tgz && rm spark-4.0.3-bin-hadoop3.tgz
-        mv spark-4.0.3-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.4/spark-4.0.4-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.0.4-bin-hadoop3.tgz && rm spark-4.0.4-bin-hadoop3.tgz
+        mv spark-4.0.4-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.3,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.4,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         # Iceberg jars are resolved at startup, so wait until the server is ready.
         for i in $(seq 1 12); do
           grep -q "Spark Connect server started at" /tmp/spark/logs/*.out 2>/dev/null && break
@@ -269,11 +269,11 @@ jobs:
       run: swift test --filter NOTHING -c release
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.2/spark-4.1.2-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.1.2-bin-hadoop3.tgz && rm spark-4.1.2-bin-hadoop3.tgz
-        mv spark-4.1.2-bin-hadoop3 /tmp/spark
+        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.3/spark-4.1.3-bin-hadoop3.tgz?action=download
+        tar xvfz spark-4.1.3-bin-hadoop3.tgz && rm spark-4.1.3-bin-hadoop3.tgz
+        mv spark-4.1.3-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.1.2,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.1.3,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         # Iceberg jars are resolved at startup, so wait until the server is ready.
         for i in $(seq 1 12); do
           grep -q "Spark Connect server started at" /tmp/spark/logs/*.out 2>/dev/null && break
