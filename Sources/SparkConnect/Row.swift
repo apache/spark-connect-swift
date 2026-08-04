@@ -137,6 +137,8 @@ public struct Row: Sendable, Equatable {
         return a == b
       } else if let a = x as? Date, let b = y as? Date {
         return a == b
+      } else if let a = x as? LocalTime, let b = y as? LocalTime {
+        return a == b
       } else if let a = x as? String, let b = y as? String {
         return a == b
       } else if let a = x as? [Bool], let b = y as? [Bool] {

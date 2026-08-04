@@ -133,6 +133,18 @@ extension DataFrame {
               values.append(array.asAny(i) as? Decimal)
             case .primitiveInfo(.date32):
               values.append(array.asAny(i) as! Date)
+            case .timeInfo(.time64):
+              // Spark serializes `TIME` columns as Arrow `time64` values since midnight.
+              let time64Type = column.data.type as! ArrowTypeTime64
+              let time = array.asAny(i) as! Int64
+              let nanoOfDay =
+                switch time64Type.unit {
+                case .microseconds:
+                  time * 1_000
+                case .nanoseconds:
+                  time
+                }
+              values.append(LocalTime(nanoOfDay: nanoOfDay))
             case .timeInfo(.timestamp):
               let timestampType = column.data.type as! ArrowTypeTimestamp
               let timestamp = array.asAny(i) as! Int64

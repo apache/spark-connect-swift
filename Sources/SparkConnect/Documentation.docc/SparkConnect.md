@@ -30,6 +30,7 @@ SparkConnect is a modern Swift library that provides a native interface to Apach
 - ``DataFrame``
 - ``GroupedData``
 - ``Row``
+- ``LocalTime``
 - ``StorageLevel``
 
 ### Data I/O

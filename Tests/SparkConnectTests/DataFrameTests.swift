@@ -172,6 +172,32 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectTime() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      try await spark.conf.set("spark.sql.timeType.enabled", "true")
+      let expected = [
+        ("TIME'00:00:00'", LocalTime(hour: 0, minute: 0)),
+        ("TIME'12:34:56'", LocalTime(hour: 12, minute: 34, second: 56)),
+        ("CAST(TIME'12:34:56' AS TIME(0))", LocalTime(hour: 12, minute: 34, second: 56)),
+        (
+          "CAST(TIME'12:34:56.123' AS TIME(3))",
+          LocalTime(hour: 12, minute: 34, second: 56, nanosecond: 123_000_000)
+        ),
+        (
+          "TIME'23:59:59.999999'",
+          LocalTime(hour: 23, minute: 59, second: 59, nanosecond: 999_999_000)
+        ),
+      ]
+      for pair in expected {
+        #expect(try await spark.sql("SELECT \(pair.0)").collect() == [Row(pair.1)])
+      }
+      #expect(try await spark.sql("SELECT CAST(NULL AS TIME)").collect() == [Row(nil)])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func array() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("SELECT array('a')").collect() == [Row(Array(["a"]))])
