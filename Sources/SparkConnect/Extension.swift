@@ -329,6 +329,12 @@ extension DataType {
         "timestamp"
       case .timestampNtz:
         "timestamp_ntz"
+      case .time:
+        if self.time.hasPrecision {
+          "time(\(self.time.precision))"
+        } else {
+          "time(6)"
+        }
       case .calendarInterval:
         "interval"
       case .yearMonthInterval:

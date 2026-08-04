@@ -155,6 +155,23 @@ struct DataFrameTests {
   }
 
   @Test
+  func dtypesTime() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      try await spark.conf.set("spark.sql.timeType.enabled", "true")
+      let expected = [
+        ("TIME'12:34:56'", "time(6)"),
+        ("CAST(TIME'12:34:56' AS TIME(0))", "time(0)"),
+        ("CAST(TIME'12:34:56.123' AS TIME(3))", "time(3)"),
+      ]
+      for pair in expected {
+        #expect(try await spark.sql("SELECT \(pair.0)").dtypes[0].1 == pair.1)
+      }
+    }
+    await spark.stop()
+  }
+
+  @Test
   func array() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("SELECT array('a')").collect() == [Row(Array(["a"]))])
