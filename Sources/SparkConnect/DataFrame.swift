@@ -305,10 +305,9 @@ public actor DataFrame: Sendable {
   }
 
   func withGPRC<Result: Sendable>(
-    retryable: Bool = true,
     _ f: (GRPCClient<GRPCNIOTransportHTTP2.HTTP2ClientTransport.Posix>) async throws -> Result
   ) async throws -> Result {
-    try await withRetry(shouldRetry: { retryable && RetryPolicy.canRetry($0) }) {
+    try await withRetry {
       try await withGRPCClient(
         transport: .http2NIOPosix(
           target: .dns(host: spark.client.host, port: spark.client.port),

@@ -55,6 +55,7 @@ public enum SparkConnectError: Error, Sendable, Equatable {
   case invalidArgument(Details)
   case invalidArrowData(Details)
   case invalidSessionID(Details)
+  case invalidState(Details)
   case invalidType(Details)
   case invalidViewName(Details)
   case localRelationTooLarge(Details)
@@ -75,6 +76,7 @@ public enum SparkConnectError: Error, Sendable, Equatable {
   public static var InvalidArgument: SparkConnectError { .invalidArgument(Details()) }
   public static var InvalidArrowData: SparkConnectError { .invalidArrowData(Details()) }
   public static var InvalidSessionID: SparkConnectError { .invalidSessionID(Details()) }
+  public static var InvalidState: SparkConnectError { .invalidState(Details()) }
   public static var InvalidType: SparkConnectError { .invalidType(Details()) }
   public static var InvalidViewName: SparkConnectError { .invalidViewName(Details()) }
   public static var LocalRelationTooLarge: SparkConnectError { .localRelationTooLarge(Details()) }
@@ -95,7 +97,7 @@ public enum SparkConnectError: Error, Sendable, Equatable {
     case .catalogNotFound(let details), .columnNotFound(let details),
       .dataSourceNotFound(let details), .invalidArgument(let details),
       .invalidArrowData(let details), .invalidSessionID(let details),
-      .invalidType(let details), .invalidViewName(let details),
+      .invalidState(let details), .invalidType(let details), .invalidViewName(let details),
       .localRelationTooLarge(let details), .outputTypeUnspecified(let details),
       .parseSyntaxError(let details), .schemaNotFound(let details),
       .sessionClosed(let details), .sqlConfNotFound(let details),
@@ -125,6 +127,7 @@ public enum SparkConnectError: Error, Sendable, Equatable {
     case .invalidArgument: return "invalidArgument"
     case .invalidArrowData: return "invalidArrowData"
     case .invalidSessionID: return "invalidSessionID"
+    case .invalidState: return "invalidState"
     case .invalidType: return "invalidType"
     case .invalidViewName: return "invalidViewName"
     case .localRelationTooLarge: return "localRelationTooLarge"

@@ -24,7 +24,6 @@ import Foundation
 import GRPCCore
 import GRPCNIOTransportHTTP2
 import GRPCProtobuf
-import Synchronization
 
 /// Conceptually the remote spark session that communicates with the server
 public actor SparkConnectClient {
@@ -858,23 +857,11 @@ public actor SparkConnectClient {
 
   @discardableResult
   func execute(_ sessionID: String, _ command: Command) async throws -> [ExecutePlanResponse] {
-    // `ExecutePlan` can have side effects on the server. Retry only until the first
-    // response arrives because the operation is not started before that.
-    let received = Atomic(false)
-    try await withRetry(shouldRetry: { !received.load(ordering: .relaxed) && RetryPolicy.canRetry($0) }) {
-      self.result.removeAll()
-      try await withGPRC(retryable: false) { client in
-        let service = SparkConnectService.Client(wrapping: client)
-        var plan = Plan()
-        plan.opType = .command(command)
-        try await service.executePlan(getExecutePlanRequest(plan)) {
-          response in
-          for try await m in response.messages {
-            received.store(true, ordering: .relaxed)
-            await self.addResponse(m)
-          }
-        }
-      }
+    self.result.removeAll()
+    var plan = Plan()
+    plan.opType = .command(command)
+    try await executePlanWithReattach(getExecutePlanRequest(plan)) { m in
+      await self.addResponse(m)
     }
     return result
   }
