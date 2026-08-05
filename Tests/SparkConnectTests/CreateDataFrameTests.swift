@@ -61,6 +61,21 @@ struct CreateDataFrameTests {
   }
 
   @Test
+  func timeType() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.2" {
+      try await spark.conf.set("spark.sql.timeType.enabled", "true")
+      let time = try #require(LocalTime(hour: 12, minute: 34, second: 56, nanosecond: 123_456_000))
+      let df = try await spark.createDataFrame([[time], [nil]], "t TIME")
+      #expect(try await df.dtypes.map { $0.1 } == ["time(6)"])
+      #expect(try await df.collect() == [Row(time), Row(nil)])
+      #expect(
+        try await spark.createDataFrame([[time]], "t TIME(0)").dtypes.map { $0.1 } == ["time(0)"])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func binaryType() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.createDataFrame([[Data([1, 2, 3])], [nil]], "a BINARY")

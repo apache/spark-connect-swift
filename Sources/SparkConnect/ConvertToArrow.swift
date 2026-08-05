@@ -91,6 +91,10 @@ enum ConvertToArrow {
       return try fill(
         ArrowArrayBuilders.loadTimestampArrayBuilder(.microseconds, timezone: "UTC"), column
       ) { ($0 as? Date).map { Int64(($0.timeIntervalSince1970 * 1_000_000).rounded()) } }
+    case .time:
+      return try fill(ArrowArrayBuilders.loadTime64ArrayBuilder(.nanoseconds), column) {
+        ($0 as? LocalTime)?.nanoOfDay
+      }
     default:
       throw SparkConnectError.InvalidType
     }

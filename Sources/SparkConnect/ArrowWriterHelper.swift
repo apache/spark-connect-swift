@@ -116,6 +116,7 @@ func toFBType(  // swiftlint:disable:this cyclomatic_complexity function_body_le
     if let timeType = arrowType as? ArrowTypeTime64 {
       org_apache_arrow_flatbuf_Time.add(
         unit: timeType.unit == .microseconds ? .microsecond : .nanosecond, &fbb)
+      org_apache_arrow_flatbuf_Time.add(bitWidth: 64, &fbb)
       return .success(org_apache_arrow_flatbuf_Time.endTime(&fbb, start: startOffset))
     }
 
