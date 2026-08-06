@@ -36,6 +36,9 @@ public actor SparkSession {
 
   let client: SparkConnectClient
 
+  /// The connection string used to create this session.
+  let connection: String
+
   /// Runtime configuration interface for Spark.
   public let conf: RuntimeConf
 
@@ -44,10 +47,15 @@ public actor SparkSession {
   /// Create a session that uses the specified connection string and userID.
   /// - Parameters:
   ///   - connection: a string in a patter, `sc://{host}:{port}`
-  init(_ connection: String) throws {
+  ///   - sessionID: an optional session ID string. If given, this takes precedence over the
+  ///   `session_id` parameter in `connection`.
+  init(_ connection: String, _ sessionID: String? = nil) throws {
+    self.connection = connection
     self.client = try SparkConnectClient(remote: connection)
     // Since `Session ID` belongs to `SparkSession`, we handle this here.
-    if connection.contains(regexSessionID) {
+    if let sessionID {
+      self.sessionID = sessionID
+    } else if connection.contains(regexSessionID) {
       self.sessionID = connection.firstMatch(of: regexSessionID)!.1.lowercased()
     } else {
       self.sessionID = UUID().uuidString.lowercased()
@@ -63,6 +71,24 @@ public actor SparkSession {
   /// - Returns: a new ``SparkSession`` instance.
   public func newSession() async throws -> SparkSession {
     return try await SparkSession.builder.create()
+  }
+
+  /// Create a clone of this Spark Connect session on the server side. The server-side session is
+  /// cloned with all its current state (SQL configurations, temporary views, registered functions,
+  /// catalog state) copied over to a new independent session. The returned cloned session is
+  /// isolated from this session - any subsequent changes to either session's server-side state
+  /// will not be reflected in the other.
+  ///
+  /// This requires Apache Spark 4.1.0 or above Spark Connect servers.
+  /// - Parameter newSessionID: An optional session ID for the cloned session (must be a valid
+  /// UUID). If not provided, the server generates a new UUID.
+  /// - Returns: A new ``SparkSession`` instance with the cloned session.
+  public func cloneSession(_ newSessionID: String? = nil) async throws -> SparkSession {
+    let response = try await client.cloneSession(newSessionID)
+    let session = try SparkSession(self.connection, response.newSessionID)
+    let versionResponse = try await session.client.connect(session.sessionID)
+    await session.setVersion(versionResponse.sparkVersion.version)
+    return session
   }
 
   func setVersion(_ version: String) {

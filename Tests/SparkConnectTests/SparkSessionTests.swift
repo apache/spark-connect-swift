@@ -58,6 +58,46 @@ struct SparkSessionTests {
   }
 
   @Test
+  func cloneSession() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.1" {
+      let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+      try await spark.conf.set("spark.test.cloneSession", "original")
+      try await spark.range(3).createTempView(viewName)
+
+      let cloned = try await spark.cloneSession()
+      #expect(cloned != spark)
+      #expect(cloned.sessionID != spark.sessionID)
+      // The cloned session inherits the original session's state.
+      #expect(try await cloned.conf.get("spark.test.cloneSession") == "original")
+      #expect(try await cloned.table(viewName).count() == 3)
+
+      // Subsequent changes are isolated between the two sessions.
+      try await cloned.conf.set("spark.test.cloneSession", "cloned")
+      #expect(try await spark.conf.get("spark.test.cloneSession") == "original")
+      #expect(try await spark.catalog.dropTempView(viewName))
+      #expect(try await cloned.table(viewName).count() == 3)
+      await cloned.stop()
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func cloneSessionWithSessionID() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await spark.version >= "4.1" {
+      let newSessionID = UUID().uuidString.lowercased()
+      let cloned = try await spark.cloneSession(newSessionID)
+      #expect(cloned.sessionID == newSessionID)
+      #expect(try await cloned.range(1).count() == 1)
+      await cloned.stop()
+    }
+    await spark.stop()
+  }
+
+  @Test
   func sessionID() async throws {
     await SparkSession.builder.clear()
     let spark1 = try await SparkSession.builder.getOrCreate()

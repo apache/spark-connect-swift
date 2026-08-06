@@ -35,6 +35,7 @@ let csvDf = spark.read.csv("path/to/file.csv")
 
 - ``builder``
 - ``newSession()``
+- ``cloneSession(_:)``
 - ``stop()``
 
 ### Session Information

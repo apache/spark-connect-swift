@@ -977,6 +977,28 @@ public actor SparkConnectClient {
     }
   }
 
+  /// Clone the current session on the server side.
+  /// - Parameter newSessionID: An optional session ID for the cloned session (must be a valid
+  /// UUID). If not provided, the server generates a new UUID.
+  /// - Returns: A ``CloneSessionResponse`` instance containing the new session ID.
+  func cloneSession(_ newSessionID: String? = nil) async throws -> CloneSessionResponse {
+    var request = CloneSessionRequest()
+    request.sessionID = self.sessionID!
+    request.userContext = self.userContext
+    request.clientType = self.clientType
+    if let newSessionID {
+      request.newSessionID = newSessionID
+    }
+    return try await withGPRC { client in
+      let service = SparkConnectService.Client(wrapping: client)
+      let response = try await service.cloneSession(request)
+      if let newSessionID, response.newSessionID != newSessionID {
+        throw SparkConnectError.InvalidArgument
+      }
+      return response
+    }
+  }
+
   /// Parse a DDL string to ``Spark_Connect_DataType`` instance.
   /// - Parameter ddlString: A string to parse.
   /// - Returns: A ``Spark_Connect_DataType`` instance.
