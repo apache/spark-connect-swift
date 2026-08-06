@@ -121,6 +121,9 @@ extension SparkConnectClient {
     ) async throws {
       for try await m in response.messages {
         try state.record(m)
+        if !m.observedMetrics.isEmpty {
+          await self.updateObservations(m.observedMetrics)
+        }
         try await processResponse(m)
       }
     }

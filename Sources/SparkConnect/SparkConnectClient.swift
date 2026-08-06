@@ -857,6 +857,26 @@ public actor SparkConnectClient {
     self.result.append(response)
   }
 
+  private var observations: [String: Observation] = [:]
+
+  /// Register an ``Observation`` to receive the observed metrics of its name.
+  func addObservation(_ observation: Observation) {
+    observations[observation.name] = observation
+  }
+
+  /// Update the registered ``Observation``s with the observed metrics of an
+  /// `ExecutePlanResponse`.
+  func updateObservations(_ metrics: [ExecutePlanResponse.ObservedMetrics]) async {
+    for metric in metrics {
+      guard let observation = observations[metric.name] else { continue }
+      var values: [String: Sendable] = [:]
+      for (key, value) in zip(metric.keys, metric.values) {
+        values[key] = value.toSwiftValue
+      }
+      await observation.setValues(values)
+    }
+  }
+
   @discardableResult
   func execute(_ sessionID: String, _ command: Command) async throws -> [ExecutePlanResponse] {
     self.result.removeAll()

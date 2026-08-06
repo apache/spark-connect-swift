@@ -210,6 +210,29 @@ extension ExpressionLiteral {
       }
     }
   }
+
+  /// A Swift value converted from this `ExpressionLiteral`, or nil for null and unsupported types.
+  var toSwiftValue: Sendable? {
+    switch self.literalType {
+    case .boolean(let value): value
+    case .byte(let value): Int8(value)
+    case .short(let value): Int16(value)
+    case .integer(let value): value
+    case .long(let value): value
+    case .float(let value): value
+    case .double(let value): value
+    case .decimal(let value): SwiftDecimal(string: value.value)
+    case .string(let value): value
+    case .binary(let value): value
+    // Date in units of days since the UNIX epoch.
+    case .date(let value): Date(timeIntervalSince1970: TimeInterval(value) * 86_400)
+    // Timestamp in units of microseconds since the UNIX epoch.
+    case .timestamp(let value): Date(timeIntervalSince1970: TimeInterval(value) / 1_000_000)
+    case .timestampNtz(let value): Date(timeIntervalSince1970: TimeInterval(value) / 1_000_000)
+    case .time(let value): LocalTime(nanoOfDay: value.nano)
+    default: nil
+    }
+  }
 }
 
 extension [String: String] {

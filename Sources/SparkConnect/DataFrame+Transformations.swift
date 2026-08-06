@@ -102,6 +102,31 @@ extension DataFrame {
       spark: self.spark, plan: SparkConnectClient.getCollectMetrics(self.plan.root, name, metrics))
   }
 
+  /// Defines (named) metrics to observe on the ``DataFrame`` through an ``Observation`` instance.
+  /// The metric values are delivered to the ``Observation`` when an action is performed on the
+  /// returned ``DataFrame``.
+  ///
+  /// ```swift
+  /// let observation = Observation("my_metrics")
+  /// let observedDf = try await df.observe(observation, count(col("*")), max(col("id")))
+  /// try await observedDf.count()
+  /// let metrics = try await observation.get
+  /// ```
+  /// - Parameters:
+  ///   - observation: An ``Observation`` instance to receive the observed metrics.
+  ///   - expr: A metric ``Column`` expression to compute.
+  ///   - exprs: Additional metric ``Column`` expressions.
+  /// - Returns: An observed ``DataFrame``.
+  public func observe(_ observation: Observation, _ expr: Column, _ exprs: Column...) async
+    -> DataFrame
+  {
+    await spark.client.addObservation(observation)
+    let metrics = ([expr] + exprs).map { $0.expr }
+    return DataFrame(
+      spark: self.spark,
+      plan: SparkConnectClient.getCollectMetrics(self.plan.root, observation.name, metrics))
+  }
+
   /// Returns a new Dataset with a column dropped. This is a no-op if schema doesn't contain column name.
   /// - Parameter cols: Column names
   /// - Returns: A ``DataFrame`` with subset of columns.

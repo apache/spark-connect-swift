@@ -368,6 +368,23 @@ struct DataFrameTests {
   }
 
   @Test
+  func observation() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let observation = Observation("my_metrics")
+    let df = try await spark.range(10)
+      .observe(observation, SparkConnect.count(col("id")), sum(col("id")), max(col("id")))
+    await #expect(throws: SparkConnectError.self) {
+      try await observation.get
+    }
+    #expect(try await df.count() == 10)
+    let metrics = try await observation.get
+    #expect(metrics["count(id)"] as? Int64 == 10)
+    #expect(metrics["sum(id)"] as? Int64 == 45)
+    #expect(metrics["max(id)"] as? Int64 == 9)
+    await spark.stop()
+  }
+
+  @Test
   func withColumnRenamed() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(1).withColumnRenamed("id", "id2").columns == ["id2"])
