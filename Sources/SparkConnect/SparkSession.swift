@@ -186,6 +186,25 @@ public actor SparkSession {
     return try await createDataFrame(data, schema.toDDL)
   }
 
+  /// Parse a DDL-formatted schema string into a ``StructType`` using the server-side parser.
+  ///
+  /// ```swift
+  /// let schema = try await spark.parseDDL("id INT NOT NULL, name STRING")
+  /// ```
+  ///
+  /// - Parameter ddl: A DDL-formatted schema string, e.g. `id INT, name STRING` or
+  /// `struct<id:int,name:string>`.
+  /// - Returns: A ``StructType`` instance.
+  /// - Throws: `SparkConnectError.ParseSyntaxError` if the DDL string is invalid, or
+  /// `SparkConnectError.InvalidType` if the parsed type is not a struct type.
+  public func parseDDL(_ ddl: String) async throws -> StructType {
+    let dataType = try await client.ddlParse(ddl)
+    guard case .struct(let structType) = dataType.kind else {
+      throw SparkConnectError.InvalidType
+    }
+    return try StructType(structType)
+  }
+
   /// Create a ``DataFrame`` with a single `Int64` column name `id`, containing elements in a
   /// range from 0 to `end` (exclusive) with step value 1.
   ///

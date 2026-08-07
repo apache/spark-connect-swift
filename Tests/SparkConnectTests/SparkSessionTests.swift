@@ -175,6 +175,77 @@ struct SparkSessionTests {
   }
 
   @Test
+  func parseDDL() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = StructType(fields: [
+      StructField(name: "id", dataType: .long, nullable: false),
+      StructField(name: "name", dataType: .string),
+    ])
+    #expect(try await spark.parseDDL("id BIGINT NOT NULL, name STRING") == expected)
+    #expect(
+      try await spark.parseDDL("struct<id:bigint,name:string>")
+        == StructType(fields: [
+          StructField(name: "id", dataType: .long),
+          StructField(name: "name", dataType: .string),
+        ]))
+    #expect(try await spark.parseDDL(expected.toDDL) == expected)
+    await spark.stop()
+  }
+
+  @Test
+  func parseDDLWithNestedTypes() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(
+      try await spark.parseDDL("a ARRAY<INT>, m MAP<STRING, DOUBLE>, s STRUCT<x: INT NOT NULL>")
+        == StructType(fields: [
+          StructField(name: "a", dataType: .array(elementType: .integer, containsNull: true)),
+          StructField(
+            name: "m", dataType: .map(keyType: .string, valueType: .double, valueContainsNull: true)
+          ),
+          StructField(
+            name: "s",
+            dataType: .struct(
+              StructType(fields: [StructField(name: "x", dataType: .integer, nullable: false)]))),
+        ]))
+    await spark.stop()
+  }
+
+  @Test
+  func parseDDLWithParameterizedTypes() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(
+      try await spark.parseDDL("d DECIMAL(10,2), c CHAR(5), v VARCHAR(10)")
+        == StructType(fields: [
+          StructField(name: "d", dataType: .decimal(precision: 10, scale: 2)),
+          StructField(name: "c", dataType: .char(length: 5)),
+          StructField(name: "v", dataType: .varchar(length: 10)),
+        ]))
+    if await spark.version >= "4.2" {
+      try await spark.conf.set("spark.sql.timeType.enabled", "true")
+      #expect(
+        try await spark.parseDDL("t TIME(3)")
+          == StructType(fields: [StructField(name: "t", dataType: .time(precision: 3))]))
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func parseDDLWithInvalidDDL() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    await #expect(throws: SparkConnectError.ParseSyntaxError) {
+      try await spark.parseDDL("a INT,")
+    }
+    await #expect(throws: SparkConnectError.InvalidType) {
+      try await spark.parseDDL("array<int>")
+    }
+    await spark.stop()
+  }
+
+  @Test
   func sql() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
