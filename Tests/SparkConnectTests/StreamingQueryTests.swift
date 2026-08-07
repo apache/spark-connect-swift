@@ -92,4 +92,51 @@ struct StreamingQueryTests {
 
     await spark.stop()
   }
+
+  @Test
+  func progress() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+
+    // Prepare directories
+    let input = "/tmp/input-" + UUID().uuidString
+    let checkpoint = "/tmp/checkpoint-" + UUID().uuidString
+    let output = "/tmp/output-" + UUID().uuidString
+    try await spark.range(2025).write.orc(input)
+
+    // Start a streaming query
+    let query =
+      try await spark
+      .readStream
+      .schema("id LONG")
+      .orc(input)
+      .writeStream
+      .queryName("progress-test")
+      .option("checkpointLocation", checkpoint)
+      .outputMode("append")
+      .format("orc")
+      .trigger(Trigger.ProcessingTime(1000))
+      .start(output)
+    // Wait for processing
+    try await Task.sleep(nanoseconds: 2_000_000_000)
+
+    let progress = try #require(try await query.lastProgress)
+    #expect(await query.id == progress.id)
+    #expect(await query.runId == progress.runId)
+    #expect(progress.name == "progress-test")
+    #expect(progress.batchId >= 0)
+    #expect(progress.batchDuration >= 0)
+    #expect(progress.timestamp.isEmpty == false)
+    #expect(progress.durationMs.isEmpty == false)
+    #expect(progress.sources.count == 1)
+    #expect(progress.sources[0].description.contains("FileStreamSource"))
+    #expect(progress.sink.description.contains("FileSink"))
+    #expect(progress.json.contains("\"runId\""))
+
+    let recentProgress = try await query.recentProgress
+    #expect(recentProgress.isEmpty == false)
+    #expect(recentProgress.allSatisfy { $0.runId == progress.runId })
+
+    try await query.stop()
+    await spark.stop()
+  }
 }

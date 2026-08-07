@@ -59,3 +59,7 @@ SparkConnect is a modern Swift library that provides a native interface to Apach
 - ``DataStreamWriter``
 - ``StreamingQuery``
 - ``StreamingQueryManager``
+- ``StreamingQueryProgress``
+- ``SourceProgress``
+- ``SinkProgress``
+- ``StateOperatorProgress``

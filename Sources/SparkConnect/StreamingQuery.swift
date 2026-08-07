@@ -113,22 +113,25 @@ public actor StreamingQuery: Sendable {
   /// Returns an array of the most recent ``StreamingQueryProgress`` updates for this query.
   /// The number of progress updates retained for each stream is configured by Spark session
   /// configuration `spark.sql.streaming.numRecentProgressUpdates`.
-  public var recentProgress: [String] {
+  public var recentProgress: [StreamingQueryProgress] {
     get async throws {
       let response = try await executeCommand(
         StreamingQueryCommand.OneOf_Command.recentProgress(true))
       let result = response.first!.streamingQueryCommandResult.recentProgress
-      return result.recentProgressJson
+      return try result.recentProgressJson.map { try StreamingQueryProgress.fromJson($0) }
     }
   }
 
   /// Returns the most recent ``StreamingQueryProgress`` update of this streaming query.
-  public var lastProgress: String? {
+  public var lastProgress: StreamingQueryProgress? {
     get async throws {
       let response = try await executeCommand(
         StreamingQueryCommand.OneOf_Command.lastProgress(true))
       let result = response.first!.streamingQueryCommandResult.recentProgress
-      return result.recentProgressJson.first
+      guard let json = result.recentProgressJson.first else {
+        return nil
+      }
+      return try StreamingQueryProgress.fromJson(json)
     }
   }
 
