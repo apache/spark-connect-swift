@@ -344,6 +344,9 @@ extension DataType {
       self = .timestamp
     case .timestampNtz:
       self = .timestampNtz
+    case .timestampNtzNanos, .timestampLtzNanos:
+      // Nanosecond-precision timestamps are not supported by this client yet.
+      throw SparkConnectError.InvalidType
     case .time(let time):
       self = .time(precision: time.hasPrecision ? time.precision : 6)
     case .calendarInterval:
