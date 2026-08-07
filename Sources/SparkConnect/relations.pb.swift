@@ -432,6 +432,14 @@ nonisolated struct Spark_Connect_Relation: @unchecked Sendable {
     set {_uniqueStorage()._relType = .nearestByJoin(newValue)}
   }
 
+  var zip: Spark_Connect_Zip {
+    get {
+      if case .zip(let v)? = _storage._relType {return v}
+      return Spark_Connect_Zip()
+    }
+    set {_uniqueStorage()._relType = .zip(newValue)}
+  }
+
   /// NA functions
   var fillNa: Spark_Connect_NAFill {
     get {
@@ -607,6 +615,7 @@ nonisolated struct Spark_Connect_Relation: @unchecked Sendable {
     case chunkedCachedLocalRelation(Spark_Connect_ChunkedCachedLocalRelation)
     case relationChanges(Spark_Connect_RelationChanges)
     case nearestByJoin(Spark_Connect_NearestByJoin)
+    case zip(Spark_Connect_Zip)
     /// NA functions
     case fillNa(Spark_Connect_NAFill)
     case dropNa(Spark_Connect_NADrop)
@@ -3868,13 +3877,49 @@ nonisolated struct Spark_Connect_NearestByJoin: @unchecked Sendable {
   fileprivate var _storage = _StorageClass.defaultInstance
 }
 
+/// Relation of type [[Zip]].
+///
+/// Combines the columns of two DataFrames side-by-side. Both DataFrames must produce the same
+/// canonicalized plan after stripping outer Project chains.
+nonisolated struct Spark_Connect_Zip: @unchecked Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// (Required) Left input relation.
+  var left: Spark_Connect_Relation {
+    get {_storage._left ?? Spark_Connect_Relation()}
+    set {_uniqueStorage()._left = newValue}
+  }
+  /// Returns true if `left` has been explicitly set.
+  var hasLeft: Bool {_storage._left != nil}
+  /// Clears the value of `left`. Subsequent reads from it will return its default value.
+  mutating func clearLeft() {_uniqueStorage()._left = nil}
+
+  /// (Required) Right input relation.
+  var right: Spark_Connect_Relation {
+    get {_storage._right ?? Spark_Connect_Relation()}
+    set {_uniqueStorage()._right = newValue}
+  }
+  /// Returns true if `right` has been explicitly set.
+  var hasRight: Bool {_storage._right != nil}
+  /// Clears the value of `right`. Subsequent reads from it will return its default value.
+  mutating func clearRight() {_uniqueStorage()._right = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _storage = _StorageClass.defaultInstance
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate nonisolated let _protobuf_package = "spark.connect"
 
 nonisolated extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Relation"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}common\0\u{1}read\0\u{1}project\0\u{1}filter\0\u{1}join\0\u{3}set_op\0\u{1}sort\0\u{1}limit\0\u{1}aggregate\0\u{1}sql\0\u{3}local_relation\0\u{1}sample\0\u{1}offset\0\u{1}deduplicate\0\u{1}range\0\u{3}subquery_alias\0\u{1}repartition\0\u{3}to_df\0\u{3}with_columns_renamed\0\u{3}show_string\0\u{1}drop\0\u{1}tail\0\u{3}with_columns\0\u{1}hint\0\u{1}unpivot\0\u{3}to_schema\0\u{3}repartition_by_expression\0\u{3}map_partitions\0\u{3}collect_metrics\0\u{1}parse\0\u{3}group_map\0\u{3}co_group_map\0\u{3}with_watermark\0\u{3}apply_in_pandas_with_state\0\u{3}html_string\0\u{3}cached_local_relation\0\u{3}cached_remote_relation\0\u{3}common_inline_user_defined_table_function\0\u{3}as_of_join\0\u{3}common_inline_user_defined_data_source\0\u{3}with_relations\0\u{1}transpose\0\u{3}unresolved_table_valued_function\0\u{3}lateral_join\0\u{3}chunked_cached_local_relation\0\u{3}relation_changes\0\u{3}nearest_by_join\0\u{4}+fill_na\0\u{3}drop_na\0\u{1}replace\0\u{2}\u{8}summary\0\u{1}crosstab\0\u{1}describe\0\u{1}cov\0\u{1}corr\0\u{3}approx_quantile\0\u{3}freq_items\0\u{3}sample_by\0\u{2}]\u{1}catalog\0\u{4}d\u{1}ml_relation\0\u{2}z\u{a}extension\0\u{1}unknown\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}common\0\u{1}read\0\u{1}project\0\u{1}filter\0\u{1}join\0\u{3}set_op\0\u{1}sort\0\u{1}limit\0\u{1}aggregate\0\u{1}sql\0\u{3}local_relation\0\u{1}sample\0\u{1}offset\0\u{1}deduplicate\0\u{1}range\0\u{3}subquery_alias\0\u{1}repartition\0\u{3}to_df\0\u{3}with_columns_renamed\0\u{3}show_string\0\u{1}drop\0\u{1}tail\0\u{3}with_columns\0\u{1}hint\0\u{1}unpivot\0\u{3}to_schema\0\u{3}repartition_by_expression\0\u{3}map_partitions\0\u{3}collect_metrics\0\u{1}parse\0\u{3}group_map\0\u{3}co_group_map\0\u{3}with_watermark\0\u{3}apply_in_pandas_with_state\0\u{3}html_string\0\u{3}cached_local_relation\0\u{3}cached_remote_relation\0\u{3}common_inline_user_defined_table_function\0\u{3}as_of_join\0\u{3}common_inline_user_defined_data_source\0\u{3}with_relations\0\u{1}transpose\0\u{3}unresolved_table_valued_function\0\u{3}lateral_join\0\u{3}chunked_cached_local_relation\0\u{3}relation_changes\0\u{3}nearest_by_join\0\u{1}zip\0\u{4}*fill_na\0\u{3}drop_na\0\u{1}replace\0\u{2}\u{8}summary\0\u{1}crosstab\0\u{1}describe\0\u{1}cov\0\u{1}corr\0\u{3}approx_quantile\0\u{3}freq_items\0\u{3}sample_by\0\u{2}]\u{1}catalog\0\u{4}d\u{1}ml_relation\0\u{2}z\u{a}extension\0\u{1}unknown\0")
 
   fileprivate class _StorageClass {
     var _common: Spark_Connect_RelationCommon? = nil
@@ -4508,6 +4553,19 @@ nonisolated extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtob
             _storage._relType = .nearestByJoin(v)
           }
         }()
+        case 48: try {
+          var v: Spark_Connect_Zip?
+          var hadOneofValue = false
+          if let current = _storage._relType {
+            hadOneofValue = true
+            if case .zip(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._relType = .zip(v)
+          }
+        }()
         case 90: try {
           var v: Spark_Connect_NAFill?
           var hadOneofValue = false
@@ -4902,6 +4960,10 @@ nonisolated extension Spark_Connect_Relation: SwiftProtobuf.Message, SwiftProtob
       case .nearestByJoin?: try {
         guard case .nearestByJoin(let v)? = _storage._relType else { preconditionFailure() }
         try visitor.visitSingularMessageField(value: v, fieldNumber: 47)
+      }()
+      case .zip?: try {
+        guard case .zip(let v)? = _storage._relType else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 48)
       }()
       case .fillNa?: try {
         guard case .fillNa(let v)? = _storage._relType else { preconditionFailure() }
@@ -10511,6 +10573,83 @@ nonisolated extension Spark_Connect_NearestByJoin: SwiftProtobuf.Message, SwiftP
         if _storage._joinType != rhs_storage._joinType {return false}
         if _storage._mode != rhs_storage._mode {return false}
         if _storage._direction != rhs_storage._direction {return false}
+        return true
+      }
+      if !storagesAreEqual {return false}
+    }
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_Zip: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".Zip"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}left\0\u{1}right\0")
+
+  fileprivate class _StorageClass {
+    var _left: Spark_Connect_Relation? = nil
+    var _right: Spark_Connect_Relation? = nil
+
+      // This property is used as the initial default value for new instances of the type.
+      // The type itself is protecting the reference to its storage via CoW semantics.
+      // This will force a copy to be made of this reference when the first mutation occurs;
+      // hence, it is safe to mark this as `nonisolated(unsafe)`.
+      static nonisolated(unsafe) let defaultInstance = _StorageClass()
+
+    private init() {}
+
+    init(copying source: _StorageClass) {
+      _left = source._left
+      _right = source._right
+    }
+  }
+
+  fileprivate mutating func _uniqueStorage() -> _StorageClass {
+    if !isKnownUniquelyReferenced(&_storage) {
+      _storage = _StorageClass(copying: _storage)
+    }
+    return _storage
+  }
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    _ = _uniqueStorage()
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      while let fieldNumber = try decoder.nextFieldNumber() {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every case branch when no optimizations are
+        // enabled. https://github.com/apple/swift-protobuf/issues/1034
+        switch fieldNumber {
+        case 1: try { try decoder.decodeSingularMessageField(value: &_storage._left) }()
+        case 2: try { try decoder.decodeSingularMessageField(value: &_storage._right) }()
+        default: break
+        }
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every if/case branch local when no optimizations
+      // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+      // https://github.com/apple/swift-protobuf/issues/1182
+      try { if let v = _storage._left {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+      } }()
+      try { if let v = _storage._right {
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+      } }()
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_Zip, rhs: Spark_Connect_Zip) -> Bool {
+    if lhs._storage !== rhs._storage {
+      let storagesAreEqual: Bool = withExtendedLifetime((lhs._storage, rhs._storage)) { (_args: (_StorageClass, _StorageClass)) in
+        let _storage = _args.0
+        let rhs_storage = _args.1
+        if _storage._left != rhs_storage._left {return false}
+        if _storage._right != rhs_storage._right {return false}
         return true
       }
       if !storagesAreEqual {return false}

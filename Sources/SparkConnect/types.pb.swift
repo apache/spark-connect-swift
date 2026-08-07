@@ -280,6 +280,24 @@ nonisolated struct Spark_Connect_DataType: @unchecked Sendable {
     set {_uniqueStorage()._kind = .time(newValue)}
   }
 
+  /// Nanosecond-capable timestamp types (precision 7..9). NTZ and LTZ are distinct kinds
+  /// even though their physical value is identical, mirroring timestamp vs timestamp_ntz.
+  var timestampNtzNanos: Spark_Connect_DataType.TimestampNTZNanos {
+    get {
+      if case .timestampNtzNanos(let v)? = _storage._kind {return v}
+      return Spark_Connect_DataType.TimestampNTZNanos()
+    }
+    set {_uniqueStorage()._kind = .timestampNtzNanos(newValue)}
+  }
+
+  var timestampLtzNanos: Spark_Connect_DataType.TimestampLTZNanos {
+    get {
+      if case .timestampLtzNanos(let v)? = _storage._kind {return v}
+      return Spark_Connect_DataType.TimestampLTZNanos()
+    }
+    set {_uniqueStorage()._kind = .timestampLtzNanos(newValue)}
+  }
+
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   nonisolated enum OneOf_Kind: Equatable, Sendable {
@@ -319,6 +337,10 @@ nonisolated struct Spark_Connect_DataType: @unchecked Sendable {
     /// UnparsedDataType
     case unparsed(Spark_Connect_DataType.Unparsed)
     case time(Spark_Connect_DataType.Time)
+    /// Nanosecond-capable timestamp types (precision 7..9). NTZ and LTZ are distinct kinds
+    /// even though their physical value is identical, mirroring timestamp vs timestamp_ntz.
+    case timestampNtzNanos(Spark_Connect_DataType.TimestampNTZNanos)
+    case timestampLtzNanos(Spark_Connect_DataType.TimestampLTZNanos)
 
   }
 
@@ -485,6 +507,56 @@ nonisolated struct Spark_Connect_DataType: @unchecked Sendable {
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
 
+    var precision: Int32 {
+      get {_precision ?? 0}
+      set {_precision = newValue}
+    }
+    /// Returns true if `precision` has been explicitly set.
+    var hasPrecision: Bool {self._precision != nil}
+    /// Clears the value of `precision`. Subsequent reads from it will return its default value.
+    mutating func clearPrecision() {self._precision = nil}
+
+    var typeVariationReference: UInt32 = 0
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _precision: Int32? = nil
+  }
+
+  /// Timestamp without time zone with nanosecond-capable fractional-second precision.
+  nonisolated struct TimestampNTZNanos: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    /// Number of fractional-second digits. Valid values are 7, 8, and 9. If omitted, defaults to 9.
+    var precision: Int32 {
+      get {_precision ?? 0}
+      set {_precision = newValue}
+    }
+    /// Returns true if `precision` has been explicitly set.
+    var hasPrecision: Bool {self._precision != nil}
+    /// Clears the value of `precision`. Subsequent reads from it will return its default value.
+    mutating func clearPrecision() {self._precision = nil}
+
+    var typeVariationReference: UInt32 = 0
+
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    init() {}
+
+    fileprivate var _precision: Int32? = nil
+  }
+
+  /// Timestamp with local time zone with nanosecond-capable fractional-second precision.
+  nonisolated struct TimestampLTZNanos: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    /// Number of fractional-second digits. Valid values are 7, 8, and 9. If omitted, defaults to 9.
     var precision: Int32 {
       get {_precision ?? 0}
       set {_precision = newValue}
@@ -884,7 +956,7 @@ fileprivate nonisolated let _protobuf_package = "spark.connect"
 
 nonisolated extension Spark_Connect_DataType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".DataType"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}null\0\u{1}binary\0\u{1}boolean\0\u{1}byte\0\u{1}short\0\u{1}integer\0\u{1}long\0\u{1}float\0\u{1}double\0\u{1}decimal\0\u{1}string\0\u{1}char\0\u{3}var_char\0\u{1}date\0\u{1}timestamp\0\u{3}timestamp_ntz\0\u{3}calendar_interval\0\u{3}year_month_interval\0\u{3}day_time_interval\0\u{1}array\0\u{1}struct\0\u{1}map\0\u{1}udt\0\u{1}unparsed\0\u{1}variant\0\u{1}geometry\0\u{1}geography\0\u{1}time\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}null\0\u{1}binary\0\u{1}boolean\0\u{1}byte\0\u{1}short\0\u{1}integer\0\u{1}long\0\u{1}float\0\u{1}double\0\u{1}decimal\0\u{1}string\0\u{1}char\0\u{3}var_char\0\u{1}date\0\u{1}timestamp\0\u{3}timestamp_ntz\0\u{3}calendar_interval\0\u{3}year_month_interval\0\u{3}day_time_interval\0\u{1}array\0\u{1}struct\0\u{1}map\0\u{1}udt\0\u{1}unparsed\0\u{1}variant\0\u{1}geometry\0\u{1}geography\0\u{1}time\0\u{3}timestamp_ntz_nanos\0\u{3}timestamp_ltz_nanos\0")
 
   fileprivate class _StorageClass {
     var _kind: Spark_Connect_DataType.OneOf_Kind?
@@ -1281,6 +1353,32 @@ nonisolated extension Spark_Connect_DataType: SwiftProtobuf.Message, SwiftProtob
             _storage._kind = .time(v)
           }
         }()
+        case 29: try {
+          var v: Spark_Connect_DataType.TimestampNTZNanos?
+          var hadOneofValue = false
+          if let current = _storage._kind {
+            hadOneofValue = true
+            if case .timestampNtzNanos(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._kind = .timestampNtzNanos(v)
+          }
+        }()
+        case 30: try {
+          var v: Spark_Connect_DataType.TimestampLTZNanos?
+          var hadOneofValue = false
+          if let current = _storage._kind {
+            hadOneofValue = true
+            if case .timestampLtzNanos(let m) = current {v = m}
+          }
+          try decoder.decodeSingularMessageField(value: &v)
+          if let v = v {
+            if hadOneofValue {try decoder.handleConflictingOneOf()}
+            _storage._kind = .timestampLtzNanos(v)
+          }
+        }()
         default: break
         }
       }
@@ -1405,6 +1503,14 @@ nonisolated extension Spark_Connect_DataType: SwiftProtobuf.Message, SwiftProtob
       case .time?: try {
         guard case .time(let v)? = _storage._kind else { preconditionFailure() }
         try visitor.visitSingularMessageField(value: v, fieldNumber: 28)
+      }()
+      case .timestampNtzNanos?: try {
+        guard case .timestampNtzNanos(let v)? = _storage._kind else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 29)
+      }()
+      case .timestampLtzNanos?: try {
+        guard case .timestampLtzNanos(let v)? = _storage._kind else { preconditionFailure() }
+        try visitor.visitSingularMessageField(value: v, fieldNumber: 30)
       }()
       case nil: break
       }
@@ -1854,6 +1960,84 @@ nonisolated extension Spark_Connect_DataType.Time: SwiftProtobuf.Message, SwiftP
   }
 
   static func ==(lhs: Spark_Connect_DataType.Time, rhs: Spark_Connect_DataType.Time) -> Bool {
+    if lhs._precision != rhs._precision {return false}
+    if lhs.typeVariationReference != rhs.typeVariationReference {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_DataType.TimestampNTZNanos: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_DataType.protoMessageName + ".TimestampNTZNanos"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}precision\0\u{3}type_variation_reference\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self._precision) }()
+      case 2: try { try decoder.decodeSingularUInt32Field(value: &self.typeVariationReference) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._precision {
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 1)
+    } }()
+    if self.typeVariationReference != 0 {
+      try visitor.visitSingularUInt32Field(value: self.typeVariationReference, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_DataType.TimestampNTZNanos, rhs: Spark_Connect_DataType.TimestampNTZNanos) -> Bool {
+    if lhs._precision != rhs._precision {return false}
+    if lhs.typeVariationReference != rhs.typeVariationReference {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Spark_Connect_DataType.TimestampLTZNanos: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = Spark_Connect_DataType.protoMessageName + ".TimestampLTZNanos"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}precision\0\u{3}type_variation_reference\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self._precision) }()
+      case 2: try { try decoder.decodeSingularUInt32Field(value: &self.typeVariationReference) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._precision {
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 1)
+    } }()
+    if self.typeVariationReference != 0 {
+      try visitor.visitSingularUInt32Field(value: self.typeVariationReference, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Spark_Connect_DataType.TimestampLTZNanos, rhs: Spark_Connect_DataType.TimestampLTZNanos) -> Bool {
     if lhs._precision != rhs._precision {return false}
     if lhs.typeVariationReference != rhs.typeVariationReference {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}

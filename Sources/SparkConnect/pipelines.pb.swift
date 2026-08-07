@@ -569,6 +569,7 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
       typealias RawValue = Int
       case unspecified // = 0
       case scdType1 // = 1
+      case scdType2 // = 2
       case UNRECOGNIZED(Int)
 
       init() {
@@ -579,6 +580,7 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
         switch rawValue {
         case 0: self = .unspecified
         case 1: self = .scdType1
+        case 2: self = .scdType2
         default: self = .UNRECOGNIZED(rawValue)
         }
       }
@@ -587,6 +589,7 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
         switch self {
         case .unspecified: return 0
         case .scdType1: return 1
+        case .scdType2: return 2
         case .UNRECOGNIZED(let i): return i
         }
       }
@@ -595,6 +598,7 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
       static let allCases: [Spark_Connect_PipelineCommand.DefineFlow.SCDType] = [
         .unspecified,
         .scdType1,
+        .scdType2,
       ]
 
     }
@@ -680,6 +684,14 @@ nonisolated struct Spark_Connect_PipelineCommand: Sendable {
 
       /// SCD Type for target table.
       var storedAsScdType: Spark_Connect_PipelineCommand.DefineFlow.SCDType = .unspecified
+
+      /// SCD2 only. Columns whose value change opens a new history record. When empty, every
+      /// eligible selected user column is tracked.
+      var trackHistoryColumnList: [Spark_Connect_Expression] = []
+
+      /// SCD2 only. Columns excluded from history tracking. Mutually exclusive with
+      /// track_history_column_list.
+      var trackHistoryExceptColumnList: [Spark_Connect_Expression] = []
 
       /// Subset of columns to ignore null in updates.
       var ignoreNullUpdatesColumnList: [Spark_Connect_Expression] = []
@@ -1976,7 +1988,7 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineFlow: SwiftProtobuf.Me
 }
 
 nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.SCDType: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0SCD_TYPE_UNSPECIFIED\0\u{1}SCD_TYPE_1\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0SCD_TYPE_UNSPECIFIED\0\u{1}SCD_TYPE_1\0\u{1}SCD_TYPE_2\0")
 }
 
 nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlowDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
@@ -2015,7 +2027,7 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.WriteRelationFlow
 
 nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetails: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = Spark_Connect_PipelineCommand.DefineFlow.protoMessageName + ".AutoCdcFlowDetails"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}source\0\u{1}keys\0\u{3}sequence_by\0\u{4}\u{3}apply_as_deletes\0\u{3}apply_as_truncates\0\u{3}column_list\0\u{3}except_column_list\0\u{3}stored_as_scd_type\0\u{4}\u{4}ignore_null_updates_column_list\0\u{3}ignore_null_updates_except_column_list\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}source\0\u{1}keys\0\u{3}sequence_by\0\u{4}\u{3}apply_as_deletes\0\u{3}apply_as_truncates\0\u{3}column_list\0\u{3}except_column_list\0\u{3}stored_as_scd_type\0\u{3}track_history_column_list\0\u{3}track_history_except_column_list\0\u{4}\u{2}ignore_null_updates_column_list\0\u{3}ignore_null_updates_except_column_list\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -2031,6 +2043,8 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetail
       case 8: try { try decoder.decodeRepeatedMessageField(value: &self.columnList) }()
       case 9: try { try decoder.decodeRepeatedMessageField(value: &self.exceptColumnList) }()
       case 10: try { try decoder.decodeSingularEnumField(value: &self.storedAsScdType) }()
+      case 11: try { try decoder.decodeRepeatedMessageField(value: &self.trackHistoryColumnList) }()
+      case 12: try { try decoder.decodeRepeatedMessageField(value: &self.trackHistoryExceptColumnList) }()
       case 14: try { try decoder.decodeRepeatedMessageField(value: &self.ignoreNullUpdatesColumnList) }()
       case 15: try { try decoder.decodeRepeatedMessageField(value: &self.ignoreNullUpdatesExceptColumnList) }()
       default: break
@@ -2067,6 +2081,12 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetail
     if self.storedAsScdType != .unspecified {
       try visitor.visitSingularEnumField(value: self.storedAsScdType, fieldNumber: 10)
     }
+    if !self.trackHistoryColumnList.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.trackHistoryColumnList, fieldNumber: 11)
+    }
+    if !self.trackHistoryExceptColumnList.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.trackHistoryExceptColumnList, fieldNumber: 12)
+    }
     if !self.ignoreNullUpdatesColumnList.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.ignoreNullUpdatesColumnList, fieldNumber: 14)
     }
@@ -2085,6 +2105,8 @@ nonisolated extension Spark_Connect_PipelineCommand.DefineFlow.AutoCdcFlowDetail
     if lhs.columnList != rhs.columnList {return false}
     if lhs.exceptColumnList != rhs.exceptColumnList {return false}
     if lhs.storedAsScdType != rhs.storedAsScdType {return false}
+    if lhs.trackHistoryColumnList != rhs.trackHistoryColumnList {return false}
+    if lhs.trackHistoryExceptColumnList != rhs.trackHistoryExceptColumnList {return false}
     if lhs.ignoreNullUpdatesColumnList != rhs.ignoreNullUpdatesColumnList {return false}
     if lhs.ignoreNullUpdatesExceptColumnList != rhs.ignoreNullUpdatesExceptColumnList {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
