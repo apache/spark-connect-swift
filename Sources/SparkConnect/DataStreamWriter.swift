@@ -186,9 +186,9 @@ public actor DataStreamWriter: Sendable {
 
     let response = try await df.spark.client.execute(df.spark.sessionID, command)
     let result = response.first!.writeStreamOperationStartResult
-    if result.hasQueryStartedEventJson {
-      // TODO: post
-    }
+    // `result.queryStartedEventJson` is intentionally ignored because this client does not
+    // support `StreamingQueryListener` yet. Reference clients (PySpark/Scala) parse it and
+    // post it to their listener bus, which is a no-op when no listener is registered.
 
     let query = try await StreamingQuery(
       UUID(uuidString: result.queryID.id)!,
