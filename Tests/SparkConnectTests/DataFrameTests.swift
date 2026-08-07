@@ -73,26 +73,25 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
 
     let schema1 = try await spark.sql("SELECT 'a' as col1").schema
-    let version = await spark.version
-    let answer1 =
-      if ["4.0", "4.1"].contains(where: version.hasPrefix) {
-        #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
-      } else {
-        #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{}}}]}}"#
-      }
-    #expect(schema1 == answer1)
+    #expect(
+      schema1
+        == StructType(fields: [StructField(name: "col1", dataType: .string, nullable: false)]))
+    #expect(schema1.fieldNames == ["col1"])
+    #expect(schema1["col1"]?.dataType == .string)
+    #expect(schema1.count == 1)
 
     let schema2 = try await spark.sql("SELECT 'a' as col1, 'b' as col2").schema
-    let answer2 =
-      if ["4.0", "4.1"].contains(where: version.hasPrefix) {
-        #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{"collation":"UTF8_BINARY"}}},{"name":"col2","dataType":{"string":{"collation":"UTF8_BINARY"}}}]}}"#
-      } else {
-        #"{"struct":{"fields":[{"name":"col1","dataType":{"string":{}}},{"name":"col2","dataType":{"string":{}}}]}}"#
-      }
-    #expect(schema2 == answer2)
+    #expect(
+      schema2
+        == StructType(fields: [
+          StructField(name: "col1", dataType: .string, nullable: false),
+          StructField(name: "col2", dataType: .string, nullable: false),
+        ]))
+    #expect(schema2.map { $0.name } == ["col1", "col2"])
 
     let emptySchema = try await spark.sql("DROP TABLE IF EXISTS nonexistent").schema
-    #expect(emptySchema == #"{"struct":{}}"#)
+    #expect(emptySchema == StructType())
+    #expect(emptySchema.isEmpty)
     await spark.stop()
   }
 
@@ -279,7 +278,7 @@ struct DataFrameTests {
   func selectNone() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let emptySchema = try await spark.range(1).select().schema
-    #expect(emptySchema == #"{"struct":{}}"#)
+    #expect(emptySchema == StructType())
     await spark.stop()
   }
 
@@ -289,9 +288,7 @@ struct DataFrameTests {
     #expect(try await spark.range(1).select().columns.isEmpty)
     let schema = try await spark.range(1).select("id").schema
     #expect(
-      schema
-        == #"{"struct":{"fields":[{"name":"id","dataType":{"long":{}}}]}}"#
-    )
+      schema == StructType(fields: [StructField(name: "id", dataType: .long, nullable: false)]))
     await spark.stop()
   }
 
@@ -309,16 +306,12 @@ struct DataFrameTests {
 
     let schema1 = try await spark.range(1).to("shortID SHORT").schema
     #expect(
-      schema1
-        == #"{"struct":{"fields":[{"name":"shortID","dataType":{"short":{}},"nullable":true}]}}"#
-    )
+      schema1 == StructType(fields: [StructField(name: "shortID", dataType: .short)]))
 
     let schema2 = try await spark.sql("SELECT '1'").to("id INT").schema
     print(schema2)
     #expect(
-      schema2
-        == #"{"struct":{"fields":[{"name":"id","dataType":{"integer":{}},"nullable":true}]}}"#
-    )
+      schema2 == StructType(fields: [StructField(name: "id", dataType: .integer)]))
 
     await spark.stop()
   }
@@ -329,8 +322,10 @@ struct DataFrameTests {
     let schema = try await spark.sql("SELECT * FROM VALUES (1, 2)").select("col2", "col1").schema
     #expect(
       schema
-        == #"{"struct":{"fields":[{"name":"col2","dataType":{"integer":{}}},{"name":"col1","dataType":{"integer":{}}}]}}"#
-    )
+        == StructType(fields: [
+          StructField(name: "col2", dataType: .integer, nullable: false),
+          StructField(name: "col1", dataType: .integer, nullable: false),
+        ]))
     await spark.stop()
   }
 
@@ -351,9 +346,7 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let schema = try await spark.range(1).selectExpr("id + 1 as id2").schema
     #expect(
-      schema
-        == #"{"struct":{"fields":[{"name":"id2","dataType":{"long":{}}}]}}"#
-    )
+      schema == StructType(fields: [StructField(name: "id2", dataType: .long, nullable: false)]))
     await spark.stop()
   }
 

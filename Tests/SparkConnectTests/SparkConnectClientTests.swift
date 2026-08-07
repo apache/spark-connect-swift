@@ -112,7 +112,7 @@ struct SparkConnectClientTests {
   func ddlParse() async throws {
     let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
-    #expect(try await client.ddlParse("a int").simpleString == "struct<a:int>")
+    #expect(try await DataType(client.ddlParse("a int")).simpleString == "struct<a:int>")
     await client.stop()
   }
 

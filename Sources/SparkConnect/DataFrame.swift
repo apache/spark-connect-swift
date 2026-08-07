@@ -202,7 +202,7 @@ import Synchronization
 public actor DataFrame: Sendable {
   var spark: SparkSession
   var plan: Plan
-  var _schema: DataType? = nil
+  var _schema: StructType? = nil
   var batches: [RecordBatch] = [RecordBatch]()
 
   /// Create a new `DataFrame`instance with the given Spark session and plan.
@@ -249,9 +249,12 @@ public actor DataFrame: Sendable {
   }
 
   /// Set the schema. This is used to store the analized schema response from `Spark Connect` server.
-  /// - Parameter schema: <#schema description#>
-  func setSchema(_ schema: DataType) {
-    self._schema = schema
+  /// - Parameter schema: A ``DataType`` which is expected to be a struct.
+  func setSchema(_ schema: DataType) throws {
+    guard case .struct(let structType) = schema else {
+      throw SparkConnectError.InvalidType
+    }
+    self._schema = structType
   }
 
   /// Add `Apache Arrow`'s `RecordBatch`s to the internal array.
@@ -279,20 +282,16 @@ public actor DataFrame: Sendable {
   /// Return an array of column name strings
   public var columns: [String] {
     get async throws {
-      var columns: [String] = []
       try await analyzePlanIfNeeded()
-      for field in self._schema!.struct.fields {
-        columns.append(field.name)
-      }
-      return columns
+      return self._schema!.fieldNames
     }
   }
 
-  /// Return a `JSON` string of data type because we cannot expose the internal type ``DataType``.
-  public var schema: String {
+  /// Return the schema of this ``DataFrame`` as a ``StructType``.
+  public var schema: StructType {
     get async throws {
       try await analyzePlanIfNeeded()
-      return try self._schema!.jsonString()
+      return self._schema!
     }
   }
 
@@ -300,7 +299,7 @@ public actor DataFrame: Sendable {
   public var dtypes: [(String, String)] {
     get async throws {
       try await analyzePlanIfNeeded()
-      return try self._schema!.struct.fields.map { ($0.name, try $0.dataType.simpleString) }
+      return self._schema!.fields.map { ($0.name, $0.dataType.simpleString) }
     }
   }
 
@@ -334,7 +333,7 @@ public actor DataFrame: Sendable {
       let service = Spark_Connect_SparkConnectService.Client(wrapping: client)
       let response = try await service.analyzePlan(
         spark.client.getAnalyzePlanRequest(spark.sessionID, plan))
-      self.setSchema(response.schema.schema)
+      try self.setSchema(DataType(response.schema.schema))
     }
   }
 

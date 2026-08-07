@@ -28,9 +28,9 @@ enum ConvertToArrow {
   /// Convert the given rows into an `Apache Arrow` IPC stream according to the Spark schema.
   /// - Parameters:
   ///   - data: An array of rows whose values are ordered like the schema fields.
-  ///   - schema: A ``StructType`` describing the field names and types.
+  ///   - schema: A `ProtoStructType` describing the field names and types.
   /// - Returns: A serialized `Apache Arrow` IPC stream.
-  static func toArrowIPCStream(_ data: [[Sendable?]], _ schema: StructType) throws -> Data {
+  static func toArrowIPCStream(_ data: [[Sendable?]], _ schema: ProtoStructType) throws -> Data {
     for row in data where row.count != schema.fields.count {
       throw SparkConnectError.InvalidArgument
     }
@@ -57,7 +57,7 @@ enum ConvertToArrow {
   }
 
   /// Build an Arrow column from the given values according to the Spark data type.
-  private static func toArrowColumn(_ column: [Sendable?], _ dataType: DataType) throws
+  private static func toArrowColumn(_ column: [Sendable?], _ dataType: ProtoDataType) throws
     -> ArrowArrayHolder
   {
     switch dataType.kind {

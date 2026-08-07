@@ -43,7 +43,7 @@ extension DataFrame {
       m in
       if m.hasSchema {
         // The original schema should arrive before ArrowBatches
-        await self.setSchema(m.schema)
+        try await self.setSchema(DataType(m.schema))
       }
       let ipcStreamBytes = m.arrowBatch.data
       if !ipcStreamBytes.isEmpty && m.arrowBatch.rowCount > 0 {
