@@ -69,6 +69,15 @@ extension DataFrame {
       spark: self.spark, plan: SparkConnectClient.getToSchema(self.plan.root, dataType))
   }
 
+  /// Returns a new DataFrame where each row is reconciled to match the specified schema.
+  /// - Parameter schema: The given ``StructType`` schema.
+  /// - Returns: A ``DataFrame`` with the given schema.
+  public func to(_ schema: StructType) -> DataFrame {
+    return DataFrame(
+      spark: self.spark,
+      plan: SparkConnectClient.getToSchema(self.plan.root, DataType.struct(schema).toProtoDataType))
+  }
+
   /// Returns the content of the Dataset as a Dataset of JSON strings.
   /// - Returns: A ``DataFrame`` with a single string column whose content is JSON.
   public func toJSON() -> DataFrame {

@@ -152,6 +152,19 @@ struct DataFrameReaderTests {
   }
 
   @Test
+  func schemaWithStructType() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let path = "../examples/src/main/resources/people.json"
+    let structType = StructType(fields: [
+      StructField(name: "age", dataType: .short),
+      StructField(name: "name", dataType: .string),
+    ])
+    let expected = try await spark.read.schema("age SHORT, name STRING").json(path).schema
+    #expect(try await spark.read.schema(structType).json(path).schema == expected)
+    await spark.stop()
+  }
+
+  @Test
   func invalidSchema() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     await #expect(throws: SparkConnectError.InvalidType) {

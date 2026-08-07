@@ -132,6 +132,16 @@ public actor DataFrameReader: Sendable {
     return self
   }
 
+  /// Specifies the input schema. Some data sources (e.g. JSON) can infer the input schema
+  /// automatically from data. By specifying the schema here, the underlying data source can skip
+  /// the schema inference step, and thus speed up data loading.
+  /// - Parameter schema: A ``StructType`` schema.
+  /// - Returns: A ``DataFrameReader``.
+  @discardableResult
+  public func schema(_ schema: StructType) async throws -> DataFrameReader {
+    return try await self.schema(schema.toDDL)
+  }
+
   /// Loads input in as a ``DataFrame``, for data sources that don't require a path (e.g. external
   /// key-value stores).
   /// - Returns: A ``DataFrame``.

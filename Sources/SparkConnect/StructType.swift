@@ -30,6 +30,32 @@ public struct StructField: Sendable, Equatable {
     self.nullable = nullable
     self.metadata = metadata
   }
+
+  /// A string containing this field in DDL format like Spark SQL's `StructField.toDDL`,
+  /// e.g. `` `eventId` INT NOT NULL ``.
+  public var toDDL: String {
+    "\(quoteIfNeeded(name)) \(dataType.sql)\(nullable ? "" : " NOT NULL")"
+  }
+
+  /// A string usable inside a struct type string like Spark SQL's `StructField.sql`,
+  /// e.g. `` `eventId`: INT NOT NULL ``.
+  var sql: String {
+    "\(quoteIfNeeded(name)): \(dataType.sql)\(nullable ? "" : " NOT NULL")"
+  }
+}
+
+/// Quote the given name with backticks like Spark SQL's `QuotingUtils.quoteIfNeeded`
+/// unless it is a valid identifier matching `[a-zA-Z_][a-zA-Z0-9_]*`.
+private func quoteIfNeeded(_ name: String) -> String {
+  let isValidIdentifier =
+    !name.isEmpty
+    && name.utf8.enumerated().allSatisfy { (index, byte) in
+      byte == UInt8(ascii: "_")
+        || (UInt8(ascii: "a")...UInt8(ascii: "z")).contains(byte)
+        || (UInt8(ascii: "A")...UInt8(ascii: "Z")).contains(byte)
+        || (index > 0 && (UInt8(ascii: "0")...UInt8(ascii: "9")).contains(byte))
+    }
+  return isValidIdentifier ? name : "`\(name.replacing("`", with: "``"))`"
 }
 
 /// A struct type holding an ordered collection of ``StructField``s, mirroring Spark SQL's
@@ -57,6 +83,18 @@ public struct StructType: Sendable, Equatable {
   public var simpleString: String {
     "struct<\(fields.map { "\($0.name):\($0.dataType.simpleString)" }.joined(separator: ","))>"
   }
+
+  /// A string containing this schema in DDL format like Spark SQL's `StructType.toDDL`,
+  /// e.g. `id BIGINT NOT NULL,name STRING`.
+  public var toDDL: String {
+    fields.map { $0.toDDL }.joined(separator: ",")
+  }
+
+  /// A type string usable in DDL like Spark SQL's `StructType.sql`,
+  /// e.g. `STRUCT<id: BIGINT NOT NULL, name: STRING>`.
+  var sql: String {
+    "STRUCT<\(fields.map { $0.sql }.joined(separator: ", "))>"
+  }
 }
 
 extension StructType: RandomAccessCollection {
@@ -69,6 +107,22 @@ extension StructType: RandomAccessCollection {
 }
 
 extension StructType {
+  /// Convert to the `Spark Connect` protobuf representation.
+  var toProtoStructType: ProtoStructType {
+    var proto = ProtoStructType()
+    proto.fields = fields.map { field in
+      var protoField = ProtoStructField()
+      protoField.name = field.name
+      protoField.dataType = field.dataType.toProtoDataType
+      protoField.nullable = field.nullable
+      if let metadata = field.metadata {
+        protoField.metadata = metadata
+      }
+      return protoField
+    }
+    return proto
+  }
+
   /// Create a public ``StructType`` from the `Spark Connect` protobuf representation.
   init(_ proto: ProtoStructType) throws {
     self.fields = try proto.fields.map {

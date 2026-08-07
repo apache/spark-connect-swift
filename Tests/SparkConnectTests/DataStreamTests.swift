@@ -70,4 +70,18 @@ struct DataStreamTests {
     #expect(try await df3.count() == 2025)
     await spark.stop()
   }
+
+  @Test
+  func schemaWithStructType() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let input = "/tmp/input-" + UUID().uuidString
+    try await spark.range(1).write.orc(input)
+
+    let structType = StructType(fields: [StructField(name: "id", dataType: .long)])
+    let df1 = try await spark.readStream.schema("id LONG").orc(input)
+    let df2 = try await spark.readStream.schema(structType).orc(input)
+    #expect(try await df2.isStreaming())
+    #expect(try await df1.schema == df2.schema)
+    await spark.stop()
+  }
 }

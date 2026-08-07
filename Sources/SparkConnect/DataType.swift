@@ -181,6 +181,132 @@ public indirect enum DataType: Sendable, Equatable {
 }
 
 extension DataType {
+  /// A type string usable in DDL like Spark SQL's `DataType.sql`, e.g. `INT` or
+  /// `STRUCT<x: INT NOT NULL>`. Unlike ``simpleString``, struct field names are quoted
+  /// if needed and their `NOT NULL` constraints are kept.
+  var sql: String {
+    switch self {
+    case .array(let elementType, _):
+      "ARRAY<\(elementType.sql)>"
+    case .map(let keyType, let valueType, _):
+      "MAP<\(keyType.sql), \(valueType.sql)>"
+    case .struct(let structType):
+      structType.sql
+    case .udt(let udt):
+      udt.sqlType?.sql ?? "UDT"
+    case .unparsed(let dataTypeString):
+      dataTypeString
+    default:
+      simpleString.uppercased()
+    }
+  }
+
+  /// Convert to the `Spark Connect` protobuf representation.
+  var toProtoDataType: ProtoDataType {
+    var proto = ProtoDataType()
+    switch self {
+    case .null:
+      proto.null = ProtoDataType.NULL()
+    case .binary:
+      proto.binary = ProtoDataType.Binary()
+    case .boolean:
+      proto.boolean = ProtoDataType.Boolean()
+    case .byte:
+      proto.byte = ProtoDataType.Byte()
+    case .short:
+      proto.short = ProtoDataType.Short()
+    case .integer:
+      proto.integer = ProtoDataType.Integer()
+    case .long:
+      proto.long = ProtoDataType.Long()
+    case .float:
+      proto.float = ProtoDataType.FloatMessage()
+    case .double:
+      proto.double = ProtoDataType.DoubleMessage()
+    case .decimal(let precision, let scale):
+      var decimal = ProtoDataType.Decimal()
+      decimal.precision = precision
+      decimal.scale = scale
+      proto.decimal = decimal
+    case .string:
+      proto.string = ProtoDataType.StringMessage()
+    case .char(let length):
+      var char = ProtoDataType.Char()
+      char.length = length
+      proto.char = char
+    case .varchar(let length):
+      var varChar = ProtoDataType.VarChar()
+      varChar.length = length
+      proto.varChar = varChar
+    case .date:
+      proto.date = ProtoDataType.Date()
+    case .timestamp:
+      proto.timestamp = ProtoDataType.Timestamp()
+    case .timestampNtz:
+      proto.timestampNtz = ProtoDataType.TimestampNTZ()
+    case .time(let precision):
+      var time = ProtoDataType.Time()
+      time.precision = precision
+      proto.time = time
+    case .calendarInterval:
+      proto.calendarInterval = ProtoDataType.CalendarInterval()
+    case .yearMonthInterval(let startField, let endField):
+      var interval = ProtoDataType.YearMonthInterval()
+      interval.startField = startField.rawValue
+      interval.endField = endField.rawValue
+      proto.yearMonthInterval = interval
+    case .dayTimeInterval(let startField, let endField):
+      var interval = ProtoDataType.DayTimeInterval()
+      interval.startField = startField.rawValue
+      interval.endField = endField.rawValue
+      proto.dayTimeInterval = interval
+    case .array(let elementType, let containsNull):
+      var array = ProtoDataType.Array()
+      array.elementType = elementType.toProtoDataType
+      array.containsNull = containsNull
+      proto.array = array
+    case .map(let keyType, let valueType, let valueContainsNull):
+      var map = ProtoDataType.Map()
+      map.keyType = keyType.toProtoDataType
+      map.valueType = valueType.toProtoDataType
+      map.valueContainsNull = valueContainsNull
+      proto.map = map
+    case .struct(let structType):
+      proto.struct = structType.toProtoStructType
+    case .variant:
+      proto.variant = ProtoDataType.Variant()
+    case .geometry(let srid):
+      var geometry = ProtoDataType.Geometry()
+      geometry.srid = srid
+      proto.geometry = geometry
+    case .geography(let srid):
+      var geography = ProtoDataType.Geography()
+      geography.srid = srid
+      proto.geography = geography
+    case .udt(let udt):
+      var udtProto = ProtoDataType.UDT()
+      udtProto.type = "udt"
+      if let jvmClass = udt.jvmClass {
+        udtProto.jvmClass = jvmClass
+      }
+      if let pythonClass = udt.pythonClass {
+        udtProto.pythonClass = pythonClass
+      }
+      if let serializedPythonClass = udt.serializedPythonClass {
+        udtProto.serializedPythonClass = serializedPythonClass
+      }
+      if let sqlType = udt.sqlType {
+        udtProto.sqlType = sqlType.toProtoDataType
+      }
+      proto.udt = udtProto
+    case .unparsed(let dataTypeString):
+      var unparsed = ProtoDataType.Unparsed()
+      unparsed.dataTypeString = dataTypeString
+      proto.unparsed = unparsed
+    }
+    return proto
+  }
+
   /// Create a public ``DataType`` from the `Spark Connect` protobuf representation.
   init(_ proto: ProtoDataType) throws {
     switch proto.kind {

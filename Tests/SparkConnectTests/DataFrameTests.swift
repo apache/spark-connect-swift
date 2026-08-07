@@ -317,6 +317,31 @@ struct DataFrameTests {
   }
 
   @Test
+  func toWithStructType() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(
+      "SELECT 1 AS id, struct('a' AS x) AS s, array(1, 2) AS a, map('k', 1.0) AS m")
+    let structType = StructType(fields: [
+      StructField(name: "id", dataType: .short, nullable: false),
+      StructField(
+        name: "s", dataType: .struct(StructType(fields: [StructField(name: "x", dataType: .string)]))),
+      StructField(name: "a", dataType: .array(elementType: .long, containsNull: true)),
+      StructField(
+        name: "m",
+        dataType: .map(
+          keyType: .string, valueType: .decimal(precision: 10, scale: 2), valueContainsNull: true)),
+    ])
+    let ddl = "id SMALLINT NOT NULL,s STRUCT<x: STRING>,a ARRAY<BIGINT>,m MAP<STRING, DECIMAL(10,2)>"
+    #expect(structType.toDDL == ddl)
+
+    let schema1 = try await df.to(ddl).schema
+    let schema2 = try await df.to(structType).schema
+    #expect(schema1 == schema2)
+
+    await spark.stop()
+  }
+
+  @Test
   func selectMultipleColumns() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let schema = try await spark.sql("SELECT * FROM VALUES (1, 2)").select("col2", "col1").schema

@@ -57,6 +57,31 @@ struct StructTypeTests {
   }
 
   @Test
+  func toDDL() {
+    let nested = StructType(fields: [
+      StructField(name: "x", dataType: .integer, nullable: false),
+      StructField(name: "y z", dataType: .string),
+    ])
+    let structType = StructType(fields: [
+      StructField(name: "id", dataType: .long, nullable: false),
+      StructField(name: "1st", dataType: .decimal(precision: 10, scale: 2)),
+      StructField(name: "t", dataType: .time(precision: 6)),
+      StructField(name: "s", dataType: .struct(nested)),
+      StructField(name: "arr", dataType: .array(elementType: .struct(nested), containsNull: true)),
+      StructField(
+        name: "m", dataType: .map(keyType: .string, valueType: .date, valueContainsNull: true)),
+    ])
+    #expect(
+      structType.toDDL
+        == "id BIGINT NOT NULL,`1st` DECIMAL(10,2),t TIME(6),"
+        + "s STRUCT<x: INT NOT NULL, `y z`: STRING>,"
+        + "arr ARRAY<STRUCT<x: INT NOT NULL, `y z`: STRING>>,m MAP<STRING, DATE>")
+    #expect(StructType().toDDL == "")
+    #expect(StructField(name: "a`b", dataType: .string).toDDL == "`a``b` STRING")
+    #expect(StructField(name: "", dataType: .string).toDDL == "`` STRING")
+  }
+
+  @Test
   func equatable() {
     let a = StructType(fields: [StructField(name: "id", dataType: .long)])
     let b = StructType(fields: [StructField(name: "id", dataType: .long)])

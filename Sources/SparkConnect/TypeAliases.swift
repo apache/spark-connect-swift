@@ -52,6 +52,7 @@ typealias Parse = Spark_Connect_Parse
 typealias Plan = Spark_Connect_Plan
 typealias Project = Spark_Connect_Project
 typealias ProtoDataType = Spark_Connect_DataType
+typealias ProtoStructField = Spark_Connect_DataType.StructField
 typealias ProtoStructType = Spark_Connect_DataType.Struct
 typealias Range = Spark_Connect_Range
 typealias Read = Spark_Connect_Read

@@ -41,6 +41,25 @@ struct CreateDataFrameTests {
   }
 
   @Test
+  func createDataFrameWithStructType() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let schema = StructType(fields: [
+      StructField(name: "id", dataType: .integer, nullable: false),
+      StructField(name: "name", dataType: .string),
+    ])
+    let df = try await spark.createDataFrame([[1, "Alice"], [2, nil]], schema)
+    #expect(try await df.schema == schema)
+    #expect(try await df.collect() == [Row(1, "Alice"), Row(2, nil)])
+
+    // Same result as the DDL string version.
+    let df2 = try await spark.createDataFrame(
+      [[1, "Alice"], [2, nil]], "id INT NOT NULL, name STRING")
+    #expect(try await df2.schema == schema)
+    #expect(try await df2.collect() == [Row(1, "Alice"), Row(2, nil)])
+    await spark.stop()
+  }
+
+  @Test
   func supportedTypes() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let date = Date(timeIntervalSince1970: 86400 * 19_000)

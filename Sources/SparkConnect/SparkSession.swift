@@ -175,6 +175,17 @@ public actor SparkSession {
     return await DataFrame(spark: self, plan: client.getLocalRelation(ipcStream, schema))
   }
 
+  /// Creates a ``DataFrame`` from the given local data with the specified ``StructType`` schema.
+  /// This is equivalent to calling `createDataFrame(_:_:)` with the DDL string of the given schema.
+  /// - Parameters:
+  ///   - data: An array of rows whose values are ordered like the schema fields.
+  ///   - schema: A ``StructType`` schema.
+  /// - Returns: A ``DataFrame`` instance.
+  public func createDataFrame(_ data: [[Sendable?]], _ schema: StructType) async throws -> DataFrame
+  {
+    return try await createDataFrame(data, schema.toDDL)
+  }
+
   /// Create a ``DataFrame`` with a single `Int64` column name `id`, containing elements in a
   /// range from 0 to `end` (exclusive) with step value 1.
   ///
