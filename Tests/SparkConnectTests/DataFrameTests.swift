@@ -539,10 +539,11 @@ struct DataFrameTests {
   func isLocal() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let version = await spark.version
-    if !(version.starts(with: "4.1") || version.starts(with: "4.2")) { // TODO(SPARK-52746)
-      #expect(try await spark.sql("SHOW DATABASES").isLocal())
-      #expect(try await spark.sql("SHOW TABLES").isLocal())
-    }
+    // Since Spark 4.1, `AnalyzePlan` no longer executes commands eagerly (SPARK-51818),
+    // so command plans are not local anymore.
+    let expected = version < "4.1"
+    #expect(try await spark.sql("SHOW DATABASES").isLocal() == expected)
+    #expect(try await spark.sql("SHOW TABLES").isLocal() == expected)
     #expect(try await spark.range(1).isLocal() == false)
     await spark.stop()
   }
