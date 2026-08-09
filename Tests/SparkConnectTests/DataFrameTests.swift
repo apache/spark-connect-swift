@@ -1399,14 +1399,24 @@ struct DataFrameTests {
   @Test
   func timestamp() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    // TODO(SPARK-52747)
-    let df = try await spark.sql(
-      "SELECT TIMESTAMP '2025-05-01 16:23:40Z', TIMESTAMP '2025-05-01 16:23:40.123456Z'")
-    let expected = [
-      Row(
-        Date(timeIntervalSince1970: 1746116620.0), Date(timeIntervalSince1970: 1746116620.123456))
-    ]
-    #expect(try await df.collect() == expected)
+    let timeZone = try await spark.conf.get("spark.sql.session.timeZone")
+    // A timestamp literal with a timezone offset denotes a fixed instant
+    // independent of the session timezone.
+    for tz in ["UTC", "America/Los_Angeles"] {
+      try await spark.conf.set("spark.sql.session.timeZone", tz)
+      let df = try await spark.sql(
+        "SELECT TIMESTAMP '2025-05-01 16:23:40Z', TIMESTAMP '2025-05-01 16:23:40.123456Z'")
+      let expected = [
+        Row(
+          Date(timeIntervalSince1970: 1746116620.0), Date(timeIntervalSince1970: 1746116620.123456))
+      ]
+      #expect(try await df.collect() == expected)
+    }
+    // A timestamp literal without a timezone offset is interpreted in the session timezone.
+    try await spark.conf.set("spark.sql.session.timeZone", "America/Los_Angeles")
+    let df = try await spark.sql("SELECT TIMESTAMP '2025-05-01 16:23:40'")
+    #expect(try await df.collect() == [Row(Date(timeIntervalSince1970: 1746141820.0))])
+    try await spark.conf.set("spark.sql.session.timeZone", timeZone)
     await spark.stop()
   }
 
