@@ -90,16 +90,6 @@ struct SQLTests {
     #expect(normalize("+      +                  +") == "+ + +")
   }
 
-  let queriesForSpark4Only: [String] = [
-    "create_scala_function.sql",
-    "create_table_function.sql",
-    "cast.sql",
-    "decimal.sql",
-    "pipesyntax.sql",
-    "explain.sql",
-    "variant.sql",
-  ]
-
   let queriesForSpark42Only: [String] = [
     "geography.sql",
     "geometry.sql",
@@ -113,10 +103,6 @@ struct SQLTests {
     for name in try! fm.contentsOfDirectory(atPath: path).sorted() {
       guard name.hasSuffix(".sql") else { continue }
       print(name)
-      if await !spark.version.starts(with: "4.") && queriesForSpark4Only.contains(name) {
-        print("Skip query \(name) due to the difference between Spark 3 and 4.")
-        continue
-      }
       if await !spark.version.starts(with: "4.2") && queriesForSpark42Only.contains(name) {
         print("Skip query \(name) due to the difference between Spark 4.1 and 4.2")
         continue
