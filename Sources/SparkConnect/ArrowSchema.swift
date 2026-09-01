@@ -26,11 +26,13 @@ public class ArrowField {
   public let type: ArrowType
   public let name: String
   public let isNullable: Bool
+  public let metadata: [String: String]?
 
-  init(_ name: String, type: ArrowType, isNullable: Bool) {
+  init(_ name: String, type: ArrowType, isNullable: Bool, metadata: [String: String]? = nil) {
     self.name = name
     self.type = type
     self.isNullable = isNullable
+    self.metadata = metadata
   }
 }
 

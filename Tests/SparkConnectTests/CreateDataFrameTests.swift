@@ -82,14 +82,17 @@ struct CreateDataFrameTests {
   @Test
   func timeType() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await spark.version >= "4.3" {
       try await spark.conf.set("spark.sql.timeType.enabled", "true")
       let time = try #require(LocalTime(hour: 12, minute: 34, second: 56, nanosecond: 123_456_000))
       let df = try await spark.createDataFrame([[time], [nil]], "t TIME")
       #expect(try await df.dtypes.map { $0.1 } == ["time(6)"])
       #expect(try await df.collect() == [Row(time), Row(nil)])
-      #expect(
-        try await spark.createDataFrame([[time]], "t TIME(0)").dtypes.map { $0.1 } == ["time(0)"])
+      for precision in 0...6 {
+        #expect(
+          try await spark.createDataFrame([[time]], "t TIME(\(precision))").dtypes.map { $0.1 }
+            == ["time(\(precision))"])
+      }
     }
     await spark.stop()
   }

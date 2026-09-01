@@ -25,6 +25,10 @@ import Foundation
 
 /// A utility to convert local data into an `Apache Arrow` IPC stream for `LocalRelation`.
 enum ConvertToArrow {
+  /// An `Apache Arrow` field metadata key which `Apache Spark` uses to carry the fractional-second
+  /// precision of a `TIME(p)` column, because the `Apache Arrow` `Time` type has no such field.
+  private static let timePrecisionKey = "SPARK::time::precision"
+
   /// Convert the given rows into an `Apache Arrow` IPC stream according to the Spark schema.
   /// - Parameters:
   ///   - data: An array of rows whose values are ordered like the schema fields.
@@ -39,7 +43,9 @@ enum ConvertToArrow {
       let column = data.map { $0[i] }
       let holder = try toArrowColumn(column, field.dataType)
       batchBuilder.addColumn(
-        ArrowField(field.name, type: holder.type, isNullable: field.nullable), arrowArray: holder)
+        ArrowField(
+          field.name, type: holder.type, isNullable: field.nullable,
+          metadata: metadata(field.dataType)), arrowArray: holder)
     }
     switch batchBuilder.finish() {
     case .success(let batch):
@@ -54,6 +60,14 @@ enum ConvertToArrow {
     case .failure:
       throw SparkConnectError.InvalidArrowData
     }
+  }
+
+  /// Build the `Apache Arrow` field metadata for the given Spark data type, if any.
+  private static func metadata(_ dataType: ProtoDataType) -> [String: String]? {
+    if case .time(let time) = dataType.kind, time.hasPrecision {
+      return [timePrecisionKey: String(time.precision)]
+    }
+    return nil
   }
 
   /// Build an Arrow column from the given values according to the Spark data type.

@@ -97,6 +97,20 @@ public class ArrowWriter {  // swiftlint:disable:this type_body_length
       fieldsOffset = fbb.createVector(ofOffsets: offsets)
     }
 
+    var metadataOffset: Offset?
+    if let metadata = field.metadata, !metadata.isEmpty {
+      // Sort by key so that the serialized stream is deterministic for the same input.
+      var offsets = [Offset]()
+      for (key, value) in metadata.sorted(by: { $0.key < $1.key }) {
+        let keyOffset = fbb.create(string: key)
+        let valueOffset = fbb.create(string: value)
+        offsets.append(
+          org_apache_arrow_flatbuf_KeyValue.createKeyValue(
+            &fbb, keyOffset: keyOffset, valueOffset: valueOffset))
+      }
+      metadataOffset = fbb.createVector(ofOffsets: offsets)
+    }
+
     let nameOffset = fbb.create(string: field.name)
     let fieldTypeOffsetResult = toFBType(&fbb, arrowType: field.type)
     let startOffset = org_apache_arrow_flatbuf_Field.startField(&fbb)
@@ -104,6 +118,9 @@ public class ArrowWriter {  // swiftlint:disable:this type_body_length
     org_apache_arrow_flatbuf_Field.add(nullable: field.isNullable, &fbb)
     if let childrenOffset = fieldsOffset {
       org_apache_arrow_flatbuf_Field.addVectorOf(children: childrenOffset, &fbb)
+    }
+    if let metadataOffset {
+      org_apache_arrow_flatbuf_Field.addVectorOf(customMetadata: metadataOffset, &fbb)
     }
 
     switch toFBTypeEnum(field.type) {
