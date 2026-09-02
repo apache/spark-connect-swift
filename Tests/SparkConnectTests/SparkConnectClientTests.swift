@@ -132,7 +132,7 @@ struct SparkConnectClientTests {
   func createDataflowGraph() async throws {
     let client = try SparkConnectClient(remote: TEST_REMOTE)
     let response = try await client.connect(UUID().uuidString)
-    if response.sparkVersion.version.starts(with: "4.1") {
+    if response.sparkVersion.version >= "4.1" {
       let dataflowGraphID = try await client.createDataflowGraph()
       #expect(UUID(uuidString: dataflowGraphID) != nil)
     }
@@ -148,7 +148,7 @@ struct SparkConnectClientTests {
       try await client.startRun("not-a-uuid-format")
     }
 
-    if response.sparkVersion.version.starts(with: "4.1") {
+    if response.sparkVersion.version >= "4.1" {
       let dataflowGraphID = try await client.createDataflowGraph()
       #expect(UUID(uuidString: dataflowGraphID) != nil)
       #expect(try await client.startRun(dataflowGraphID))
@@ -165,7 +165,7 @@ struct SparkConnectClientTests {
       try await client.defineOutput("not-a-uuid-format", "ds1", "table")
     }
 
-    if response.sparkVersion.version.starts(with: "4.1") {
+    if response.sparkVersion.version >= "4.1" {
       let dataflowGraphID = try await client.createDataflowGraph()
       #expect(UUID(uuidString: dataflowGraphID) != nil)
       try await #require(throws: SparkConnectError.OutputTypeUnspecified) {
@@ -200,7 +200,7 @@ struct SparkConnectClientTests {
       try await client.defineFlow("not-a-uuid-format", "f1", "ds1", Relation())
     }
 
-    if response.sparkVersion.version.starts(with: "4.1") {
+    if response.sparkVersion.version >= "4.1" {
       let dataflowGraphID = try await client.createDataflowGraph()
       #expect(UUID(uuidString: dataflowGraphID) != nil)
       let relation = await client.getLocalRelation().root
@@ -218,7 +218,7 @@ struct SparkConnectClientTests {
       try await client.defineSqlGraphElements("not-a-uuid-format", "path", "sql")
     }
 
-    if response.sparkVersion.version.starts(with: "4.1") {
+    if response.sparkVersion.version >= "4.1" {
       let dataflowGraphID = try await client.createDataflowGraph()
       let sqlText = "CREATE MATERIALIZED VIEW mv1 AS SELECT 1"
       #expect(UUID(uuidString: dataflowGraphID) != nil)

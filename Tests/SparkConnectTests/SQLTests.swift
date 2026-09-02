@@ -90,7 +90,8 @@ struct SQLTests {
     #expect(normalize("+      +                  +") == "+ + +")
   }
 
-  let queriesForSpark42Only: [String] = [
+  /// Queries which are supported by Apache Spark 4.2.0 and later.
+  let queriesForSpark42AndLater: [String] = [
     "geography.sql",
     "geometry.sql",
     "time.sql",
@@ -103,8 +104,8 @@ struct SQLTests {
     for name in try! fm.contentsOfDirectory(atPath: path).sorted() {
       guard name.hasSuffix(".sql") else { continue }
       print(name)
-      if await !spark.version.starts(with: "4.2") && queriesForSpark42Only.contains(name) {
-        print("Skip query \(name) due to the difference between Spark 4.1 and 4.2")
+      if await spark.version < "4.2" && queriesForSpark42AndLater.contains(name) {
+        print("Skip query \(name) which requires Spark 4.2 or later")
         continue
       }
 
