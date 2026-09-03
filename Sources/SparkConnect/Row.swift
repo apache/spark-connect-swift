@@ -114,8 +114,16 @@ public struct Row: Sendable, Equatable {
     return dict
   }
 
+  /// Returns the value at the given index as a `Bool`.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: A `Bool` value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not a `Bool`.
   public func getAsBool(_ i: Int) throws -> Bool {
-    return try get(i) as! Bool
+    guard let value = try get(i) as? Bool else {
+      throw SparkConnectError.InvalidType
+    }
+    return value
   }
 
   public static func == (lhs: Row, rhs: Row) -> Bool {

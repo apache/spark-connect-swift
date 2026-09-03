@@ -67,6 +67,31 @@ struct RowTests {
   }
 
   @Test
+  func getAsBool() throws {
+    #expect(try Row(true).getAsBool(0) == true)
+    #expect(try Row(false).getAsBool(0) == false)
+    #expect(try Row(valueArray: [true], schema: RowSchema(["flag"])).getAsBool(0) == true)
+
+    // A type mismatch throws instead of trapping.
+    #expect(throws: SparkConnectError.InvalidType) {
+      try Row(1).getAsBool(0)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try Row("true").getAsBool(0)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try Row(nil).getAsBool(0)
+    }
+
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try Row(true).getAsBool(1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try Row(true).getAsBool(-1)
+    }
+  }
+
+  @Test
   func fieldIndex() throws {
     let row = Row(valueArray: [1, "a"], schema: RowSchema(["id", "name"]))
     #expect(try row.fieldIndex("id") == 0)
