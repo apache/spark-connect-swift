@@ -68,9 +68,37 @@ public struct Column: Sendable {
     return sortOrder(.ascending, .sortNullsFirst)
   }
 
+  /// Returns a sort expression based on the ascending order of this column, with null values
+  /// appearing before non-null values. This is an alias of ``asc()``.
+  /// - Returns: A ``Column`` with ascending sort order.
+  public func ascNullsFirst() -> Column {
+    return sortOrder(.ascending, .sortNullsFirst)
+  }
+
+  /// Returns a sort expression based on the ascending order of this column, with null values
+  /// appearing after non-null values.
+  /// - Returns: A ``Column`` with ascending sort order.
+  public func ascNullsLast() -> Column {
+    return sortOrder(.ascending, .sortNullsLast)
+  }
+
   /// Returns a sort expression based on the descending order of this column.
   /// - Returns: A ``Column`` with descending sort order.
   public func desc() -> Column {
+    return sortOrder(.descending, .sortNullsLast)
+  }
+
+  /// Returns a sort expression based on the descending order of this column, with null values
+  /// appearing before non-null values.
+  /// - Returns: A ``Column`` with descending sort order.
+  public func descNullsFirst() -> Column {
+    return sortOrder(.descending, .sortNullsFirst)
+  }
+
+  /// Returns a sort expression based on the descending order of this column, with null values
+  /// appearing after non-null values. This is an alias of ``desc()``.
+  /// - Returns: A ``Column`` with descending sort order.
+  public func descNullsLast() -> Column {
     return sortOrder(.descending, .sortNullsLast)
   }
 

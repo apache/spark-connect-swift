@@ -197,11 +197,43 @@ public func asc(_ name: String) -> Column {
   return Column(name).asc()
 }
 
+/// Returns a sort expression based on the ascending order of the given column name, with null
+/// values appearing before non-null values. This is an alias of ``asc(_:)``.
+/// - Parameter name: A column name.
+/// - Returns: A ``Column`` with ascending sort order.
+public func asc_nulls_first(_ name: String) -> Column {
+  return Column(name).ascNullsFirst()
+}
+
+/// Returns a sort expression based on the ascending order of the given column name, with null
+/// values appearing after non-null values.
+/// - Parameter name: A column name.
+/// - Returns: A ``Column`` with ascending sort order.
+public func asc_nulls_last(_ name: String) -> Column {
+  return Column(name).ascNullsLast()
+}
+
 /// Returns a sort expression based on the descending order of the given column name.
 /// - Parameter name: A column name.
 /// - Returns: A ``Column`` with descending sort order.
 public func desc(_ name: String) -> Column {
   return Column(name).desc()
+}
+
+/// Returns a sort expression based on the descending order of the given column name, with null
+/// values appearing before non-null values.
+/// - Parameter name: A column name.
+/// - Returns: A ``Column`` with descending sort order.
+public func desc_nulls_first(_ name: String) -> Column {
+  return Column(name).descNullsFirst()
+}
+
+/// Returns a sort expression based on the descending order of the given column name, with null
+/// values appearing after non-null values. This is an alias of ``desc(_:)``.
+/// - Parameter name: A column name.
+/// - Returns: A ``Column`` with descending sort order.
+public func desc_nulls_last(_ name: String) -> Column {
+  return Column(name).descNullsLast()
 }
 
 /// Parses the expression string into the column that it represents.
