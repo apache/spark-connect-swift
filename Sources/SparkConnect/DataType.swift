@@ -87,6 +87,8 @@ public indirect enum DataType: Sendable, Equatable {
   case date
   case timestamp
   case timestampNtz
+  case timestampNtzNanos(precision: Int32)
+  case timestampLtzNanos(precision: Int32)
   case time(precision: Int32)
   case calendarInterval
   case yearMonthInterval(startField: YearMonthIntervalField, endField: YearMonthIntervalField)
@@ -136,6 +138,10 @@ public indirect enum DataType: Sendable, Equatable {
       "timestamp"
     case .timestampNtz:
       "timestamp_ntz"
+    case .timestampNtzNanos(let precision):
+      "timestamp_ntz(\(precision))"
+    case .timestampLtzNanos(let precision):
+      "timestamp_ltz(\(precision))"
     case .time(let precision):
       "time(\(precision))"
     case .calendarInterval:
@@ -244,6 +250,14 @@ extension DataType {
       proto.timestamp = ProtoDataType.Timestamp()
     case .timestampNtz:
       proto.timestampNtz = ProtoDataType.TimestampNTZ()
+    case .timestampNtzNanos(let precision):
+      var timestampNtzNanos = ProtoDataType.TimestampNTZNanos()
+      timestampNtzNanos.precision = precision
+      proto.timestampNtzNanos = timestampNtzNanos
+    case .timestampLtzNanos(let precision):
+      var timestampLtzNanos = ProtoDataType.TimestampLTZNanos()
+      timestampLtzNanos.precision = precision
+      proto.timestampLtzNanos = timestampLtzNanos
     case .time(let precision):
       var time = ProtoDataType.Time()
       time.precision = precision
@@ -344,9 +358,10 @@ extension DataType {
       self = .timestamp
     case .timestampNtz:
       self = .timestampNtz
-    case .timestampNtzNanos, .timestampLtzNanos:
-      // Nanosecond-precision timestamps are not supported by this client yet.
-      throw SparkConnectError.InvalidType
+    case .timestampNtzNanos(let nanos):
+      self = .timestampNtzNanos(precision: nanos.hasPrecision ? nanos.precision : 9)
+    case .timestampLtzNanos(let nanos):
+      self = .timestampLtzNanos(precision: nanos.hasPrecision ? nanos.precision : 9)
     case .time(let time):
       self = .time(precision: time.hasPrecision ? time.precision : 6)
     case .calendarInterval:

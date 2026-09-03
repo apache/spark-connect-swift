@@ -17,7 +17,7 @@
 // under the License.
 //
 
-import SparkConnect
+@testable import SparkConnect
 import Testing
 
 /// A test suite for `DataType`, `StructField`, and `StructType`
@@ -41,6 +41,8 @@ struct DataTypeTests {
     #expect(DataType.date.simpleString == "date")
     #expect(DataType.timestamp.simpleString == "timestamp")
     #expect(DataType.timestampNtz.simpleString == "timestamp_ntz")
+    #expect(DataType.timestampNtzNanos(precision: 9).simpleString == "timestamp_ntz(9)")
+    #expect(DataType.timestampLtzNanos(precision: 7).simpleString == "timestamp_ltz(7)")
     #expect(DataType.time(precision: 6).simpleString == "time(6)")
     #expect(DataType.calendarInterval.simpleString == "interval")
     #expect(DataType.variant.simpleString == "variant")
@@ -169,6 +171,47 @@ struct DataTypeTests {
       let schema = try await df.schema
       #expect(schema["t6"]?.dataType == .time(precision: 6))
       #expect(schema["t0"]?.dataType == .time(precision: 0))
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func timestampNanosProtoRoundTrip() throws {
+    for precision: Int32 in 7...9 {
+      let ntz = DataType.timestampNtzNanos(precision: precision)
+      #expect(try DataType(ntz.toProtoDataType) == ntz)
+      let ltz = DataType.timestampLtzNanos(precision: precision)
+      #expect(try DataType(ltz.toProtoDataType) == ltz)
+    }
+    // A missing precision defaults to nanoseconds like Spark's `DEFAULT_PRECISION`.
+    var proto = ProtoDataType()
+    proto.timestampNtzNanos = ProtoDataType.TimestampNTZNanos()
+    #expect(try DataType(proto) == .timestampNtzNanos(precision: 9))
+    proto.timestampLtzNanos = ProtoDataType.TimestampLTZNanos()
+    #expect(try DataType(proto) == .timestampLtzNanos(precision: 9))
+  }
+
+  @Test
+  func schemaTimestampNanosTypes() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.3") {
+      try await spark.conf.set("spark.sql.timestampNanosTypes.enabled", "true")
+      let df = try await spark.sql(
+        """
+        SELECT
+          CAST(TIMESTAMP_NTZ'2026-01-01 00:00:00.123456789' AS TIMESTAMP_NTZ(9)) ntz9,
+          CAST(TIMESTAMP_NTZ'2026-01-01 00:00:00.123456789' AS TIMESTAMP_NTZ(7)) ntz7,
+          CAST(TIMESTAMP_LTZ'2026-01-01 00:00:00.123456789' AS TIMESTAMP_LTZ(9)) ltz9,
+          CAST(TIMESTAMP_LTZ'2026-01-01 00:00:00.123456789' AS TIMESTAMP_LTZ(8)) ltz8
+        """)
+      let schema = try await df.schema
+      #expect(schema["ntz9"]?.dataType == .timestampNtzNanos(precision: 9))
+      #expect(schema["ntz7"]?.dataType == .timestampNtzNanos(precision: 7))
+      #expect(schema["ltz9"]?.dataType == .timestampLtzNanos(precision: 9))
+      #expect(schema["ltz8"]?.dataType == .timestampLtzNanos(precision: 8))
+      #expect(
+        try await df.dtypes.map { $0.1 }
+          == ["timestamp_ntz(9)", "timestamp_ntz(7)", "timestamp_ltz(9)", "timestamp_ltz(8)"])
     }
     await spark.stop()
   }
