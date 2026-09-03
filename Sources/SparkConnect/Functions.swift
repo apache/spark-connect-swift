@@ -309,6 +309,18 @@ func fn(_ name: String, _ args: [Column], isDistinct: Bool = false) -> Column {
   return Column(expr)
 }
 
+/// Invokes a function with the given arguments followed by a map ``Column`` built from the given
+/// options like Spark SQL's `Column.fnWithOptions`. The map argument is omitted when there is no
+/// option. The keys are sorted to make the generated expression deterministic.
+func fn(_ name: String, options: [String: String], _ args: Column...) -> Column {
+  var arguments = args
+  if !options.isEmpty {
+    let pairs = options.sorted { $0.key < $1.key }.flatMap { [lit($0.key), lit($0.value)] }
+    arguments.append(fn("map", pairs))
+  }
+  return fn(name, arguments)
+}
+
 private func litColumn(_ literal: ExpressionLiteral) -> Column {
   var expr = Spark_Connect_Expression()
   expr.literal = literal
