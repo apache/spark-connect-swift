@@ -229,6 +229,15 @@ struct SparkSessionTests {
         try await spark.parseDDL("t TIME(3)")
           == StructType(fields: [StructField(name: "t", dataType: .time(precision: 3))]))
     }
+    if await isSparkVersionAtLeast(spark.version, "4.3") {
+      try await spark.conf.set("spark.sql.timestampNanosTypes.enabled", "true")
+      #expect(
+        try await spark.parseDDL("a TIMESTAMP_NTZ(9), b TIMESTAMP_LTZ(7)")
+          == StructType(fields: [
+            StructField(name: "a", dataType: .timestampNtzNanos(precision: 9)),
+            StructField(name: "b", dataType: .timestampLtzNanos(precision: 7)),
+          ]))
+    }
     await spark.stop()
   }
 
