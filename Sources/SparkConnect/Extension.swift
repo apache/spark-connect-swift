@@ -249,6 +249,24 @@ extension [String: String] {
   }
 }
 
+extension Array {
+  /// Get the first element, or throw ``SparkConnectError/invalidState(_:)`` if this is empty.
+  ///
+  /// The Spark Connect server is expected to return at least one result for the commands whose
+  /// results are consumed by this method. An empty result is a protocol violation, so this throws
+  /// instead of trapping.
+  /// - Parameter function: The caller's name which is used in the error message.
+  /// - Returns: The first element.
+  func firstOrThrow(_ function: String = #function) throws -> Element {
+    guard let first = self.first else {
+      throw SparkConnectError.invalidState(
+        SparkConnectError.Details(
+          message: "The server returned an empty response for \(function)."))
+    }
+    return first
+  }
+}
+
 extension Data {
   /// Get an `Int32` value from unsafe 4 bytes.
   var int32: Int32 { withUnsafeBytes({ $0.load(as: Int32.self) }) }

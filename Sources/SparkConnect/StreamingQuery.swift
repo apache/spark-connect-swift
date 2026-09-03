@@ -78,7 +78,7 @@ public actor StreamingQuery: Sendable {
   public var isActive: Bool {
     get async throws {
       let response = try await executeCommand(StreamingQueryCommand.OneOf_Command.status(true))
-      return response.first!.streamingQueryCommandResult.status.isActive
+      return try response.firstOrThrow().streamingQueryCommandResult.status.isActive
     }
   }
 
@@ -86,7 +86,7 @@ public actor StreamingQuery: Sendable {
   /// - Returns: A ``StreamingQueryException`` if the query was terminated by an exception, `nil` otherwise.
   public func exception() async throws -> StreamingQueryException? {
     let response = try await executeCommand(StreamingQueryCommand.OneOf_Command.exception(true))
-    let result = response.first!.streamingQueryCommandResult.exception
+    let result = try response.firstOrThrow().streamingQueryCommandResult.exception
     guard result.hasExceptionMessage else {
       return nil
     }
@@ -101,7 +101,7 @@ public actor StreamingQuery: Sendable {
   /// - Returns:
   public func status() async throws -> StreamingQueryStatus {
     let response = try await executeCommand(StreamingQueryCommand.OneOf_Command.status(true))
-    let result = response.first!.streamingQueryCommandResult.status
+    let result = try response.firstOrThrow().streamingQueryCommandResult.status
     return StreamingQueryStatus(
       statusMessage: result.statusMessage,
       isDataAvailable: result.isDataAvailable,
@@ -117,7 +117,7 @@ public actor StreamingQuery: Sendable {
     get async throws {
       let response = try await executeCommand(
         StreamingQueryCommand.OneOf_Command.recentProgress(true))
-      let result = response.first!.streamingQueryCommandResult.recentProgress
+      let result = try response.firstOrThrow().streamingQueryCommandResult.recentProgress
       return try result.recentProgressJson.map { try StreamingQueryProgress.fromJson($0) }
     }
   }
@@ -127,7 +127,7 @@ public actor StreamingQuery: Sendable {
     get async throws {
       let response = try await executeCommand(
         StreamingQueryCommand.OneOf_Command.lastProgress(true))
-      let result = response.first!.streamingQueryCommandResult.recentProgress
+      let result = try response.firstOrThrow().streamingQueryCommandResult.recentProgress
       guard let json = result.recentProgressJson.first else {
         return nil
       }
@@ -150,7 +150,7 @@ public actor StreamingQuery: Sendable {
     }
     let response = try await executeCommand(
       StreamingQueryCommand.OneOf_Command.awaitTermination(command))
-    return response.first!.streamingQueryCommandResult.awaitTermination.terminated
+    return try response.firstOrThrow().streamingQueryCommandResult.awaitTermination.terminated
   }
 
   /// Blocks until all available data in the source has been processed and committed to the sink.
@@ -181,6 +181,6 @@ public actor StreamingQuery: Sendable {
     var command = Spark_Connect_StreamingQueryCommand.ExplainCommand()
     command.extended = extended
     let response = try await executeCommand(StreamingQueryCommand.OneOf_Command.explain(command))
-    print(response.first!.streamingQueryCommandResult.explain.result)
+    print(try response.firstOrThrow().streamingQueryCommandResult.explain.result)
   }
 }

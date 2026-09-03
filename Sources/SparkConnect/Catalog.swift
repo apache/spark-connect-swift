@@ -106,7 +106,7 @@ public actor Catalog: Sendable {
       catalog.catType = .currentCatalog(Spark_Connect_CurrentCatalog())
       return catalog
     })
-    return try await df.collect()[0][0] as! String
+    return try await df.collect().firstOrThrow()[0] as! String
   }
 
   /// Sets the current default catalog in this session.
@@ -148,7 +148,7 @@ public actor Catalog: Sendable {
       catalog.catType = .currentDatabase(Spark_Connect_CurrentDatabase())
       return catalog
     })
-    return try await df.collect()[0][0] as! String
+    return try await df.collect().firstOrThrow()[0] as! String
   }
 
   /// Sets the current default database in this session.
@@ -248,7 +248,7 @@ public actor Catalog: Sendable {
       try Database(
         name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String,
         locationUri: $0[3] as! String)
-    }.first!
+    }.firstOrThrow()
   }
 
   /// Check if the database with the specified name exists.
@@ -262,7 +262,7 @@ public actor Catalog: Sendable {
       catalog.catType = .databaseExists(databaseExists)
       return catalog
     })
-    return try await df.collect().first![0] as! Bool
+    return try await df.collect().firstOrThrow()[0] as! Bool
   }
 
   /// Returns a list of tables in the given database (or the current database).
@@ -411,7 +411,7 @@ public actor Catalog: Sendable {
         description: $0[3] as? String,
         tableType: $0[4] as! String,
         isTemporary: $0[5] as! Bool)
-    }.first!
+    }.firstOrThrow()
   }
 
   /// Get the table properties of the table with the specified name.
@@ -448,7 +448,7 @@ public actor Catalog: Sendable {
       catalog.catType = .getCreateTableString(getCreateTableString)
       return catalog
     })
-    return try await df.collect()[0][0] as! String
+    return try await df.collect().firstOrThrow()[0] as! String
   }
 
   /// Check if the table or view with the specified name exists. This can either be a temporary
@@ -465,7 +465,7 @@ public actor Catalog: Sendable {
       catalog.tableExists = tableExists
       return catalog
     })
-    return try await df.collect()[0].getAsBool(0)
+    return try await df.collect().firstOrThrow().getAsBool(0)
   }
 
   /// Check if the table or view with the specified name exists. This can either be a temporary
@@ -483,7 +483,7 @@ public actor Catalog: Sendable {
       catalog.tableExists = tableExists
       return catalog
     })
-    return try await df.collect()[0].getAsBool(0)
+    return try await df.collect().firstOrThrow().getAsBool(0)
   }
 
   /// Returns a list of columns for the given table/view or temporary view.
@@ -540,7 +540,7 @@ public actor Catalog: Sendable {
         description: $0[3] as? String,
         className: $0[4] as! String,
         isTemporary: $0[5] as! Bool)
-    }.first!
+    }.firstOrThrow()
   }
 
   /// Get the function with the specified name in the specified database.
@@ -565,7 +565,7 @@ public actor Catalog: Sendable {
         description: $0[3] as? String,
         className: $0[4] as! String,
         isTemporary: $0[5] as! Bool)
-    }.first!
+    }.firstOrThrow()
   }
 
   /// Check if the function with the specified name exists. This can either be a temporary function
@@ -582,7 +582,7 @@ public actor Catalog: Sendable {
       catalog.functionExists = functionExists
       return catalog
     })
-    return try await df.collect()[0].getAsBool(0)
+    return try await df.collect().firstOrThrow().getAsBool(0)
   }
 
   /// Check if the function with the specified name exists in the specified database under the Hive
@@ -600,7 +600,7 @@ public actor Catalog: Sendable {
       catalog.functionExists = functionExists
       return catalog
     })
-    return try await df.collect()[0].getAsBool(0)
+    return try await df.collect().firstOrThrow().getAsBool(0)
   }
 
   /// Caches the specified table in-memory.
@@ -633,7 +633,7 @@ public actor Catalog: Sendable {
       catalog.isCached = isCached
       return catalog
     })
-    return try await df.collect()[0].getAsBool(0)
+    return try await df.collect().firstOrThrow().getAsBool(0)
   }
 
   /// Invalidates and refreshes all the cached data and metadata of the given table.
@@ -746,7 +746,7 @@ public actor Catalog: Sendable {
       catalog.dropTempView = dropTempView
       return catalog
     })
-    return try await df.collect().first!.getAsBool(0)
+    return try await df.collect().firstOrThrow().getAsBool(0)
   }
 
   /// Drops the global temporary view with the given view name in the catalog. If the view has been
@@ -762,7 +762,7 @@ public actor Catalog: Sendable {
       catalog.dropGlobalTempView = dropGlobalTempView
       return catalog
     })
-    return try await df.collect()[0].getAsBool(0)
+    return try await df.collect().firstOrThrow().getAsBool(0)
   }
 
   /// Drops the table with the given table name in the catalog.

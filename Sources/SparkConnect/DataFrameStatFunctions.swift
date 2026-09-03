@@ -96,7 +96,7 @@ public actor DataFrameStatFunctions: Sendable {
     let result = DataFrame(
       spark: await df.spark,
       plan: SparkConnectClient.getStatApproxQuantile(plan.root, cols, probabilities, relativeError))
-    let quantilesPerColumn = try await result.collect()[0].get(0) as! [any Sendable]
+    let quantilesPerColumn = try await result.collect().firstOrThrow().get(0) as! [any Sendable]
     return quantilesPerColumn.map { ($0 as! [any Sendable]).map { $0 as! Double } }
   }
 
@@ -149,7 +149,7 @@ public actor DataFrameStatFunctions: Sendable {
   private func collectDouble(_ f: (Relation) -> Plan) async throws -> Double {
     let plan = await df.getPlan() as! Plan
     let result = DataFrame(spark: await df.spark, plan: f(plan.root))
-    return try await result.collect()[0].get(0) as! Double
+    return try await result.collect().firstOrThrow().get(0) as! Double
   }
 
   /// Builds a new ``DataFrame`` from this ``DataFrame``'s plan using the given plan builder.
