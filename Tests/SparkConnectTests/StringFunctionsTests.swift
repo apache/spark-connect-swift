@@ -36,6 +36,7 @@ struct StringFunctionsTests {
       (char_length(col("a")), "char_length"),
       (character_length(col("a")), "character_length"),
       (chr(col("a")), "chr"),
+      (from_base32(col("a")), "from_base32"),
       (collation(col("a")), "collation"),
       (initcap(col("a")), "initcap"),
       (is_valid_utf8(col("a")), "is_valid_utf8"),
@@ -52,6 +53,7 @@ struct StringFunctionsTests {
       (rtrim(col("a")), "rtrim"),
       (sentences(col("a")), "sentences"),
       (soundex(col("a")), "soundex"),
+      (to_base32(col("a")), "to_base32"),
       (to_binary(col("a")), "to_binary"),
       (trim(col("a")), "trim"),
       (try_to_binary(col("a")), "try_to_binary"),
@@ -388,6 +390,20 @@ struct StringFunctionsTests {
       char_length(randstr(lit(5), lit(0)))
     ).collect()
     #expect(others == [Row("abc", 5, 5)])
+    await spark.stop()
+  }
+
+  @Test
+  func selectBase32Functions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.3") {
+      let rows = try await spark.range(1).select(
+        to_base32(lit("foobar").cast("binary")),
+        from_base32(lit("MZXW6YTBOI======")).cast("string"),
+        to_base32(from_base32(lit("MZXW6YTBOI======")))
+      ).collect()
+      #expect(rows == [Row("MZXW6YTBOI======", "foobar", "MZXW6YTBOI======")])
+    }
     await spark.stop()
   }
 }
