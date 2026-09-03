@@ -200,6 +200,12 @@ extension ExpressionLiteral {
     case let value as LocalTime:
       self.time.nano = value.nanoOfDay
       self.time.precision = 6
+    case let value as TimestampNanos:
+      // Like `Date`, `TimestampNanos` is an absolute point in time, so it maps to
+      // Spark's `TIMESTAMP_LTZ(9)`.
+      self.timestampLtzNanos.epochMicros = value.epochMicros
+      self.timestampLtzNanos.nanosWithinMicro = Int32(value.nanosWithinMicro)
+      self.timestampLtzNanos.precision = 9
     default:
       if case Optional<Any>.none = value as Any {
         var dataType = ProtoDataType()

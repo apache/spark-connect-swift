@@ -234,6 +234,24 @@ struct DataFrameTests {
   }
 
   @Test
+  func selectTimestampNanosLiteral() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.3") {
+      try await spark.conf.set("spark.sql.timestampNanosTypes.enabled", "true")
+      for ts in [
+        TimestampNanos(epochNanos: 1_767_225_600_123_456_789),
+        TimestampNanos(epochNanos: 0),
+        TimestampNanos(epochNanos: -1),
+      ] {
+        let df = try await spark.range(1).select(lit(ts))
+        #expect(try await df.dtypes[0].1 == "timestamp_ltz(9)")
+        #expect(try await df.collect() == [Row(ts)])
+      }
+    }
+    await spark.stop()
+  }
+
+  @Test
   func selectTimeLiteral() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.2") {

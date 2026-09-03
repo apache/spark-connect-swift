@@ -60,6 +60,10 @@ struct FunctionsTests {
     let time = try #require(LocalTime(hour: 12, minute: 34, second: 56))
     #expect(lit(time).expr.literal.time.nano == 45_296_000_000_000)
     #expect(lit(time).expr.literal.time.precision == 6)
+    let ts = TimestampNanos(epochNanos: 1_767_225_600_123_456_789)
+    #expect(lit(ts).expr.literal.timestampLtzNanos.epochMicros == 1_767_225_600_123_456)
+    #expect(lit(ts).expr.literal.timestampLtzNanos.nanosWithinMicro == 789)
+    #expect(lit(ts).expr.literal.timestampLtzNanos.precision == 9)
   }
 
   @Test
@@ -260,6 +264,10 @@ struct FunctionsTests {
     #expect(
       (col("a") == time).expr.unresolvedFunction.arguments[1].literal.time.nano
         == 45_296_000_000_000)
+    let ts = TimestampNanos(epochNanos: 1_767_225_600_123_456_789)
+    #expect(
+      (col("a") == ts).expr.unresolvedFunction.arguments[1].literal.timestampLtzNanos.epochMicros
+        == 1_767_225_600_123_456)
   }
 
   @Test
