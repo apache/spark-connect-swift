@@ -98,6 +98,35 @@ struct CreateDataFrameTests {
   }
 
   @Test
+  func timestampNanosTypes() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.3") {
+      try await spark.conf.set("spark.sql.timestampNanosTypes.enabled", "true")
+      let timestamp = try #require(
+        TimestampNanos(epochMicros: 1_706_000_000_123_456, nanosWithinMicro: 789))
+      let beforeEpoch = TimestampNanos(epochNanos: -1)  // 1969-12-31 23:59:59.999999999
+      for type in ["TIMESTAMP_NTZ", "TIMESTAMP_LTZ"] {
+        let df = try await spark.createDataFrame(
+          [[timestamp], [beforeEpoch], [nil]], "t \(type)(9)")
+        #expect(try await df.dtypes.map { $0.1 } == ["\(type.lowercased())(9)"])
+        #expect(try await df.collect() == [Row(timestamp), Row(beforeEpoch), Row(nil)])
+        for (precision, nanos) in [(7, Int16(700)), (8, 780), (9, 789)] {
+          let value = TimestampNanos(epochMicros: 1_706_000_000_123_456, nanosWithinMicro: nanos)
+          let df = try await spark.createDataFrame([[value]], "t \(type)(\(precision))")
+          #expect(try await df.dtypes.map { $0.1 } == ["\(type.lowercased())(\(precision))"])
+          #expect(try await df.collect() == [Row(value)])
+        }
+        // Out of the Arrow nanosecond range (about 1677 ~ 2262).
+        await #expect(throws: SparkConnectError.InvalidType) {
+          try await spark.createDataFrame(
+            [[TimestampNanos(epochMicros: Int64.max)]], "t \(type)(9)")
+        }
+      }
+    }
+    await spark.stop()
+  }
+
+  @Test
   func binaryType() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.createDataFrame([[Data([1, 2, 3])], [nil]], "a BINARY")
