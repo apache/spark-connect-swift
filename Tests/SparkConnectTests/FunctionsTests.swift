@@ -95,6 +95,34 @@ struct FunctionsTests {
   }
 
   @Test
+  func nullOrderingFunctions() throws {
+    let cases:
+      [(
+        Column, Spark_Connect_Expression.SortOrder.SortDirection,
+        Spark_Connect_Expression.SortOrder.NullOrdering
+      )] = [
+        (asc_nulls_first("id"), .ascending, .sortNullsFirst),
+        (asc_nulls_last("id"), .ascending, .sortNullsLast),
+        (desc_nulls_first("id"), .descending, .sortNullsFirst),
+        (desc_nulls_last("id"), .descending, .sortNullsLast),
+        (col("id").ascNullsFirst(), .ascending, .sortNullsFirst),
+        (col("id").ascNullsLast(), .ascending, .sortNullsLast),
+        (col("id").descNullsFirst(), .descending, .sortNullsFirst),
+        (col("id").descNullsLast(), .descending, .sortNullsLast),
+      ]
+    for (column, direction, nullOrdering) in cases {
+      let expr = column.expr
+      #expect(expr.sortOrder.child.unresolvedAttribute.unparsedIdentifier == "id")
+      #expect(expr.sortOrder.direction == direction)
+      #expect(expr.sortOrder.nullOrdering == nullOrdering)
+    }
+
+    // `asc` is an alias of `asc_nulls_first` and `desc` is an alias of `desc_nulls_last`.
+    #expect(asc("id").expr == asc_nulls_first("id").expr)
+    #expect(desc("id").expr == desc_nulls_last("id").expr)
+  }
+
+  @Test
   func cast() throws {
     let expr = col("id").cast("string").expr
     #expect(expr.cast.expr.unresolvedAttribute.unparsedIdentifier == "id")
@@ -441,6 +469,19 @@ struct FunctionsTests {
     let rows = try await df.select(
       col("arr").getItem(0), col("m").getItem("k"), col("s").getField("a")).collect()
     #expect(rows == [Row(1, 10, 7)])
+    await spark.stop()
+  }
+
+  @Test
+  func sortWithNullOrdering() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT * FROM VALUES (1), (null), (2) AS T(v)")
+    #expect(try await df.orderBy(asc_nulls_first("v")).collect() == [Row(nil), Row(1), Row(2)])
+    #expect(try await df.orderBy(asc_nulls_last("v")).collect() == [Row(1), Row(2), Row(nil)])
+    #expect(try await df.orderBy(desc_nulls_first("v")).collect() == [Row(nil), Row(2), Row(1)])
+    #expect(try await df.orderBy(desc_nulls_last("v")).collect() == [Row(2), Row(1), Row(nil)])
+    #expect(try await df.sort(col("v").ascNullsLast()).collect() == [Row(1), Row(2), Row(nil)])
+    #expect(try await df.sort(col("v").descNullsFirst()).collect() == [Row(nil), Row(2), Row(1)])
     await spark.stop()
   }
 }
