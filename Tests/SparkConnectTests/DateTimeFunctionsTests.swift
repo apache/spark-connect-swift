@@ -190,6 +190,60 @@ struct DateTimeFunctionsTests {
   }
 
   @Test
+  func intervalAndTimestampConstructorArguments() throws {
+    for (column, name, count) in [
+      (make_interval(), "make_interval", 7),
+      (make_interval(years: col("a")), "make_interval", 7),
+      (try_make_interval(), "try_make_interval", 7),
+      (make_dt_interval(), "make_dt_interval", 4),
+      (make_dt_interval(days: col("a")), "make_dt_interval", 4),
+      (make_ym_interval(), "make_ym_interval", 2),
+      (make_ym_interval(years: col("a")), "make_ym_interval", 2),
+      (make_timestamp(col("a"), col("b"), col("c"), col("d"), col("e"), col("f")),
+        "make_timestamp", 6),
+      (make_timestamp(col("a"), col("b"), col("c"), col("d"), col("e"), col("f"), col("g")),
+        "make_timestamp", 7),
+      (make_timestamp_ltz(col("a"), col("b"), col("c"), col("d"), col("e"), col("f")),
+        "make_timestamp_ltz", 6),
+      (make_timestamp_ltz(col("a"), col("b"), col("c"), col("d"), col("e"), col("f"), col("g")),
+        "make_timestamp_ltz", 7),
+      (make_timestamp_ntz(col("a"), col("b"), col("c"), col("d"), col("e"), col("f")),
+        "make_timestamp_ntz", 6),
+      (try_make_timestamp(col("a"), col("b"), col("c"), col("d"), col("e"), col("f")),
+        "try_make_timestamp", 6),
+      (try_make_timestamp(col("a"), col("b"), col("c"), col("d"), col("e"), col("f"), col("g")),
+        "try_make_timestamp", 7),
+      (try_make_timestamp_ltz(col("a"), col("b"), col("c"), col("d"), col("e"), col("f")),
+        "try_make_timestamp_ltz", 6),
+      (try_make_timestamp_ltz(col("a"), col("b"), col("c"), col("d"), col("e"), col("f"), col("g")),
+        "try_make_timestamp_ltz", 7),
+      (try_make_timestamp_ntz(col("a"), col("b"), col("c"), col("d"), col("e"), col("f")),
+        "try_make_timestamp_ntz", 6),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments.count == count)
+    }
+
+    // The omitted optional fields are filled with a zero literal, so the full argument list is
+    // always sent to the server.
+    let interval = make_interval(hours: col("a")).expr
+    #expect(interval.unresolvedFunction.arguments[4].unresolvedAttribute.unparsedIdentifier == "a")
+    for i in [0, 1, 2, 3, 5, 6] {
+      #expect(interval.unresolvedFunction.arguments[i].literal.long == 0)
+    }
+
+    let dtInterval = make_dt_interval(mins: col("a")).expr
+    #expect(dtInterval.unresolvedFunction.arguments[2].unresolvedAttribute.unparsedIdentifier == "a")
+    for i in [0, 1, 3] {
+      #expect(dtInterval.unresolvedFunction.arguments[i].literal.long == 0)
+    }
+
+    let ymInterval = make_ym_interval(months: col("a")).expr
+    #expect(ymInterval.unresolvedFunction.arguments[0].literal.long == 0)
+    #expect(ymInterval.unresolvedFunction.arguments[1].unresolvedAttribute.unparsedIdentifier == "a")
+  }
+  @Test
   func selectCurrentDateTimeFunctions() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let rows = try await spark.range(1).select(
@@ -361,6 +415,81 @@ struct DateTimeFunctionsTests {
         ])
     }
     try await spark.conf.unset("spark.sql.timeType.enabled")
+    await spark.stop()
+  }
+
+  @Test
+  func selectIntervalConstructorFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Interval values are cast to `string` because the Arrow decoder does not support them.
+    let intervals = try await spark.range(1).select(
+      make_interval().cast("string"),
+      make_interval(
+        years: lit(1), months: lit(2), weeks: lit(3), days: lit(4), hours: lit(5), mins: lit(6),
+        secs: lit(7)
+      ).cast("string"),
+      make_dt_interval().cast("string"),
+      make_dt_interval(days: lit(1), hours: lit(2), mins: lit(3), secs: lit(4)).cast("string"),
+      make_ym_interval().cast("string"),
+      make_ym_interval(years: lit(1), months: lit(2)).cast("string")
+    ).collect()
+    #expect(
+      intervals == [
+        Row(
+          "0 seconds", "1 years 2 months 25 days 5 hours 6 minutes 7 seconds",
+          "INTERVAL '0 00:00:00' DAY TO SECOND", "INTERVAL '1 02:03:04' DAY TO SECOND",
+          "INTERVAL '0-0' YEAR TO MONTH", "INTERVAL '1-2' YEAR TO MONTH")
+      ])
+
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
+      let tryIntervals = try await spark.range(1).select(
+        try_make_interval(years: lit(1), months: lit(2)).cast("string"),
+        try_make_interval(years: lit(2147483647)).cast("string")
+      ).collect()
+      #expect(tryIntervals == [Row("1 years 2 months", nil)])
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func selectTimestampConstructorFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    try await spark.conf.set("spark.sql.session.timeZone", "UTC")
+    let timestamps = try await spark.range(1).select(
+      make_timestamp(lit(2026), lit(9), lit(3), lit(12), lit(0), lit(0)).cast("string"),
+      make_timestamp(lit(2026), lit(9), lit(3), lit(12), lit(0), lit(0), lit("Asia/Seoul"))
+        .cast("string"),
+      make_timestamp_ltz(lit(2026), lit(9), lit(3), lit(12), lit(0), lit(0)).cast("string"),
+      make_timestamp_ltz(lit(2026), lit(9), lit(3), lit(12), lit(0), lit(0), lit("Asia/Seoul"))
+        .cast("string"),
+      make_timestamp_ntz(lit(2026), lit(9), lit(3), lit(12), lit(0), lit(0)).cast("string")
+    ).collect()
+    #expect(
+      timestamps == [
+        Row(
+          "2026-09-03 12:00:00", "2026-09-03 03:00:00", "2026-09-03 12:00:00",
+          "2026-09-03 03:00:00", "2026-09-03 12:00:00")
+      ])
+
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
+      let tryTimestamps = try await spark.range(1).select(
+        try_make_timestamp(lit(2026), lit(9), lit(3), lit(12), lit(0), lit(0)).cast("string"),
+        try_make_timestamp_ltz(lit(2026), lit(9), lit(3), lit(12), lit(0), lit(0)).cast("string"),
+        try_make_timestamp_ntz(lit(2026), lit(9), lit(3), lit(12), lit(0), lit(0)).cast("string"),
+        try_make_timestamp(lit(2026), lit(13), lit(3), lit(12), lit(0), lit(0)),
+        try_make_timestamp(lit(2026), lit(13), lit(3), lit(12), lit(0), lit(0), lit("UTC")),
+        try_make_timestamp_ltz(lit(2026), lit(13), lit(3), lit(12), lit(0), lit(0)),
+        try_make_timestamp_ltz(lit(2026), lit(13), lit(3), lit(12), lit(0), lit(0), lit("UTC")),
+        try_make_timestamp_ntz(lit(2026), lit(13), lit(3), lit(12), lit(0), lit(0))
+      ).collect()
+      #expect(
+        tryTimestamps == [
+          Row(
+            "2026-09-03 12:00:00", "2026-09-03 12:00:00", "2026-09-03 12:00:00", nil, nil, nil,
+            nil, nil)
+        ])
+    }
+    try await spark.conf.unset("spark.sql.session.timeZone")
     await spark.stop()
   }
 }
