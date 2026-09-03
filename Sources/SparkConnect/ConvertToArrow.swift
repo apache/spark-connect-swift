@@ -29,6 +29,10 @@ enum ConvertToArrow {
   /// precision of a `TIME(p)` column, because the `Apache Arrow` `Time` type has no such field.
   private static let timePrecisionKey = "SPARK::time::precision"
 
+  /// An `Apache Arrow` field metadata key which `Apache Spark` uses to carry the fractional-second
+  /// precision of a `TIMESTAMP_NTZ(p)` or `TIMESTAMP_LTZ(p)` column with nanosecond precision.
+  private static let timestampNanosPrecisionKey = "SPARK::timestampNanos::precision"
+
   /// Convert the given rows into an `Apache Arrow` IPC stream according to the Spark schema.
   /// - Parameters:
   ///   - data: An array of rows whose values are ordered like the schema fields.
@@ -64,10 +68,16 @@ enum ConvertToArrow {
 
   /// Build the `Apache Arrow` field metadata for the given Spark data type, if any.
   private static func metadata(_ dataType: ProtoDataType) -> [String: String]? {
-    if case .time(let time) = dataType.kind, time.hasPrecision {
+    switch dataType.kind {
+    case .time(let time) where time.hasPrecision:
       return [timePrecisionKey: String(time.precision)]
+    case .timestampNtzNanos(let timestamp) where timestamp.hasPrecision:
+      return [timestampNanosPrecisionKey: String(timestamp.precision)]
+    case .timestampLtzNanos(let timestamp) where timestamp.hasPrecision:
+      return [timestampNanosPrecisionKey: String(timestamp.precision)]
+    default:
+      return nil
     }
-    return nil
   }
 
   /// Build an Arrow column from the given values according to the Spark data type.
@@ -105,6 +115,14 @@ enum ConvertToArrow {
       return try fill(
         ArrowArrayBuilders.loadTimestampArrayBuilder(.microseconds, timezone: "UTC"), column
       ) { ($0 as? Date).map { Int64(($0.timeIntervalSince1970 * 1_000_000).rounded()) } }
+    case .timestampNtzNanos:
+      return try fill(ArrowArrayBuilders.loadTimestampArrayBuilder(.nanoseconds), column) {
+        ($0 as? TimestampNanos).flatMap(toEpochNanos)
+      }
+    case .timestampLtzNanos:
+      return try fill(
+        ArrowArrayBuilders.loadTimestampArrayBuilder(.nanoseconds, timezone: "UTC"), column
+      ) { ($0 as? TimestampNanos).flatMap(toEpochNanos) }
     case .time:
       return try fill(ArrowArrayBuilders.loadTime64ArrayBuilder(.nanoseconds), column) {
         ($0 as? LocalTime)?.nanoOfDay
@@ -132,6 +150,14 @@ enum ConvertToArrow {
       }
     }
     return try builder.toHolder()
+  }
+
+  /// Returns the nanoseconds since the Unix epoch, or `nil` if it overflows `Int64`.
+  private static func toEpochNanos(_ value: TimestampNanos) -> Int64? {
+    let (micros, overflow) = value.epochMicros.multipliedReportingOverflow(by: 1_000)
+    guard !overflow else { return nil }
+    let (nanos, overflow2) = micros.addingReportingOverflow(Int64(value.nanosWithinMicro))
+    return overflow2 ? nil : nanos
   }
 
   private static func toInt64(_ value: Sendable) -> Int64? {

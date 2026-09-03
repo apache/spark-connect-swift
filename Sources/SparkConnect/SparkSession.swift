@@ -147,8 +147,9 @@ public actor SparkSession {
   ///
   /// The data is serialized into an `Apache Arrow` IPC stream and embedded into the plan as a
   /// `LocalRelation`. The supported schema types are `BOOLEAN`, `TINYINT`, `SMALLINT`, `INT`,
-  /// `BIGINT`, `FLOAT`, `DOUBLE`, `STRING`, `BINARY`, `DATE`, `TIMESTAMP`, and `TIME`.
-  /// `nil` values are mapped to `NULL`. When the serialized data is equal to or larger than
+  /// `BIGINT`, `FLOAT`, `DOUBLE`, `STRING`, `BINARY`, `DATE`, `TIMESTAMP`, `TIMESTAMP_NTZ(p)`,
+  /// `TIMESTAMP_LTZ(p)` (`p` in `7...9`, with ``TimestampNanos`` values), and `TIME`. `nil`
+  /// values are mapped to `NULL`. When the serialized data is equal to or larger than
   /// `spark.sql.session.localRelationCacheThreshold` (1MiB by default), it is uploaded to the
   /// server as a `cache/` artifact and referenced by a `CachedLocalRelation` plan instead, so
   /// it is not limited by the gRPC message size limit.
