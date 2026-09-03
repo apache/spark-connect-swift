@@ -186,6 +186,15 @@ public func format_string(_ format: String, _ arguments: Column...) -> Column {
   return fn("format_string", [lit(format)] + arguments)
 }
 
+/// Decodes a BASE32 (RFC 4648) encoded string column and returns it as a binary column.
+/// This is the reverse of ``to_base32(_:)``.
+/// This requires Apache Spark 4.3.0 or later.
+/// - Parameter col: A ``Column`` that evaluates to a string.
+/// - Returns: A ``Column`` that evaluates to a binary.
+public func from_base32(_ col: Column) -> Column {
+  return fn("from_base32", col)
+}
+
 /// Returns a new string column by converting the first letter of each word to uppercase.
 /// - Parameter col: A ``Column``.
 /// - Returns: A ``Column``.
@@ -930,6 +939,15 @@ public func substring(_ str: Column, _ pos: Column, _ len: Column) -> Column {
 /// - Returns: A ``Column``.
 public func substring_index(_ str: Column, _ delim: String, _ count: Int32) -> Column {
   return fn("substring_index", str, lit(delim), lit(count))
+}
+
+/// Computes the BASE32 (RFC 4648) encoding of a binary column and returns it as a string column.
+/// This is the reverse of ``from_base32(_:)``.
+/// This requires Apache Spark 4.3.0 or later.
+/// - Parameter col: A ``Column`` that evaluates to a binary.
+/// - Returns: A ``Column`` that evaluates to a string.
+public func to_base32(_ col: Column) -> Column {
+  return fn("to_base32", col)
 }
 
 /// Converts the input `col` to a binary value based on the default format 'hex'.
