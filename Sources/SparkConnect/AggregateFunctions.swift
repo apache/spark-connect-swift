@@ -553,6 +553,13 @@ public func regr_syy(_ y: Column, _ x: Column) -> Column {
   return fn("regr_syy", y, x)
 }
 
+/// Returns the merged schema in DDL format of all `VARIANT` values in a group.
+/// - Parameter v: A ``Column`` of the `VARIANT` type to aggregate.
+/// - Returns: A ``Column`` that evaluates to a schema string in DDL format.
+public func schema_of_variant_agg(_ v: Column) -> Column {
+  return fn("schema_of_variant_agg", v)
+}
+
 /// Returns the skewness of the values in a group.
 /// - Parameter col: A ``Column`` to aggregate.
 /// - Returns: A ``Column``.
