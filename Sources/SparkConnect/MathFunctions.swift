@@ -229,6 +229,17 @@ public func floor(_ col: Column, _ scale: Column) -> Column {
   return fn("floor", col, scale)
 }
 
+/// Returns the greatest value of the list of values, skipping null values. This function takes
+/// at least 2 parameters. It will return null iff all parameters are null.
+/// - Parameters:
+///   - col1: A ``Column``.
+///   - col2: A ``Column``.
+///   - cols: Additional ``Column``s.
+/// - Returns: A ``Column``.
+public func greatest(_ col1: Column, _ col2: Column, _ cols: Column...) -> Column {
+  return fn("greatest", [col1, col2] + cols)
+}
+
 /// Computes hex value of the given column.
 /// - Parameter col: A ``Column``.
 /// - Returns: A ``Column``.
@@ -243,6 +254,17 @@ public func hex(_ col: Column) -> Column {
 /// - Returns: A ``Column``.
 public func hypot(_ l: Column, _ r: Column) -> Column {
   return fn("hypot", l, r)
+}
+
+/// Returns the least value of the list of values, skipping null values. This function takes at
+/// least 2 parameters. It will return null iff all parameters are null.
+/// - Parameters:
+///   - col1: A ``Column``.
+///   - col2: A ``Column``.
+///   - cols: Additional ``Column``s.
+/// - Returns: A ``Column``.
+public func least(_ col1: Column, _ col2: Column, _ cols: Column...) -> Column {
+  return fn("least", [col1, col2] + cols)
 }
 
 /// Computes the natural logarithm of the given value.
@@ -343,6 +365,36 @@ public func power(_ l: Column, _ r: Column) -> Column {
 /// - Returns: A ``Column``.
 public func radians(_ col: Column) -> Column {
   return fn("radians", col)
+}
+
+/// Generates a random column with independent and identically distributed (i.i.d.) samples
+/// uniformly distributed in [0.0, 1.0). The function is non-deterministic in general case.
+/// - Returns: A ``Column``.
+public func rand() -> Column {
+  return fn("rand")
+}
+
+/// Generates a random column with independent and identically distributed (i.i.d.) samples
+/// uniformly distributed in [0.0, 1.0), with the chosen random seed.
+/// - Parameter seed: A random seed.
+/// - Returns: A ``Column``.
+public func rand(_ seed: Int64) -> Column {
+  return fn("rand", lit(seed))
+}
+
+/// Generates a column with independent and identically distributed (i.i.d.) samples from the
+/// standard normal distribution. The function is non-deterministic in general case.
+/// - Returns: A ``Column``.
+public func randn() -> Column {
+  return fn("randn")
+}
+
+/// Generates a column with independent and identically distributed (i.i.d.) samples from the
+/// standard normal distribution, with the chosen random seed.
+/// - Parameter seed: A random seed.
+/// - Returns: A ``Column``.
+public func randn(_ seed: Int64) -> Column {
+  return fn("randn", lit(seed))
 }
 
 /// Returns the double value that is closest in value to the argument and is equal to a
@@ -452,12 +504,88 @@ public func tanh(_ col: Column) -> Column {
   return fn("tanh", col)
 }
 
+/// Returns the sum of `left` and `right` and the result is null on overflow. The acceptable
+/// input types are the same with the `+` operator.
+/// - Parameters:
+///   - left: A left operand ``Column``.
+///   - right: A right operand ``Column``.
+/// - Returns: A ``Column``.
+public func try_add(_ left: Column, _ right: Column) -> Column {
+  return fn("try_add", left, right)
+}
+
+/// Returns `left`/`right`. It always performs floating point division. Its result is always null
+/// if `right` is 0.
+/// - Parameters:
+///   - left: A dividend ``Column``.
+///   - right: A divisor ``Column``.
+/// - Returns: A ``Column``.
+public func try_divide(_ left: Column, _ right: Column) -> Column {
+  return fn("try_divide", left, right)
+}
+
+/// Returns the remainder of `left`/`right`. Its result is always null if `right` is 0.
+/// - Parameters:
+///   - left: A dividend ``Column``.
+///   - right: A divisor ``Column``.
+/// - Returns: A ``Column``.
+public func try_mod(_ left: Column, _ right: Column) -> Column {
+  return fn("try_mod", left, right)
+}
+
+/// Returns `left`*`right` and the result is null on overflow. The acceptable input types are the
+/// same with the `*` operator.
+/// - Parameters:
+///   - left: A multiplicand ``Column``.
+///   - right: A multiplier ``Column``.
+/// - Returns: A ``Column``.
+public func try_multiply(_ left: Column, _ right: Column) -> Column {
+  return fn("try_multiply", left, right)
+}
+
+/// Returns `left`-`right` and the result is null on overflow. The acceptable input types are the
+/// same with the `-` operator.
+/// - Parameters:
+///   - left: A left operand ``Column``.
+///   - right: A right operand ``Column``.
+/// - Returns: A ``Column``.
+public func try_subtract(_ left: Column, _ right: Column) -> Column {
+  return fn("try_subtract", left, right)
+}
+
 /// Inverse of ``hex(_:)``. Interprets each pair of characters as a hexadecimal number and
 /// converts to the byte representation of number.
 /// - Parameter col: A ``Column``.
 /// - Returns: A ``Column``.
 public func unhex(_ col: Column) -> Column {
   return fn("unhex", col)
+}
+
+/// Returns a random value with independent and identically distributed (i.i.d.) values with the
+/// specified range of numbers. The provided numbers specifying the minimum and maximum values of
+/// the range must be constant. If both of these numbers are integers, then the result will also
+/// be an integer. Otherwise if one or both of these are floating-point numbers, then the result
+/// will also be a floating-point number.
+/// - Parameters:
+///   - min: A minimum value ``Column`` in the range. Must be a constant.
+///   - max: A maximum value ``Column`` in the range. Must be a constant.
+/// - Returns: A ``Column``.
+public func uniform(_ min: Column, _ max: Column) -> Column {
+  return fn("uniform", min, max)
+}
+
+/// Returns a random value with independent and identically distributed (i.i.d.) values with the
+/// specified range of numbers, with the chosen random seed. The provided numbers specifying the
+/// minimum and maximum values of the range must be constant. If both of these numbers are
+/// integers, then the result will also be an integer. Otherwise if one or both of these are
+/// floating-point numbers, then the result will also be a floating-point number.
+/// - Parameters:
+///   - min: A minimum value ``Column`` in the range. Must be a constant.
+///   - max: A maximum value ``Column`` in the range. Must be a constant.
+///   - seed: A random seed ``Column``. Must be a constant.
+/// - Returns: A ``Column``.
+public func uniform(_ min: Column, _ max: Column, _ seed: Column) -> Column {
+  return fn("uniform", min, max, seed)
 }
 
 /// Returns the bucket number into which the value of this expression would fall after being

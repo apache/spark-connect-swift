@@ -87,6 +87,14 @@ struct MathFunctionsTests {
       (ceil(col("a"), lit(1)), "ceil"),
       (ceiling(col("a"), lit(1)), "ceiling"),
       (floor(col("a"), lit(1)), "floor"),
+      (greatest(col("a"), col("b")), "greatest"),
+      (least(col("a"), col("b")), "least"),
+      (try_add(col("a"), col("b")), "try_add"),
+      (try_divide(col("a"), col("b")), "try_divide"),
+      (try_mod(col("a"), col("b")), "try_mod"),
+      (try_multiply(col("a"), col("b")), "try_multiply"),
+      (try_subtract(col("a"), col("b")), "try_subtract"),
+      (uniform(lit(0), lit(10)), "uniform"),
     ] {
       let expr = column.expr
       #expect(expr.unresolvedFunction.functionName == name)
@@ -118,6 +126,28 @@ struct MathFunctionsTests {
     #expect(pi().expr.unresolvedFunction.arguments.isEmpty)
     #expect(
       width_bucket(col("a"), lit(0), lit(10), lit(5)).expr.unresolvedFunction.arguments.count == 4)
+
+    #expect(greatest(col("a"), col("b"), col("c")).expr.unresolvedFunction.arguments.count == 3)
+    #expect(least(col("a"), col("b"), col("c")).expr.unresolvedFunction.arguments.count == 3)
+    #expect(uniform(lit(0), lit(10), lit(1)).expr.unresolvedFunction.arguments.count == 3)
+
+    for (column, name) in [
+      (rand(), "rand"),
+      (randn(), "randn"),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments.isEmpty)
+    }
+
+    for (column, name) in [
+      (rand(42), "rand"),
+      (randn(42), "randn"),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments[0].literal.long == 42)
+    }
   }
 
   @Test
@@ -197,6 +227,77 @@ struct MathFunctionsTests {
       shiftleft(lit(1), 3), shiftright(lit(8), 2), shiftrightunsigned(lit(8), 2)
     ).collect()
     #expect(rows == [Row("101", "FF", "4", 8, 2, 2)])
+    await spark.stop()
+  }
+
+  @Test
+  func selectComparisonFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1)
+    let rows = try await df.select(
+      greatest(lit(1), lit(2)), greatest(lit(1), lit(2), lit(3)),
+      least(lit(1), lit(2)), least(lit(1), lit(2), lit(3))
+    ).collect()
+    #expect(rows == [Row(2, 3, 1, 1)])
+
+    // Null values are skipped and the result is null iff all the values are null.
+    let nulls = try await spark.sql(
+      "SELECT CAST(NULL AS INT) AS a, 1 AS b, CAST(NULL AS INT) AS c"
+    ).select(
+      greatest(col("a"), col("b")), least(col("a"), col("b")),
+      greatest(col("a"), col("c")), least(col("a"), col("c"))
+    ).collect()
+    #expect(nulls == [Row(1, 1, nil, nil)])
+    await spark.stop()
+  }
+
+  @Test
+  func selectRandomFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1)
+
+    // The functions are non-deterministic, so only the value range is verified.
+    let rows = try await df.select(rand(), randn()).collect()
+    let random = try rows[0][0] as! Double
+    #expect(random >= 0.0 && random < 1.0)
+    let normal = try rows[0][1]
+    #expect(normal is Double)
+
+    // The same seed always gives the same value.
+    let seeded = try await df.select(rand(42), randn(42)).collect()
+    #expect(try await df.select(rand(42), randn(42)).collect() == seeded)
+
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
+      let uniforms = try await df.select(uniform(lit(5), lit(105), lit(3))).collect()
+      let value = try uniforms[0][0] as! Int64
+      #expect(value >= 5 && value <= 105)
+      #expect(try await df.select(uniform(lit(5), lit(105), lit(3))).collect() == uniforms)
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func selectTryArithmeticFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1)
+    let rows = try await df.select(
+      try_add(lit(1), lit(2)), try_subtract(lit(5), lit(2)), try_multiply(lit(2), lit(3)),
+      try_divide(lit(6), lit(3))
+    ).collect()
+    #expect(rows == [Row(3, 3, 6, 2.0)])
+
+    // Null is returned instead of an exception on overflow and division by zero.
+    let overflow = try await df.select(
+      try_add(lit(Int64.max), lit(1)), try_subtract(lit(Int64.min), lit(1)),
+      try_multiply(lit(Int64.max), lit(2)), try_divide(lit(1), lit(0))
+    ).collect()
+    #expect(overflow == [Row(nil, nil, nil, nil)])
+
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
+      #expect(
+        try await df.select(try_mod(lit(7), lit(3)), try_mod(lit(1), lit(0))).collect()
+          == [Row(1, nil)])
+    }
     await spark.stop()
   }
 }
