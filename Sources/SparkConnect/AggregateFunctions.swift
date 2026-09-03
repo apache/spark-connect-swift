@@ -50,6 +50,65 @@ public func approx_count_distinct(_ col: Column, _ rsd: Double) -> Column {
   return fn("approx_count_distinct", col, lit(rsd))
 }
 
+/// Returns the approximate `percentile` of the numeric column `col` which is the smallest value
+/// in the ordered `col` values (sorted from least to greatest) such that no more than `percentage`
+/// of `col` values is less than the value or equal to that value.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - percentage: A percentage. Must be between 0.0 and 1.0.
+///   - accuracy: A positive numeric literal that controls approximation accuracy
+///     at the cost of memory (default = 10000).
+/// - Returns: A ``Column``.
+public func approx_percentile(_ col: Column, _ percentage: Double, _ accuracy: Int32 = 10000)
+  -> Column
+{
+  return fn("approx_percentile", col, lit(percentage), lit(accuracy))
+}
+
+/// Returns the approximate `percentile`s of the numeric column `col` which are the smallest values
+/// in the ordered `col` values (sorted from least to greatest) such that no more than each
+/// `percentage` of `col` values is less than the value or equal to that value.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - percentage: An array of percentages. Each value must be between 0.0 and 1.0.
+///   - accuracy: A positive numeric literal that controls approximation accuracy
+///     at the cost of memory (default = 10000).
+/// - Returns: A ``Column``.
+public func approx_percentile(_ col: Column, _ percentage: [Double], _ accuracy: Int32 = 10000)
+  -> Column
+{
+  return fn("approx_percentile", col, fn("array", percentage.map { lit($0) }), lit(accuracy))
+}
+
+/// Returns a list of objects with duplicates.
+/// This is an alias of ``collect_list(_:)``.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func array_agg(_ col: Column) -> Column {
+  return fn("array_agg", col)
+}
+
+/// Returns the bitwise `AND` of all non-null input values, or null if none.
+/// - Parameter col: A ``Column`` that evaluates to an integral.
+/// - Returns: A ``Column``.
+public func bit_and(_ col: Column) -> Column {
+  return fn("bit_and", col)
+}
+
+/// Returns the bitwise `OR` of all non-null input values, or null if none.
+/// - Parameter col: A ``Column`` that evaluates to an integral.
+/// - Returns: A ``Column``.
+public func bit_or(_ col: Column) -> Column {
+  return fn("bit_or", col)
+}
+
+/// Returns the bitwise `XOR` of all non-null input values, or null if none.
+/// - Parameter col: A ``Column`` that evaluates to an integral.
+/// - Returns: A ``Column``.
+public func bit_xor(_ col: Column) -> Column {
+  return fn("bit_xor", col)
+}
+
 /// Returns true if all values of the column are true.
 /// - Parameter col: A ``Column`` that evaluates to a boolean.
 /// - Returns: A ``Column``.
@@ -76,6 +135,17 @@ public func collect_list(_ col: Column) -> Column {
 /// - Returns: A ``Column``.
 public func collect_set(_ col: Column) -> Column {
   return fn("collect_set", col)
+}
+
+/// Given an array-typed column, collects the distinct union of the elements of the arrays
+/// across rows and returns it as an array.
+///
+/// Null elements are dropped by default, matching ``collect_set(_:)``.
+/// This requires Apache Spark 4.3.0 or later.
+/// - Parameter col: An array ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func collect_union(_ col: Column) -> Column {
+  return fn("collect_union", col)
 }
 
 /// Returns the Pearson Correlation Coefficient for two columns.
@@ -113,6 +183,32 @@ public func count_if(_ col: Column) -> Column {
   return fn("count_if", col)
 }
 
+/// Returns a count-min sketch of the column with the given `eps` and `confidence`,
+/// using a randomly generated seed.
+/// The result is an array of bytes, which can be deserialized to a `CountMinSketch` before usage.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - eps: The relative error. Must be positive.
+///   - confidence: The confidence. Must be positive and less than 1.0.
+/// - Returns: A ``Column``.
+public func count_min_sketch(_ col: Column, _ eps: Double, _ confidence: Double) -> Column {
+  return count_min_sketch(col, eps, confidence, Int64.random(in: Int64.min...Int64.max))
+}
+
+/// Returns a count-min sketch of the column with the given `eps`, `confidence` and `seed`.
+/// The result is an array of bytes, which can be deserialized to a `CountMinSketch` before usage.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - eps: The relative error. Must be positive.
+///   - confidence: The confidence. Must be positive and less than 1.0.
+///   - seed: The random seed.
+/// - Returns: A ``Column``.
+public func count_min_sketch(_ col: Column, _ eps: Double, _ confidence: Double, _ seed: Int64)
+  -> Column
+{
+  return fn("count_min_sketch", col, lit(eps), lit(confidence), lit(seed))
+}
+
 /// Returns the population covariance for two columns.
 /// - Parameters:
 ///   - column1: A ``Column``.
@@ -129,6 +225,14 @@ public func covar_pop(_ column1: Column, _ column2: Column) -> Column {
 /// - Returns: A ``Column``.
 public func covar_samp(_ column1: Column, _ column2: Column) -> Column {
   return fn("covar_samp", column1, column2)
+}
+
+/// Returns true if all values of the column are true.
+/// This is an alias of ``bool_and(_:)``.
+/// - Parameter col: A ``Column`` that evaluates to a boolean.
+/// - Returns: A ``Column``.
+public func every(_ col: Column) -> Column {
+  return fn("every", col)
 }
 
 /// Returns the first value in a group.
@@ -153,6 +257,27 @@ public func first(_ col: Column, _ ignoreNulls: Bool) -> Column {
   return fn("first", col, lit(ignoreNulls))
 }
 
+/// Returns the first value in a group.
+/// This is similar to ``first(_:)``.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func first_value(_ col: Column) -> Column {
+  return fn("first_value", col)
+}
+
+/// Returns the first value in a group.
+///
+/// The function by default returns the first values it sees. It will return the first non-null
+/// value it sees when `ignoreNulls` is set to true. If all values are null, then null is returned.
+/// This is similar to ``first(_:_:)``.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - ignoreNulls: Whether to skip null values.
+/// - Returns: A ``Column``.
+public func first_value(_ col: Column, _ ignoreNulls: Bool) -> Column {
+  return fn("first_value", col, lit(ignoreNulls))
+}
+
 /// Indicates whether a specified column in a GROUP BY list is aggregated or not,
 /// returns 1 for aggregated or 0 for not aggregated in the result set.
 /// - Parameter col: A ``Column`` to check.
@@ -166,6 +291,15 @@ public func grouping(_ col: Column) -> Column {
 /// - Returns: A ``Column``.
 public func grouping_id(_ cols: Column...) -> Column {
   return fn("grouping_id", cols)
+}
+
+/// Computes a histogram on numeric `col` using `nBins` bins.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - nBins: The number of bins. Must be greater than 1.
+/// - Returns: A ``Column``.
+public func histogram_numeric(_ col: Column, _ nBins: Int32) -> Column {
+  return fn("histogram_numeric", col, lit(nBins))
 }
 
 /// Returns the kurtosis of the values in a group.
@@ -195,6 +329,63 @@ public func last(_ col: Column) -> Column {
 /// - Returns: A ``Column``.
 public func last(_ col: Column, _ ignoreNulls: Bool) -> Column {
   return fn("last", col, lit(ignoreNulls))
+}
+
+/// Returns the last value in a group.
+/// This is similar to ``last(_:)``.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func last_value(_ col: Column) -> Column {
+  return fn("last_value", col)
+}
+
+/// Returns the last value in a group.
+///
+/// The function by default returns the last values it sees. It will return the last non-null
+/// value it sees when `ignoreNulls` is set to true. If all values are null, then null is returned.
+/// This is similar to ``last(_:_:)``.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - ignoreNulls: Whether to skip null values.
+/// - Returns: A ``Column``.
+public func last_value(_ col: Column, _ ignoreNulls: Bool) -> Column {
+  return fn("last_value", col, lit(ignoreNulls))
+}
+
+/// Returns the concatenation of the non-null input values.
+/// This requires Apache Spark 4.0.0 or later.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func listagg(_ col: Column) -> Column {
+  return fn("listagg", col)
+}
+
+/// Returns the concatenation of the non-null input values, separated by `delimiter`.
+/// This requires Apache Spark 4.0.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - delimiter: A delimiter to separate the values.
+/// - Returns: A ``Column``.
+public func listagg(_ col: Column, _ delimiter: String) -> Column {
+  return fn("listagg", col, lit(delimiter))
+}
+
+/// Returns the concatenation of the distinct non-null input values.
+/// This requires Apache Spark 4.0.0 or later.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func listagg_distinct(_ col: Column) -> Column {
+  return fn("listagg", [col], isDistinct: true)
+}
+
+/// Returns the concatenation of the distinct non-null input values, separated by `delimiter`.
+/// This requires Apache Spark 4.0.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - delimiter: A delimiter to separate the values.
+/// - Returns: A ``Column``.
+public func listagg_distinct(_ col: Column, _ delimiter: String) -> Column {
+  return fn("listagg", [col, lit(delimiter)], isDistinct: true)
 }
 
 /// Returns the value associated with the maximum value of `ord`.
@@ -239,6 +430,28 @@ public func mode(_ col: Column, _ deterministic: Bool) -> Column {
   return fn("mode", col, lit(deterministic))
 }
 
+/// Returns the exact `percentile` of the numeric column `col` at the given `percentage`.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - percentage: A percentage. Must be between 0.0 and 1.0.
+///   - frequency: A positive numeric literal for the number of times `col` should be counted
+///     (default = 1).
+/// - Returns: A ``Column``.
+public func percentile(_ col: Column, _ percentage: Double, _ frequency: Int32 = 1) -> Column {
+  return fn("percentile", col, lit(percentage), lit(frequency))
+}
+
+/// Returns the exact `percentile`s of the numeric column `col` at the given `percentage`s.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - percentage: An array of percentages. Each value must be between 0.0 and 1.0.
+///   - frequency: A positive numeric literal for the number of times `col` should be counted
+///     (default = 1).
+/// - Returns: A ``Column``.
+public func percentile(_ col: Column, _ percentage: [Double], _ frequency: Int32 = 1) -> Column {
+  return fn("percentile", col, fn("array", percentage.map { lit($0) }), lit(frequency))
+}
+
 /// Returns the approximate `percentile` of the numeric column `col` which is the smallest value
 /// in the ordered `col` values (sorted from least to greatest) such that no more than `percentage`
 /// of `col` values is less than the value or equal to that value.
@@ -252,11 +465,34 @@ public func percentile_approx(_ col: Column, _ percentage: Column, _ accuracy: C
   return fn("percentile_approx", col, percentage, accuracy)
 }
 
+/// Returns the product of the values in a group.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func product(_ col: Column) -> Column {
+  return fn("product", col)
+}
+
 /// Returns the skewness of the values in a group.
 /// - Parameter col: A ``Column`` to aggregate.
 /// - Returns: A ``Column``.
 public func skewness(_ col: Column) -> Column {
   return fn("skewness", col)
+}
+
+/// Returns true if at least one value of the column is true.
+/// This is an alias of ``bool_or(_:)``.
+/// - Parameter col: A ``Column`` that evaluates to a boolean.
+/// - Returns: A ``Column``.
+public func some(_ col: Column) -> Column {
+  return fn("some", col)
+}
+
+/// Returns the sample standard deviation of the expression in a group.
+/// This is an alias of ``stddev_samp(_:)``.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func std(_ col: Column) -> Column {
+  return fn("std", col)
 }
 
 /// Returns the sample standard deviation of the expression in a group.
@@ -281,6 +517,42 @@ public func stddev_samp(_ col: Column) -> Column {
   return fn("stddev_samp", col)
 }
 
+/// Returns the concatenation of the non-null input values.
+/// This is an alias of ``listagg(_:)`` and requires Apache Spark 4.0.0 or later.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func string_agg(_ col: Column) -> Column {
+  return fn("string_agg", col)
+}
+
+/// Returns the concatenation of the non-null input values, separated by `delimiter`.
+/// This is an alias of ``listagg(_:_:)`` and requires Apache Spark 4.0.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - delimiter: A delimiter to separate the values.
+/// - Returns: A ``Column``.
+public func string_agg(_ col: Column, _ delimiter: String) -> Column {
+  return fn("string_agg", col, lit(delimiter))
+}
+
+/// Returns the concatenation of the distinct non-null input values.
+/// This is an alias of ``listagg_distinct(_:)`` and requires Apache Spark 4.0.0 or later.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func string_agg_distinct(_ col: Column) -> Column {
+  return fn("string_agg", [col], isDistinct: true)
+}
+
+/// Returns the concatenation of the distinct non-null input values, separated by `delimiter`.
+/// This is an alias of ``listagg_distinct(_:_:)`` and requires Apache Spark 4.0.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` to aggregate.
+///   - delimiter: A delimiter to separate the values.
+/// - Returns: A ``Column``.
+public func string_agg_distinct(_ col: Column, _ delimiter: String) -> Column {
+  return fn("string_agg", [col, lit(delimiter)], isDistinct: true)
+}
+
 /// Returns the sum of distinct values in the expression.
 /// This is an alias of ``sum_distinct(_:)``.
 /// - Parameter col: A ``Column`` to aggregate.
@@ -294,6 +566,20 @@ public func sumDistinct(_ col: Column) -> Column {
 /// - Returns: A ``Column``.
 public func sum_distinct(_ col: Column) -> Column {
   return fn("sum", [col], isDistinct: true)
+}
+
+/// Returns the mean calculated from values of a group and `null` on overflow.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func try_avg(_ col: Column) -> Column {
+  return fn("try_avg", col)
+}
+
+/// Returns the sum calculated from values of a group and `null` on overflow.
+/// - Parameter col: A ``Column`` to aggregate.
+/// - Returns: A ``Column``.
+public func try_sum(_ col: Column) -> Column {
+  return fn("try_sum", col)
 }
 
 /// Returns the population variance of the values in a group.
