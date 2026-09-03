@@ -396,6 +396,58 @@ public struct Column: Sendable {
     return try otherwise(value.toLiteralColumn)
   }
 
+  // MARK: - Bitwise methods
+
+  /// Returns an expression computing the bitwise AND (`&`) of this column with another column.
+  ///
+  /// Note that this is a bitwise operation, unlike the logical ``&&(_:_:)`` operator.
+  ///
+  /// ```swift
+  /// df.select(col("a").bitwiseAND(col("b")))
+  /// ```
+  /// - Parameter other: A ``Column`` that evaluates to an integral.
+  /// - Returns: A ``Column``.
+  public func bitwiseAND(_ other: Column) -> Column {
+    return Column.fn("&", self, other)
+  }
+
+  /// Returns an expression computing the bitwise AND (`&`) of this column with a literal value.
+  /// - Parameter other: A literal value.
+  /// - Returns: A ``Column``.
+  public func bitwiseAND(_ other: some SparkLiteral) -> Column {
+    return bitwiseAND(other.toLiteralColumn)
+  }
+
+  /// Returns an expression computing the bitwise OR (`|`) of this column with another column.
+  ///
+  /// Note that this is a bitwise operation, unlike the logical ``||(_:_:)`` operator.
+  /// - Parameter other: A ``Column`` that evaluates to an integral.
+  /// - Returns: A ``Column``.
+  public func bitwiseOR(_ other: Column) -> Column {
+    return Column.fn("|", self, other)
+  }
+
+  /// Returns an expression computing the bitwise OR (`|`) of this column with a literal value.
+  /// - Parameter other: A literal value.
+  /// - Returns: A ``Column``.
+  public func bitwiseOR(_ other: some SparkLiteral) -> Column {
+    return bitwiseOR(other.toLiteralColumn)
+  }
+
+  /// Returns an expression computing the bitwise XOR (`^`) of this column with another column.
+  /// - Parameter other: A ``Column`` that evaluates to an integral.
+  /// - Returns: A ``Column``.
+  public func bitwiseXOR(_ other: Column) -> Column {
+    return Column.fn("^", self, other)
+  }
+
+  /// Returns an expression computing the bitwise XOR (`^`) of this column with a literal value.
+  /// - Parameter other: A literal value.
+  /// - Returns: A ``Column``.
+  public func bitwiseXOR(_ other: some SparkLiteral) -> Column {
+    return bitwiseXOR(other.toLiteralColumn)
+  }
+
   /// Whether this is a `CASE WHEN` expression without an `otherwise` value yet. A `when`
   /// expression holds interleaved (condition, value) argument pairs, so an odd number of
   /// arguments means `otherwise` is already applied.

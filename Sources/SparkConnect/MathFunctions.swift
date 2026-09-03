@@ -428,33 +428,6 @@ public func sec(_ col: Column) -> Column {
   return fn("sec", col)
 }
 
-/// Shifts the given value `numBits` left.
-/// - Parameters:
-///   - col: A ``Column``.
-///   - numBits: The number of bits to shift.
-/// - Returns: A ``Column``.
-public func shiftleft(_ col: Column, _ numBits: Int32) -> Column {
-  return fn("shiftleft", col, lit(numBits))
-}
-
-/// (Signed) shifts the given value `numBits` right.
-/// - Parameters:
-///   - col: A ``Column``.
-///   - numBits: The number of bits to shift.
-/// - Returns: A ``Column``.
-public func shiftright(_ col: Column, _ numBits: Int32) -> Column {
-  return fn("shiftright", col, lit(numBits))
-}
-
-/// (Unsigned) shifts the given value `numBits` right.
-/// - Parameters:
-///   - col: A ``Column``.
-///   - numBits: The number of bits to shift.
-/// - Returns: A ``Column``.
-public func shiftrightunsigned(_ col: Column, _ numBits: Int32) -> Column {
-  return fn("shiftrightunsigned", col, lit(numBits))
-}
-
 /// Computes the signum of the given value.
 /// - Parameter col: A ``Column``.
 /// - Returns: A ``Column``.

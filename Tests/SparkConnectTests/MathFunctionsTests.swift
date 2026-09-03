@@ -104,9 +104,6 @@ struct MathFunctionsTests {
     for (column, name, scale) in [
       (round(col("a"), 2), "round", Int32(2)),
       (bround(col("a"), 2), "bround", Int32(2)),
-      (shiftleft(col("a"), 1), "shiftleft", Int32(1)),
-      (shiftright(col("a"), 1), "shiftright", Int32(1)),
-      (shiftrightunsigned(col("a"), 1), "shiftrightunsigned", Int32(1)),
     ] {
       let expr = column.expr
       #expect(expr.unresolvedFunction.functionName == name)
@@ -223,10 +220,9 @@ struct MathFunctionsTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(1)
     let rows = try await df.select(
-      bin(lit(5)), hex(lit(255)), conv(lit("100"), 2, 10),
-      shiftleft(lit(1), 3), shiftright(lit(8), 2), shiftrightunsigned(lit(8), 2)
+      bin(lit(5)), hex(lit(255)), conv(lit("100"), 2, 10)
     ).collect()
-    #expect(rows == [Row("101", "FF", "4", 8, 2, 2)])
+    #expect(rows == [Row("101", "FF", "4")])
     await spark.stop()
   }
 
