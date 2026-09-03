@@ -35,7 +35,7 @@ struct MergeIntoWriterTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     try await SQLHelper.withTable(spark, tableName)({
       let mergeInto = try await spark.range(1).mergeInto(tableName, "true")
-      if await spark.version >= "4.0.0" {
+      if await isSparkVersionAtLeast(spark.version, "4.0.0") {
         try await #require(throws: SparkConnectError.TableOrViewNotFound) {
           try await mergeInto.whenMatched().delete().merge()
         }
@@ -60,7 +60,7 @@ struct MergeIntoWriterTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     try await SQLHelper.withTable(spark, tableName)({
       let mergeInto = try await spark.range(1).mergeInto(tableName, "true")
-      if await spark.version >= "4.0.0" {
+      if await isSparkVersionAtLeast(spark.version, "4.0.0") {
         try await #require(throws: SparkConnectError.TableOrViewNotFound) {
           try await mergeInto.whenNotMatched().insertAll().merge()
         }
@@ -85,7 +85,7 @@ struct MergeIntoWriterTests {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     try await SQLHelper.withTable(spark, tableName)({
       let mergeInto = try await spark.range(1).mergeInto(tableName, "true")
-      if await spark.version >= "4.0.0" {
+      if await isSparkVersionAtLeast(spark.version, "4.0.0") {
         try await #require(throws: SparkConnectError.TableOrViewNotFound) {
           try await mergeInto.whenNotMatchedBySource().delete().merge()
         }

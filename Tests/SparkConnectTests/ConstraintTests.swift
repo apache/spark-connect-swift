@@ -34,7 +34,7 @@ struct ConstraintTests {
   @Test
   func primary_key() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version.starts(with: "4.1") {
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
       let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName)({
         try await spark.sql("CREATE TABLE \(tableName)(a INT, PRIMARY KEY(a)) USING ORC").count()
@@ -47,7 +47,7 @@ struct ConstraintTests {
   @Test
   func foreign_key() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version.starts(with: "4.1") {
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
       let tableName1 = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       let tableName2 = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName1, tableName2)({
@@ -63,7 +63,7 @@ struct ConstraintTests {
   @Test
   func unique() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version.starts(with: "4.1") {
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
       let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName)({
         try await spark.sql("CREATE TABLE \(tableName)(a INT UNIQUE) USING ORC").count()
@@ -76,7 +76,7 @@ struct ConstraintTests {
   @Test
   func check() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version.starts(with: "4.1") {
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
       let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName)({
         try await spark.sql(

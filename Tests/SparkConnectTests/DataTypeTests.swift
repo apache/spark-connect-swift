@@ -162,7 +162,7 @@ struct DataTypeTests {
   @Test
   func schemaTimeType() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       try await spark.conf.set("spark.sql.timeType.enabled", "true")
       let df = try await spark.sql(
         "SELECT TIME'12:34:56' t6, CAST(TIME'12:34:56' AS TIME(0)) t0")

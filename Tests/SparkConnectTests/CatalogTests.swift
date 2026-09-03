@@ -40,7 +40,7 @@ struct CatalogTests {
   func setCurrentCatalog() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.catalog.setCurrentCatalog("spark_catalog")
-    if await spark.version >= "4.0.0" {
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
       try await #require(throws: SparkConnectError.CatalogNotFound) {
         try await spark.catalog.setCurrentCatalog("not_exist_catalog")
       }
@@ -112,7 +112,7 @@ struct CatalogTests {
   @Test
   func createDatabase() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let dbName = "DB_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withDatabase(spark, dbName)({
         #expect(try await spark.catalog.databaseExists(dbName) == false)
@@ -131,7 +131,7 @@ struct CatalogTests {
   @Test
   func dropDatabase() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let dbName = "DB_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withDatabase(spark, dbName)({
         try await spark.catalog.createDatabase(dbName)
@@ -193,7 +193,7 @@ struct CatalogTests {
   @Test
   func listViews() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       #expect(try await spark.catalog.listViews().count == 0)
 
       let viewName = ("VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: ""))
@@ -241,7 +241,7 @@ struct CatalogTests {
   @Test
   func getTableProperties() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let tableName = ("TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: ""))
         .lowercased()
       try await SQLHelper.withTable(spark, tableName)({
@@ -304,7 +304,7 @@ struct CatalogTests {
     try await SQLHelper.withTable(spark, tableName)({
       try await spark.range(2).write.orc(path)
       let expected =
-        if await spark.version.starts(with: "4.") {
+        if await isSparkVersionAtLeast(spark.version, "4.0") {
           [Row("id", nil, "bigint", true, false, false, false)]
         } else {
           [Row("id", nil, "bigint", true, false, false)]
@@ -319,7 +319,7 @@ struct CatalogTests {
     try await SQLHelper.withTempView(spark, viewName)({
       try await spark.range(1).createTempView(viewName)
       let expected =
-        if await spark.version.starts(with: "4.") {
+        if await isSparkVersionAtLeast(spark.version, "4.0") {
           [Row("id", nil, "bigint", false, false, false, false)]
         } else {
           [Row("id", nil, "bigint", false, false, false)]
@@ -333,7 +333,7 @@ struct CatalogTests {
   @Test
   func listPartitions() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName)({
         try await spark.sql(
@@ -510,7 +510,7 @@ struct CatalogTests {
   @Test
   func dropTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName)({
         try await spark.range(1).write.saveAsTable(tableName)
@@ -530,7 +530,7 @@ struct CatalogTests {
   @Test
   func dropView() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, viewName)({
         try await spark.sql("CREATE VIEW \(viewName) AS SELECT 1").count()
@@ -605,7 +605,7 @@ struct CatalogTests {
   @Test
   func getCreateTableString() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName)({
         try await spark.range(1).write.saveAsTable(tableName)
@@ -624,7 +624,7 @@ struct CatalogTests {
   @Test
   func truncateTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName)({
         try await spark.range(10).write.saveAsTable(tableName)
@@ -660,7 +660,7 @@ struct CatalogTests {
   @Test
   func analyzeTable() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await SQLHelper.withTable(spark, tableName)({
         try await spark.range(10).write.saveAsTable(tableName)

@@ -61,7 +61,7 @@ struct SparkSessionTests {
   func cloneSession() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.1" {
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
       let viewName = "VIEW_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
       try await spark.conf.set("spark.test.cloneSession", "original")
       try await spark.range(3).createTempView(viewName)
@@ -87,7 +87,7 @@ struct SparkSessionTests {
   func cloneSessionWithSessionID() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.1" {
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
       let newSessionID = UUID().uuidString.lowercased()
       let cloned = try await spark.cloneSession(newSessionID)
       #expect(cloned.sessionID == newSessionID)
@@ -113,7 +113,7 @@ struct SparkSessionTests {
   func closedSessionID() async throws {
     await SparkSession.builder.clear()
     let spark1 = try await SparkSession.builder.getOrCreate()
-    if await spark1.version >= "4.0.0" {
+    if await isSparkVersionAtLeast(spark1.version, "4.0.0") {
       let sessionID = spark1.sessionID
       await spark1.stop()
       let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost"
@@ -223,7 +223,7 @@ struct SparkSessionTests {
           StructField(name: "c", dataType: .char(length: 5)),
           StructField(name: "v", dataType: .varchar(length: 10)),
         ]))
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       try await spark.conf.set("spark.sql.timeType.enabled", "true")
       #expect(
         try await spark.parseDDL("t TIME(3)")
@@ -250,7 +250,7 @@ struct SparkSessionTests {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
     let expected = [Row(true, 1, "a")]
-    if await spark.version.starts(with: "4.") {
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
       #expect(try await spark.sql("SELECT ?, ?, ?", true, 1, "a").collect() == expected)
       #expect(
         try await spark.sql("SELECT :x, :y, :z", args: ["x": true, "y": 1, "z": "a"]).collect()
@@ -263,7 +263,7 @@ struct SparkSessionTests {
   func sqlWithMoreParameterTypes() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version.starts(with: "4.") {
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
       // Use at most 4 positional parameters per query because Spark Connect
       // servers (up to 4.2.0) bind 5 or more positional parameters in the wrong order.
       #expect(
@@ -286,7 +286,7 @@ struct SparkSessionTests {
   func sqlWithTimeParameter() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       try await spark.conf.set("spark.sql.timeType.enabled", "true")
       let time = try #require(LocalTime(hour: 12, minute: 34, second: 56, nanosecond: 123_456_000))
       #expect(try await spark.sql("SELECT typeof(?)", time).collect() == [Row("time(6)")])
@@ -328,7 +328,7 @@ struct SparkSessionTests {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
-    if await spark.version.starts(with: "4.") {
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
       try await spark.addArtifact(path)
       try await spark.addArtifact(url)
     }
@@ -345,7 +345,7 @@ struct SparkSessionTests {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(fm.createFile(atPath: path, contents: "abc".data(using: .utf8)))
-    if await spark.version.starts(with: "4.") {
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
       try await spark.addArtifacts(url, url)
     }
     try fm.removeItem(atPath: path)
@@ -356,7 +356,7 @@ struct SparkSessionTests {
   func executeCommand() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version.starts(with: "4.") {
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
       await #expect(throws: SparkConnectError.DataSourceNotFound) {
         try await spark.executeCommand("runner", "command", [:]).show()
       }
@@ -442,7 +442,7 @@ struct SparkSessionTests {
   func getOperationStatuses() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       #expect(try await spark.getOperationStatuses() == [])
     }
     await spark.stop()
@@ -452,7 +452,7 @@ struct SparkSessionTests {
   func getOperationStatusesByIds() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let statuses = try await spark.getOperationStatuses(["id"])
       #expect(statuses.count == 1)
       #expect(statuses[0].operationID == "id")

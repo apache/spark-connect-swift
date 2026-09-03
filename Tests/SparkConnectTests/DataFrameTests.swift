@@ -137,7 +137,7 @@ struct DataFrameTests {
   @Test
   func dtypesGeospatial() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let expected = [
         ("st_geomfromwkb(X'0101000000000000000000F03F0000000000000040')", "geometry(0)"),
         (
@@ -156,7 +156,7 @@ struct DataFrameTests {
   @Test
   func dtypesTime() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       try await spark.conf.set("spark.sql.timeType.enabled", "true")
       let expected = [
         ("TIME'12:34:56'", "time(6)"),
@@ -173,7 +173,7 @@ struct DataFrameTests {
   @Test
   func collectTime() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       try await spark.conf.set("spark.sql.timeType.enabled", "true")
       let expected = [
         ("TIME'00:00:00'", LocalTime(hour: 0, minute: 0)),
@@ -199,7 +199,7 @@ struct DataFrameTests {
   @Test
   func selectTimeLiteral() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       try await spark.conf.set("spark.sql.timeType.enabled", "true")
       let time = try #require(LocalTime(hour: 12, minute: 34, second: 56, nanosecond: 123_456_000))
       let df = try await spark.range(1).select(lit(time))
@@ -541,7 +541,7 @@ struct DataFrameTests {
     let version = await spark.version
     // Since Spark 4.1, `AnalyzePlan` no longer executes commands eagerly (SPARK-51818),
     // so command plans are not local anymore.
-    let expected = version < "4.1"
+    let expected = !isSparkVersionAtLeast(version, "4.1")
     #expect(try await spark.sql("SHOW DATABASES").isLocal() == expected)
     #expect(try await spark.sql("SHOW TABLES").isLocal() == expected)
     #expect(try await spark.range(1).isLocal() == false)
@@ -754,7 +754,7 @@ struct DataFrameTests {
   @Test
   func checkpoint() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.0.0" {
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
       // By default, reliable checkpoint location is required.
       try await #require(throws: Error.self) {
         try await spark.range(10).checkpoint()
@@ -769,7 +769,7 @@ struct DataFrameTests {
   @Test
   func localCheckpoint() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.0.0" {
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
       #expect(try await spark.range(10).localCheckpoint().count() == 10)
     }
     await spark.stop()
@@ -878,7 +878,7 @@ struct DataFrameTests {
   @Test
   func lateralJoin() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version.starts(with: "4.") {
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
       let df1 = try await spark.sql("SELECT * FROM VALUES ('a', 1), ('b', 2) AS T(a, b)")
       let df2 = try await spark.sql("SELECT * FROM VALUES ('c', 2), ('d', 3) AS S(c, b)")
       let expectedCross = [
@@ -903,7 +903,7 @@ struct DataFrameTests {
   func nearestByJoin() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let version = await spark.version
-    if version >= "4.2" {
+    if isSparkVersionAtLeast(version, "4.2") {
       let users = try await spark.sql(
         "SELECT * FROM VALUES (1, 10.0), (2, 20.0), (3, 30.0) AS T(user_id, score)")
       let products = try await spark.sql(
@@ -1355,7 +1355,7 @@ struct DataFrameTests {
   @Test
   func transpose() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version.starts(with: "4.") {
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
       #expect(try await spark.range(1).transpose().columns == ["key", "0"])
       #expect(try await spark.range(1).transpose().count() == 0)
 

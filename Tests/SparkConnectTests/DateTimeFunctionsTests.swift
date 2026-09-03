@@ -275,7 +275,7 @@ struct DateTimeFunctionsTests {
     ).collect()
     #expect(dates == [Row("2025-05-01", "2025-05-01", "2025-05-01")])
 
-    if await spark.version >= "4.1" {
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
       let tryDates = try await df.select(
         try_to_date(col("s")).cast("string"), try_to_date(col("s"), "yyyy-MM-dd").cast("string"),
         try_to_date(lit("abc"))
@@ -330,7 +330,7 @@ struct DateTimeFunctionsTests {
   func selectTimeFunctions() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     try await spark.conf.set("spark.sql.timeType.enabled", "true")
-    if await spark.version >= "4.1" {
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
       let df = try await spark.sql("SELECT TIME'12:34:56' AS tm")
       let times = try await df.select(
         make_time(lit(12), lit(34), lit(56)).cast("string"), to_time(lit("12:34:56")).cast("string"),
@@ -345,7 +345,7 @@ struct DateTimeFunctionsTests {
       #expect(rows.count == 1)
       #expect(rows[0].length == 2)
     }
-    if await spark.version >= "4.2" {
+    if await isSparkVersionAtLeast(spark.version, "4.2") {
       let df = try await spark.sql("SELECT TIMESTAMP'2025-05-01 12:34:56' AS t")
       let rows = try await df.select(
         time_from_seconds(lit(3661)).cast("string"), time_from_millis(lit(1000)).cast("string"),

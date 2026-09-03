@@ -104,7 +104,7 @@ struct SQLTests {
     for name in try! fm.contentsOfDirectory(atPath: path).sorted() {
       guard name.hasSuffix(".sql") else { continue }
       print(name)
-      if await spark.version < "4.2" && queriesForSpark42AndLater.contains(name) {
+      if await !isSparkVersionAtLeast(spark.version, "4.2") && queriesForSpark42AndLater.contains(name) {
         print("Skip query \(name) which requires Spark 4.2 or later")
         continue
       }
