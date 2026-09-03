@@ -156,18 +156,18 @@ extension DataFrame {
                 throw SparkConnectError.invalidArrowData(
                   SparkConnectError.Details(message: "Invalid Arrow `timestamp` column."))
               }
-              let timeInterval =
-                switch timestampType.unit {
-                case .seconds:
-                  TimeInterval(timestamp)
-                case .milliseconds:
-                  TimeInterval(timestamp) / 1_000
-                case .microseconds:
-                  TimeInterval(timestamp) / 1_000_000
-                case .nanoseconds:
-                  TimeInterval(timestamp) / 1_000_000_000
-                }
-              values.append(Date(timeIntervalSince1970: timeInterval))
+              switch timestampType.unit {
+              case .seconds:
+                values.append(Date(timeIntervalSince1970: TimeInterval(timestamp)))
+              case .milliseconds:
+                values.append(Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000))
+              case .microseconds:
+                values.append(Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000_000))
+              case .nanoseconds:
+                // Spark serializes `TIMESTAMP_NTZ(p)` and `TIMESTAMP_LTZ(p)` columns as Arrow
+                // nanosecond timestamps, which `Date` cannot hold without losing digits.
+                values.append(TimestampNanos(epochNanos: timestamp))
+              }
             case ArrowType.ArrowBinary:
               guard let binaryArray = array as? AsString else {
                 throw SparkConnectError.invalidArrowData(

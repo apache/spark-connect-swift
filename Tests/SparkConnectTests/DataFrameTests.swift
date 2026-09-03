@@ -197,6 +197,43 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectTimestampNanos() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.3") {
+      try await spark.conf.set("spark.sql.timestampNanosTypes.enabled", "true")
+      try await spark.conf.set("spark.sql.session.timeZone", "UTC")
+      let expected = [
+        (
+          "CAST(TIMESTAMP_NTZ'2026-01-01 00:00:00.123456789' AS TIMESTAMP_NTZ(9))",
+          TimestampNanos(epochNanos: 1_767_225_600_123_456_789)
+        ),
+        (
+          "CAST(TIMESTAMP_NTZ'2026-01-01 00:00:00.1234567' AS TIMESTAMP_NTZ(7))",
+          TimestampNanos(epochNanos: 1_767_225_600_123_456_700)
+        ),
+        (
+          "CAST(TIMESTAMP_LTZ'2026-01-01 00:00:00.123456789' AS TIMESTAMP_LTZ(9))",
+          TimestampNanos(epochNanos: 1_767_225_600_123_456_789)
+        ),
+        (
+          "CAST(TIMESTAMP_NTZ'1970-01-01 00:00:00' AS TIMESTAMP_NTZ(9))",
+          TimestampNanos(epochNanos: 0)
+        ),
+        (
+          "CAST(TIMESTAMP_NTZ'1969-12-31 23:59:59.999999999' AS TIMESTAMP_NTZ(9))",
+          TimestampNanos(epochNanos: -1)
+        ),
+      ]
+      for pair in expected {
+        #expect(try await spark.sql("SELECT \(pair.0)").collect() == [Row(pair.1)])
+      }
+      #expect(try await spark.sql("SELECT CAST(NULL AS TIMESTAMP_NTZ(9))").collect() == [Row(nil)])
+      #expect(try await spark.sql("SELECT CAST(NULL AS TIMESTAMP_LTZ(9))").collect() == [Row(nil)])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func selectTimeLiteral() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.2") {
