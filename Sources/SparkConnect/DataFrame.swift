@@ -306,22 +306,14 @@ public actor DataFrame: Sendable {
   func withGPRC<Result: Sendable>(
     _ f: (GRPCClient<GRPCNIOTransportHTTP2.HTTP2ClientTransport.Posix>) async throws -> Result
   ) async throws -> Result {
-    try await withRetry {
-      try await withGRPCClient(
-        transport: .http2NIOPosix(
-          target: .dns(host: spark.client.host, port: spark.client.port),
-          transportSecurity: spark.client.transportSecurity,
-          serviceConfig: spark.client.serviceConfig
-        ),
-        interceptors: spark.client.getIntercepters()
-      ) { client in
-        do {
-          return try await f(client)
-        } catch let error as RPCError where error.code == .internalError {
-          throw await GrpcErrorConverter.convert(
-            error, fetchingDetailsWith: client, sessionID: spark.client.sessionID,
-            userContext: spark.client.userContext, clientType: spark.client.clientType) ?? error
-        }
+    let client = try await spark.client.getGRPCClient()
+    return try await withRetry {
+      do {
+        return try await f(client)
+      } catch let error as RPCError where error.code == .internalError {
+        throw await GrpcErrorConverter.convert(
+          error, fetchingDetailsWith: client, sessionID: spark.client.sessionID,
+          userContext: spark.client.userContext, clientType: spark.client.clientType) ?? error
       }
     }
   }

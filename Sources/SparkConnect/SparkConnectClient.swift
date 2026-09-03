@@ -41,6 +41,13 @@ public actor SparkConnectClient {
   var sessionID: String? = nil
   var tags = Set<String>()
 
+  /// A ``GRPCClient`` shared by every RPC of this client. It is created lazily on the first RPC
+  /// and reused until ``stop()`` shuts it down.
+  private var grpcClient: GRPCClient<GRPCNIOTransportHTTP2.HTTP2ClientTransport.Posix>? = nil
+
+  /// A task running the connections of ``grpcClient``.
+  private var runTask: Task<Void, Never>? = nil
+
   /// Create a client to use GRPCClient.
   /// - Parameters:
   ///   - remote: A string to connect `Spark Connect` server.
@@ -115,16 +122,24 @@ public actor SparkConnectClient {
     self.userContext = userName.toUserContext
   }
 
-  /// Stop the connection.
+  /// Stop the connection by releasing the server-side session and shutting down the shared
+  /// gRPC channel. A subsequent RPC re-creates the channel.
   func stop() async {
-    guard self.sessionID != nil else { return }
-    try? await withGPRC { client in
-      let service = SparkConnectService.Client(wrapping: client)
-      var request = Spark_Connect_ReleaseSessionRequest()
-      request.sessionID = self.sessionID!
-      request.userContext = self.userContext
-      request.clientType = self.clientType
-      _ = try await service.releaseSession(request)
+    if self.sessionID != nil {
+      try? await withGPRC { client in
+        let service = SparkConnectService.Client(wrapping: client)
+        var request = Spark_Connect_ReleaseSessionRequest()
+        request.sessionID = self.sessionID!
+        request.userContext = self.userContext
+        request.clientType = self.clientType
+        _ = try await service.releaseSession(request)
+      }
+    }
+    if let grpcClient = self.grpcClient {
+      grpcClient.beginGracefulShutdown()
+      await self.runTask?.value
+      self.grpcClient = nil
+      self.runTask = nil
     }
   }
 
@@ -152,26 +167,40 @@ public actor SparkConnectClient {
     }
   }
 
+  /// Return the ``GRPCClient`` shared by every RPC of this client. On the first call, a gRPC
+  /// channel is created and started in a detached task which runs until ``stop()`` begins its
+  /// graceful shutdown. The channel re-resolves the target and reconnects on its own when a
+  /// connection is lost or closed after being idle.
+  /// - Returns: A running ``GRPCClient`` instance.
+  func getGRPCClient() throws -> GRPCClient<GRPCNIOTransportHTTP2.HTTP2ClientTransport.Posix> {
+    if let grpcClient = self.grpcClient {
+      return grpcClient
+    }
+    let grpcClient = GRPCClient(
+      transport: try HTTP2ClientTransport.Posix(
+        target: .dns(host: self.host, port: self.port),
+        transportSecurity: self.transportSecurity,
+        serviceConfig: self.serviceConfig
+      ),
+      interceptors: self.intercepters
+    )
+    self.runTask = Task.detached { try? await grpcClient.runConnections() }
+    self.grpcClient = grpcClient
+    return grpcClient
+  }
+
   func withGPRC<Result: Sendable>(
     retryable: Bool = true,
     _ f: (GRPCClient<GRPCNIOTransportHTTP2.HTTP2ClientTransport.Posix>) async throws -> Result
   ) async throws -> Result {
-    try await withRetry(shouldRetry: { retryable && RetryPolicy.canRetry($0) }) {
-      try await withGRPCClient(
-        transport: .http2NIOPosix(
-          target: .dns(host: self.host, port: self.port),
-          transportSecurity: self.transportSecurity,
-          serviceConfig: self.serviceConfig
-        ),
-        interceptors: self.intercepters
-      ) { client in
-        do {
-          return try await f(client)
-        } catch let error as RPCError where error.code == .internalError {
-          throw await GrpcErrorConverter.convert(
-            error, fetchingDetailsWith: client, sessionID: self.sessionID,
-            userContext: self.userContext, clientType: self.clientType) ?? error
-        }
+    let client = try getGRPCClient()
+    return try await withRetry(shouldRetry: { retryable && RetryPolicy.canRetry($0) }) {
+      do {
+        return try await f(client)
+      } catch let error as RPCError where error.code == .internalError {
+        throw await GrpcErrorConverter.convert(
+          error, fetchingDetailsWith: client, sessionID: self.sessionID,
+          userContext: self.userContext, clientType: self.clientType) ?? error
       }
     }
   }
