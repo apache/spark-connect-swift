@@ -124,7 +124,7 @@ extension DataFrame {
             case .primitiveInfo(.int32):
               values.append(array.asAny(i) as? Int32)
             case .primitiveInfo(.int64):
-              values.append(array.asAny(i) as! Int64)
+              values.append(array.asAny(i) as? Int64)
             case .primitiveInfo(.float):
               values.append(array.asAny(i) as? Float)
             case .primitiveInfo(.double):
@@ -132,11 +132,15 @@ extension DataFrame {
             case .primitiveInfo(.decimal128):
               values.append(array.asAny(i) as? Decimal)
             case .primitiveInfo(.date32):
-              values.append(array.asAny(i) as! Date)
+              values.append(array.asAny(i) as? Date)
             case .timeInfo(.time64):
               // Spark serializes `TIME` columns as Arrow `time64` values since midnight.
-              let time64Type = column.data.type as! ArrowTypeTime64
-              let time = array.asAny(i) as! Int64
+              guard let time64Type = column.data.type as? ArrowTypeTime64,
+                let time = array.asAny(i) as? Int64
+              else {
+                throw SparkConnectError.invalidArrowData(
+                  SparkConnectError.Details(message: "Invalid Arrow `time64` column."))
+              }
               let nanoOfDay =
                 switch time64Type.unit {
                 case .microseconds:
@@ -146,8 +150,12 @@ extension DataFrame {
                 }
               values.append(LocalTime(nanoOfDay: nanoOfDay))
             case .timeInfo(.timestamp):
-              let timestampType = column.data.type as! ArrowTypeTimestamp
-              let timestamp = array.asAny(i) as! Int64
+              guard let timestampType = column.data.type as? ArrowTypeTimestamp,
+                let timestamp = array.asAny(i) as? Int64
+              else {
+                throw SparkConnectError.invalidArrowData(
+                  SparkConnectError.Details(message: "Invalid Arrow `timestamp` column."))
+              }
               let timeInterval =
                 switch timestampType.unit {
                 case .seconds:
@@ -161,9 +169,17 @@ extension DataFrame {
                 }
               values.append(Date(timeIntervalSince1970: timeInterval))
             case ArrowType.ArrowBinary:
-              values.append((array as! AsString).asString(i).utf8)
+              guard let binaryArray = array as? AsString else {
+                throw SparkConnectError.invalidArrowData(
+                  SparkConnectError.Details(message: "Invalid Arrow `binary` column."))
+              }
+              values.append(binaryArray.asString(i).utf8)
             case .complexInfo(.strct):
-              values.append((array as! AsString).asString(i))
+              guard let structArray = array as? AsString else {
+                throw SparkConnectError.invalidArrowData(
+                  SparkConnectError.Details(message: "Invalid Arrow `struct` column."))
+              }
+              values.append(structArray.asString(i))
             case .complexInfo(.list):
               values.append(array.asAny(i) as? [any Sendable])
             default:
@@ -223,10 +239,12 @@ extension DataFrame {
   ///   - vertical: If set to true, prints output rows vertically (one line per column value).
   public func show(_ numRows: Int32, _ truncate: Int32, _ vertical: Bool = false) async throws {
     let rows = try await showString(numRows, truncate, vertical).collect()
-    guard rows.count == 1, rows[0].length == 1 else {
+    guard rows.count == 1, rows[0].length == 1,
+      let string = try rows[0].get(0) as? String
+    else {
       throw SparkConnectError.InvalidArrowData
     }
-    print(try rows[0].get(0) as! String)
+    print(string)
   }
 
   func showString(_ numRows: Int32, _ truncate: Int32, _ vertical: Bool) -> DataFrame {
