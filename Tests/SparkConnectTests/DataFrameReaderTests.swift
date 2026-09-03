@@ -42,7 +42,7 @@ struct DataFrameReaderTests {
   @Test
   func csvDataset() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2.0" {
+    if await isSparkVersionAtLeast(spark.version, "4.2.0") {
       let csvDF = try await spark.sql(
         "SELECT * FROM VALUES "
           + "('Alice,25'), "
@@ -66,7 +66,7 @@ struct DataFrameReaderTests {
   @Test
   func jsonDataset() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2.0" {
+    if await isSparkVersionAtLeast(spark.version, "4.2.0") {
       let jsonDF = try await spark.sql(
         "SELECT * FROM VALUES "
           + "('{\"name\":\"Alice\",\"age\":25}'), "
@@ -80,7 +80,7 @@ struct DataFrameReaderTests {
   @Test
   func xml() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.0.0" {
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
       let path = "../examples/src/main/resources/people.xml"
       #expect(try await spark.read.option("rowTag", "person").format("xml").load(path).count() == 3)
       #expect(try await spark.read.option("rowTag", "person").xml(path).count() == 3)
@@ -92,7 +92,7 @@ struct DataFrameReaderTests {
   @Test
   func xmlDataset() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.2.0" {
+    if await isSparkVersionAtLeast(spark.version, "4.2.0") {
       let xmlDF = try await spark.sql(
         "SELECT * FROM VALUES "
           + "('<person><name>Alice</name><age>25</age></person>'), "

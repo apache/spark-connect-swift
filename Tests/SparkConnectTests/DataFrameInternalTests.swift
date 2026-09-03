@@ -86,7 +86,7 @@ struct DataFrameInternalTests {
   @Test
   func removeCachedRemoteRelation() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.0.0" {
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
       let df = try await spark.range(10).localCheckpoint()
       #expect(try await df.count() == 10)
       let cachedRemoteRelation = await df.plan.root.cachedRemoteRelation

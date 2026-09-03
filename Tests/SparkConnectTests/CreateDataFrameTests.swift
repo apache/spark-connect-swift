@@ -82,7 +82,7 @@ struct CreateDataFrameTests {
   @Test
   func timeType() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    if await spark.version >= "4.3" {
+    if await isSparkVersionAtLeast(spark.version, "4.3") {
       try await spark.conf.set("spark.sql.timeType.enabled", "true")
       let time = try #require(LocalTime(hour: 12, minute: 34, second: 56, nanosecond: 123_456_000))
       let df = try await spark.createDataFrame([[time], [nil]], "t TIME")
