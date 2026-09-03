@@ -57,6 +57,37 @@ struct SparkConnectClientTests {
   }
 
   @Test
+  func parameterWithGrpcMaxMessageSize() async throws {
+    let client = try SparkConnectClient(remote: "sc://host1:123/;grpc_max_message_size=268435456")
+    #expect(await client.maxMessageSize == 268_435_456)
+    let methodConfig = try #require(await client.serviceConfig.methodConfig.first)
+    // An empty service name is the default configuration for all services and methods.
+    #expect(methodConfig.names.count == 1)
+    #expect(methodConfig.names.first?.service == "")
+    #expect(methodConfig.names.first?.method == "")
+    #expect(methodConfig.maxRequestMessageBytes == 268_435_456)
+    #expect(methodConfig.maxResponseMessageBytes == 268_435_456)
+    await client.stop()
+  }
+
+  @Test
+  func parameterWithoutGrpcMaxMessageSize() async throws {
+    let client = try SparkConnectClient(remote: "sc://host1:123")
+    #expect(await client.maxMessageSize == nil)
+    #expect(await client.serviceConfig.methodConfig.isEmpty)
+    await client.stop()
+  }
+
+  @Test
+  func parameterWithInvalidGrpcMaxMessageSize() async throws {
+    for value in ["abc", "0", "-1", "1.5"] {
+      #expect(throws: SparkConnectError.InvalidArgument) {
+        try SparkConnectClient(remote: "sc://host1:123/;grpc_max_message_size=\(value)")
+      }
+    }
+  }
+
+  @Test
   func invalidRemote() async throws {
     #expect(throws: SparkConnectError.InvalidArgument) {
       try SparkConnectClient(remote: "http://host1:123")

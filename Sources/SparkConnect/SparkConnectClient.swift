@@ -34,6 +34,8 @@ public actor SparkConnectClient {
   let token: String?
   var useTLS: Bool = false
   let transportSecurity: HTTP2ClientTransport.Posix.TransportSecurity
+  let maxMessageSize: Int?
+  let serviceConfig: ServiceConfig
   var intercepters: [ClientInterceptor] = []
   let userContext: UserContext
   var sessionID: String? = nil
@@ -43,7 +45,7 @@ public actor SparkConnectClient {
   /// - Parameters:
   ///   - remote: A string to connect `Spark Connect` server.
   /// - Throws: `SparkConnectError.InvalidArgument` if `remote` is not a valid `sc://` connection
-  /// string or a parameter has no value.
+  /// string, a parameter has no value, or `grpc_max_message_size` is not a positive integer.
   init(remote: String) throws {
     guard let url = URL(string: remote), url.scheme == "sc" else {
       throw SparkConnectError.InvalidArgument
@@ -52,6 +54,7 @@ public actor SparkConnectClient {
     self.host = url.host() ?? "localhost"
     self.port = self.url.port ?? 15002
     var token: String? = nil
+    var maxMessageSize: Int? = nil
     let processInfo = ProcessInfo.processInfo
     #if os(macOS) || os(Linux)
       var userName = processInfo.environment["SPARK_USER"] ?? processInfo.userName
@@ -64,6 +67,11 @@ public actor SparkConnectClient {
         throw SparkConnectError.InvalidArgument
       }
       switch String(kv[0]).lowercased() {
+      case URIParams.PARAM_GRPC_MAX_MESSAGE_SIZE:
+        guard let size = Int(String(kv[1])), size > 0 else {
+          throw SparkConnectError.InvalidArgument
+        }
+        maxMessageSize = size
       case URIParams.PARAM_SESSION_ID:
         // SparkSession handles this.
         break
@@ -91,6 +99,18 @@ public actor SparkConnectClient {
       self.transportSecurity = .tls
     } else {
       self.transportSecurity = .plaintext
+    }
+    self.maxMessageSize = maxMessageSize
+    if let maxMessageSize {
+      // An empty service name is the default configuration for all services and methods.
+      self.serviceConfig = ServiceConfig(methodConfig: [
+        MethodConfig(
+          names: [MethodConfig.Name(service: "")],
+          maxRequestMessageBytes: maxMessageSize,
+          maxResponseMessageBytes: maxMessageSize)
+      ])
+    } else {
+      self.serviceConfig = ServiceConfig()
     }
     self.userContext = userName.toUserContext
   }
@@ -140,7 +160,8 @@ public actor SparkConnectClient {
       try await withGRPCClient(
         transport: .http2NIOPosix(
           target: .dns(host: self.host, port: self.port),
-          transportSecurity: self.transportSecurity
+          transportSecurity: self.transportSecurity,
+          serviceConfig: self.serviceConfig
         ),
         interceptors: self.intercepters
       ) { client in

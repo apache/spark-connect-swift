@@ -310,7 +310,8 @@ public actor DataFrame: Sendable {
       try await withGRPCClient(
         transport: .http2NIOPosix(
           target: .dns(host: spark.client.host, port: spark.client.port),
-          transportSecurity: spark.client.transportSecurity
+          transportSecurity: spark.client.transportSecurity,
+          serviceConfig: spark.client.serviceConfig
         ),
         interceptors: spark.client.getIntercepters()
       ) { client in
