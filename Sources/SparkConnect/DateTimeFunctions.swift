@@ -316,6 +316,38 @@ public func make_date(_ year: Column, _ month: Column, _ day: Column) -> Column 
   return fn("make_date", year, month, day)
 }
 
+/// Creates a `DayTimeIntervalType` duration from `days`, `hours`, `mins` and `secs` fields. Each
+/// field is optional and defaults to zero.
+/// - Parameters:
+///   - days: The number of days, positive or negative.
+///   - hours: The number of hours, positive or negative.
+///   - mins: The number of minutes, positive or negative.
+///   - secs: The number of seconds with the fractional part in microsecond precision.
+/// - Returns: A ``Column``.
+public func make_dt_interval(
+  days: Column = lit(0), hours: Column = lit(0), mins: Column = lit(0), secs: Column = lit(0)
+) -> Column {
+  return fn("make_dt_interval", days, hours, mins, secs)
+}
+
+/// Creates an interval from `years`, `months`, `weeks`, `days`, `hours`, `mins` and `secs`
+/// fields. Each field is optional and defaults to zero.
+/// - Parameters:
+///   - years: The number of years, positive or negative.
+///   - months: The number of months, positive or negative.
+///   - weeks: The number of weeks, positive or negative.
+///   - days: The number of days, positive or negative.
+///   - hours: The number of hours, positive or negative.
+///   - mins: The number of minutes, positive or negative.
+///   - secs: The number of seconds with the fractional part in microsecond precision.
+/// - Returns: A ``Column``.
+public func make_interval(
+  years: Column = lit(0), months: Column = lit(0), weeks: Column = lit(0),
+  days: Column = lit(0), hours: Column = lit(0), mins: Column = lit(0), secs: Column = lit(0)
+) -> Column {
+  return fn("make_interval", years, months, weeks, days, hours, mins, secs)
+}
+
 /// Creates a time from `hour`, `minute` and `second` fields.
 /// - Parameters:
 ///   - hour: An hour ``Column``, from 0 to 23.
@@ -324,6 +356,104 @@ public func make_date(_ year: Column, _ month: Column, _ day: Column) -> Column 
 /// - Returns: A ``Column``.
 public func make_time(_ hour: Column, _ minute: Column, _ second: Column) -> Column {
   return fn("make_time", hour, minute, second)
+}
+
+/// Creates a timestamp from `years`, `months`, `days`, `hours`, `mins` and `secs` fields. The
+/// result data type is consistent with the value of the `spark.sql.timestampType` configuration.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+/// - Returns: A ``Column``.
+public func make_timestamp(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column
+) -> Column {
+  return fn("make_timestamp", years, months, days, hours, mins, secs)
+}
+
+/// Creates a timestamp from `years`, `months`, `days`, `hours`, `mins`, `secs` and `timezone`
+/// fields. The result data type is consistent with the value of the `spark.sql.timestampType`
+/// configuration.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+///   - timezone: A time zone identifier ``Column``.
+/// - Returns: A ``Column``.
+public func make_timestamp(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column, _ timezone: Column
+) -> Column {
+  return fn("make_timestamp", years, months, days, hours, mins, secs, timezone)
+}
+
+/// Creates a timestamp with local time zone from `years`, `months`, `days`, `hours`, `mins` and
+/// `secs` fields.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+/// - Returns: A ``Column``.
+public func make_timestamp_ltz(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column
+) -> Column {
+  return fn("make_timestamp_ltz", years, months, days, hours, mins, secs)
+}
+
+/// Creates a timestamp with local time zone from `years`, `months`, `days`, `hours`, `mins`,
+/// `secs` and `timezone` fields.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+///   - timezone: A time zone identifier ``Column``.
+/// - Returns: A ``Column``.
+public func make_timestamp_ltz(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column, _ timezone: Column
+) -> Column {
+  return fn("make_timestamp_ltz", years, months, days, hours, mins, secs, timezone)
+}
+
+/// Creates a timestamp without time zone from `years`, `months`, `days`, `hours`, `mins` and
+/// `secs` fields.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+/// - Returns: A ``Column``.
+public func make_timestamp_ntz(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column
+) -> Column {
+  return fn("make_timestamp_ntz", years, months, days, hours, mins, secs)
+}
+
+/// Creates a `YearMonthIntervalType` duration from `years` and `months` fields. Each field is
+/// optional and defaults to zero.
+/// - Parameters:
+///   - years: The number of years, positive or negative.
+///   - months: The number of months, positive or negative.
+/// - Returns: A ``Column``.
+public func make_ym_interval(years: Column = lit(0), months: Column = lit(0)) -> Column {
+  return fn("make_ym_interval", years, months)
 }
 
 /// Extracts the minutes as an integer from a given date/timestamp/string.
@@ -680,6 +810,112 @@ public func to_utc_timestamp(_ ts: Column, _ tz: Column) -> Column {
 /// - Returns: A ``Column``.
 public func trunc(_ date: Column, _ format: String) -> Column {
   return fn("trunc", date, lit(format))
+}
+
+/// This is a special version of ``make_interval(years:months:weeks:days:hours:mins:secs:)`` that
+/// returns `NULL` instead of raising an error if the interval cannot be created. Each field is
+/// optional and defaults to zero.
+/// - Parameters:
+///   - years: The number of years, positive or negative.
+///   - months: The number of months, positive or negative.
+///   - weeks: The number of weeks, positive or negative.
+///   - days: The number of days, positive or negative.
+///   - hours: The number of hours, positive or negative.
+///   - mins: The number of minutes, positive or negative.
+///   - secs: The number of seconds with the fractional part in microsecond precision.
+/// - Returns: A ``Column``.
+public func try_make_interval(
+  years: Column = lit(0), months: Column = lit(0), weeks: Column = lit(0),
+  days: Column = lit(0), hours: Column = lit(0), mins: Column = lit(0), secs: Column = lit(0)
+) -> Column {
+  return fn("try_make_interval", years, months, weeks, days, hours, mins, secs)
+}
+
+/// Creates a timestamp from `years`, `months`, `days`, `hours`, `mins` and `secs` fields, and
+/// returns `NULL` on invalid inputs.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+/// - Returns: A ``Column``.
+public func try_make_timestamp(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column
+) -> Column {
+  return fn("try_make_timestamp", years, months, days, hours, mins, secs)
+}
+
+/// Creates a timestamp from `years`, `months`, `days`, `hours`, `mins`, `secs` and `timezone`
+/// fields, and returns `NULL` on invalid inputs.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+///   - timezone: A time zone identifier ``Column``.
+/// - Returns: A ``Column``.
+public func try_make_timestamp(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column, _ timezone: Column
+) -> Column {
+  return fn("try_make_timestamp", years, months, days, hours, mins, secs, timezone)
+}
+
+/// Creates a timestamp with local time zone from `years`, `months`, `days`, `hours`, `mins` and
+/// `secs` fields, and returns `NULL` on invalid inputs.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+/// - Returns: A ``Column``.
+public func try_make_timestamp_ltz(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column
+) -> Column {
+  return fn("try_make_timestamp_ltz", years, months, days, hours, mins, secs)
+}
+
+/// Creates a timestamp with local time zone from `years`, `months`, `days`, `hours`, `mins`,
+/// `secs` and `timezone` fields, and returns `NULL` on invalid inputs.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+///   - timezone: A time zone identifier ``Column``.
+/// - Returns: A ``Column``.
+public func try_make_timestamp_ltz(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column, _ timezone: Column
+) -> Column {
+  return fn("try_make_timestamp_ltz", years, months, days, hours, mins, secs, timezone)
+}
+
+/// Creates a timestamp without time zone from `years`, `months`, `days`, `hours`, `mins` and
+/// `secs` fields, and returns `NULL` on invalid inputs.
+/// - Parameters:
+///   - years: A year ``Column``, from 1 to 9999.
+///   - months: A month-of-year ``Column``, from 1 to 12.
+///   - days: A day-of-month ``Column``, from 1 to 31.
+///   - hours: An hour-of-day ``Column``, from 0 to 23.
+///   - mins: A minute-of-hour ``Column``, from 0 to 59.
+///   - secs: A second-of-minute ``Column``, from 0 to 60, with microsecond precision.
+/// - Returns: A ``Column``.
+public func try_make_timestamp_ntz(
+  _ years: Column, _ months: Column, _ days: Column, _ hours: Column, _ mins: Column,
+  _ secs: Column
+) -> Column {
+  return fn("try_make_timestamp_ntz", years, months, days, hours, mins, secs)
 }
 
 /// Converts the column into `DateType` by casting rules to `DateType`. Returns null with invalid
