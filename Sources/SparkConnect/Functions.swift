@@ -122,6 +122,17 @@ public func lit(_ value: LocalTime) -> Column {
   return litColumn(literal)
 }
 
+/// Creates a ``Column`` of `TIMESTAMP_LTZ(9)` literal value.
+/// - Parameter value: A literal value.
+/// - Returns: A ``Column``.
+public func lit(_ value: TimestampNanos) -> Column {
+  var literal = ExpressionLiteral()
+  literal.timestampLtzNanos.epochMicros = value.epochMicros
+  literal.timestampLtzNanos.nanosWithinMicro = Int32(value.nanosWithinMicro)
+  literal.timestampLtzNanos.precision = 9
+  return litColumn(literal)
+}
+
 /// A type that can be used as a literal operand of ``Column`` operators.
 ///
 /// This allows Swift literals to be mixed with ``Column`` expressions directly
@@ -172,6 +183,10 @@ extension String: SparkLiteral {
 }
 
 extension LocalTime: SparkLiteral {
+  public var toLiteralColumn: Column { lit(self) }
+}
+
+extension TimestampNanos: SparkLiteral {
   public var toLiteralColumn: Column { lit(self) }
 }
 

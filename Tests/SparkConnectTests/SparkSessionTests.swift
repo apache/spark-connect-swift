@@ -306,6 +306,22 @@ struct SparkSessionTests {
   }
 
   @Test
+  func sqlWithTimestampNanosParameter() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.3") {
+      try await spark.conf.set("spark.sql.timestampNanosTypes.enabled", "true")
+      let ts = TimestampNanos(epochNanos: 1_767_225_600_123_456_789)
+      #expect(try await spark.sql("SELECT typeof(?)", ts).collect() == [Row("timestamp_ltz(9)")])
+      #expect(try await spark.sql("SELECT ?", ts).collect() == [Row(ts)])
+      #expect(try await spark.sql("SELECT :t", args: ["t": ts]).collect() == [Row(ts)])
+      let before1970 = TimestampNanos(epochNanos: -1)
+      #expect(try await spark.sql("SELECT :t", args: ["t": before1970]).collect() == [Row(before1970)])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func sqlWithUnsupportedParameterType() async throws {
     await SparkSession.builder.clear()
     let spark = try await SparkSession.builder.getOrCreate()
