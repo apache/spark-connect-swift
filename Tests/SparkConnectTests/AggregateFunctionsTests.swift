@@ -79,6 +79,15 @@ struct AggregateFunctionsTests {
       (covar_samp(col("a"), col("b")), "covar_samp"),
       (max_by(col("a"), col("b")), "max_by"),
       (min_by(col("a"), col("b")), "min_by"),
+      (regr_avgx(col("a"), col("b")), "regr_avgx"),
+      (regr_avgy(col("a"), col("b")), "regr_avgy"),
+      (regr_count(col("a"), col("b")), "regr_count"),
+      (regr_intercept(col("a"), col("b")), "regr_intercept"),
+      (regr_r2(col("a"), col("b")), "regr_r2"),
+      (regr_slope(col("a"), col("b")), "regr_slope"),
+      (regr_sxx(col("a"), col("b")), "regr_sxx"),
+      (regr_sxy(col("a"), col("b")), "regr_sxy"),
+      (regr_syy(col("a"), col("b")), "regr_syy"),
     ] {
       let expr = column.expr
       #expect(expr.unresolvedFunction.functionName == name)
@@ -407,6 +416,60 @@ struct AggregateFunctionsTests {
       .agg(grouping(col("k")), grouping_id(col("k")).alias("gid"))
       .orderBy("gid", "k").collect()
     #expect(rows == [Row("a", 0, 0), Row("b", 0, 0), Row(nil, 1, 1)])
+    await spark.stop()
+  }
+
+  @Test
+  func regressionFunctionArgumentOrder() throws {
+    // The dependent variable `y` must always be the first argument.
+    for column in [
+      regr_avgx(col("y"), col("x")),
+      regr_avgy(col("y"), col("x")),
+      regr_count(col("y"), col("x")),
+      regr_intercept(col("y"), col("x")),
+      regr_r2(col("y"), col("x")),
+      regr_slope(col("y"), col("x")),
+      regr_sxx(col("y"), col("x")),
+      regr_sxy(col("y"), col("x")),
+      regr_syy(col("y"), col("x")),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.arguments.count == 2)
+      #expect(expr.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "y")
+      #expect(expr.unresolvedFunction.arguments[1].unresolvedAttribute.unparsedIdentifier == "x")
+    }
+  }
+
+  @Test
+  func selectRegressionFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // The points satisfy `y = 2x + 1` exactly, so the slope is 2.0, the intercept is 1.0 and
+    // the coefficient of determination is 1.0.
+    let df = try await spark.sql(
+      """
+      SELECT * FROM VALUES
+        (double(1.0), double(3.0)), (double(2.0), double(5.0)),
+        (double(3.0), double(7.0)), (double(4.0), double(9.0)), (double(5.0), NULL) T(x, y)
+      """)
+    let rows = try await df.select(
+      regr_count(col("y"), col("x")), regr_slope(col("y"), col("x")),
+      regr_intercept(col("y"), col("x")), regr_r2(col("y"), col("x")),
+      regr_sxx(col("y"), col("x")), regr_sxy(col("y"), col("x")), regr_syy(col("y"), col("x"))
+    ).collect()
+    #expect(try rows[0].get(0) as! Int64 == 4)
+    #expect(abs(try rows[0].get(1) as! Double - 2.0) < 1e-9)
+    #expect(abs(try rows[0].get(2) as! Double - 1.0) < 1e-9)
+    #expect(abs(try rows[0].get(3) as! Double - 1.0) < 1e-9)
+    #expect(abs(try rows[0].get(4) as! Double - 5.0) < 1e-9)
+    #expect(abs(try rows[0].get(5) as! Double - 10.0) < 1e-9)
+    #expect(abs(try rows[0].get(6) as! Double - 20.0) < 1e-9)
+
+    // `regr_avgx` and `regr_avgy` disagree, which catches a swapped argument order.
+    let averages = try await df.select(
+      regr_avgx(col("y"), col("x")), regr_avgy(col("y"), col("x"))
+    ).collect()
+    #expect(abs(try averages[0].get(0) as! Double - 2.5) < 1e-9)
+    #expect(abs(try averages[0].get(1) as! Double - 6.0) < 1e-9)
     await spark.stop()
   }
 }

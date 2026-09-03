@@ -472,6 +472,87 @@ public func product(_ col: Column) -> Column {
   return fn("product", col)
 }
 
+/// Returns the average of the independent variable for non-null pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_avgx(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_avgx", y, x)
+}
+
+/// Returns the average of the dependent variable for non-null pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_avgy(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_avgy", y, x)
+}
+
+/// Returns the number of non-null number pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_count(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_count", y, x)
+}
+
+/// Returns the intercept of the univariate linear regression line for non-null pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_intercept(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_intercept", y, x)
+}
+
+/// Returns the coefficient of determination for non-null pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_r2(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_r2", y, x)
+}
+
+/// Returns the slope of the linear regression line for non-null pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_slope(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_slope", y, x)
+}
+
+/// Returns `REGR_COUNT(y, x) * VAR_POP(x)` for non-null pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_sxx(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_sxx", y, x)
+}
+
+/// Returns `REGR_COUNT(y, x) * COVAR_POP(y, x)` for non-null pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_sxy(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_sxy", y, x)
+}
+
+/// Returns `REGR_COUNT(y, x) * VAR_POP(y)` for non-null pairs in a group.
+/// - Parameters:
+///   - y: The dependent variable. A ``Column`` that evaluates to a numeric.
+///   - x: The independent variable. A ``Column`` that evaluates to a numeric.
+/// - Returns: A ``Column``.
+public func regr_syy(_ y: Column, _ x: Column) -> Column {
+  return fn("regr_syy", y, x)
+}
+
 /// Returns the skewness of the values in a group.
 /// - Parameter col: A ``Column`` to aggregate.
 /// - Returns: A ``Column``.
