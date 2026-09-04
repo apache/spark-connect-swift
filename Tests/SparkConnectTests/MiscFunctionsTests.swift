@@ -65,6 +65,38 @@ struct MiscFunctionsTests {
   }
 
   @Test
+  func errorReflectionAndBitmapFunctions() throws {
+    for (column, name) in [
+      (assert_true(col("a")), "assert_true"),
+      (assert_true(col("a"), col("b")), "assert_true"),
+      (assert_true(col("a"), "error"), "assert_true"),
+      (bitmap_bit_position(col("a")), "bitmap_bit_position"),
+      (bitmap_bucket_number(col("a")), "bitmap_bucket_number"),
+      (bitmap_count(col("a")), "bitmap_count"),
+      (java_method(col("a"), col("b")), "java_method"),
+      (raise_error(col("a")), "raise_error"),
+      (raise_error("error"), "raise_error"),
+      (reflect(col("a"), col("b")), "reflect"),
+      (try_reflect(col("a"), col("b")), "try_reflect"),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(!expr.unresolvedFunction.arguments.isEmpty)
+    }
+
+    let assertTrueWithMessage = assert_true(col("a"), "error").expr
+    #expect(assertTrueWithMessage.unresolvedFunction.arguments.count == 2)
+    #expect(assertTrueWithMessage.unresolvedFunction.arguments[1].literal.string == "error")
+
+    let raiseErrorWithMessage = raise_error("error").expr
+    #expect(raiseErrorWithMessage.unresolvedFunction.arguments.count == 1)
+    #expect(raiseErrorWithMessage.unresolvedFunction.arguments[0].literal.string == "error")
+
+    let reflectColumns = reflect(col("a"), col("b"), col("c")).expr
+    #expect(reflectColumns.unresolvedFunction.arguments.count == 3)
+  }
+
+  @Test
   func sessionFunctions() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let rows = try await spark.range(1).select(
@@ -137,6 +169,72 @@ struct MiscFunctionsTests {
         #expect((try row.get(1) as! String).count == 36)
       }
     }
+    await spark.stop()
+  }
+
+  @Test
+  func assertTrue() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.range(1).select(
+      assert_true(lit(true)), assert_true(lit(true), lit("error")), assert_true(lit(true), "error")
+    ).collect()
+    #expect(rows == [Row(nil, nil, nil)])
+
+    // The server reports this as `USER_RAISED_EXCEPTION`, which has no `SparkConnectError` case.
+    let error = try await #require(throws: Error.self) {
+      try await spark.range(1).select(assert_true(lit(false), "assert_true failed")).count()
+    }
+    #expect("\(error)".contains("assert_true failed"))
+    await spark.stop()
+  }
+
+  @Test
+  func raiseError() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    for column in [raise_error(lit("raise_error failed")), raise_error("raise_error failed")] {
+      let error = try await #require(throws: Error.self) {
+        try await spark.range(1).select(column).count()
+      }
+      #expect("\(error)".contains("raise_error failed"))
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func reflectFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let uuidString = "a5cf6c42-0c85-418f-af6c-3e4e5b1328f2"
+    let rows = try await spark.range(1).select(
+      reflect(lit("java.util.UUID"), lit("fromString"), lit(uuidString)),
+      java_method(lit("java.util.UUID"), lit("fromString"), lit(uuidString))
+    ).collect()
+    #expect(rows == [Row(uuidString, uuidString)])
+    await spark.stop()
+  }
+
+  @Test
+  func tryReflect() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
+      let uuidString = "a5cf6c42-0c85-418f-af6c-3e4e5b1328f2"
+      let rows = try await spark.range(1).select(
+        try_reflect(lit("java.util.UUID"), lit("fromString"), lit(uuidString)),
+        try_reflect(lit("java.util.UUID"), lit("fromString"), lit("invalid"))
+      ).collect()
+      #expect(rows == [Row(uuidString, nil)])
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func bitmapFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.range(1).select(
+      bitmap_bit_position(lit(1)), bitmap_bit_position(lit(123)),
+      bitmap_bucket_number(lit(0)), bitmap_bucket_number(lit(123)),
+      bitmap_count(unhex(lit("1010"))), bitmap_count(unhex(lit("FFFF")))
+    ).collect()
+    #expect(rows == [Row(0, 122, 0, 1, 2, 16)])
     await spark.stop()
   }
 
