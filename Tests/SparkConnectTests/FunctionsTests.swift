@@ -484,4 +484,24 @@ struct FunctionsTests {
     #expect(try await df.sort(col("v").descNullsFirst()).collect() == [Row(nil), Row(2), Row(1)])
     await spark.stop()
   }
+
+  @Test
+  func broadcastFunction() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await broadcast(spark.range(1))
+    let plan = await df.getPlan() as! Plan
+    #expect(plan.root.hint.name == "broadcast")
+    #expect(plan.root.hint.parameters.isEmpty)
+    await spark.stop()
+  }
+
+  @Test
+  func broadcastJoin() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df1 = try await spark.range(10)
+    let df2 = try await spark.range(5)
+    let joined = await df1.join(broadcast(df2), "id")
+    #expect(try await joined.count() == 5)
+    await spark.stop()
+  }
 }
