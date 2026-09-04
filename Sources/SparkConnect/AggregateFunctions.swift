@@ -691,3 +691,21 @@ public func var_samp(_ col: Column) -> Column {
 public func variance(_ col: Column) -> Column {
   return fn("variance", col)
 }
+
+/// Returns the element-wise mean of the float vectors in a group.
+/// This requires Apache Spark 4.3.0 or later.
+/// - Parameter col: A ``Column`` that evaluates to an `ARRAY<FLOAT>` to aggregate. All the
+///   vectors in a group must have the same dimension.
+/// - Returns: A ``Column`` that evaluates to an `ARRAY<FLOAT>`.
+public func vector_avg(_ col: Column) -> Column {
+  return fn("vector_avg", col)
+}
+
+/// Returns the element-wise sum of the float vectors in a group.
+/// This requires Apache Spark 4.3.0 or later.
+/// - Parameter col: A ``Column`` that evaluates to an `ARRAY<FLOAT>` to aggregate. All the
+///   vectors in a group must have the same dimension.
+/// - Returns: A ``Column`` that evaluates to an `ARRAY<FLOAT>`.
+public func vector_sum(_ col: Column) -> Column {
+  return fn("vector_sum", col)
+}
