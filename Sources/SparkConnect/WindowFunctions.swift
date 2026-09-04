@@ -17,6 +17,49 @@
 // under the License.
 //
 
+/// Computes the differences between consecutive cumulative counter values in a time series,
+/// thereby converting the counter from the cumulative to the delta format.
+///
+/// Gracefully handles counter resets by returning `NULL`. Counter resets are detected when the
+/// counter value decreases.
+///
+/// Use the `PARTITION BY` clause of the window to separate independent counters. This is done by
+/// specifying all columns which uniquely identify a time series. These are typically the counter
+/// name and any attributes tied to the counter.
+///
+/// Use the `ORDER BY` clause of the window to order the observations by the associated timestamp
+/// in ascending order.
+/// - Parameter value: A cumulative counter. Must be a numeric data type. Must be non-negative.
+/// - Returns: A ``Column`` of the same type as the input, holding the difference between the
+///   current and previous counter value within the window partition, according to the order
+///   defined by the window's `ORDER BY` clause.
+public func counter_diff(_ value: Column) -> Column {
+  return fn("counter_diff", value)
+}
+
+/// Computes the differences between consecutive cumulative counter values in a time series,
+/// thereby converting the counter from the cumulative to the delta format.
+///
+/// Gracefully handles counter resets by returning `NULL`. Counter resets are detected when the
+/// counter value decreases, or when the start time advances between rows.
+///
+/// Use the `PARTITION BY` clause of the window to separate independent counters. This is done by
+/// specifying all columns which uniquely identify a time series. These are typically the counter
+/// name and any attributes tied to the counter.
+///
+/// Use the `ORDER BY` clause of the window to order the observations by the associated timestamp
+/// in ascending order.
+/// - Parameters:
+///   - value: A cumulative counter. Must be a numeric data type. Must be non-negative.
+///   - startTime: A timestamp indicating when the counter was last set to zero. Used to signal
+///     counter resets.
+/// - Returns: A ``Column`` of the same type as the input, holding the difference between the
+///   current and previous counter value within the window partition, according to the order
+///   defined by the window's `ORDER BY` clause.
+public func counter_diff(_ value: Column, _ startTime: Column) -> Column {
+  return fn("counter_diff", value, startTime)
+}
+
 /// Returns the cumulative distribution of values within a window partition, i.e. the fraction
 /// of rows that are below the current row.
 /// - Returns: A ``Column``.
