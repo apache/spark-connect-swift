@@ -24,9 +24,7 @@
     <string>org.apache.spark.connect.swift.SparkConnect</string>
     <key>CFBundleName</key>
     <string>SparkConnect</string>
-    <key>CFBundleVersion</key>
-    <string>0.1.0</string>
     <key>NSHumanReadableCopyright</key>
-    <string>© 2025 Apache Software Foundation</string>
+    <string>© 2025 and onwards, The Apache Software Foundation</string>
 </dict>
 </plist>

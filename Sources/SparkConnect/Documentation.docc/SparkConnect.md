@@ -24,15 +24,29 @@ SparkConnect is a modern Swift library that provides a native interface to Apach
 ### Sessions
 
 - ``SparkSession``
+- ``RuntimeConf``
 
 ### DataFrames
 
 - ``DataFrame``
 - ``GroupedData``
+- ``DataFrameNaFunctions``
+- ``DataFrameStatFunctions``
+- ``Observation``
 - ``Row``
-- ``LocalTime``
-- ``TimestampNanos``
+- ``RowSchema``
 - ``StorageLevel``
+
+### Expressions
+
+- ``Column``
+- ``SparkLiteral``
+- <doc:Functions>
+
+### Window Frames
+
+- ``Window``
+- ``WindowSpec``
 
 ### Data Types
 
@@ -40,6 +54,8 @@ SparkConnect is a modern Swift library that provides a native interface to Apach
 - ``StructType``
 - ``StructField``
 - ``UserDefinedType``
+- ``LocalTime``
+- ``TimestampNanos``
 - ``YearMonthIntervalField``
 - ``DayTimeIntervalField``
 
@@ -47,20 +63,47 @@ SparkConnect is a modern Swift library that provides a native interface to Apach
 
 - ``DataFrameReader``
 - ``DataFrameWriter``
+- ``DataFrameWriterV2``
 - ``MergeIntoWriter``
+- ``WhenMatched``
+- ``WhenNotMatched``
+- ``WhenNotMatchedBySource``
 
-### Catalog & Configuration
+### Catalog
 
 - ``Catalog``
-- ``RuntimeConf``
+- ``CatalogMetadata``
+- ``Database``
+- ``SparkTable``
+- ``CatalogColumn``
+- ``Function``
+- ``TablePartition``
 
 ### Streaming
 
 - ``DataStreamReader``
 - ``DataStreamWriter``
+- ``Trigger``
 - ``StreamingQuery``
 - ``StreamingQueryManager``
+- ``StreamingQueryException``
+- ``StreamingQueryStatus``
 - ``StreamingQueryProgress``
 - ``SourceProgress``
 - ``SinkProgress``
 - ``StateOperatorProgress``
+
+### Error Handling
+
+- ``SparkConnectError``
+- ``~=(_:_:)``
+
+### Low-Level and Utility APIs
+
+- ``SparkConnectClient``
+- ``CaseInsensitiveDictionary``
+- ``ErrorUtils``
+- ``ProtoUtils``
+- ``SparkFileUtils``
+- ``CRC32``
+- ``SHA256``
