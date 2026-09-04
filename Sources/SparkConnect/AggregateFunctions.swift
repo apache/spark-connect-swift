@@ -302,6 +302,215 @@ public func histogram_numeric(_ col: Column, _ nBins: Int32) -> Column {
   return fn("histogram_numeric", col, lit(nBins))
 }
 
+/// Returns the compact binary representation of the Datasketches `KllLongsSketch` that merges
+/// the `KllLongsSketch` values in a group. The merged sketch adopts the `k` of the first input
+/// sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameter col: A ``Column`` of binary `KllLongsSketch` representations to aggregate.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllLongsSketch`.
+public func kll_merge_agg_bigint(_ col: Column) -> Column {
+  return fn("kll_merge_agg_bigint", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllLongsSketch` that merges
+/// the `KllLongsSketch` values in a group. The `k` parameter controls the size and accuracy of
+/// the sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameters:
+///   - col: A ``Column`` of binary `KllLongsSketch` representations to aggregate.
+///   - k: The parameter that controls the size and accuracy of the sketch. It must be between 8
+///     and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllLongsSketch`.
+public func kll_merge_agg_bigint(_ col: Column, _ k: Int32) -> Column {
+  return kll_merge_agg_bigint(col, lit(k))
+}
+
+/// Returns the compact binary representation of the Datasketches `KllLongsSketch` that merges
+/// the `KllLongsSketch` values in a group. The `k` parameter controls the size and accuracy of
+/// the sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameters:
+///   - col: A ``Column`` of binary `KllLongsSketch` representations to aggregate.
+///   - k: A ``Column`` that evaluates to the parameter that controls the size and accuracy of
+///     the sketch. It must be a constant between 8 and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllLongsSketch`.
+public func kll_merge_agg_bigint(_ col: Column, _ k: Column) -> Column {
+  return fn("kll_merge_agg_bigint", col, k)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllDoublesSketch` that merges
+/// the `KllDoublesSketch` values in a group. The merged sketch adopts the `k` of the first
+/// input sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameter col: A ``Column`` of binary `KllDoublesSketch` representations to aggregate.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllDoublesSketch`.
+public func kll_merge_agg_double(_ col: Column) -> Column {
+  return fn("kll_merge_agg_double", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllDoublesSketch` that merges
+/// the `KllDoublesSketch` values in a group. The `k` parameter controls the size and accuracy
+/// of the sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameters:
+///   - col: A ``Column`` of binary `KllDoublesSketch` representations to aggregate.
+///   - k: The parameter that controls the size and accuracy of the sketch. It must be between 8
+///     and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllDoublesSketch`.
+public func kll_merge_agg_double(_ col: Column, _ k: Int32) -> Column {
+  return kll_merge_agg_double(col, lit(k))
+}
+
+/// Returns the compact binary representation of the Datasketches `KllDoublesSketch` that merges
+/// the `KllDoublesSketch` values in a group. The `k` parameter controls the size and accuracy
+/// of the sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameters:
+///   - col: A ``Column`` of binary `KllDoublesSketch` representations to aggregate.
+///   - k: A ``Column`` that evaluates to the parameter that controls the size and accuracy of
+///     the sketch. It must be a constant between 8 and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllDoublesSketch`.
+public func kll_merge_agg_double(_ col: Column, _ k: Column) -> Column {
+  return fn("kll_merge_agg_double", col, k)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllFloatsSketch` that merges
+/// the `KllFloatsSketch` values in a group. The merged sketch adopts the `k` of the first input
+/// sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameter col: A ``Column`` of binary `KllFloatsSketch` representations to aggregate.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllFloatsSketch`.
+public func kll_merge_agg_float(_ col: Column) -> Column {
+  return fn("kll_merge_agg_float", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllFloatsSketch` that merges
+/// the `KllFloatsSketch` values in a group. The `k` parameter controls the size and accuracy of
+/// the sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameters:
+///   - col: A ``Column`` of binary `KllFloatsSketch` representations to aggregate.
+///   - k: The parameter that controls the size and accuracy of the sketch. It must be between 8
+///     and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllFloatsSketch`.
+public func kll_merge_agg_float(_ col: Column, _ k: Int32) -> Column {
+  return kll_merge_agg_float(col, lit(k))
+}
+
+/// Returns the compact binary representation of the Datasketches `KllFloatsSketch` that merges
+/// the `KllFloatsSketch` values in a group. The `k` parameter controls the size and accuracy of
+/// the sketch.
+/// This requires Apache Spark 4.1.2 or later.
+/// - Parameters:
+///   - col: A ``Column`` of binary `KllFloatsSketch` representations to aggregate.
+///   - k: A ``Column`` that evaluates to the parameter that controls the size and accuracy of
+///     the sketch. It must be a constant between 8 and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllFloatsSketch`.
+public func kll_merge_agg_float(_ col: Column, _ k: Column) -> Column {
+  return fn("kll_merge_agg_float", col, k)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllLongsSketch` built from
+/// the long values in a group. The sketch uses the server-side default `k` of 200.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameter col: A ``Column`` that evaluates to a long.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllLongsSketch`.
+public func kll_sketch_agg_bigint(_ col: Column) -> Column {
+  return fn("kll_sketch_agg_bigint", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllLongsSketch` built from
+/// the long values in a group. The `k` parameter controls the size and accuracy of the sketch.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` that evaluates to a long.
+///   - k: The parameter that controls the size and accuracy of the sketch. It must be between 8
+///     and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllLongsSketch`.
+public func kll_sketch_agg_bigint(_ col: Column, _ k: Int32) -> Column {
+  return kll_sketch_agg_bigint(col, lit(k))
+}
+
+/// Returns the compact binary representation of the Datasketches `KllLongsSketch` built from
+/// the long values in a group. The `k` parameter controls the size and accuracy of the sketch.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` that evaluates to a long.
+///   - k: A ``Column`` that evaluates to the parameter that controls the size and accuracy of
+///     the sketch. It must be a constant between 8 and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllLongsSketch`.
+public func kll_sketch_agg_bigint(_ col: Column, _ k: Column) -> Column {
+  return fn("kll_sketch_agg_bigint", col, k)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllDoublesSketch` built from
+/// the double values in a group. The sketch uses the server-side default `k` of 200.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameter col: A ``Column`` that evaluates to a double.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllDoublesSketch`.
+public func kll_sketch_agg_double(_ col: Column) -> Column {
+  return fn("kll_sketch_agg_double", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllDoublesSketch` built from
+/// the double values in a group. The `k` parameter controls the size and accuracy of the
+/// sketch.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` that evaluates to a double.
+///   - k: The parameter that controls the size and accuracy of the sketch. It must be between 8
+///     and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllDoublesSketch`.
+public func kll_sketch_agg_double(_ col: Column, _ k: Int32) -> Column {
+  return kll_sketch_agg_double(col, lit(k))
+}
+
+/// Returns the compact binary representation of the Datasketches `KllDoublesSketch` built from
+/// the double values in a group. The `k` parameter controls the size and accuracy of the
+/// sketch.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` that evaluates to a double.
+///   - k: A ``Column`` that evaluates to the parameter that controls the size and accuracy of
+///     the sketch. It must be a constant between 8 and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllDoublesSketch`.
+public func kll_sketch_agg_double(_ col: Column, _ k: Column) -> Column {
+  return fn("kll_sketch_agg_double", col, k)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllFloatsSketch` built from
+/// the float values in a group. The sketch uses the server-side default `k` of 200.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameter col: A ``Column`` that evaluates to a float.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllFloatsSketch`.
+public func kll_sketch_agg_float(_ col: Column) -> Column {
+  return fn("kll_sketch_agg_float", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `KllFloatsSketch` built from
+/// the float values in a group. The `k` parameter controls the size and accuracy of the sketch.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` that evaluates to a float.
+///   - k: The parameter that controls the size and accuracy of the sketch. It must be between 8
+///     and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllFloatsSketch`.
+public func kll_sketch_agg_float(_ col: Column, _ k: Int32) -> Column {
+  return kll_sketch_agg_float(col, lit(k))
+}
+
+/// Returns the compact binary representation of the Datasketches `KllFloatsSketch` built from
+/// the float values in a group. The `k` parameter controls the size and accuracy of the sketch.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` that evaluates to a float.
+///   - k: A ``Column`` that evaluates to the parameter that controls the size and accuracy of
+///     the sketch. It must be a constant between 8 and 65535.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `KllFloatsSketch`.
+public func kll_sketch_agg_float(_ col: Column, _ k: Column) -> Column {
+  return fn("kll_sketch_agg_float", col, k)
+}
+
 /// Returns the kurtosis of the values in a group.
 /// - Parameter col: A ``Column`` to aggregate.
 /// - Returns: A ``Column``.
@@ -656,6 +865,84 @@ public func sum_distinct(_ col: Column) -> Column {
   return fn("sum", [col], isDistinct: true)
 }
 
+/// Returns the compact binary representation of the Datasketches `ThetaSketch` that is the
+/// intersection of the Theta sketches in a group.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameter col: A ``Column`` of Theta sketches to aggregate.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `ThetaSketch`.
+public func theta_intersection_agg(_ col: Column) -> Column {
+  return fn("theta_intersection_agg", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `ThetaSketch` built from the
+/// values in a group, using the server-side default of 12 nominal entries.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameter col: A ``Column`` that evaluates to an array, binary, double, float, integer,
+///   long, or string.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `ThetaSketch`.
+public func theta_sketch_agg(_ col: Column) -> Column {
+  return fn("theta_sketch_agg", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `ThetaSketch` built from the
+/// values in a group, configured with `lgNomEntries` nominal entries.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` that evaluates to an array, binary, double, float, integer, long, or
+///     string.
+///   - lgNomEntries: The log-base-2 of the number of nominal entries, which is the size of the
+///     sketch. Must be between 4 and 26.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `ThetaSketch`.
+public func theta_sketch_agg(_ col: Column, _ lgNomEntries: Int32) -> Column {
+  return theta_sketch_agg(col, lit(lgNomEntries))
+}
+
+/// Returns the compact binary representation of the Datasketches `ThetaSketch` built from the
+/// values in a group, configured with `lgNomEntries` nominal entries.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` that evaluates to an array, binary, double, float, integer, long, or
+///     string.
+///   - lgNomEntries: A ``Column`` that evaluates to the log-base-2 of the number of nominal
+///     entries, which is the size of the sketch. Must be a constant between 4 and 26.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `ThetaSketch`.
+public func theta_sketch_agg(_ col: Column, _ lgNomEntries: Column) -> Column {
+  return fn("theta_sketch_agg", col, lgNomEntries)
+}
+
+/// Returns the compact binary representation of the Datasketches `ThetaSketch` that is the union
+/// of the Theta sketches in a group, using the server-side default of 12 nominal entries.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameter col: A ``Column`` of Theta sketches to aggregate.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `ThetaSketch`.
+public func theta_union_agg(_ col: Column) -> Column {
+  return fn("theta_union_agg", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `ThetaSketch` that is the union
+/// of the Theta sketches in a group, configured with `lgNomEntries` nominal entries.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` of Theta sketches to aggregate.
+///   - lgNomEntries: The log-base-2 of the number of nominal entries used by the union
+///     operation. Must be between 4 and 26.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `ThetaSketch`.
+public func theta_union_agg(_ col: Column, _ lgNomEntries: Int32) -> Column {
+  return theta_union_agg(col, lit(lgNomEntries))
+}
+
+/// Returns the compact binary representation of the Datasketches `ThetaSketch` that is the union
+/// of the Theta sketches in a group, configured with `lgNomEntries` nominal entries.
+/// This requires Apache Spark 4.1.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` of Theta sketches to aggregate.
+///   - lgNomEntries: A ``Column`` that evaluates to the log-base-2 of the number of nominal
+///     entries used by the union operation. Must be a constant between 4 and 26.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `ThetaSketch`.
+public func theta_union_agg(_ col: Column, _ lgNomEntries: Column) -> Column {
+  return fn("theta_union_agg", col, lgNomEntries)
+}
+
 /// Returns the mean calculated from values of a group and `null` on overflow.
 /// - Parameter col: A ``Column`` to aggregate.
 /// - Returns: A ``Column``.
@@ -668,6 +955,198 @@ public func try_avg(_ col: Column) -> Column {
 /// - Returns: A ``Column``.
 public func try_sum(_ col: Column) -> Column {
   return fn("try_sum", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with double
+/// summaries that is the intersection of the Tuple sketches in a group. The server-side default
+/// summary mode `sum` is used.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameter col: A ``Column`` of `TupleSketch` objects with double summaries to aggregate.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_intersection_agg_double(_ col: Column) -> Column {
+  return fn("tuple_intersection_agg_double", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with double
+/// summaries that is the intersection of the Tuple sketches in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` of `TupleSketch` objects with double summaries to aggregate.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_intersection_agg_double(_ col: Column, mode: Column) -> Column {
+  return fn("tuple_intersection_agg_double", col, mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with integer
+/// summaries that is the intersection of the Tuple sketches in a group. The server-side default
+/// summary mode `sum` is used.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameter col: A ``Column`` of `TupleSketch` objects with integer summaries to aggregate.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_intersection_agg_integer(_ col: Column) -> Column {
+  return fn("tuple_intersection_agg_integer", col)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with integer
+/// summaries that is the intersection of the Tuple sketches in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` of `TupleSketch` objects with integer summaries to aggregate.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_intersection_agg_integer(_ col: Column, mode: Column) -> Column {
+  return fn("tuple_intersection_agg_integer", col, mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with double
+/// summaries built from the key and summary values in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - key: A ``Column`` that evaluates to an array, binary, double, float, integer, long, or
+///     string.
+///   - summary: A ``Column`` that evaluates to a double.
+///   - lgNomEntries: A ``Column`` that evaluates to the log-base-2 of the number of nominal
+///     entries, which is the size of the sketch. It must be between 4 and 26, and defaults to
+///     12.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant. It defaults to `sum`.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_sketch_agg_double(
+  _ key: Column, _ summary: Column,
+  lgNomEntries: Column = lit(Int32(12)), mode: Column = lit("sum")
+) -> Column {
+  return fn("tuple_sketch_agg_double", key, summary, lgNomEntries, mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with double
+/// summaries built from the key and summary values in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - key: A ``Column`` that evaluates to an array, binary, double, float, integer, long, or
+///     string.
+///   - summary: A ``Column`` that evaluates to a double.
+///   - lgNomEntries: The log-base-2 of the number of nominal entries, which is the size of the
+///     sketch. It must be between 4 and 26, and defaults to 12.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant. It defaults to `sum`.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_sketch_agg_double(
+  _ key: Column, _ summary: Column,
+  lgNomEntries: Int32, mode: Column = lit("sum")
+) -> Column {
+  return tuple_sketch_agg_double(key, summary, lgNomEntries: lit(lgNomEntries), mode: mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with integer
+/// summaries built from the key and summary values in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - key: A ``Column`` that evaluates to an array, binary, double, float, integer, long, or
+///     string.
+///   - summary: A ``Column`` that evaluates to an integer.
+///   - lgNomEntries: A ``Column`` that evaluates to the log-base-2 of the number of nominal
+///     entries, which is the size of the sketch. It must be between 4 and 26, and defaults to
+///     12.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant. It defaults to `sum`.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_sketch_agg_integer(
+  _ key: Column, _ summary: Column,
+  lgNomEntries: Column = lit(Int32(12)), mode: Column = lit("sum")
+) -> Column {
+  return fn("tuple_sketch_agg_integer", key, summary, lgNomEntries, mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with integer
+/// summaries built from the key and summary values in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - key: A ``Column`` that evaluates to an array, binary, double, float, integer, long, or
+///     string.
+///   - summary: A ``Column`` that evaluates to an integer.
+///   - lgNomEntries: The log-base-2 of the number of nominal entries, which is the size of the
+///     sketch. It must be between 4 and 26, and defaults to 12.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant. It defaults to `sum`.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_sketch_agg_integer(
+  _ key: Column, _ summary: Column,
+  lgNomEntries: Int32, mode: Column = lit("sum")
+) -> Column {
+  return tuple_sketch_agg_integer(key, summary, lgNomEntries: lit(lgNomEntries), mode: mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with double
+/// summaries that is the union of the Tuple sketches in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` of `TupleSketch` objects with double summaries to aggregate.
+///   - lgNomEntries: A ``Column`` that evaluates to the log-base-2 of the number of nominal
+///     entries, which is the size of the sketch. It must be between 4 and 26, and defaults to
+///     12.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant. It defaults to `sum`.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_union_agg_double(
+  _ col: Column,
+  lgNomEntries: Column = lit(Int32(12)), mode: Column = lit("sum")
+) -> Column {
+  return fn("tuple_union_agg_double", col, lgNomEntries, mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with double
+/// summaries that is the union of the Tuple sketches in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` of `TupleSketch` objects with double summaries to aggregate.
+///   - lgNomEntries: The log-base-2 of the number of nominal entries, which is the size of the
+///     sketch. It must be between 4 and 26, and defaults to 12.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant. It defaults to `sum`.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_union_agg_double(
+  _ col: Column,
+  lgNomEntries: Int32, mode: Column = lit("sum")
+) -> Column {
+  return tuple_union_agg_double(col, lgNomEntries: lit(lgNomEntries), mode: mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with integer
+/// summaries that is the union of the Tuple sketches in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` of `TupleSketch` objects with integer summaries to aggregate.
+///   - lgNomEntries: A ``Column`` that evaluates to the log-base-2 of the number of nominal
+///     entries, which is the size of the sketch. It must be between 4 and 26, and defaults to
+///     12.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant. It defaults to `sum`.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_union_agg_integer(
+  _ col: Column,
+  lgNomEntries: Column = lit(Int32(12)), mode: Column = lit("sum")
+) -> Column {
+  return fn("tuple_union_agg_integer", col, lgNomEntries, mode)
+}
+
+/// Returns the compact binary representation of the Datasketches `TupleSketch` with integer
+/// summaries that is the union of the Tuple sketches in a group.
+/// This requires Apache Spark 4.2.0 or later.
+/// - Parameters:
+///   - col: A ``Column`` of `TupleSketch` objects with integer summaries to aggregate.
+///   - lgNomEntries: The log-base-2 of the number of nominal entries, which is the size of the
+///     sketch. It must be between 4 and 26, and defaults to 12.
+///   - mode: A ``Column`` that evaluates to the summary mode, one of `sum`, `min`, `max` or
+///     `alwaysone`. It must be a constant. It defaults to `sum`.
+/// - Returns: A ``Column`` that evaluates to the binary representation of a `TupleSketch`.
+public func tuple_union_agg_integer(
+  _ col: Column,
+  lgNomEntries: Int32, mode: Column = lit("sum")
+) -> Column {
+  return tuple_union_agg_integer(col, lgNomEntries: lit(lgNomEntries), mode: mode)
 }
 
 /// Returns the population variance of the values in a group.
