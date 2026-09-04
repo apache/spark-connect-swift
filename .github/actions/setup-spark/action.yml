@@ -1,0 +1,64 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: 'Setup Spark'
+description: 'Download (cached) and extract an Apache Spark distribution into /tmp/spark'
+
+inputs:
+  version:
+    description: 'Spark version, e.g. 4.1.3'
+    required: true
+  url:
+    description: 'Download URL. Defaults to the ASF mirror redirector.'
+    required: false
+    default: ''
+  sha512:
+    description: 'Expected SHA-512 of the tarball. Verified when given.'
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    # The checksum is part of the key so that a release candidate and its final
+    # release, which share a version but not their bits, never share an entry.
+    - name: Cache Spark ${{ inputs.version }} distribution
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: ~/spark-dist/spark-${{ inputs.version }}-bin-hadoop3.tgz
+        key: spark-${{ inputs.version }}-bin-hadoop3-${{ inputs.sha512 }}
+
+    - name: Download Spark ${{ inputs.version }}
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        mkdir -p ~/spark-dist
+        curl -L -o ~/spark-dist/spark-${{ inputs.version }}-bin-hadoop3.tgz \
+          "${{ inputs.url || format('https://www.apache.org/dyn/closer.lua/spark/spark-{0}/spark-{0}-bin-hadoop3.tgz?action=download', inputs.version) }}"
+
+    - name: Extract Spark ${{ inputs.version }} into /tmp/spark
+      shell: bash
+      run: |
+        cd ~/spark-dist
+        if [ -n "${{ inputs.sha512 }}" ]; then
+          echo "${{ inputs.sha512 }}  spark-${{ inputs.version }}-bin-hadoop3.tgz" | shasum -a 512 -c
+        fi
+        tar xfz spark-${{ inputs.version }}-bin-hadoop3.tgz -C /tmp
+        mv /tmp/spark-${{ inputs.version }}-bin-hadoop3 /tmp/spark

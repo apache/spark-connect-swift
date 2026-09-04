@@ -150,11 +150,12 @@ jobs:
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
+    - uses: ./.github/actions/setup-spark
+      with:
+        version: 4.1.3
+        sha512: 391d04f40da0f6e961513d1ad72a6e3d51aef99f751c835e058a329b01369d83d17c2a9c68fad6be9496eea6687107d0d3d6893f7a53f53ddbfe669022220523
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.3/spark-4.1.3-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.1.3-bin-hadoop3.tgz && rm spark-4.1.3-bin-hadoop3.tgz
-        mv spark-4.1.3-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
@@ -171,12 +172,12 @@ jobs:
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
+    - uses: ./.github/actions/setup-spark
+      with:
+        version: 4.2.0
+        sha512: 3a6559e8546ff387db8fe7a04b8fe4008853b467b972c2e343df8e14a81450534777719fc5d4998dd96519a86fdf9de140cee753c61e2e94db044d5f9555ddc4
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.2.0/spark-4.2.0-bin-hadoop3.tgz?action=download
-        echo "3a6559e8546ff387db8fe7a04b8fe4008853b467b972c2e343df8e14a81450534777719fc5d4998dd96519a86fdf9de140cee753c61e2e94db044d5f9555ddc4  spark-4.2.0-bin-hadoop3.tgz" | shasum -a 512 -c
-        tar xvfz spark-4.2.0-bin-hadoop3.tgz && rm spark-4.2.0-bin-hadoop3.tgz
-        mv spark-4.2.0-bin-hadoop3/ /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh -c spark.sql.timeType.enabled=true
         cd -
@@ -193,12 +194,13 @@ jobs:
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
+    - uses: ./.github/actions/setup-spark
+      with:
+        version: 4.3.0
+        url: https://dist.apache.org/repos/dist/dev/spark/v4.3.0-rc1-bin/spark-4.3.0-bin-hadoop3.tgz
+        sha512: 18563bb57fa5e5367286a49845d44aa7e808e6c0f4dd151cb32cf71fffd17164734b4a2f54f81b94d69a58b4bdbac807cf05a33241ba9106c7600f491c1b157c
     - name: Test
       run: |
-        curl -LO https://dist.apache.org/repos/dist/dev/spark/v4.3.0-rc1-bin/spark-4.3.0-bin-hadoop3.tgz
-        echo "18563bb57fa5e5367286a49845d44aa7e808e6c0f4dd151cb32cf71fffd17164734b4a2f54f81b94d69a58b4bdbac807cf05a33241ba9106c7600f491c1b157c  spark-4.3.0-bin-hadoop3.tgz" | shasum -a 512 -c
-        tar xvfz spark-4.3.0-bin-hadoop3.tgz && rm spark-4.3.0-bin-hadoop3.tgz
-        mv spark-4.3.0-bin-hadoop3/ /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh -c spark.sql.timeType.enabled=true
         cd -
@@ -215,11 +217,12 @@ jobs:
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
+    - uses: ./.github/actions/setup-spark
+      with:
+        version: 4.0.4
+        sha512: 1b91bf197df884368293cb91e7eda866751570b0c98f38fda712030dd8256962460d68d9f2c9075bc83061428b18108faa89510d3a20e1436a41fc73cadc24dd
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.4/spark-4.0.4-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.4-bin-hadoop3.tgz && rm spark-4.0.4-bin-hadoop3.tgz
-        mv spark-4.0.4-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
@@ -237,11 +240,12 @@ jobs:
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
+    - uses: ./.github/actions/setup-spark
+      with:
+        version: 4.1.3
+        sha512: 391d04f40da0f6e961513d1ad72a6e3d51aef99f751c835e058a329b01369d83d17c2a9c68fad6be9496eea6687107d0d3d6893f7a53f53ddbfe669022220523
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.3/spark-4.1.3-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.1.3-bin-hadoop3.tgz && rm spark-4.1.3-bin-hadoop3.tgz
-        mv spark-4.1.3-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh
         cd -
@@ -264,11 +268,12 @@ jobs:
         java-version: 17
     - name: Build
       run: swift test --filter NOTHING -c release
+    - uses: ./.github/actions/setup-spark
+      with:
+        version: 4.0.4
+        sha512: 1b91bf197df884368293cb91e7eda866751570b0c98f38fda712030dd8256962460d68d9f2c9075bc83061428b18108faa89510d3a20e1436a41fc73cadc24dd
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.0.4/spark-4.0.4-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.0.4-bin-hadoop3.tgz && rm spark-4.0.4-bin-hadoop3.tgz
-        mv spark-4.0.4-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.4,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         # Iceberg jars are resolved at startup, so wait until the server is ready.
@@ -297,11 +302,12 @@ jobs:
         java-version: 21
     - name: Build
       run: swift test --filter NOTHING -c release
+    - uses: ./.github/actions/setup-spark
+      with:
+        version: 4.1.3
+        sha512: 391d04f40da0f6e961513d1ad72a6e3d51aef99f751c835e058a329b01369d83d17c2a9c68fad6be9496eea6687107d0d3d6893f7a53f53ddbfe669022220523
     - name: Test
       run: |
-        curl -LO https://www.apache.org/dyn/closer.lua/spark/spark-4.1.3/spark-4.1.3-bin-hadoop3.tgz?action=download
-        tar xvfz spark-4.1.3-bin-hadoop3.tgz && rm spark-4.1.3-bin-hadoop3.tgz
-        mv spark-4.1.3-bin-hadoop3 /tmp/spark
         cd /tmp/spark/sbin
         ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.1.3,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.11.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         # Iceberg jars are resolved at startup, so wait until the server is ready.
