@@ -80,6 +80,16 @@ public actor DataFrameWriterV2: Sendable {
     return self
   }
 
+  /// Partition the output table created by `create`, `createOrReplace`, or `replace` using the
+  /// given columns or transforms like ``years(_:)``, ``months(_:)``, ``days(_:)``,
+  /// ``hours(_:)``, and ``bucket(_:_:)``.
+  /// - Parameter columns: Columns or transforms to partition
+  /// - Returns: A ``DataFrameWriterV2``.
+  public func partitionBy(_ columns: Column...) -> DataFrameWriterV2 {
+    self.partitioningColumns = columns.map { $0.expr }
+    return self
+  }
+
   /// Clusters the output by the given columns on the storage. The rows with matching values in the
   /// specified clustering columns will be consolidated within the same group.
   /// - Parameter columns: Columns to cluster
