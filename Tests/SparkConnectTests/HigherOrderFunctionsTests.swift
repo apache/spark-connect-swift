@@ -41,6 +41,10 @@ struct HigherOrderFunctionsTests {
       (reduce(col("a"), lit(0), { acc, x in acc + x }, finish: { $0 }), "reduce", [2, 1]),
       (zip_with(col("a"), col("b")) { x, y in x + y }, "zip_with", [2]),
       (array_sort(col("a")) { x, y in x - y }, "array_sort", [2]),
+      (transform_keys(col("a")) { k, _ in k }, "transform_keys", [2]),
+      (transform_values(col("a")) { _, v in v }, "transform_values", [2]),
+      (map_filter(col("a")) { _, v in v }, "map_filter", [2]),
+      (map_zip_with(col("a"), col("b")) { _, v1, v2 in v1 + v2 }, "map_zip_with", [3]),
     ] {
       let function = column.expr.unresolvedFunction
       #expect(function.functionName == name)
@@ -119,6 +123,27 @@ struct HigherOrderFunctionsTests {
       transform(array(lit(10), lit(20))) { y in x + y }
     }
     #expect(try await df.select(nested.cast("string")).collect() == [Row("[[11, 21], [12, 22]]")])
+    await spark.stop()
+  }
+
+  @Test
+  func selectHigherOrderMapFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1)
+    let m = map_from_arrays(array(lit(1), lit(2)), array(lit(10), lit(20)))
+
+    #expect(
+      try await df.select(map_filter(m) { _, v in v > 10 }.cast("string")).collect()
+        == [Row("{2 -> 20}")])
+    #expect(
+      try await df.select(transform_keys(m) { k, v in k + v }.cast("string")).collect()
+        == [Row("{11 -> 10, 22 -> 20}")])
+    #expect(
+      try await df.select(transform_values(m) { k, v in k + v }.cast("string")).collect()
+        == [Row("{1 -> 11, 2 -> 22}")])
+    let m2 = map_from_arrays(array(lit(1), lit(2)), array(lit(100), lit(200)))
+    let zipped = map_zip_with(m, m2) { _, v1, v2 in v1 + v2 }
+    #expect(try await df.select(zipped.cast("string")).collect() == [Row("{1 -> 110, 2 -> 220}")])
     await spark.stop()
   }
 }

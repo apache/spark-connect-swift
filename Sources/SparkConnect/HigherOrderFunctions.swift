@@ -240,3 +240,61 @@ public func zip_with(_ left: Column, _ right: Column, _ f: (Column, Column) -> C
 public func array_sort(_ col: Column, _ comparator: (Column, Column) -> Column) -> Column {
   return fn("array_sort", col, createLambda(comparator))
 }
+
+/// Applies a function to every key-value pair in a map and returns a map with the results of
+/// those applications as the new keys for the pairs.
+///
+/// ```swift
+/// let df2 = df.select(transform_keys(col("m")) { k, v in k + 1 })
+/// ```
+/// - Parameters:
+///   - expr: A map ``Column``.
+///   - f: A closure taking a key and its value, returning a new key.
+/// - Returns: A ``Column``.
+public func transform_keys(_ expr: Column, _ f: (Column, Column) -> Column) -> Column {
+  return fn("transform_keys", expr, createLambda(f))
+}
+
+/// Applies a function to every key-value pair in a map and returns a map with the results of
+/// those applications as the new values for the pairs.
+///
+/// ```swift
+/// let df2 = df.select(transform_values(col("m")) { k, v in k + v })
+/// ```
+/// - Parameters:
+///   - expr: A map ``Column``.
+///   - f: A closure taking a key and its value, returning a new value.
+/// - Returns: A ``Column``.
+public func transform_values(_ expr: Column, _ f: (Column, Column) -> Column) -> Column {
+  return fn("transform_values", expr, createLambda(f))
+}
+
+/// Returns a map whose key-value pairs satisfy a predicate.
+///
+/// ```swift
+/// let df2 = df.select(map_filter(col("m")) { k, v in v > 30 })
+/// ```
+/// - Parameters:
+///   - expr: A map ``Column``.
+///   - f: A predicate closure taking a key and its value.
+/// - Returns: A ``Column``.
+public func map_filter(_ expr: Column, _ f: (Column, Column) -> Column) -> Column {
+  return fn("map_filter", expr, createLambda(f))
+}
+
+/// Merges two given maps, key-wise, into a single map using a function. If one map does not have
+/// a matching key, null is passed for the missing value.
+///
+/// ```swift
+/// let df2 = df.select(map_zip_with(col("m1"), col("m2")) { k, v1, v2 in v1 + v2 })
+/// ```
+/// - Parameters:
+///   - left: A map ``Column``.
+///   - right: A map ``Column``.
+///   - f: A closure taking a key, the value from `left`, and the value from `right`.
+/// - Returns: A ``Column``.
+public func map_zip_with(
+  _ left: Column, _ right: Column, _ f: (Column, Column, Column) -> Column
+) -> Column {
+  return fn("map_zip_with", left, right, createLambda(f))
+}
