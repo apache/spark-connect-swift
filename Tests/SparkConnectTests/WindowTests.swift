@@ -43,6 +43,19 @@ struct WindowTests {
     #expect(ntile(4).expr.unresolvedFunction.arguments[0].literal.integer == 4)
 
     for (column, name, count) in [
+      (counter_diff(col("a")), "counter_diff", 1),
+      (counter_diff(col("a"), col("b")), "counter_diff", 2),
+    ] {
+      let expr = column.expr
+      #expect(expr.unresolvedFunction.functionName == name)
+      #expect(expr.unresolvedFunction.arguments.count == count)
+      #expect(expr.unresolvedFunction.arguments[0].unresolvedAttribute.unparsedIdentifier == "a")
+    }
+    #expect(
+      counter_diff(col("a"), col("b")).expr.unresolvedFunction.arguments[1]
+        .unresolvedAttribute.unparsedIdentifier == "b")
+
+    for (column, name, count) in [
       (lag(col("a"), 1), "lag", 2),
       (lag(col("a"), 1, 0), "lag", 3),
       (lead(col("a"), 1), "lead", 2),
@@ -174,6 +187,25 @@ struct WindowTests {
         Row("a", 3, 2, -1, 2),
         Row("b", 10, nil, -1, nil),
       ])
+    await spark.stop()
+  }
+
+  @Test
+  func counterDiffOverWindow() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    guard await isSparkVersionAtLeast(spark.version, "4.3") else {
+      await spark.stop()
+      return
+    }
+    let df = try await spark.sql(
+      "SELECT * FROM VALUES ('a', 1, 10), ('a', 2, 30), ('a', 3, 20) AS t(name, ts, counter)")
+    let window = Window.partitionBy("name").orderBy("ts")
+    let rows = try await df
+      .withColumn("diff", counter_diff(col("counter")).over(window))
+      .orderBy("ts")
+      .select("ts", "diff")
+      .collect()
+    #expect(rows == [Row(1, nil), Row(2, 20), Row(3, nil)])
     await spark.stop()
   }
 }
