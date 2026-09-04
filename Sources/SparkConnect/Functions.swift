@@ -290,6 +290,19 @@ public func max(_ col: Column) -> Column {
   return fn("max", col)
 }
 
+/// Marks a ``DataFrame`` as small enough for use in broadcast joins.
+///
+/// The following example marks the right ``DataFrame`` for broadcast hash join.
+///
+/// ```swift
+/// let joined = await left.join(broadcast(right), "id")
+/// ```
+/// - Parameter df: A ``DataFrame`` to broadcast.
+/// - Returns: A ``DataFrame`` with a `broadcast` hint.
+public func broadcast(_ df: DataFrame) async -> DataFrame {
+  return await df.hint("broadcast")
+}
+
 func fn(_ name: String, _ args: Column...) -> Column {
   var function = Spark_Connect_Expression.UnresolvedFunction()
   function.functionName = name
