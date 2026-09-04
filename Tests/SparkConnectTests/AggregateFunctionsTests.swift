@@ -34,6 +34,9 @@ struct AggregateFunctionsTests {
       (bit_and(col("a")), "bit_and"),
       (bit_or(col("a")), "bit_or"),
       (bit_xor(col("a")), "bit_xor"),
+      (bitmap_and_agg(col("a")), "bitmap_and_agg"),
+      (bitmap_construct_agg(col("a")), "bitmap_construct_agg"),
+      (bitmap_or_agg(col("a")), "bitmap_or_agg"),
       (bool_and(col("a")), "bool_and"),
       (bool_or(col("a")), "bool_or"),
       (collect_list(col("a")), "collect_list"),
@@ -470,6 +473,39 @@ struct AggregateFunctionsTests {
     ).collect()
     #expect(abs(try averages[0].get(0) as! Double - 2.5) < 1e-9)
     #expect(abs(try averages[0].get(1) as! Double - 6.0) < 1e-9)
+    await spark.stop()
+  }
+
+  @Test
+  func selectBitmapAggregateFunctions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(
+      """
+      SELECT bitmap_construct_agg(bitmap_bit_position(v)) AS b
+        FROM VALUES (1), (2), (2), (3) AS T(v)
+      UNION ALL
+      SELECT bitmap_construct_agg(bitmap_bit_position(v)) AS b
+        FROM VALUES (2), (3), (3), (4) AS T(v)
+      """)
+    // The two bitmaps hold {1, 2, 3} and {2, 3, 4}, so the union has 4 bits and the
+    // intersection has 2.
+    let rows = try await df.select(bitmap_count(bitmap_or_agg(col("b")))).collect()
+    #expect(rows == [Row(Int64(4))])
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
+      let intersection = try await df.select(bitmap_count(bitmap_and_agg(col("b")))).collect()
+      #expect(intersection == [Row(Int64(2))])
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func selectBitmapConstructAgg() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT * FROM VALUES (1), (2), (2), (3) AS T(v)")
+    let rows = try await df.select(
+      bitmap_count(bitmap_construct_agg(bitmap_bit_position(col("v"))))
+    ).collect()
+    #expect(rows == [Row(Int64(3))])
     await spark.stop()
   }
 }
