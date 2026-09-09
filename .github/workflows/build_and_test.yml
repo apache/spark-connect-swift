@@ -262,7 +262,7 @@ jobs:
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Install Java
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         distribution: zulu
         java-version: 17
@@ -296,7 +296,7 @@ jobs:
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Install Java
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         distribution: zulu
         java-version: 21
