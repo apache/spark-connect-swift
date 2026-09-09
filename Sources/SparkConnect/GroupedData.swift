@@ -22,15 +22,17 @@ public actor GroupedData {
   let groupType: GroupType
   let groupingCols: [String]
   let pivot: Aggregate.Pivot?
+  let groupingSets: [[String]]?
 
   init(
     _ df: DataFrame, _ groupType: GroupType, _ groupingCols: [String],
-    _ pivot: Aggregate.Pivot? = nil
+    _ pivot: Aggregate.Pivot? = nil, _ groupingSets: [[String]]? = nil
   ) {
     self.df = df
     self.groupType = groupType
     self.groupingCols = groupingCols
     self.pivot = pivot
+    self.groupingSets = groupingSets
   }
 
   /// Pivots a column of the current ``DataFrame`` and performs the specified aggregation.
@@ -142,6 +144,13 @@ public actor GroupedData {
     aggregate.aggregateExpressions = exprs
     if let pivot = self.pivot {
       aggregate.pivot = pivot
+    }
+    if let groupingSets = self.groupingSets {
+      aggregate.groupingSets = groupingSets.map { groupingSet in
+        var gs = Aggregate.GroupingSets()
+        gs.groupingSet = groupingSet.map { $0.toExpression }
+        return gs
+      }
     }
     var relation = Relation()
     relation.aggregate = aggregate

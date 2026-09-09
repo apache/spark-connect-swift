@@ -1330,6 +1330,80 @@ struct DataFrameTests {
   }
 
   @Test
+  func groupingSets() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
+      let rows = try await spark.sql(DEALER_TABLE)
+        .groupingSets([["city", "car_model"], ["city"], []], "city", "car_model")
+        .agg("sum(quantity) sum").orderBy("city", "car_model").collect()
+      #expect(
+        rows == [
+          Row("Dublin", "Honda Accord", 10),
+          Row("Dublin", "Honda CRV", 3),
+          Row("Dublin", "Honda Civic", 20),
+          Row("Dublin", nil, 33),
+          Row("Fremont", "Honda Accord", 15),
+          Row("Fremont", "Honda CRV", 7),
+          Row("Fremont", "Honda Civic", 10),
+          Row("Fremont", nil, 32),
+          Row("San Jose", "Honda Accord", 8),
+          Row("San Jose", "Honda Civic", 5),
+          Row("San Jose", nil, 13),
+          Row(nil, nil, 78),
+        ])
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func groupingSetsSameAsSQL() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
+      let expected = try await spark.sql(
+        """
+        SELECT city, car_model, sum(quantity) sum FROM (\(DEALER_TABLE))
+        GROUP BY city, car_model GROUPING SETS ((city, car_model), (city), ())
+        """
+      ).orderBy("city", "car_model").collect()
+      let rows = try await spark.sql(DEALER_TABLE)
+        .groupingSets([["city", "car_model"], ["city"], []], "city", "car_model")
+        .agg("sum(quantity) sum").orderBy("city", "car_model").collect()
+      #expect(rows == expected)
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func groupingSetsWithGroupingID() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.0") {
+      let rows = try await spark.sql(DEALER_TABLE)
+        .groupingSets([["city", "car_model"], ["city"], []], "city", "car_model")
+        .agg(
+          grouping_id(col("city"), col("car_model")).alias("gid"),
+          SparkConnect.sum(col("quantity")).alias("sum")
+        )
+        .orderBy("gid", "city", "car_model").collect()
+      #expect(
+        rows == [
+          Row("Dublin", "Honda Accord", 0, 10),
+          Row("Dublin", "Honda CRV", 0, 3),
+          Row("Dublin", "Honda Civic", 0, 20),
+          Row("Fremont", "Honda Accord", 0, 15),
+          Row("Fremont", "Honda CRV", 0, 7),
+          Row("Fremont", "Honda Civic", 0, 10),
+          Row("San Jose", "Honda Accord", 0, 8),
+          Row("San Jose", "Honda Civic", 0, 5),
+          Row("Dublin", nil, 1, 33),
+          Row("Fremont", nil, 1, 32),
+          Row("San Jose", nil, 1, 13),
+          Row(nil, nil, 3, 78),
+        ])
+    }
+    await spark.stop()
+  }
+
+  @Test
   func pivot() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let rows = try await spark.sql(DEALER_TABLE).groupBy("city")
