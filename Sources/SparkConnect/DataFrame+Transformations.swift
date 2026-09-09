@@ -1100,6 +1100,38 @@ extension DataFrame {
     return GroupedData(self, GroupType.cube, cols)
   }
 
+  /// Create a multi-dimensional aggregation for the current ``DataFrame`` using the specified
+  /// grouping sets, so we can run aggregation on them.
+  ///
+  /// Unlike ``rollup(_:)`` and ``cube(_:)``, which derive the group combinations automatically,
+  /// this allows an arbitrary list of combinations to be given explicitly. An empty grouping set
+  /// aggregates over all rows.
+  ///
+  /// ```swift
+  /// // Sum the quantity per (city, car_model), per city, and over all rows.
+  /// let df = try await spark.sql("SELECT * FROM dealer")
+  /// let summary = try await df.groupingSets(
+  ///     [["city", "car_model"], ["city"], []],
+  ///     "city", "car_model"
+  /// ).agg("sum(quantity) AS sum").orderBy("city", "car_model")
+  ///
+  /// // Use `grouping_id` to tell which grouping set each row came from.
+  /// let tagged = try await df.groupingSets(
+  ///     [["city", "car_model"], ["city"], []],
+  ///     "city", "car_model"
+  /// ).agg("grouping_id() AS gid", "sum(quantity) AS sum")
+  /// ```
+  ///
+  /// - Parameters:
+  ///   - groupingSets: The individual sets of columns to group on. Each element is one grouping
+  ///     set, and an empty element means a group over all rows.
+  ///   - cols: Additional grouping columns specified by users. Those columns are shown as the
+  ///     output columns after aggregation.
+  /// - Returns: A ``GroupedData``.
+  public func groupingSets(_ groupingSets: [[String]], _ cols: String...) -> GroupedData {
+    return GroupedData(self, GroupType.groupingSets, cols, nil, groupingSets)
+  }
+
   // MARK: - Hints and Watermark
 
   /// Specifies some hint on the current Dataset.

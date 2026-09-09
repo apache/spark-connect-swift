@@ -84,6 +84,20 @@ struct DataFrameInternalTests {
   }
 
   @Test
+  func groupingSetsPlan() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let range = try await spark.range(1)
+    let df = await range.groupingSets([["id"], []], "id").agg("count(*)")
+    let aggregate = await df.plan.root.aggregate
+    #expect(aggregate.groupType == .groupingSets)
+    #expect(aggregate.groupingExpressions.map { $0.expressionString.expression } == ["id"])
+    #expect(aggregate.groupingSets.count == 2)
+    #expect(aggregate.groupingSets[0].groupingSet.map { $0.expressionString.expression } == ["id"])
+    #expect(aggregate.groupingSets[1].groupingSet.isEmpty)
+    await spark.stop()
+  }
+
+  @Test
   func removeCachedRemoteRelation() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.0.0") {
