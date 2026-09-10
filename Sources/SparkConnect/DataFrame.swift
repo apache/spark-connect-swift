@@ -27,6 +27,9 @@ import GRPCNIOTransportHTTP2
 import GRPCProtobuf
 import Synchronization
 
+/// A monotonically increasing counter used to give every root relation a unique plan ID.
+private let planIDGenerator = Atomic<Int64>(0)
+
 /// A distributed collection of data organized into named columns.
 ///
 /// A DataFrame is equivalent to a relational table in Spark SQL, and can be created using various
@@ -211,7 +214,7 @@ public actor DataFrame: Sendable {
   ///   - plan: A plan to execute.
   init(spark: SparkSession, plan: Plan) {
     self.spark = spark
-    self.plan = plan
+    self.plan = DataFrame.withPlanID(plan)
   }
 
   /// Create a new `DataFrame` instance with the given SparkSession and a SQL statement.
@@ -220,17 +223,28 @@ public actor DataFrame: Sendable {
   ///   - sqlText: A SQL statement.
   ///   - posArgs: An array of strings.
   init(spark: SparkSession, sqlText: String, _ posArgs: [Sendable]? = nil) async throws {
-    self.spark = spark
     if let posArgs {
-      self.plan = try sqlText.toSparkConnectPlan(posArgs)
+      self.init(spark: spark, plan: try sqlText.toSparkConnectPlan(posArgs))
     } else {
-      self.plan = sqlText.toSparkConnectPlan
+      self.init(spark: spark, plan: sqlText.toSparkConnectPlan)
     }
   }
 
   init(spark: SparkSession, sqlText: String, _ args: [String: Sendable]) async throws {
-    self.spark = spark
-    self.plan = try sqlText.toSparkConnectPlan(args)
+    self.init(spark: spark, plan: try sqlText.toSparkConnectPlan(args))
+  }
+
+  /// Assigns a new plan ID to the root relation of the given plan unless it already has one.
+  /// - Parameter plan: A plan.
+  /// - Returns: A plan whose root relation has a plan ID.
+  private static func withPlanID(_ plan: Plan) -> Plan {
+    guard case .root(var relation) = plan.opType, !relation.common.hasPlanID else {
+      return plan
+    }
+    relation.common.planID = planIDGenerator.wrappingAdd(1, ordering: .relaxed).newValue
+    var plan = plan
+    plan.root = relation
+    return plan
   }
 
   deinit {

@@ -61,7 +61,7 @@ extension DataFrame {
   /// ```
   ///
   /// - Note: Unlike PySpark, the returned ``Column`` is not bound to this ``DataFrame`` because
-  ///   this client does not assign plan IDs. A column name without backticks cannot be
+  ///   it doesn't carry the plan ID. A column name without backticks cannot be
   ///   disambiguated when multiple ``DataFrame``s, e.g. both sides of a self-join, have it.
   /// - Parameter colName: A column name specified as a regex.
   /// - Returns: A ``Column`` expression.
