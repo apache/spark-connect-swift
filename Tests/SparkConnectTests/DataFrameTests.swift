@@ -422,6 +422,26 @@ struct DataFrameTests {
   }
 
   @Test
+  func colRegexWithPrefix() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT 1 a1, 2 b1, 3 a2, 4 ba")
+    #expect(try await df.select(df.colRegex("`a.*`")).columns == ["a1", "a2"])
+    await spark.stop()
+  }
+
+  @Test
+  func colRegexWithoutBackticks() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT 1 a1, 2 a2")
+    #expect(try await df.select(df.colRegex("a1")).columns == ["a1"])
+    // A column name without backticks is not interpreted as a regex.
+    try await #require(throws: SparkConnectError.ColumnNotFound) {
+      try await df.select(df.colRegex("a[12]")).schema
+    }
+    await spark.stop()
+  }
+
+  @Test
   func selectExpr() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let schema = try await spark.range(1).selectExpr("id + 1 as id2").schema

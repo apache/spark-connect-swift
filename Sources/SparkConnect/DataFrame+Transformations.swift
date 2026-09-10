@@ -47,6 +47,32 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, exprs))
   }
 
+  /// Selects column based on the column name specified as a regex and returns it as ``Column``.
+  ///
+  /// Only a column name enclosed in backticks is interpreted as a regex. The regex follows the
+  /// Java regular expression syntax, and its case sensitivity follows the server-side
+  /// `spark.sql.caseSensitive` configuration. A column name without backticks is resolved as
+  /// a regular column reference.
+  ///
+  /// ```swift
+  /// let df = try await spark.sql("SELECT 1 a1, 2 a2, 3 b1")
+  /// // Select the columns whose names start with `a`, i.e., `a1` and `a2`.
+  /// try await df.select(df.colRegex("`a.*`")).show()
+  /// ```
+  ///
+  /// - Note: Unlike PySpark, the returned ``Column`` is not bound to this ``DataFrame`` because
+  ///   this client does not assign plan IDs. A column name without backticks cannot be
+  ///   disambiguated when multiple ``DataFrame``s, e.g. both sides of a self-join, have it.
+  /// - Parameter colName: A column name specified as a regex.
+  /// - Returns: A ``Column`` expression.
+  public nonisolated func colRegex(_ colName: String) -> Column {
+    var regex = Spark_Connect_Expression.UnresolvedRegex()
+    regex.colName = colName
+    var expr = Spark_Connect_Expression()
+    expr.unresolvedRegex = regex
+    return Column(expr)
+  }
+
   /// Selects a subset of existing columns using column names.
   /// - Parameter cols: Column names
   /// - Returns: A ``DataFrame`` with subset of columns.
