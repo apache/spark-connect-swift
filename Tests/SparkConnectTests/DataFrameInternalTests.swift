@@ -108,9 +108,28 @@ struct DataFrameInternalTests {
   }
 
   @Test
+  func planID() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df1 = try await spark.range(1)
+    let df2 = try await spark.sql("SELECT 1")
+    let df3 = await df1.select("id")
+    let common1 = await df1.plan.root.common
+    let common2 = await df2.plan.root.common
+    let common3 = await df3.plan.root.common
+    #expect(common1.hasPlanID && common2.hasPlanID && common3.hasPlanID)
+    #expect(Set([common1.planID, common2.planID, common3.planID]).count == 3)
+    #expect(await df3.plan.root.project.input.common.planID == common1.planID)
+    #expect(await df1.toDF().plan.root.common.planID == common1.planID)
+    await spark.stop()
+  }
+
+  @Test
   func removeCachedRemoteRelation() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.0.0") {
+      // Disable the server-side plan cache. Otherwise, `count()` keeps succeeding with the plan
+      // cached for this `DataFrame`'s plan ID even after the cached relation is removed.
+      try await spark.conf.set("spark.connect.session.planCache.enabled", "false")
       let df = try await spark.range(10).localCheckpoint()
       #expect(try await df.count() == 10)
       let cachedRemoteRelation = await df.plan.root.cachedRemoteRelation
