@@ -98,6 +98,16 @@ struct DataFrameInternalTests {
   }
 
   @Test
+  func colRegexExpression() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1)
+    let regex = df.colRegex("`a.*`").expr.unresolvedRegex
+    #expect(regex.colName == "`a.*`")
+    #expect(!regex.hasPlanID)
+    await spark.stop()
+  }
+
+  @Test
   func removeCachedRemoteRelation() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.0.0") {
