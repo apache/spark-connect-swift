@@ -124,6 +124,24 @@ struct DataFrameInternalTests {
   }
 
   @Test
+  func colExpression() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(1)
+    let planID = await df.plan.root.common.planID
+    let attribute = df["id"].expr.unresolvedAttribute
+    #expect(attribute.unparsedIdentifier == "id")
+    #expect(attribute.planID == planID)
+    #expect(df.col("id").expr == df["id"].expr)
+    let star = df["*"].expr.unresolvedStar
+    #expect(!star.hasUnparsedTarget)
+    #expect(star.planID == planID)
+    let structStar = df["s.*"].expr.unresolvedStar
+    #expect(structStar.unparsedTarget == "s.*")
+    #expect(!structStar.hasPlanID)
+    await spark.stop()
+  }
+
+  @Test
   func removeCachedRemoteRelation() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.0.0") {

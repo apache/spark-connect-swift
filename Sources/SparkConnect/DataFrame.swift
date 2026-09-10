@@ -205,6 +205,9 @@ private let planIDGenerator = Atomic<Int64>(0)
 public actor DataFrame: Sendable {
   var spark: SparkSession
   var plan: Plan
+  /// The plan ID of the root relation, which binds the ``Column``s from ``col(_:)`` to this
+  /// `DataFrame`.
+  let planID: Int64
   var _schema: StructType? = nil
   var batches: [RecordBatch] = [RecordBatch]()
 
@@ -215,6 +218,7 @@ public actor DataFrame: Sendable {
   init(spark: SparkSession, plan: Plan) {
     self.spark = spark
     self.plan = DataFrame.withPlanID(plan)
+    self.planID = self.plan.root.common.planID
   }
 
   /// Create a new `DataFrame` instance with the given SparkSession and a SQL statement.
