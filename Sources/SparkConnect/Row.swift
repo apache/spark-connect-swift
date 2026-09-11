@@ -114,6 +114,75 @@ public struct Row: Sendable, Equatable {
     return dict
   }
 
+  /// Returns whether the value at the given index is null.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: `true` if the column is null, `false` otherwise.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range.
+  public func isNullAt(_ i: Int) throws -> Bool {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    return values[i] == nil
+  }
+
+  /// Returns whether the value of the field with the given name is null.
+  /// - Parameter name: A field name.
+  /// - Returns: `true` if the column is null, `false` otherwise.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema, or
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist.
+  public func isNullAt(_ name: String) throws -> Bool {
+    return try isNullAt(fieldIndex(name))
+  }
+
+  /// Returns the value at the given index cast or coerced to the specified type `T`.
+  /// - Parameters:
+  ///   - i: A 0-based column index.
+  ///   - type: The expected type to return.
+  /// - Returns: The value as type `T`.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value cannot be converted to `T`.
+  public func getAs<T>(_ i: Int, _ type: T.Type = T.self) throws -> T {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    if let value = values[i] as? T {
+      return value
+    }
+    if T.self == Int.self, let intVal = values[i] as? any FixedWidthInteger,
+      let result = Int(exactly: intVal) as? T
+    {
+      return result
+    }
+    if T.self == Int64.self, let intVal = values[i] as? any FixedWidthInteger,
+      let result = Int64(exactly: intVal) as? T
+    {
+      return result
+    }
+    if T.self == Double.self, let floatVal = values[i] as? Float,
+      let result = Double(floatVal) as? T
+    {
+      return result
+    }
+    if T.self == Date.self, let ts = values[i] as? TimestampNanos,
+      let result = ts.date as? T
+    {
+      return result
+    }
+    throw SparkConnectError.InvalidType
+  }
+
+  /// Returns the value of the field with the given name cast or coerced to the specified type `T`.
+  /// - Parameters:
+  ///   - name: A field name.
+  ///   - type: The expected type to return.
+  /// - Returns: The value as type `T`.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value cannot be converted to `T`.
+  public func getAs<T>(_ name: String, _ type: T.Type = T.self) throws -> T {
+    return try getAs(fieldIndex(name), type)
+  }
+
   /// Returns the value at the given index as a `Bool`.
   /// - Parameter i: A 0-based column index.
   /// - Returns: A `Bool` value of the field.
@@ -124,6 +193,221 @@ public struct Row: Sendable, Equatable {
       throw SparkConnectError.InvalidType
     }
     return value
+  }
+
+  /// Returns the value of the field with the given name as a `Bool`.
+  /// - Parameter name: A field name.
+  /// - Returns: A `Bool` value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not a `Bool`.
+  public func getAsBool(_ name: String) throws -> Bool {
+    return try getAsBool(fieldIndex(name))
+  }
+
+  /// Returns the value at the given index as an `Int`, supporting integer type coercion.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: An `Int` value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value is `nil`, not an integer, or overflows `Int`.
+  public func getAsInt(_ i: Int) throws -> Int {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    guard let raw = values[i],
+      let intVal = raw as? any FixedWidthInteger,
+      let result = Int(exactly: intVal)
+    else {
+      throw SparkConnectError.InvalidType
+    }
+    return result
+  }
+
+  /// Returns the value of the field with the given name as an `Int`, supporting integer type coercion.
+  /// - Parameter name: A field name.
+  /// - Returns: An `Int` value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value is `nil`, not an integer, or overflows `Int`.
+  public func getAsInt(_ name: String) throws -> Int {
+    return try getAsInt(fieldIndex(name))
+  }
+
+  /// Returns the value at the given index as an `Int64`, supporting integer type coercion.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: An `Int64` value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value is `nil`, not an integer, or overflows `Int64`.
+  public func getAsInt64(_ i: Int) throws -> Int64 {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    guard let raw = values[i],
+      let intVal = raw as? any FixedWidthInteger,
+      let result = Int64(exactly: intVal)
+    else {
+      throw SparkConnectError.InvalidType
+    }
+    return result
+  }
+
+  /// Returns the value of the field with the given name as an `Int64`, supporting integer type coercion.
+  /// - Parameter name: A field name.
+  /// - Returns: An `Int64` value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value is `nil`, not an integer, or overflows `Int64`.
+  public func getAsInt64(_ name: String) throws -> Int64 {
+    return try getAsInt64(fieldIndex(name))
+  }
+
+  /// Returns the value at the given index as a `Double`, supporting `Float` and `Double`.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: A `Double` value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not a floating-point number.
+  public func getAsDouble(_ i: Int) throws -> Double {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    guard let raw = values[i] else {
+      throw SparkConnectError.InvalidType
+    }
+    if let d = raw as? Double {
+      return d
+    }
+    if let f = raw as? Float {
+      return Double(f)
+    }
+    throw SparkConnectError.InvalidType
+  }
+
+  /// Returns the value of the field with the given name as a `Double`, supporting `Float` and `Double`.
+  /// - Parameter name: A field name.
+  /// - Returns: A `Double` value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not a floating-point number.
+  public func getAsDouble(_ name: String) throws -> Double {
+    return try getAsDouble(fieldIndex(name))
+  }
+
+  /// Returns the value at the given index as a `String`.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: A `String` value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not a `String`.
+  public func getAsString(_ i: Int) throws -> String {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    guard let raw = values[i], let s = raw as? String else {
+      throw SparkConnectError.InvalidType
+    }
+    return s
+  }
+
+  /// Returns the value of the field with the given name as a `String`.
+  /// - Parameter name: A field name.
+  /// - Returns: A `String` value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not a `String`.
+  public func getAsString(_ name: String) throws -> String {
+    return try getAsString(fieldIndex(name))
+  }
+
+  /// Returns the value at the given index as a `Date`.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: A `Date` value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not convertible to `Date`.
+  public func getAsDate(_ i: Int) throws -> Date {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    guard let raw = values[i] else {
+      throw SparkConnectError.InvalidType
+    }
+    if let date = raw as? Date {
+      return date
+    }
+    if let ts = raw as? TimestampNanos {
+      return ts.date
+    }
+    throw SparkConnectError.InvalidType
+  }
+
+  /// Returns the value of the field with the given name as a `Date`.
+  /// - Parameter name: A field name.
+  /// - Returns: A `Date` value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not convertible to `Date`.
+  public func getAsDate(_ name: String) throws -> Date {
+    return try getAsDate(fieldIndex(name))
+  }
+
+  /// Returns the value at the given index as a `TimestampNanos`.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: A `TimestampNanos` value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not convertible to `TimestampNanos`.
+  public func getAsTimestampNanos(_ i: Int) throws -> TimestampNanos {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    guard let raw = values[i] else {
+      throw SparkConnectError.InvalidType
+    }
+    if let ts = raw as? TimestampNanos {
+      return ts
+    }
+    if let date = raw as? Date {
+      return TimestampNanos(epochNanos: Int64((date.timeIntervalSince1970 * 1_000_000_000).rounded()))
+    }
+    throw SparkConnectError.InvalidType
+  }
+
+  /// Returns the value of the field with the given name as a `TimestampNanos`.
+  /// - Parameter name: A field name.
+  /// - Returns: A `TimestampNanos` value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not convertible to `TimestampNanos`.
+  public func getAsTimestampNanos(_ name: String) throws -> TimestampNanos {
+    return try getAsTimestampNanos(fieldIndex(name))
+  }
+
+  /// Returns the value at the given index as a `Decimal`.
+  /// - Parameter i: A 0-based column index.
+  /// - Returns: A `Decimal` value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not a `Decimal`.
+  public func getAsDecimal(_ i: Int) throws -> Decimal {
+    if i < 0 || i >= self.length {
+      throw SparkConnectError.InvalidArgument
+    }
+    guard let raw = values[i] else {
+      throw SparkConnectError.InvalidType
+    }
+    if let dec = raw as? Decimal {
+      return dec
+    }
+    if let intVal = raw as? any FixedWidthInteger, let int64 = Int64(exactly: intVal) {
+      return Decimal(int64)
+    }
+    throw SparkConnectError.InvalidType
+  }
+
+  /// Returns the value of the field with the given name as a `Decimal`.
+  /// - Parameter name: A field name.
+  /// - Returns: A `Decimal` value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema,
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist, or
+  /// `SparkConnectError.InvalidType` if the value is `nil` or not a `Decimal`.
+  public func getAsDecimal(_ name: String) throws -> Decimal {
+    return try getAsDecimal(fieldIndex(name))
   }
 
   public static func == (lhs: Row, rhs: Row) -> Bool {
