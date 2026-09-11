@@ -89,6 +89,398 @@ struct RowTests {
     #expect(throws: SparkConnectError.InvalidArgument) {
       try Row(true).getAsBool(-1)
     }
+
+    let namedRow = Row(valueArray: [true, false, nil, 1], schema: RowSchema(["t", "f", "n", "i"]))
+    #expect(try namedRow.getAsBool("t") == true)
+    #expect(try namedRow.getAsBool("f") == false)
+    #expect(throws: SparkConnectError.InvalidType) {
+      try namedRow.getAsBool("n")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try namedRow.getAsBool("i")
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try namedRow.getAsBool("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(true).getAsBool("t")
+    }
+  }
+
+  @Test
+  func isNullAt() throws {
+    let row = Row(valueArray: [nil, 1, "a"], schema: RowSchema(["n", "id", "name"]))
+    #expect(try row.isNullAt(0) == true)
+    #expect(try row.isNullAt(1) == false)
+    #expect(try row.isNullAt(2) == false)
+    #expect(try row.isNullAt("n") == true)
+    #expect(try row.isNullAt("id") == false)
+    #expect(try row.isNullAt("name") == false)
+
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.isNullAt(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.isNullAt(3)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.isNullAt("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(nil).isNullAt("n")
+    }
+  }
+
+  @Test
+  func getAsGeneric() throws {
+    let row = Row(
+      valueArray: [true, Int32(42), "spark", nil, Float(3.5)],
+      schema: RowSchema(["flag", "id", "name", "none", "score"]))
+
+    // Contextual type inference
+    let b: Bool = try row.getAs(0)
+    #expect(b == true)
+    let bNamed: Bool = try row.getAs("flag")
+    #expect(bNamed == true)
+
+    let i: Int = try row.getAs(1)
+    #expect(i == 42)
+    let iNamed: Int = try row.getAs("id")
+    #expect(iNamed == 42)
+
+    let s: String = try row.getAs(2)
+    #expect(s == "spark")
+    let sNamed: String = try row.getAs("name")
+    #expect(sNamed == "spark")
+
+    let d: Double = try row.getAs(4)
+    #expect(d == Double(Float(3.5)))
+
+    // Explicit type passing
+    #expect(try row.getAs(0, Bool.self) == true)
+    #expect(try row.getAs("flag", Bool.self) == true)
+    #expect(try row.getAs(1, Int.self) == 42)
+    #expect(try row.getAs("id", Int.self) == 42)
+    #expect(try row.getAs(1, Int64.self) == 42)
+    #expect(try row.getAs("id", Int64.self) == 42)
+    #expect(try row.getAs(2, String.self) == "spark")
+    #expect(try row.getAs("name", String.self) == "spark")
+    #expect(try row.getAs(4, Double.self) == Double(Float(3.5)))
+    #expect(try row.getAs("score", Double.self) == Double(Float(3.5)))
+
+    // Optional type handling
+    let opt: String? = try row.getAs(3)
+    #expect(opt == nil)
+    #expect(try row.getAs(3, String?.self) == nil)
+    #expect(try row.getAs("none", String?.self) == nil)
+
+    // Errors
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAs(3, String.self)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAs("none", String.self)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAs(2, Int.self)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAs(-1, Int.self)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAs(5, Int.self)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.getAs("missing", Int.self)
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(1).getAs("id", Int.self)
+    }
+  }
+
+  @Test
+  func getAsInt() throws {
+    let row = Row(
+      valueArray: [Int8(1), Int16(2), Int32(3), Int64(4), 5, "6", nil, 1.5],
+      schema: RowSchema(["i8", "i16", "i32", "i64", "i", "s", "n", "d"]))
+
+    #expect(try row.getAsInt(0) == 1)
+    #expect(try row.getAsInt(1) == 2)
+    #expect(try row.getAsInt(2) == 3)
+    #expect(try row.getAsInt(3) == 4)
+    #expect(try row.getAsInt(4) == 5)
+
+    #expect(try row.getAsInt("i8") == 1)
+    #expect(try row.getAsInt("i16") == 2)
+    #expect(try row.getAsInt("i32") == 3)
+    #expect(try row.getAsInt("i64") == 4)
+    #expect(try row.getAsInt("i") == 5)
+
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt(5)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt("s")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt(6)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt("n")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt(7)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt("d")
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsInt(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsInt(8)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.getAsInt("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(1).getAsInt("i")
+    }
+  }
+
+  @Test
+  func getAsInt64() throws {
+    let row = Row(
+      valueArray: [Int8(10), Int16(20), Int32(30), Int64(40), 50, "60", nil],
+      schema: RowSchema(["i8", "i16", "i32", "i64", "i", "s", "n"]))
+
+    #expect(try row.getAsInt64(0) == 10)
+    #expect(try row.getAsInt64(1) == 20)
+    #expect(try row.getAsInt64(2) == 30)
+    #expect(try row.getAsInt64(3) == 40)
+    #expect(try row.getAsInt64(4) == 50)
+
+    #expect(try row.getAsInt64("i8") == 10)
+    #expect(try row.getAsInt64("i16") == 20)
+    #expect(try row.getAsInt64("i32") == 30)
+    #expect(try row.getAsInt64("i64") == 40)
+    #expect(try row.getAsInt64("i") == 50)
+
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt64(5)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt64("s")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt64(6)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsInt64("n")
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsInt64(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsInt64(7)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.getAsInt64("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(1).getAsInt64("i")
+    }
+  }
+
+  @Test
+  func getAsDouble() throws {
+    let row = Row(
+      valueArray: [Double(1.5), Float(2.5), nil, "3.5", 10],
+      schema: RowSchema(["d", "f", "n", "s", "i"]))
+
+    #expect(try row.getAsDouble(0) == 1.5)
+    #expect(try row.getAsDouble("d") == 1.5)
+    #expect(try row.getAsDouble(1) == Double(Float(2.5)))
+    #expect(try row.getAsDouble("f") == Double(Float(2.5)))
+
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDouble(2)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDouble("n")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDouble(3)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDouble("s")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDouble(4)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsDouble(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsDouble(5)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.getAsDouble("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(1.5).getAsDouble("d")
+    }
+  }
+
+  @Test
+  func getAsString() throws {
+    let row = Row(
+      valueArray: ["spark", nil, 123],
+      schema: RowSchema(["s", "n", "i"]))
+
+    #expect(try row.getAsString(0) == "spark")
+    #expect(try row.getAsString("s") == "spark")
+
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsString(1)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsString("n")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsString(2)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsString("i")
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsString(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsString(3)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.getAsString("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row("a").getAsString("s")
+    }
+  }
+
+  @Test
+  func getAsDate() throws {
+    let date = Date(timeIntervalSince1970: 1_700_000_000)
+    let ts = TimestampNanos(epochMicros: 1_700_000_000_000_000, nanosWithinMicro: 500)!
+    let row = Row(
+      valueArray: [date, ts, nil, "2026-01-01"],
+      schema: RowSchema(["date", "ts", "n", "s"]))
+
+    #expect(try row.getAsDate(0) == date)
+    #expect(try row.getAsDate("date") == date)
+    #expect(try row.getAsDate(1) == ts.date)
+    #expect(try row.getAsDate("ts") == ts.date)
+
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDate(2)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDate("n")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDate(3)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDate("s")
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsDate(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsDate(4)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.getAsDate("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(date).getAsDate("date")
+    }
+  }
+
+  @Test
+  func getAsTimestampNanos() throws {
+    let date = Date(timeIntervalSince1970: 1_700_000_000)
+    let ts = TimestampNanos(epochMicros: 1_700_000_000_000_000, nanosWithinMicro: 500)!
+    let row = Row(
+      valueArray: [ts, date, nil, 100],
+      schema: RowSchema(["ts", "date", "n", "i"]))
+
+    #expect(try row.getAsTimestampNanos(0) == ts)
+    #expect(try row.getAsTimestampNanos("ts") == ts)
+    #expect(try row.getAsTimestampNanos(1) == TimestampNanos(epochNanos: Int64((date.timeIntervalSince1970 * 1_000_000_000).rounded())))
+    #expect(try row.getAsTimestampNanos("date") == TimestampNanos(epochNanos: Int64((date.timeIntervalSince1970 * 1_000_000_000).rounded())))
+
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsTimestampNanos(2)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsTimestampNanos("n")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsTimestampNanos(3)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsTimestampNanos("i")
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsTimestampNanos(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsTimestampNanos(4)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.getAsTimestampNanos("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(ts).getAsTimestampNanos("ts")
+    }
+  }
+
+  @Test
+  func getAsDecimal() throws {
+    let dec = Decimal(12.34)
+    let row = Row(
+      valueArray: [dec, Int32(100), nil, "12.34"],
+      schema: RowSchema(["dec", "int", "n", "s"]))
+
+    #expect(try row.getAsDecimal(0) == dec)
+    #expect(try row.getAsDecimal("dec") == dec)
+    #expect(try row.getAsDecimal(1) == Decimal(100))
+    #expect(try row.getAsDecimal("int") == Decimal(100))
+
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDecimal(2)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDecimal("n")
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDecimal(3)
+    }
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsDecimal("s")
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsDecimal(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row.getAsDecimal(4)
+    }
+    #expect(throws: SparkConnectError.ColumnNotFound) {
+      try row.getAsDecimal("missing")
+    }
+    #expect(throws: SparkConnectError.UnsupportedOperation) {
+      try Row(dec).getAsDecimal("dec")
+    }
   }
 
   @Test
