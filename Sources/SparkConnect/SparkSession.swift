@@ -164,16 +164,7 @@ public actor SparkSession {
       throw SparkConnectError.InvalidType
     }
     let ipcStream = try ConvertToArrow.toArrowIPCStream(data, structType)
-    let threshold = Int(
-      try await client.getConf("spark.sql.session.localRelationCacheThreshold"))!
-    if ipcStream.count >= threshold {
-      let hash = try await client.cacheLocalRelation(ipcStream, schema)
-      return await DataFrame(spark: self, plan: client.getCachedLocalRelation(hash))
-    }
-    guard ipcStream.count <= Self.maxLocalRelationSize else {
-      throw SparkConnectError.LocalRelationTooLarge
-    }
-    return await DataFrame(spark: self, plan: client.getLocalRelation(ipcStream, schema))
+    return try await createDataFrame(ipcStream: ipcStream, schema: schema)
   }
 
   /// Creates a ``DataFrame`` from the given local data with the specified ``StructType`` schema.
@@ -185,6 +176,85 @@ public actor SparkSession {
   public func createDataFrame(_ data: [[Sendable?]], _ schema: StructType) async throws -> DataFrame
   {
     return try await createDataFrame(data, schema.toDDL)
+  }
+
+  /// Creates a ``DataFrame`` from the given array of `Encodable` instances.
+  ///
+  /// The schema is automatically inferred from the properties of `T` using `ArrowEncoder`.
+  ///
+  /// ```swift
+  /// struct Person: Codable, Sendable, Equatable {
+  ///   let name: String
+  ///   let age: Int
+  /// }
+  ///
+  /// let data = [Person(name: "Alice", age: 20), Person(name: "Bob", age: 25)]
+  /// let df = try await spark.createDataFrame(data)
+  /// ```
+  ///
+  /// - Parameter data: A non-empty array of `Encodable` items.
+  /// - Returns: A ``DataFrame`` instance.
+  /// - Throws: ``SparkConnectError/invalidArgument(_:)`` if `data` is empty, or if encoding fails.
+  public func createDataFrame<T: Encodable>(_ data: [T]) async throws -> DataFrame {
+    guard !data.isEmpty else {
+      throw SparkConnectError.invalidArgument(
+        SparkConnectError.Details(message: "Cannot infer schema from empty data"))
+    }
+    guard let batch = try ArrowEncoder.encode(data) else {
+      throw SparkConnectError.InvalidArrowData
+    }
+    let schema = try StructType(batch.schema).toDDL
+    return try await createDataFrame(batch: batch, schema: schema)
+  }
+
+  /// Creates a ``DataFrame`` from the given array of `Encodable` instances with the specified schema string.
+  /// - Parameters:
+  ///   - data: An array of `Encodable` items.
+  ///   - schema: A DDL-formatted schema string, e.g. `id INT, name STRING`.
+  /// - Returns: A ``DataFrame`` instance.
+  public func createDataFrame<T: Encodable>(_ data: [T], _ schema: String) async throws -> DataFrame {
+    if data.isEmpty {
+      return try await createDataFrame([], schema)
+    }
+    guard let batch = try ArrowEncoder.encode(data) else {
+      throw SparkConnectError.InvalidArrowData
+    }
+    return try await createDataFrame(batch: batch, schema: schema)
+  }
+
+  /// Creates a ``DataFrame`` from the given array of `Encodable` instances with the specified ``StructType`` schema.
+  /// - Parameters:
+  ///   - data: An array of `Encodable` items.
+  ///   - schema: A ``StructType`` schema.
+  /// - Returns: A ``DataFrame`` instance.
+  public func createDataFrame<T: Encodable>(_ data: [T], _ schema: StructType) async throws
+    -> DataFrame
+  {
+    return try await createDataFrame(data, schema.toDDL)
+  }
+
+  private func createDataFrame(batch: RecordBatch, schema: String) async throws -> DataFrame {
+    switch ArrowWriter().writeStreaming(
+      ArrowWriter.Info(.recordbatch, schema: batch.schema, batches: [batch]))
+    {
+    case .success(let ipcStream):
+      return try await createDataFrame(ipcStream: ipcStream, schema: schema)
+    case .failure:
+      throw SparkConnectError.InvalidArrowData
+    }
+  }
+
+  private func createDataFrame(ipcStream: Data, schema: String) async throws -> DataFrame {
+    let threshold = Int(
+      try await client.getConf("spark.sql.session.localRelationCacheThreshold"))!
+    if ipcStream.count >= threshold {
+      let hash = try await client.cacheLocalRelation(ipcStream, schema)
+      return await DataFrame(spark: self, plan: client.getCachedLocalRelation(hash))
+    }
+    guard ipcStream.count <= Self.maxLocalRelationSize else {
+      throw SparkConnectError.LocalRelationTooLarge
+    }
+    return await DataFrame(spark: self, plan: client.getLocalRelation(ipcStream, schema))
   }
 
   /// Parse a DDL-formatted schema string into a ``StructType`` using the server-side parser.

@@ -321,6 +321,45 @@ extension DataType {
     return proto
   }
 
+  /// Create a public ``DataType`` from an Apache Arrow ``ArrowType``.
+  init(_ arrowType: ArrowType) throws {
+    switch arrowType.id {
+    case .boolean:
+      self = .boolean
+    case .int8:
+      self = .byte
+    case .int16, .uint8:
+      self = .short
+    case .int32, .uint16:
+      self = .integer
+    case .int64, .uint32:
+      self = .long
+    case .uint64:
+      self = .decimal(precision: 20, scale: 0)
+    case .float:
+      self = .float
+    case .double:
+      self = .double
+    case .decimal128(let precision, let scale):
+      self = .decimal(precision: precision, scale: scale)
+    case .string:
+      self = .string
+    case .binary:
+      self = .binary
+    case .date32, .date64:
+      self = .date
+    case .timestamp:
+      self = .timestamp
+    case .time32:
+      self = .time(precision: 3)
+    case .time64:
+      let unit = (arrowType as? ArrowTypeTime64)?.unit
+      self = .time(precision: unit == .microseconds ? 6 : 9)
+    default:
+      throw SparkConnectError.InvalidType
+    }
+  }
+
   /// Create a public ``DataType`` from the `Spark Connect` protobuf representation.
   init(_ proto: ProtoDataType) throws {
     switch proto.kind {

@@ -68,6 +68,16 @@ public struct StructType: Sendable, Equatable {
     self.fields = fields
   }
 
+  /// Create a ``StructType`` from an Apache Arrow ``ArrowSchema``.
+  init(_ arrowSchema: ArrowSchema) throws {
+    var fields = [StructField]()
+    for field in arrowSchema.fields {
+      let dataType = try DataType(field.type)
+      fields.append(StructField(name: field.name, dataType: dataType, nullable: field.isNullable))
+    }
+    self.init(fields: fields)
+  }
+
   /// The names of all fields in order.
   public var fieldNames: [String] {
     fields.map { $0.name }
