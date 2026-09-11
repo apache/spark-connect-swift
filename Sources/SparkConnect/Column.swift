@@ -367,6 +367,55 @@ public struct Column: Sendable {
     return Column(expr)
   }
 
+  // MARK: - Struct field operations
+
+  /// Returns an expression that adds a field to a struct, or replaces the field
+  /// if it already exists.
+  ///
+  /// ```swift
+  /// // {"a":1,"b":2} -> {"a":1,"b":2,"c":3}
+  /// df.select(col("struct").withField("c", lit(3)))
+  /// // {"a":{"a":1,"b":2}} -> {"a":{"a":1,"b":2,"c":3}}
+  /// df.select(col("struct").withField("a.c", lit(3)))
+  /// ```
+  /// - Parameters:
+  ///   - fieldName: A field name. A dot-separated name updates a nested field.
+  ///   - col: A ``Column`` of the field value.
+  /// - Returns: A ``Column`` of the updated struct.
+  public func withField(_ fieldName: String, _ col: Column) -> Column {
+    return updateFields(fieldName, col)
+  }
+
+  /// Returns an expression that drops fields from a struct by name. This is a
+  /// no-op if the struct doesn't contain the field names.
+  ///
+  /// ```swift
+  /// // {"a":1,"b":2,"c":3} -> {"a":1}
+  /// df.select(col("struct").dropFields("b", "c"))
+  /// // {"a":{"a":1,"b":2}} -> {"a":{"a":1}}
+  /// df.select(col("struct").dropFields("a.b"))
+  /// ```
+  /// - Parameters:
+  ///   - fieldName: A field name. A dot-separated name drops a nested field.
+  ///   - fieldNames: Additional field names to drop.
+  /// - Returns: A ``Column`` of the updated struct.
+  public func dropFields(_ fieldName: String, _ fieldNames: String...) -> Column {
+    return fieldNames.reduce(updateFields(fieldName)) { $0.updateFields($1) }
+  }
+
+  /// A `nil` value drops the field because the server treats an unset value expression as a drop.
+  private func updateFields(_ fieldName: String, _ value: Column? = nil) -> Column {
+    var updateFields = Spark_Connect_Expression.UpdateFields()
+    updateFields.structExpression = self.expr
+    updateFields.fieldName = fieldName
+    if let value {
+      updateFields.valueExpression = value.expr
+    }
+    var expr = Spark_Connect_Expression()
+    expr.updateFields = updateFields
+    return Column(expr)
+  }
+
   // MARK: - Conditional expressions
 
   /// Evaluates a list of conditions and returns one of multiple possible result expressions.

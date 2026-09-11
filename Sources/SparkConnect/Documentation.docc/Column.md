@@ -135,6 +135,8 @@ evaluating locally.
 
 - ``Column/getField(_:)``
 - ``Column/getItem(_:)``
+- ``Column/withField(_:_:)``
+- ``Column/dropFields(_:_:)``
 
 ### Naming
 
