@@ -100,10 +100,16 @@ struct DataFrameInternalTests {
   @Test
   func colRegexExpression() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let df = try await spark.range(1)
-    let regex = df.colRegex("`a.*`").expr.unresolvedRegex
+    let df1 = try await spark.range(1)
+    let df2 = try await spark.range(1)
+    let planID1 = await df1.plan.root.common.planID
+    let planID2 = await df2.plan.root.common.planID
+    let regex = df1.colRegex("`a.*`").expr.unresolvedRegex
     #expect(regex.colName == "`a.*`")
-    #expect(!regex.hasPlanID)
+    #expect(regex.hasPlanID && regex.planID == planID1)
+    #expect(df1.colRegex("id").expr.unresolvedRegex.planID == planID1)
+    #expect(df2.colRegex("id").expr.unresolvedRegex.planID == planID2)
+    #expect(planID1 != planID2)
     await spark.stop()
   }
 
