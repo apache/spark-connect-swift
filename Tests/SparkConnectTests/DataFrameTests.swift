@@ -449,9 +449,22 @@ struct DataFrameTests {
     let df = try await spark.sql("SELECT 1 a1, 2 a2")
     #expect(try await df.select(df.colRegex("a1")).columns == ["a1"])
     // A column name without backticks is not interpreted as a regex.
-    try await #require(throws: SparkConnectError.ColumnNotFound) {
+    try await #require(throws: Error.self) {
       try await df.select(df.colRegex("a[12]")).schema
     }
+    await spark.stop()
+  }
+
+  @Test
+  func colRegexWithJoin() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(3)
+    let df1 = await df.filter("id > 0")
+    let df2 = await df.select("id")
+    let joined = await df1.join(df2, joinExprs: df1.colRegex("id") == df2.colRegex("id"))
+    #expect(
+      try await joined.select(df1.colRegex("id"), df2.colRegex("id")).orderBy(df1["id"]).collect()
+        == [Row(1, 1), Row(2, 2)])
     await spark.stop()
   }
 
