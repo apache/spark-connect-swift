@@ -357,6 +357,32 @@ struct FunctionsTests {
   }
 
   @Test
+  func structFieldOperations() throws {
+    let withField = col("a").withField("b", lit(3)).expr
+    #expect(withField.updateFields.hasStructExpression)
+    #expect(withField.updateFields.structExpression.unresolvedAttribute.unparsedIdentifier == "a")
+    #expect(withField.updateFields.fieldName == "b")
+    #expect(withField.updateFields.hasValueExpression)
+    #expect(withField.updateFields.valueExpression.literal.long == 3)
+
+    // An unset value expression means the server drops the field.
+    let dropField = col("a").dropFields("b").expr
+    #expect(dropField.updateFields.hasStructExpression)
+    #expect(dropField.updateFields.structExpression.unresolvedAttribute.unparsedIdentifier == "a")
+    #expect(dropField.updateFields.fieldName == "b")
+    #expect(!dropField.updateFields.hasValueExpression)
+
+    // Multiple field names are nested in order, like `update_fields(update_fields(a, b), c)`.
+    let dropFields = col("a").dropFields("b", "c").expr
+    #expect(dropFields.updateFields.fieldName == "c")
+    #expect(!dropFields.updateFields.hasValueExpression)
+    let inner = dropFields.updateFields.structExpression.updateFields
+    #expect(inner.fieldName == "b")
+    #expect(!inner.hasValueExpression)
+    #expect(inner.structExpression.unresolvedAttribute.unparsedIdentifier == "a")
+  }
+
+  @Test
   func selectColumns() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(3).select(col("id"), col("id").cast("string").alias("id_string"))
@@ -469,6 +495,38 @@ struct FunctionsTests {
     let rows = try await df.select(
       col("arr").getItem(0), col("m").getItem("k"), col("s").getField("a")).collect()
     #expect(rows == [Row(1, 10, 7)])
+    await spark.stop()
+  }
+
+  @Test
+  func selectWithStructFieldOperations() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT named_struct('a', 1, 'b', 2, 'c', 3) AS s")
+    #expect(
+      try await df.select(col("s").withField("d", lit(4)).alias("s")).dtypes[0].1
+        == "struct<a:int,b:int,c:int,d:bigint>")
+    #expect(
+      try await df.select(to_json(col("s").withField("b", lit(20)))).collect()
+        == [Row("{\"a\":1,\"b\":20,\"c\":3}")])
+    #expect(try await df.select(col("s").withField("b", lit(20)).getField("b")).collect() == [Row(20)])
+
+    #expect(
+      try await df.select(col("s").dropFields("b").alias("s")).dtypes[0].1 == "struct<a:int,c:int>")
+    #expect(try await df.select(to_json(col("s").dropFields("b", "c"))).collect() == [Row("{\"a\":1}")])
+    #expect(
+      try await df.select(to_json(col("s").dropFields("x"))).collect()
+        == [Row("{\"a\":1,\"b\":2,\"c\":3}")])
+    await #expect(throws: Error.self) {
+      try await df.select(col("s").dropFields("a", "b", "c")).collect()
+    }
+
+    let nested = try await spark.sql("SELECT named_struct('a', named_struct('a', 1, 'b', 2)) AS s")
+    #expect(
+      try await nested.select(to_json(col("s").withField("a.c", lit(3)))).collect()
+        == [Row("{\"a\":{\"a\":1,\"b\":2,\"c\":3}}")])
+    #expect(
+      try await nested.select(to_json(col("s").dropFields("a.b"))).collect()
+        == [Row("{\"a\":{\"a\":1}}")])
     await spark.stop()
   }
 
