@@ -47,6 +47,54 @@ extension DataFrame {
     return DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, exprs))
   }
 
+  /// Selects a column based on the column name and returns it as a ``Column`` bound to this
+  /// ``DataFrame``.
+  ///
+  /// Unlike the global ``SparkConnect/col(_:)`` function, the returned ``Column`` remembers which
+  /// ``DataFrame`` it comes from. This lets the server tell apart the columns with the same name
+  /// in multiple ``DataFrame``s, e.g. both sides of a self-join.
+  ///
+  /// ```swift
+  /// let df = try await spark.range(3)
+  /// let df1 = await df.filter("id > 0")
+  /// let df2 = await df.select("id")
+  /// // `col("id") == col("id")` fails because `id` is ambiguous.
+  /// let joined = await df1.join(df2, joinExprs: df1.col("id") == df2.col("id"))
+  /// try await joined.select(df1.col("id")).show()
+  /// ```
+  ///
+  /// `"*"` selects all columns of this ``DataFrame``. A name ending with `".*"`, e.g. `"s.*"`,
+  /// expands the fields of a struct column like ``SparkConnect/col(_:)``, but it is not bound to
+  /// this ``DataFrame`` because the server doesn't allow a star with both a target and a plan ID.
+  /// - Parameter colName: A column name.
+  /// - Returns: A ``Column`` expression.
+  public nonisolated func col(_ colName: String) -> Column {
+    var expr = Spark_Connect_Expression()
+    if colName == "*" {
+      var star = Spark_Connect_Expression.UnresolvedStar()
+      star.planID = planID
+      expr.unresolvedStar = star
+    } else if colName.hasSuffix(".*") {
+      return Column(colName)
+    } else {
+      var attribute = colName.toUnresolvedAttribute
+      attribute.planID = planID
+      expr.unresolvedAttribute = attribute
+    }
+    return Column(expr)
+  }
+
+  /// Selects a column based on the column name and returns it as a ``Column`` bound to this
+  /// ``DataFrame``. This is an alias of ``col(_:)``.
+  ///
+  /// ```swift
+  /// let joined = await df1.join(df2, joinExprs: df1["id"] == df2["id"])
+  /// ```
+  /// - Parameter colName: A column name.
+  public nonisolated subscript(_ colName: String) -> Column {
+    col(colName)
+  }
+
   /// Selects column based on the column name specified as a regex and returns it as ``Column``.
   ///
   /// Only a column name enclosed in backticks is interpreted as a regex. The regex follows the

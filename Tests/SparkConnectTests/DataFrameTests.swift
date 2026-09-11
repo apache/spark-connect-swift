@@ -422,6 +422,20 @@ struct DataFrameTests {
   }
 
   @Test
+  func dataFrameCol() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT 1 a, struct(2 b, 3 c) s")
+    #expect(try await df.select(df["a"], df.col("s")).columns == ["a", "s"])
+    #expect(try await df.select(df["*"]).columns == ["a", "s"])
+    #expect(try await df.select(df["s.*"]).columns == ["b", "c"])
+    // A column of an unrelated `DataFrame` cannot be resolved.
+    try await #require(throws: Error.self) {
+      try await spark.range(1).select(df["a"]).collect()
+    }
+    await spark.stop()
+  }
+
+  @Test
   func colRegexWithPrefix() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.sql("SELECT 1 a1, 2 b1, 3 a2, 4 ba")
@@ -936,6 +950,24 @@ struct DataFrameTests {
     let df = try await spark.range(3)
     let joined = try await df.alias("l").join(df.alias("r"), joinExprs: col("l.id") == col("r.id"))
     #expect(try await joined.orderBy(col("l.id")).collect() == [Row(0, 0), Row(1, 1), Row(2, 2)])
+    await spark.stop()
+  }
+
+  @Test
+  func joinWithDataFrameColumn() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(3)
+    let df1 = await df.filter("id > 0")
+    let df2 = await df.select("id")
+    // The global `col` function cannot tell which side `id` comes from.
+    try await #require(throws: Error.self) {
+      try await df1.join(df2, joinExprs: col("id") == col("id")).collect()
+    }
+    let joined = await df1.join(df2, joinExprs: df1["id"] == df2["id"])
+    #expect(
+      try await joined.select(df1["id"], df2.col("id")).orderBy(df1["id"]).collect()
+        == [Row(1, 1), Row(2, 2)])
+    #expect(try await joined.select(df2["*"]).columns == ["id"])
     await spark.stop()
   }
 
