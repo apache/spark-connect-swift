@@ -212,6 +212,7 @@ public actor SparkSession {
   ///   - data: An array of `Encodable` items.
   ///   - schema: A DDL-formatted schema string, e.g. `id INT, name STRING`.
   /// - Returns: A ``DataFrame`` instance.
+  @_disfavoredOverload
   public func createDataFrame<T: Encodable>(_ data: [T], _ schema: String) async throws -> DataFrame {
     if data.isEmpty {
       return try await createDataFrame([], schema)
@@ -227,6 +228,7 @@ public actor SparkSession {
   ///   - data: An array of `Encodable` items.
   ///   - schema: A ``StructType`` schema.
   /// - Returns: A ``DataFrame`` instance.
+  @_disfavoredOverload
   public func createDataFrame<T: Encodable>(_ data: [T], _ schema: StructType) async throws
     -> DataFrame
   {
