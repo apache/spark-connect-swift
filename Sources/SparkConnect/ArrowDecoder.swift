@@ -132,6 +132,87 @@ public class ArrowDecoder: Decoder {
     let array: AnyArray = try self.getCol(col)
     return array.asAny(self.rbIndex) == nil
   }
+
+  func decodeInt(from array: AnyArray, keyDescription: String) throws -> Int {
+    let raw = array.asAny(self.rbIndex)
+    if let val = raw as? Int64 {
+      return Int(val)
+    } else if let val = raw as? Int32 {
+      return Int(val)
+    } else if let val = raw as? Int16 {
+      return Int(val)
+    } else if let val = raw as? Int8 {
+      return Int(val)
+    } else if let val = raw as? UInt64 {
+      return Int(val)
+    } else if let val = raw as? UInt32 {
+      return Int(val)
+    } else if let val = raw as? UInt16 {
+      return Int(val)
+    } else if let val = raw as? UInt8 {
+      return Int(val)
+    }
+    throw ArrowError.invalid("Cannot decode Int for \(keyDescription)")
+  }
+
+  func decodeUInt(from array: AnyArray, keyDescription: String) throws -> UInt {
+    let raw = array.asAny(self.rbIndex)
+    if let val = raw as? UInt64 {
+      return UInt(val)
+    } else if let val = raw as? UInt32 {
+      return UInt(val)
+    } else if let val = raw as? UInt16 {
+      return UInt(val)
+    } else if let val = raw as? UInt8 {
+      return UInt(val)
+    } else if let val = raw as? Int64 {
+      return UInt(val)
+    } else if let val = raw as? Int32 {
+      return UInt(val)
+    } else if let val = raw as? Int16 {
+      return UInt(val)
+    } else if let val = raw as? Int8 {
+      return UInt(val)
+    }
+    throw ArrowError.invalid("Cannot decode UInt for \(keyDescription)")
+  }
+
+  func decodeDate(from array: AnyArray, keyDescription: String) throws -> Date {
+    if let date = array.asAny(self.rbIndex) as? Date {
+      return date
+    }
+    if let timestamp = array.asAny(self.rbIndex) as? Int64,
+      let timestampType = array.arrowData.type as? ArrowTypeTimestamp
+    {
+      switch timestampType.unit {
+      case .seconds:
+        return Date(timeIntervalSince1970: TimeInterval(timestamp))
+      case .milliseconds:
+        return Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000)
+      case .microseconds:
+        return Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000_000)
+      case .nanoseconds:
+        return Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000_000_000)
+      }
+    }
+    throw ArrowError.invalid("Cannot decode Date for \(keyDescription)")
+  }
+
+  func decodeTimestampNanos(from array: AnyArray, keyDescription: String) throws -> TimestampNanos {
+    if let timestamp = array.asAny(self.rbIndex) as? Int64,
+      let timestampType = array.arrowData.type as? ArrowTypeTimestamp
+    {
+      let epochNanos: Int64
+      switch timestampType.unit {
+      case .seconds: epochNanos = timestamp * 1_000_000_000
+      case .milliseconds: epochNanos = timestamp * 1_000_000
+      case .microseconds: epochNanos = timestamp * 1_000
+      case .nanoseconds: epochNanos = timestamp
+      }
+      return TimestampNanos(epochNanos: epochNanos)
+    }
+    throw ArrowError.invalid("Cannot decode TimestampNanos for \(keyDescription)")
+  }
 }
 
 private struct ArrowUnkeyedDecoding: UnkeyedDecodingContainer {
@@ -158,7 +239,24 @@ private struct ArrowUnkeyedDecoding: UnkeyedDecodingContainer {
   }
 
   mutating func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-    if type == Int8?.self || type == Int16?.self || type == Int32?.self || type == Int64?.self
+    if type == Int.self {
+      defer { increment() }
+      let col = try self.decoder.getCol(self.currentIndex)
+      return try self.decoder.decodeInt(from: col, keyDescription: "column \(self.currentIndex)") as! T
+    } else if type == UInt.self {
+      defer { increment() }
+      let col = try self.decoder.getCol(self.currentIndex)
+      return try self.decoder.decodeUInt(from: col, keyDescription: "column \(self.currentIndex)") as! T
+    } else if type == Date.self {
+      defer { increment() }
+      let col = try self.decoder.getCol(self.currentIndex)
+      return try self.decoder.decodeDate(from: col, keyDescription: "column \(self.currentIndex)") as! T
+    } else if type == TimestampNanos.self {
+      defer { increment() }
+      let col = try self.decoder.getCol(self.currentIndex)
+      return try self.decoder.decodeTimestampNanos(
+        from: col, keyDescription: "column \(self.currentIndex)") as! T
+    } else if type == Int8?.self || type == Int16?.self || type == Int32?.self || type == Int64?.self
       || type == UInt8?.self || type == UInt16?.self || type == UInt32?.self || type == UInt64?.self
       || type == String?.self || type == Double?.self || type == Float?.self || type == Date?.self
       || type == Bool?.self || type == Bool.self || type == Int8.self || type == Int16.self
@@ -223,8 +321,8 @@ private struct ArrowKeyedDecoding<Key: CodingKey>: KeyedDecodingContainerProtoco
   }
 
   func decode(_ type: Int.Type, forKey key: Key) throws -> Int {
-    throw ArrowError.invalid(
-      "Int type is not supported (please use Int8, Int16, Int32 or Int64)")
+    let col = try self.decoder.getCol(key.stringValue)
+    return try self.decoder.decodeInt(from: col, keyDescription: key.stringValue)
   }
 
   func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
@@ -244,8 +342,8 @@ private struct ArrowKeyedDecoding<Key: CodingKey>: KeyedDecodingContainerProtoco
   }
 
   func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
-    throw ArrowError.invalid(
-      "UInt type is not supported (please use UInt8, UInt16, UInt32 or UInt64)")
+    let col = try self.decoder.getCol(key.stringValue)
+    return try self.decoder.decodeUInt(from: col, keyDescription: key.stringValue)
   }
 
   func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
@@ -268,8 +366,26 @@ private struct ArrowKeyedDecoding<Key: CodingKey>: KeyedDecodingContainerProtoco
     return try self.decoder.doDecode(key)!
   }
 
+  func decode(_ type: Date.Type, forKey key: Key) throws -> Date {
+    let col = try self.decoder.getCol(key.stringValue)
+    return try self.decoder.decodeDate(from: col, keyDescription: key.stringValue)
+  }
+
+  func decode(_ type: TimestampNanos.Type, forKey key: Key) throws -> TimestampNanos {
+    let col = try self.decoder.getCol(key.stringValue)
+    return try self.decoder.decodeTimestampNanos(from: col, keyDescription: key.stringValue)
+  }
+
   func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Decodable {
-    if ArrowArrayBuilders.isValidBuilderType(type) || type == Date.self || type == Decimal.self {
+    if type == Int.self {
+      return try decode(Int.self, forKey: key) as! T
+    } else if type == UInt.self {
+      return try decode(UInt.self, forKey: key) as! T
+    } else if type == Date.self {
+      return try decode(Date.self, forKey: key) as! T
+    } else if type == TimestampNanos.self {
+      return try decode(TimestampNanos.self, forKey: key) as! T
+    } else if ArrowArrayBuilders.isValidBuilderType(type) || type == Decimal.self {
       return try self.decoder.doDecode(key)!
     } else {
       throw ArrowError.invalid("Type \(type) is currently not supported")
@@ -330,8 +446,8 @@ private struct ArrowSingleValueDecoding: SingleValueDecodingContainer {
   }
 
   func decode(_ type: Int.Type) throws -> Int {
-    throw ArrowError.invalid(
-      "Int type is not supported (please use Int8, Int16, Int32 or Int64)")
+    let col = try self.decoder.getCol(self.decoder.singleRBCol)
+    return try self.decoder.decodeInt(from: col, keyDescription: "column \(self.decoder.singleRBCol)")
   }
 
   func decode(_ type: Int8.Type) throws -> Int8 {
@@ -351,8 +467,8 @@ private struct ArrowSingleValueDecoding: SingleValueDecodingContainer {
   }
 
   func decode(_ type: UInt.Type) throws -> UInt {
-    throw ArrowError.invalid(
-      "UInt type is not supported (please use UInt8, UInt16, UInt32 or UInt64)")
+    let col = try self.decoder.getCol(self.decoder.singleRBCol)
+    return try self.decoder.decodeUInt(from: col, keyDescription: "column \(self.decoder.singleRBCol)")
   }
 
   func decode(_ type: UInt8.Type) throws -> UInt8 {
@@ -375,8 +491,27 @@ private struct ArrowSingleValueDecoding: SingleValueDecodingContainer {
     return try self.decoder.doDecode(self.decoder.singleRBCol)!
   }
 
+  func decode(_ type: Date.Type) throws -> Date {
+    let col = try self.decoder.getCol(self.decoder.singleRBCol)
+    return try self.decoder.decodeDate(from: col, keyDescription: "column \(self.decoder.singleRBCol)")
+  }
+
+  func decode(_ type: TimestampNanos.Type) throws -> TimestampNanos {
+    let col = try self.decoder.getCol(self.decoder.singleRBCol)
+    return try self.decoder.decodeTimestampNanos(
+      from: col, keyDescription: "column \(self.decoder.singleRBCol)")
+  }
+
   func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-    if ArrowArrayBuilders.isValidBuilderType(type) || type == Date.self || type == Decimal.self {
+    if type == Int.self {
+      return try decode(Int.self) as! T
+    } else if type == UInt.self {
+      return try decode(UInt.self) as! T
+    } else if type == Date.self {
+      return try decode(Date.self) as! T
+    } else if type == TimestampNanos.self {
+      return try decode(TimestampNanos.self) as! T
+    } else if ArrowArrayBuilders.isValidBuilderType(type) || type == Decimal.self {
       return try self.decoder.doDecode(self.decoder.singleRBCol)!
     } else {
       throw ArrowError.invalid("Type \(type) is currently not supported")

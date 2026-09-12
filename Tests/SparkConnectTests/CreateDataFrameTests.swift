@@ -223,4 +223,80 @@ struct CreateDataFrameTests {
     #expect(try await df2.count() == 10000)
     await spark.stop()
   }
+
+  struct Person: Codable, Sendable, Equatable {
+    let name: String
+    let age: Int
+  }
+
+  struct UserProfile: Codable, Sendable, Equatable {
+    let id: Int
+    let nickname: String?
+    let score: Double?
+  }
+
+  @Test
+  func createDataFrameWithEncodable() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let data = [
+      Person(name: "Alice", age: 20),
+      Person(name: "Bob", age: 25),
+    ]
+    let df = try await spark.createDataFrame(data)
+    #expect(try await df.columns == ["name", "age"])
+    #expect(try await df.count() == 2)
+    let collected: [Person] = try await df.collect(as: Person.self)
+    #expect(collected == data)
+    await spark.stop()
+  }
+
+  @Test
+  func createDataFrameWithEncodableOptionals() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let data = [
+      UserProfile(id: 1, nickname: nil, score: 98.5),
+      UserProfile(id: 2, nickname: "spark_user", score: nil),
+    ]
+    let df = try await spark.createDataFrame(data)
+    #expect(try await df.count() == 2)
+    let collected: [UserProfile] = try await df.collect(as: UserProfile.self)
+    #expect(collected == data)
+    await spark.stop()
+  }
+
+  @Test
+  func createDataFrameWithEncodableEmpty() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let empty: [Person] = []
+    await #expect(throws: SparkConnectError.self) {
+      try await spark.createDataFrame(empty)
+    }
+
+    // With explicit schema, empty encodable array works:
+    let df = try await spark.createDataFrame(empty, "name STRING, age INT")
+    #expect(try await df.count() == 0)
+    let collected: [Person] = try await df.collect(as: Person.self)
+    #expect(collected == [])
+    await spark.stop()
+  }
+
+  @Test
+  func createDataFrameWithEncodablePrimitives() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let numbers = [10, 20, 30]
+    let df = try await spark.createDataFrame(numbers)
+    #expect(try await df.count() == 3)
+    let collected: [Int] = try await df.collect(as: Int.self)
+    #expect(collected == numbers)
+    await spark.stop()
+  }
+
+  @Test
+  func collectAsWithSparkQuery() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT 'Alice' AS name, 30 AS age")
+    let people: [Person] = try await df.collect(as: Person.self)
+    #expect(people == [Person(name: "Alice", age: 30)])
+    await spark.stop()
+  }
 }

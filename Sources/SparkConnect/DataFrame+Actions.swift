@@ -194,6 +194,31 @@ extension DataFrame {
     return result
   }
 
+  /// Execute the plan and return the result decoded into an array of `T`.
+  ///
+  /// ```swift
+  /// struct Person: Codable, Sendable, Equatable {
+  ///   let name: String
+  ///   let age: Int
+  /// }
+  ///
+  /// let people: [Person] = try await df.collect(as: Person.self)
+  /// ```
+  ///
+  /// - Parameter type: The `Decodable` type to decode each row into. Defaults to `T.self`.
+  /// - Returns: An array of decoded instances of `T`.
+  public func collect<T: Decodable>(as type: T.Type = T.self) async throws -> [T] {
+    try await execute()
+
+    var result: [T] = []
+    for batch in self.batches {
+      let decoder = ArrowDecoder(batch)
+      let decoded = try decoder.decode(type)
+      result.append(contentsOf: decoded)
+    }
+    return result
+  }
+
   // MARK: - Count
 
   /// Return the total number of rows.
