@@ -299,4 +299,81 @@ struct CreateDataFrameTests {
     #expect(people == [Person(name: "Alice", age: 30)])
     await spark.stop()
   }
+
+  struct Person32: Codable, Sendable, Equatable {
+    let name: String
+    let age: Int32
+  }
+
+  struct Person64: Codable, Sendable, Equatable {
+    let name: String
+    let age: Int64
+  }
+
+  @Test
+  func collectAsWithUpcast() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(
+      try await spark.sql("SELECT 'Alice' AS name, 30 AS age").collect(as: Person64.self)
+        == [Person64(name: "Alice", age: 30)])
+    #expect(
+      try await spark.sql("SELECT CAST(1.5 AS FLOAT) AS score, 1L AS id")
+        .collect(as: UserProfile.self) == [UserProfile(id: 1, nickname: nil, score: 1.5)])
+    #expect(try await spark.sql("SELECT 1 AS a, 2Y AS b").collect(as: [Int64].self) == [[1, 2]])
+    #expect(try await spark.sql("SELECT 1S AS a").collect(as: Int32.self) == [1])
+    await spark.stop()
+  }
+
+  @Test
+  func collectAsWithInvalidTypeOrNull() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    var error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 'Alice' AS name, 30L AS age").collect(as: Person32.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Int32 for age")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT CAST(NULL AS STRING) AS name, 1L AS age").collect(as: Person.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode String for name")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 'Alice' AS name, CAST(NULL AS INT) AS age")
+        .collect(as: Person32.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Int32 for age")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 1 AS a, 2L AS b").collect(as: [Int32].self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Int32 for column 1")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 1.5D AS a").collect(as: Float.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Float for column 0")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT CAST(NULL AS STRING) AS a").collect(as: String.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode String for column 0")"#)
+    await spark.stop()
+  }
+
+  @Test
+  func collectAsUIntWithNegativeValue() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.sql("SELECT 1 AS a, 2L AS b").collect(as: [UInt].self) == [[1, 2]])
+
+    var error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT -1 AS a").collect(as: UInt.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode UInt for column 0")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 1L AS a, -1L AS b").collect(as: [UInt].self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode UInt for column 1")"#)
+    await spark.stop()
+  }
 }
