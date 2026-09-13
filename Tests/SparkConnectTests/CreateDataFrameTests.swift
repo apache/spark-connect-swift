@@ -311,6 +311,72 @@ struct CreateDataFrameTests {
     await spark.stop()
   }
 
+  struct DecimalRecord: Codable, Sendable, Equatable {
+    let v: Decimal
+    let o: Decimal?
+  }
+
+  @Test
+  func createDataFrameWithEncodableDecimal() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let values = [
+      "-1.5", "12345678901234567890.5", "-0.000000000000000001", "0",
+      "99999999999999999999.999999999999999999", "-99999999999999999999.999999999999999999",
+    ]
+    let data =
+      values.map { DecimalRecord(v: Decimal(string: $0)!, o: Decimal(string: $0)) }
+      + [DecimalRecord(v: 1, o: nil)]
+    let df = try await spark.createDataFrame(data)
+    #expect(try await df.dtypes.map { $0.1 } == ["decimal(38,18)", "decimal(38,18)"])
+    let expected = [
+      "-1.500000000000000000", "12345678901234567890.500000000000000000", "-0.000000000000000001",
+      "0.000000000000000000", "99999999999999999999.999999999999999999",
+      "-99999999999999999999.999999999999999999",
+    ]
+    #expect(
+      try await df.selectExpr("CAST(v AS STRING)", "CAST(o AS STRING)").collect()
+        == expected.map { Row($0, $0) } + [Row("1.000000000000000000", nil)])
+    #expect(try await df.collect(as: DecimalRecord.self) == data)
+    await spark.stop()
+  }
+
+  @Test
+  func createDataFrameWithEncodableDecimalRounding() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Values with more than 18 fractional digits are rounded `HALF_UP` like Scala `BigDecimal`.
+    let values = [
+      ("0.0000000000000000005", "0.000000000000000001"),
+      ("-0.0000000000000000005", "-0.000000000000000001"),
+      ("0.0000000000000000015", "0.000000000000000002"),
+      ("0.0000000000000000025", "0.000000000000000003"),
+      ("1.2345678901234567894", "1.234567890123456789"),
+      ("-0.00000000000000000049", "0.000000000000000000"),
+      ("1E-40", "0.000000000000000000"),
+    ]
+    let data = values.map { DecimalRecord(v: Decimal(string: $0.0)!, o: Decimal(string: $0.0)) }
+    let df = try await spark.createDataFrame(data)
+    #expect(
+      try await df.selectExpr("CAST(v AS STRING)", "CAST(o AS STRING)").collect()
+        == values.map { Row($0.1, $0.1) })
+    #expect(
+      try await df.collect(as: DecimalRecord.self)
+        == values.map { DecimalRecord(v: Decimal(string: $0.1)!, o: Decimal(string: $0.1)) })
+
+    // Values with more than 20 integral digits overflow `DECIMAL(38,18)`.
+    for value in ["100000000000000000000", "-100000000000000000000", "1E+30"] {
+      await #expect(throws: ArrowError.self) {
+        try await spark.createDataFrame([DecimalRecord(v: Decimal(string: value)!, o: nil)])
+      }
+      await #expect(throws: ArrowError.self) {
+        try await spark.createDataFrame([DecimalRecord(v: 0, o: Decimal(string: value)!)])
+      }
+    }
+    await #expect(throws: ArrowError.self) {
+      try await spark.createDataFrame([DecimalRecord(v: Decimal.nan, o: nil)])
+    }
+    await spark.stop()
+  }
+
   @Test
   func collectAsWithSparkQuery() async throws {
     let spark = try await SparkSession.builder.getOrCreate()

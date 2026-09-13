@@ -126,10 +126,19 @@ public class Time64ArrayBuilder: ArrowArrayBuilder<FixedBufferBuilder<Time64>, T
   }
 }
 
-public class Decimal128ArrayBuilder: ArrowArrayBuilder<FixedBufferBuilder<Decimal>, Decimal128Array>
-{
+public class Decimal128ArrayBuilder: ArrowArrayBuilder<Decimal128BufferBuilder, Decimal128Array> {
   fileprivate convenience init(precision: Int32, scale: Int32) throws {
     try self.init(ArrowTypeDecimal128(precision: precision, scale: scale))
+    self.bufferBuilder.precision = precision
+    self.bufferBuilder.scale = scale
+  }
+
+  public override func finish() throws -> ArrowArray<Decimal> {
+    if let value = self.bufferBuilder.invalidValue {
+      let (precision, scale) = (self.bufferBuilder.precision, self.bufferBuilder.scale)
+      throw ArrowError.invalid("\(value) cannot be represented as DECIMAL(\(precision), \(scale))")
+    }
+    return try super.finish()
   }
 }
 

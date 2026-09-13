@@ -47,6 +47,8 @@ func toFBTypeEnum(_ arrowType: ArrowType) -> Result<org_apache_arrow_flatbuf_Typ
     return .success(org_apache_arrow_flatbuf_Type_.time)
   case .timestamp:
     return .success(org_apache_arrow_flatbuf_Type_.timestamp)
+  case .decimal128:
+    return .success(org_apache_arrow_flatbuf_Type_.decimal)
   case .strct:
     return .success(org_apache_arrow_flatbuf_Type_.struct_)
   default:
@@ -147,6 +149,14 @@ func toFBType(  // swiftlint:disable:this cyclomatic_complexity function_body_le
     }
 
     return .failure(.invalid("Unable to cast to Timestamp"))
+  case .decimal128:
+    if let decimalType = arrowType as? ArrowTypeDecimal128 {
+      return .success(
+        org_apache_arrow_flatbuf_Decimal.createDecimal(
+          &fbb, precision: decimalType.precision, scale: decimalType.scale, bitWidth: 128))
+    }
+
+    return .failure(.invalid("Unable to cast to Decimal128"))
   case .strct:
     let startOffset = org_apache_arrow_flatbuf_Struct_.startStruct_(&fbb)
     return .success(org_apache_arrow_flatbuf_Struct_.endStruct_(&fbb, start: startOffset))
