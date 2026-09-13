@@ -134,6 +134,8 @@ public class FixedBufferBuilder<T>: ValuesBufferBuilder<T>, ArrowBufferBuilder {
       return Int32(0) as! T  // swiftlint:disable:this force_cast
     } else if type == Int64.self {
       return Int64(0) as! T  // swiftlint:disable:this force_cast
+    } else if type == Int128.self {
+      return Int128(0) as! T  // swiftlint:disable:this force_cast
     } else if type == UInt8.self {
       return UInt8(0) as! T  // swiftlint:disable:this force_cast
     } else if type == UInt16.self {
@@ -347,6 +349,54 @@ public class Date64BufferBuilder: AbstractWrapperBufferBuilder<Date, Int64> {
     } else {
       self.bufferBuilder.append(nil)
     }
+  }
+}
+
+public class Decimal128BufferBuilder: AbstractWrapperBufferBuilder<Decimal, Int128> {
+  var precision: Int32 = 38
+  var scale: Int32 = 18
+  var invalidValue: Decimal?
+
+  public override func append(_ newValue: ItemType?) {
+    if let val = newValue {
+      if let unscaled = unscaledValue(val) {
+        self.bufferBuilder.append(unscaled)
+      } else {
+        if invalidValue == nil {
+          invalidValue = val
+        }
+        self.bufferBuilder.append(nil)
+      }
+    } else {
+      self.bufferBuilder.append(nil)
+    }
+  }
+
+  // Arrow `Decimal128` values are 128-bit little-endian two's complement integers holding the
+  // unscaled value. Like Spark, the value is rounded `HALF_UP` to the scale, and `nil` is returned
+  // if it does not fit in the precision.
+  private func unscaledValue(_ value: Decimal) -> Int128? {
+    guard !value.isNaN, var magnitude = UInt128(value.significand.description) else {
+      return nil
+    }
+    let limit = (0..<precision).reduce(UInt128(1)) { result, _ in result * 10 }
+    var shift = value.exponent + Int(scale)
+    var roundUp = false
+    while shift > 0 {
+      guard magnitude <= limit / 10 else { return nil }
+      magnitude *= 10
+      shift -= 1
+    }
+    while shift < 0 {
+      roundUp = magnitude % 10 >= 5
+      magnitude /= 10
+      shift += 1
+    }
+    if roundUp {
+      magnitude += 1
+    }
+    guard magnitude < limit else { return nil }
+    return value.sign == .minus ? -Int128(magnitude) : Int128(magnitude)
   }
 }
 
