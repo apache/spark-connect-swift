@@ -107,7 +107,7 @@ public class ArrowArrayHolderImpl: ArrowArrayHolder {
     case .float:
       return try ArrowArrayHolderImpl(FixedArray<Float>(with))
     case .decimal128:
-      return try ArrowArrayHolderImpl(FixedArray<Decimal>(with))
+      return try ArrowArrayHolderImpl(Decimal128Array(with))
     case .date32:
       return try ArrowArrayHolderImpl(Date32Array(with))
     case .date64:
@@ -281,9 +281,14 @@ public class Decimal128Array: FixedArray<Decimal> {
         18
       }
     let byteOffset = self.arrowData.stride * Int(index)
-    let value = self.arrowData.buffers[1].rawPointer.advanced(by: byteOffset).load(
-      as: UInt64.self)
-    return Decimal(sign: .plus, exponent: -Int(scale), significand: Decimal(value))
+    // Arrow `Decimal128` values are 128-bit little-endian two's complement integers.
+    let pointer = self.arrowData.buffers[1].rawPointer.advanced(by: byteOffset)
+    let value =
+      Int128(pointer.load(fromByteOffset: 8, as: Int64.self)) << 64
+      | Int128(pointer.load(as: UInt64.self))
+    return Decimal(
+      sign: value < 0 ? .minus : .plus, exponent: -Int(scale),
+      significand: Decimal(string: String(value.magnitude))!)
   }
 }
 
