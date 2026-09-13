@@ -331,7 +331,7 @@ public class AbstractWrapperBufferBuilder<T, U>: ArrowBufferBuilder {
 public class Date32BufferBuilder: AbstractWrapperBufferBuilder<Date, Int32> {
   public override func append(_ newValue: ItemType?) {
     if let val = newValue {
-      let daysSinceEpoch = Int32(val.timeIntervalSince1970 / 86400)
+      let daysSinceEpoch = Int32((val.timeIntervalSince1970 / 86400).rounded(.down))
       self.bufferBuilder.append(daysSinceEpoch)
     } else {
       self.bufferBuilder.append(nil)
