@@ -105,6 +105,10 @@ enum ConvertToArrow {
     case .double:
       return try fill(ArrowArrayBuilders.loadNumberArrayBuilder() as NumberArrayBuilder<Double>,
         column) { ($0 as? Double) ?? ($0 as? Float).map(Double.init) }
+    case .decimal(let decimal):
+      return try fill(
+        ArrowArrayBuilders.loadDecimal128ArrayBuilder(decimal.precision, decimal.scale), column
+      ) { ($0 as? Decimal) ?? toInt64($0).map { Decimal($0) } }
     case .string:
       return try fill(ArrowArrayBuilders.loadStringArrayBuilder(), column) { $0 as? String }
     case .binary:

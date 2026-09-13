@@ -186,10 +186,74 @@ struct CreateDataFrameTests {
   }
 
   @Test
+  func createDataFrameWithDecimal() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let a = Decimal(string: "-1.5")!
+    let b = Decimal(string: "12345678901234567890.50")!
+    let c = Decimal(string: "99999999999999999999999999999999999999")!
+    let d = Decimal(string: "-0.000000000000000001")!
+    let df = try await spark.createDataFrame(
+      [[a, b, c, d], [Decimal(0), Decimal(0), -c, Decimal(0)], [nil, nil, nil, nil]],
+      "a DECIMAL(10, 2), b DECIMAL(38, 2), c DECIMAL(38, 0), d DECIMAL(38, 18)")
+    #expect(
+      try await df.dtypes.map { $0.1 }
+        == ["decimal(10,2)", "decimal(38,2)", "decimal(38,0)", "decimal(38,18)"])
+    #expect(
+      try await df.selectExpr(
+        "CAST(a AS STRING)", "CAST(b AS STRING)", "CAST(c AS STRING)", "CAST(d AS STRING)"
+      ).collect() == [
+        Row(
+          "-1.50", "12345678901234567890.50", "99999999999999999999999999999999999999",
+          "-0.000000000000000001"),
+        Row("0.00", "0.00", "-99999999999999999999999999999999999999", "0.000000000000000000"),
+        Row(nil, nil, nil, nil),
+      ])
+    #expect(
+      try await df.collect() == [
+        Row(a, b, c, d), Row(Decimal(0), Decimal(0), -c, Decimal(0)), Row(nil, nil, nil, nil),
+      ])
+    await spark.stop()
+  }
+
+  @Test
+  func createDataFrameWithDecimalRoundingAndOverflow() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Like Spark, values are rounded `HALF_UP` to the scale. Integers are also accepted.
+    let df = try await spark.createDataFrame(
+      [
+        [Decimal(string: "1.005")!], [Decimal(string: "-1.005")!], [Decimal(string: "1.004")!],
+        [1], [Int8(-2)],
+      ], "v DECIMAL(10, 2)")
+    #expect(
+      try await df.selectExpr("CAST(v AS STRING)").collect()
+        == [Row("1.01"), Row("-1.01"), Row("1.00"), Row("1.00"), Row("-2.00")])
+
+    // Like Spark in ANSI mode, values which do not fit in the precision throw an error.
+    for value in ["123456789.5", "99999999.995"] {
+      await #expect(throws: ArrowError.self) {
+        try await spark.createDataFrame([[Decimal(string: value)!]], "v DECIMAL(10, 2)")
+      }
+    }
+    await #expect(throws: ArrowError.self) {
+      try await spark.createDataFrame(
+        [[Decimal(string: "100000000000000000000000000000000000000")!]], "v DECIMAL(38, 0)")
+    }
+
+    // Non-convertible values throw an error.
+    await #expect(throws: SparkConnectError.InvalidType) {
+      try await spark.createDataFrame([["1.5"]], "v DECIMAL(10, 2)")
+    }
+    await #expect(throws: SparkConnectError.InvalidType) {
+      try await spark.createDataFrame([[1.5]], "v DECIMAL(10, 2)")
+    }
+    await spark.stop()
+  }
+
+  @Test
   func unsupportedType() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     await #expect(throws: SparkConnectError.InvalidType) {
-      try await spark.createDataFrame([[Decimal(1)]], "id DECIMAL(10, 2)")
+      try await spark.createDataFrame([[[1]]], "id ARRAY<INT>")
     }
     await spark.stop()
   }
