@@ -30,27 +30,35 @@ public class ArrowDecoder: Decoder {
   public let rb: RecordBatch
   public let nameToCol: [String: ArrowArrayHolder]
   public let columns: [ArrowArrayHolder]
+  let caseSensitive: Bool
+  let nameToIndices: [String: [Int]]
   public init(_ decoder: ArrowDecoder) {
     self.userInfo = decoder.userInfo
     self.codingPath = decoder.codingPath
     self.rb = decoder.rb
     self.columns = decoder.columns
     self.nameToCol = decoder.nameToCol
+    self.caseSensitive = decoder.caseSensitive
+    self.nameToIndices = decoder.nameToIndices
     self.rbIndex = decoder.rbIndex
   }
 
-  public init(_ rb: RecordBatch) {
+  public init(_ rb: RecordBatch, caseSensitive: Bool = false) {
     self.rb = rb
+    self.caseSensitive = caseSensitive
     var colMapping = [String: ArrowArrayHolder]()
+    var nameToIndices = [String: [Int]]()
     var columns = [ArrowArrayHolder]()
     for index in 0..<self.rb.schema.fields.count {
       let field = self.rb.schema.fields[index]
       columns.append(self.rb.column(index))
       colMapping[field.name] = self.rb.column(index)
+      nameToIndices[caseSensitive ? field.name : field.name.lowercased(), default: []].append(index)
     }
 
     self.columns = columns
     self.nameToCol = colMapping
+    self.nameToIndices = nameToIndices
   }
 
   public func decode<T: Decodable, U: Decodable>(_ type: [T: U].Type) throws -> [T: U] {
@@ -97,12 +105,21 @@ public class ArrowDecoder: Decoder {
     return ArrowSingleValueDecoding(self, codingPath: codingPath)
   }
 
+  /// Returns the indices of the columns matching `name` like Spark's `spark.sql.caseSensitive`.
+  func columnIndices(_ name: String) -> [Int]? {
+    return self.nameToIndices[self.caseSensitive ? name : name.lowercased()]
+  }
+
   func getCol(_ name: String) throws -> AnyArray {
-    guard let col = self.nameToCol[name] else {
+    guard let indices = self.columnIndices(name) else {
       throw ArrowError.invalid("Column for key \"\(name)\" not found")
     }
+    if indices.count > 1 {
+      let names = indices.map { "\"\(self.rb.schema.fields[$0].name)\"" }.joined(separator: ", ")
+      throw ArrowError.invalid("Column for key \"\(name)\" is ambiguous, could be: [\(names)]")
+    }
 
-    return col.array
+    return self.columns[indices[0]].array
   }
 
   func getCol(_ index: Int) throws -> AnyArray {
@@ -319,7 +336,7 @@ private struct ArrowKeyedDecoding<Key: CodingKey>: KeyedDecodingContainerProtoco
   }
 
   func contains(_ key: Key) -> Bool {
-    return self.decoder.nameToCol.keys.contains(key.stringValue)
+    return self.decoder.columnIndices(key.stringValue) != nil
   }
 
   func decodeNil(forKey key: Key) throws -> Bool {

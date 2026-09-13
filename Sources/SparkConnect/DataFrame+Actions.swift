@@ -205,14 +205,17 @@ extension DataFrame {
   /// let people: [Person] = try await df.collect(as: Person.self)
   /// ```
   ///
+  /// Properties are matched to columns by name, following `spark.sql.caseSensitive`.
+  ///
   /// - Parameter type: The `Decodable` type to decode each row into. Defaults to `T.self`.
   /// - Returns: An array of decoded instances of `T`.
   public func collect<T: Decodable>(as type: T.Type = T.self) async throws -> [T] {
     try await execute()
 
+    let caseSensitive = try await spark.conf.get("spark.sql.caseSensitive").lowercased() == "true"
     var result: [T] = []
     for batch in self.batches {
-      let decoder = ArrowDecoder(batch)
+      let decoder = ArrowDecoder(batch, caseSensitive: caseSensitive)
       let decoded = try decoder.decode(type)
       result.append(contentsOf: decoded)
     }
