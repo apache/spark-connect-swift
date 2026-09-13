@@ -84,4 +84,30 @@ struct DataStreamTests {
     #expect(try await df1.schema == df2.schema)
     await spark.stop()
   }
+
+  @Test
+  func startConcurrently() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = await spark.readStream.format("rate").load()
+
+    // Start streaming queries concurrently on the same session
+    async let q1 = df.writeStream.queryName("q1").format("noop").start()
+    async let q2 = df.writeStream.queryName("q2").format("noop").start()
+    async let q3 = df.writeStream.queryName("q3").format("noop").start()
+    let queries = try await [q1, q2, q3]
+
+    var names = [String]()
+    var ids = Set<UUID>()
+    for query in queries {
+      names.append(await query.name)
+      ids.insert(await query.id)
+    }
+    #expect(names == ["q1", "q2", "q3"])
+    #expect(ids.count == 3)
+
+    for query in queries {
+      try await query.stop()
+    }
+    await spark.stop()
+  }
 }
