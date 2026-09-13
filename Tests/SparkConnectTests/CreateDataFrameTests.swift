@@ -412,6 +412,39 @@ struct CreateDataFrameTests {
     await spark.stop()
   }
 
+  struct DecimalS: Codable, Sendable, Equatable {
+    let v: Decimal?
+  }
+
+  @Test
+  func collectAsDecimal() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let cases = [
+      ("CAST(-1.5 AS DECIMAL(10,2))", "-1.50"),
+      ("CAST(12345678901234567890.5 AS DECIMAL(38,2))", "12345678901234567890.50"),
+      (
+        "CAST('99999999999999999999999999999999999999' AS DECIMAL(38,0))",
+        "99999999999999999999999999999999999999"
+      ),
+      (
+        "CAST('-99999999999999999999999999999999999999' AS DECIMAL(38,0))",
+        "-99999999999999999999999999999999999999"
+      ),
+      ("CAST(-0.000000000000000001 AS DECIMAL(38,18))", "-0.000000000000000001"),
+      ("CAST(0 AS DECIMAL(10,2))", "0.00"),
+    ]
+    for (expr, value) in cases {
+      let expected = Decimal(string: value)!
+      #expect(
+        try await spark.sql("SELECT \(expr) AS v").collect(as: DecimalS.self)
+          == [DecimalS(v: expected)])
+    }
+    #expect(
+      try await spark.sql("SELECT CAST(NULL AS DECIMAL(10,2)) AS v").collect(as: DecimalS.self)
+        == [DecimalS(v: nil)])
+    await spark.stop()
+  }
+
   struct DoubleS: Codable, Sendable, Equatable {
     let v: Double
   }

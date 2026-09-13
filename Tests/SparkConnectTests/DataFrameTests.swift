@@ -1612,6 +1612,39 @@ struct DataFrameTests {
   }
 
   @Test
+  func decimalValues() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql(
+      """
+      SELECT
+        CAST(-1.5 AS DECIMAL(10,2)) a,
+        CAST(12345678901234567890.5 AS DECIMAL(38,2)) b,
+        CAST('99999999999999999999999999999999999999' AS DECIMAL(38,0)) c,
+        CAST('-99999999999999999999999999999999999999' AS DECIMAL(38,0)) d,
+        CAST(-0.000000000000000001 AS DECIMAL(38,18)) e,
+        CAST(0 AS DECIMAL(10,2)) f,
+        CAST(NULL AS DECIMAL(10,2)) g
+      """)
+    let values = [
+      "-1.50", "12345678901234567890.50", "99999999999999999999999999999999999999",
+      "-99999999999999999999999999999999999999", "-0.000000000000000001", "0.00",
+    ].map { Decimal(string: $0)! }
+    let rows = try await df.collect()
+    #expect(rows == [Row(values[0], values[1], values[2], values[3], values[4], values[5], nil)])
+    for (i, value) in values.enumerated() {
+      #expect(try rows[0].getAsDecimal(i) == value)
+    }
+    #expect(try rows[0].getAsDecimal("d") == values[3])
+    #expect(throws: SparkConnectError.InvalidType) {
+      try rows[0].getAsDecimal("g")
+    }
+    #expect(
+      try await spark.sql("SELECT array(CAST(-1.5 AS DECIMAL(10,2)), CAST(0 AS DECIMAL(10,2)))")
+        .collect() == [Row([values[0], values[5]])])
+    await spark.stop()
+  }
+
+  @Test
   func timestamp() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let timeZone = try await spark.conf.get("spark.sql.session.timeZone")
