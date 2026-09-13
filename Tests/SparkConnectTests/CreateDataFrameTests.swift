@@ -80,6 +80,26 @@ struct CreateDataFrameTests {
   }
 
   @Test
+  func dateType() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let days = [-719_162, -1, 0, 49_710, 49_711, 2_932_896]
+    let dates = days.map { Date(timeIntervalSince1970: TimeInterval($0) * 86400) }
+    let df = try await spark.createDataFrame(dates.map { [$0] }, "d DATE")
+    #expect(try await df.collect() == dates.map { Row($0) })
+    #expect(
+      try await df.selectExpr("CAST(d AS STRING)").collect()
+        == ["0001-01-01", "1969-12-31", "1970-01-01", "2106-02-07", "2106-02-08", "9999-12-31"]
+        .map { Row($0) })
+
+    // A time of day before the epoch belongs to the previous day.
+    let beforeEpoch = [[Date(timeIntervalSince1970: -43200)], [Date(timeIntervalSince1970: -1)]]
+    #expect(
+      try await spark.createDataFrame(beforeEpoch, "d DATE").selectExpr("CAST(d AS STRING)")
+        .collect() == [Row("1969-12-31"), Row("1969-12-31")])
+    await spark.stop()
+  }
+
+  @Test
   func timeType() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.3") {
@@ -374,6 +394,20 @@ struct CreateDataFrameTests {
       try await spark.sql("SELECT 1L AS a, -1L AS b").collect(as: [UInt].self)
     }
     #expect(error.map { "\($0)" } == #"invalid("Cannot decode UInt for column 1")"#)
+    await spark.stop()
+  }
+
+  struct Event: Codable, Sendable, Equatable {
+    let name: String
+    let day: Date
+  }
+
+  @Test
+  func collectAsWithDateBeforeEpoch() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT 'eve' AS name, DATE'1969-12-31' AS day")
+    let events: [Event] = try await df.collect(as: Event.self)
+    #expect(events == [Event(name: "eve", day: Date(timeIntervalSince1970: -86400))])
     await spark.stop()
   }
 }

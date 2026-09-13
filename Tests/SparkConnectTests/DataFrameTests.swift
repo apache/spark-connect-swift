@@ -171,6 +171,26 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectDate() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = [
+      ("DATE'0001-01-01'", -719_162),
+      ("DATE'1969-12-31'", -1),
+      ("DATE'1970-01-01'", 0),
+      ("DATE'2106-02-07'", 49_710),
+      ("DATE'2106-02-08'", 49_711),
+      ("DATE'9999-12-31'", 2_932_896),
+    ]
+    for pair in expected {
+      let date = Date(timeIntervalSince1970: TimeInterval(pair.1) * 86400)
+      #expect(try await spark.sql("SELECT \(pair.0)").collect() == [Row(date)])
+      #expect(try await spark.sql("SELECT array(\(pair.0))").collect() == [Row(Array([date]))])
+    }
+    #expect(try await spark.sql("SELECT CAST(NULL AS DATE)").collect() == [Row(nil)])
+    await spark.stop()
+  }
+
+  @Test
   func collectTime() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.2") {
