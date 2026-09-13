@@ -209,7 +209,6 @@ public actor DataFrame: Sendable {
   /// `DataFrame`.
   let planID: Int64
   var _schema: StructType? = nil
-  var batches: [RecordBatch] = [RecordBatch]()
 
   /// Create a new `DataFrame`instance with the given Spark session and plan.
   /// - Parameters:
@@ -273,12 +272,6 @@ public actor DataFrame: Sendable {
       throw SparkConnectError.InvalidType
     }
     self._schema = structType
-  }
-
-  /// Add `Apache Arrow`'s `RecordBatch`s to the internal array.
-  /// - Parameter batches: An array of ``RecordBatch``.
-  func addBatches(_ batches: [RecordBatch]) {
-    self.batches.append(contentsOf: batches)
   }
 
   /// Return the `SparkSession` of this `DataFrame`.
