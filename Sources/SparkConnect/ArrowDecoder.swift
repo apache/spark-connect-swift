@@ -70,9 +70,9 @@ public class ArrowDecoder: Decoder {
     for index in 0..<rb.length {
       self.rbIndex = index
       self.singleRBCol = 0
-      let key = try T.init(from: self)
+      let key = try self.decodeSingleValue(T.self)
       self.singleRBCol = 1
-      let value = try U.init(from: self)
+      let value = try self.decodeSingleValue(U.self)
       output[key] = value
     }
 
@@ -84,10 +84,19 @@ public class ArrowDecoder: Decoder {
     var output = [T]()
     for index in 0..<rb.length {
       self.rbIndex = index
-      output.append(try type.init(from: self))
+      output.append(try self.decodeSingleValue(type))
     }
 
     return output
+  }
+
+  /// Foundation's `Decimal.init(from:)` asks for a keyed container of its internal fields,
+  /// so decode `Decimal` from the current column directly.
+  func decodeSingleValue<T: Decodable>(_ type: T.Type) throws -> T {
+    if type == Decimal.self {
+      return try self.doDecode(self.singleRBCol)
+    }
+    return try type.init(from: self)
   }
 
   public func container<Key>(

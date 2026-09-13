@@ -504,10 +504,25 @@ struct CreateDataFrameTests {
       #expect(
         try await spark.sql("SELECT \(expr) AS v").collect(as: DecimalS.self)
           == [DecimalS(v: expected)])
+      #expect(try await spark.sql("SELECT \(expr) AS v").collect(as: Decimal.self) == [expected])
+      #expect(try await spark.sql("SELECT \(expr) AS v").collect(as: Decimal?.self) == [expected])
     }
     #expect(
       try await spark.sql("SELECT CAST(NULL AS DECIMAL(10,2)) AS v").collect(as: DecimalS.self)
         == [DecimalS(v: nil)])
+    #expect(
+      try await spark.sql("SELECT CAST(NULL AS DECIMAL(10,2)) AS v").collect(as: Decimal?.self)
+        == [nil])
+    #expect(
+      try await spark.sql(
+        "SELECT CAST(-1.5 AS DECIMAL(10,2)) AS a, CAST(12345678901234567890.5 AS DECIMAL(38,2)) AS b"
+      ).collect(as: [Decimal].self)
+        == [[Decimal(string: "-1.50")!, Decimal(string: "12345678901234567890.50")!]])
+
+    // `Decimal` is printed as `NSDecimal` on Darwin, so only the error type is checked.
+    await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT CAST(NULL AS DECIMAL(10,2)) AS v").collect(as: Decimal.self)
+    }
     await spark.stop()
   }
 
