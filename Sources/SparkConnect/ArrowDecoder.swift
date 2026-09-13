@@ -128,12 +128,17 @@ public class ArrowDecoder: Decoder {
     if let val = raw as? T {
       return val
     }
-    // Allow safe upcasts like Scala Dataset `as[T]`.
+    // Allow safe upcasts like Scala Dataset `as[T]`, following Spark's numeric precedence:
+    // Byte < Short < Int < Long < Float < Double.
     if let val = raw as? any FixedWidthInteger & SignedInteger,
       let intType = T.self as? any (FixedWidthInteger & SignedInteger).Type,
       val.bitWidth < intType.bitWidth
     {
       return intType.init(val) as! T
+    } else if let val = raw as? any FixedWidthInteger & SignedInteger, T.self == Float.self {
+      return Float(val) as! T
+    } else if let val = raw as? any FixedWidthInteger & SignedInteger, T.self == Double.self {
+      return Double(val) as! T
     } else if let val = raw as? Float, T.self == Double.self {
       return Double(val) as! T
     }

@@ -344,6 +344,64 @@ struct CreateDataFrameTests {
     await spark.stop()
   }
 
+  struct DoubleS: Codable, Sendable, Equatable {
+    let v: Double
+  }
+
+  struct FloatS: Codable, Sendable, Equatable {
+    let v: Float
+  }
+
+  @Test
+  func collectAsWithNumericUpcast() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.sql("SELECT 30 AS v").collect(as: DoubleS.self) == [DoubleS(v: 30.0)])
+    #expect(try await spark.sql("SELECT 30L AS v").collect(as: DoubleS.self) == [DoubleS(v: 30.0)])
+    #expect(try await spark.sql("SELECT 30 AS v").collect(as: FloatS.self) == [FloatS(v: 30.0)])
+    #expect(try await spark.sql("SELECT 30L AS v").collect(as: FloatS.self) == [FloatS(v: 30.0)])
+    #expect(
+      try await spark.sql("SELECT 1Y AS a, 2S AS b, 3 AS c, 4L AS d, CAST(5 AS FLOAT) AS e")
+        .collect(as: [Double].self) == [[1.0, 2.0, 3.0, 4.0, 5.0]])
+    #expect(try await spark.sql("SELECT 30 AS v").collect(as: Double.self) == [30.0])
+    #expect(try await spark.sql("SELECT 30L AS v").collect(as: Float.self) == [30.0])
+    await spark.stop()
+  }
+
+  @Test
+  func collectAsWithNumericDowncastOrNonNumeric() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    var error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 1.5D AS v").collect(as: FloatS.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Float for v")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT CAST(1.5 AS DECIMAL(10,2)) AS v").collect(as: DoubleS.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Double for v")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT CAST(1.5 AS DECIMAL(10,2)) AS v").collect(as: Float.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Float for column 0")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 1 AS v").collect(as: Bool.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Bool for column 0")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 1.0D AS v").collect(as: Int64.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Int64 for column 0")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT '1' AS v").collect(as: Double.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Cannot decode Double for column 0")"#)
+    await spark.stop()
+  }
+
   @Test
   func collectAsWithInvalidTypeOrNull() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
