@@ -790,6 +790,26 @@ struct DataFrameTests {
   }
 
   @Test
+  func concurrentActions() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(300_000)
+    async let rows1 = df.collect()
+    async let rows2 = df.collect()
+    async let ids1 = df.collect(as: Int64.self)
+    async let ids2 = df.collect(as: Int64.self)
+    async let count1 = df.count()
+    async let count2 = df.count()
+    let (r1, r2, i1, i2, c1, c2) = try await (rows1, rows2, ids1, ids2, count1, count2)
+    #expect(r1.count == 300_000)
+    #expect(r2.count == 300_000)
+    #expect(i1.count == 300_000)
+    #expect(i2.count == 300_000)
+    #expect(c1 == 300_000)
+    #expect(c2 == 300_000)
+    await spark.stop()
+  }
+
+  @Test
   func first() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(2).sort("id").first() == Row(0))

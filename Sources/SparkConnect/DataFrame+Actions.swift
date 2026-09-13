@@ -34,10 +34,10 @@ extension DataFrame {
 
   // MARK: - Execute and Collect
 
-  /// Execute the plan and try to fill `schema` and `batches`.
-  private func execute() async throws {
-    // Clear all existing batches.
-    self.batches.removeAll()
+  /// Execute the plan, fill `schema`, and return the `RecordBatch`es of this execution.
+  /// Batches are local to each call since concurrent actions can interleave on this actor.
+  private func execute() async throws -> [RecordBatch] {
+    let batches = Mutex([RecordBatch]())
 
     try await spark.client.executePlanWithReattach(spark.client.getExecutePlanRequest(plan)) {
       m in
@@ -82,30 +82,33 @@ extension DataFrame {
         let dataBody = Data(ipcStreamBytes[pos..<(pos + dataBodySize)])
 
         // Read ArrowBatches
-        let reader = ArrowReader()
-        let arrowResult = ArrowReader.makeArrowReaderResult()
-        if case .failure(let error) = reader.fromMessage(
-          schema, dataBody: Data(), result: arrowResult)
-        {
-          throw error
+        try batches.withLock { batches in
+          let reader = ArrowReader()
+          let arrowResult = ArrowReader.makeArrowReaderResult()
+          if case .failure(let error) = reader.fromMessage(
+            schema, dataBody: Data(), result: arrowResult)
+          {
+            throw error
+          }
+          if case .failure(let error) = reader.fromMessage(
+            dataHeader, dataBody: dataBody, result: arrowResult)
+          {
+            throw error
+          }
+          batches.append(contentsOf: arrowResult.batches)
         }
-        if case .failure(let error) = reader.fromMessage(
-          dataHeader, dataBody: dataBody, result: arrowResult)
-        {
-          throw error
-        }
-        await self.addBatches(arrowResult.batches)
       }
     }
+    return batches.withLock { $0 }
   }
 
   /// Execute the plan and return the result as ``[Row]``.
   /// - Returns: ``[Row]``
   public func collect() async throws -> [Row] {
-    try await execute()
+    let batches = try await execute()
 
     var result: [Row] = []
-    for batch in self.batches {
+    for batch in batches {
       let rowSchema = RowSchema(batch.schema.fields.map { $0.name })
       for i in 0..<batch.length {
         var values: [Sendable?] = []
@@ -210,11 +213,11 @@ extension DataFrame {
   /// - Parameter type: The `Decodable` type to decode each row into. Defaults to `T.self`.
   /// - Returns: An array of decoded instances of `T`.
   public func collect<T: Decodable>(as type: T.Type = T.self) async throws -> [T] {
-    try await execute()
+    let batches = try await execute()
 
     let caseSensitive = try await spark.conf.get("spark.sql.caseSensitive").lowercased() == "true"
     var result: [T] = []
-    for batch in self.batches {
+    for batch in batches {
       let decoder = ArrowDecoder(batch, caseSensitive: caseSensitive)
       let decoded = try decoder.decode(type)
       result.append(contentsOf: decoded)
