@@ -320,6 +320,74 @@ struct CreateDataFrameTests {
     await spark.stop()
   }
 
+  @Test
+  func collectAsWithCaseInsensitiveColumnNames() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(
+      try await spark.sql("SELECT 'Alice' AS NAME, 30 AS AGE").collect(as: Person.self)
+        == [Person(name: "Alice", age: 30)])
+    #expect(
+      try await spark.sql("SELECT 'a' AS x, 'b' AS X, 'Alice' AS Name, 30 AS age")
+        .collect(as: Person.self) == [Person(name: "Alice", age: 30)])
+    #expect(
+      try await spark.sql("SELECT 1 AS ID, 'x' AS NICKNAME, 1.5D AS Score")
+        .collect(as: UserProfile.self) == [UserProfile(id: 1, nickname: "x", score: 1.5)])
+    await spark.stop()
+  }
+
+  @Test
+  func collectAsWithAmbiguousColumnNames() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    var error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 'a' AS name, 'b' AS NAME, 30 AS age").collect(as: Person.self)
+    }
+    #expect(
+      error.map { "\($0)" }
+        == #"invalid("Column for key \"name\" is ambiguous, could be: [\"name\", \"NAME\"]")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 'a' AS name, 'b' AS name, 30 AS age").collect(as: Person.self)
+    }
+    #expect(
+      error.map { "\($0)" }
+        == #"invalid("Column for key \"name\" is ambiguous, could be: [\"name\", \"name\"]")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 1 AS id, 'a' AS nickname, 'b' AS NICKNAME")
+        .collect(as: UserProfile.self)
+    }
+    #expect(
+      error.map { "\($0)" }
+        == #"invalid("Column for key \"nickname\" is ambiguous, could be: [\"nickname\", \"NICKNAME\"]")"#
+    )
+    await spark.stop()
+  }
+
+  @Test
+  func collectAsWithCaseSensitiveColumnNames() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    try await spark.conf.set("spark.sql.caseSensitive", true)
+    #expect(
+      try await spark.sql("SELECT 'a' AS name, 'b' AS NAME, 30 AS age").collect(as: Person.self)
+        == [Person(name: "a", age: 30)])
+    #expect(
+      try await spark.sql("SELECT 1 AS id, 'a' AS NICKNAME, 'b' AS nickname")
+        .collect(as: UserProfile.self) == [UserProfile(id: 1, nickname: "b", score: nil)])
+
+    var error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 'Alice' AS NAME, 30 AS AGE").collect(as: Person.self)
+    }
+    #expect(error.map { "\($0)" } == #"invalid("Column for key \"name\" not found")"#)
+
+    error = await #expect(throws: ArrowError.self) {
+      try await spark.sql("SELECT 'a' AS name, 'b' AS name, 30 AS age").collect(as: Person.self)
+    }
+    #expect(
+      error.map { "\($0)" }
+        == #"invalid("Column for key \"name\" is ambiguous, could be: [\"name\", \"name\"]")"#)
+    await spark.stop()
+  }
+
   struct Person32: Codable, Sendable, Equatable {
     let name: String
     let age: Int32
