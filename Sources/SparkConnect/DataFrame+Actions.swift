@@ -231,6 +231,20 @@ extension DataFrame {
   /// - Returns: a `Int64` value.
   @discardableResult
   public func count() async throws -> Int64 {
+    let rows = try await groupBy().count().collect()
+    guard rows.count == 1, rows[0].length == 1,
+      let count = try rows[0].get(0) as? Int64
+    else {
+      throw SparkConnectError.InvalidArrowData
+    }
+    return count
+  }
+
+  /// Execute the plan, drain all results, and return the number of rows received by the client.
+  /// Use this to run a relation for its side effects, e.g., catalog operations.
+  /// - Returns: a `Int64` value.
+  @discardableResult
+  func executeAndCount() async throws -> Int64 {
     let counter = Atomic(Int64(0))
 
     try await spark.client.executePlanWithReattach(spark.client.getExecutePlanRequest(plan)) {
@@ -366,7 +380,7 @@ extension DataFrame {
   /// Checks if the ``DataFrame`` is empty and returns a boolean value.
   /// - Returns: `true` if the ``DataFrame`` is empty, `false` otherwise.
   public func isEmpty() async throws -> Bool {
-    return try await select().limit(1).count() == 0
+    return try await select().limit(1).executeAndCount() == 0
   }
 
   // MARK: - Persistence

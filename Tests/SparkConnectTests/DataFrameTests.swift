@@ -340,6 +340,37 @@ struct DataFrameTests {
   }
 
   @Test
+  func countDuplicateColumnNames() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    #expect(try await spark.sql("SELECT 1 AS a, 2 AS a").count() == 1)
+    await spark.stop()
+  }
+
+  @Test
+  func countLocalRelationAndLocalCheckpoint() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.createDataFrame(
+      [[Int32(1), "a"], [Int32(2), "b"], [Int32(3), nil]], "id INT, name STRING")
+    #expect(try await df.count() == 3)
+    if await isSparkVersionAtLeast(spark.version, "4.0.0") {
+      #expect(try await df.localCheckpoint().count() == 3)
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func countCommand() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
+    try await SQLHelper.withTable(spark, tableName)({
+      let count = try await spark.sql("CREATE TABLE \(tableName)(id INT) USING ORC").count()
+      #expect(count == 0)
+      #expect(try await spark.catalog.tableExists(tableName))
+    })
+    await spark.stop()
+  }
+
+  @Test
   func collectNull() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.sql("SELECT null").collect() == [Row(nil)])
@@ -654,6 +685,10 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).isEmpty())
     #expect(!(try await spark.range(1).isEmpty()))
+    #expect(try await spark.sql("SELECT * FROM RANGE(10) WHERE id > 10").isEmpty())
+    #expect(!(try await spark.sql("SELECT 1 AS a, 2 AS a").isEmpty()))
+    #expect(try await spark.createDataFrame([], "id INT").isEmpty())
+    #expect(!(try await spark.createDataFrame([[Int32(1)]], "id INT").isEmpty()))
     await spark.stop()
   }
 

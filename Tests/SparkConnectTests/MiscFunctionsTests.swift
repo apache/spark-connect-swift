@@ -182,7 +182,7 @@ struct MiscFunctionsTests {
 
     // The server reports this as `USER_RAISED_EXCEPTION`, which has no `SparkConnectError` case.
     let error = try await #require(throws: Error.self) {
-      try await spark.range(1).select(assert_true(lit(false), "assert_true failed")).count()
+      try await spark.range(1).select(assert_true(lit(false), "assert_true failed")).collect()
     }
     #expect("\(error)".contains("assert_true failed"))
     await spark.stop()
@@ -193,7 +193,7 @@ struct MiscFunctionsTests {
     let spark = try await SparkSession.builder.getOrCreate()
     for column in [raise_error(lit("raise_error failed")), raise_error("raise_error failed")] {
       let error = try await #require(throws: Error.self) {
-        try await spark.range(1).select(column).count()
+        try await spark.range(1).select(column).collect()
       }
       #expect("\(error)".contains("raise_error failed"))
     }

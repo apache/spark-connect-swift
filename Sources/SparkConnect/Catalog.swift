@@ -120,7 +120,7 @@ public actor Catalog: Sendable {
       catalog.catType = .setCurrentCatalog(setCurrentCatalog)
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Returns a list of catalogs in this session.
@@ -162,7 +162,7 @@ public actor Catalog: Sendable {
       catalog.catType = .setCurrentDatabase(setCurrentDatabase)
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Creates a database with the specified name.
@@ -188,7 +188,7 @@ public actor Catalog: Sendable {
       catalog.catType = .createDatabase(createDatabase)
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Drops the database with the specified name.
@@ -210,7 +210,7 @@ public actor Catalog: Sendable {
       catalog.catType = .dropDatabase(dropDatabase)
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Returns a list of databases available across all sessions.
@@ -619,7 +619,7 @@ public actor Catalog: Sendable {
       catalog.cacheTable = cacheTable
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Returns true if the table is currently cached in-memory.
@@ -647,7 +647,7 @@ public actor Catalog: Sendable {
       catalog.refreshTable = refreshTable
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Removes all rows from the table.
@@ -661,7 +661,7 @@ public actor Catalog: Sendable {
       catalog.catType = .truncateTable(truncateTable)
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Recovers all the partitions in the directory of a table and update the catalog.
@@ -675,7 +675,7 @@ public actor Catalog: Sendable {
       catalog.catType = .recoverPartitions(recoverPartitions)
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Analyzes the given table to compute statistics that can be used by the query optimizer.
@@ -691,7 +691,7 @@ public actor Catalog: Sendable {
       catalog.catType = .analyzeTable(analyzeTable)
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Invalidates and refreshes all the cached data (and the associated metadata) for any ``DataFrame``
@@ -706,7 +706,7 @@ public actor Catalog: Sendable {
       catalog.refreshByPath = refreshByPath
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Removes the specified table from the in-memory cache.
@@ -720,7 +720,7 @@ public actor Catalog: Sendable {
       catalog.uncacheTable = uncacheTable
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Removes all cached tables from the in-memory cache.
@@ -730,7 +730,7 @@ public actor Catalog: Sendable {
       catalog.clearCache_p = Spark_Connect_ClearCache()
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Drops the local temporary view with the given view name in the catalog. If the view has been
@@ -782,7 +782,7 @@ public actor Catalog: Sendable {
       catalog.dropTable = dropTable
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 
   /// Drops the view with the given view name in the catalog.
@@ -798,6 +798,6 @@ public actor Catalog: Sendable {
       catalog.dropView = dropView
       return catalog
     })
-    try await df.count()
+    try await df.executeAndCount()
   }
 }
