@@ -24,6 +24,7 @@ import Foundation
 import GRPCCore
 import GRPCNIOTransportHTTP2
 import GRPCProtobuf
+import Synchronization
 
 /// Conceptually the remote spark session that communicates with the server
 public actor SparkConnectClient {
@@ -902,11 +903,6 @@ public actor SparkConnectClient {
     return createPlan { $0.replace = replace }
   }
 
-  var result: [ExecutePlanResponse] = []
-  private func addResponse(_ response: ExecutePlanResponse) {
-    self.result.append(response)
-  }
-
   private var observations: [String: Observation] = [:]
 
   /// Register an ``Observation`` to receive the observed metrics of its name.
@@ -929,13 +925,13 @@ public actor SparkConnectClient {
 
   @discardableResult
   func execute(_ sessionID: String, _ command: Command) async throws -> [ExecutePlanResponse] {
-    self.result.removeAll()
     var plan = Plan()
     plan.opType = .command(command)
+    let responses = Mutex([ExecutePlanResponse]())
     try await executePlanWithReattach(getExecutePlanRequest(plan)) { m in
-      await self.addResponse(m)
+      responses.withLock { $0.append(m) }
     }
-    return result
+    return responses.withLock { $0 }
   }
 
   func getExecuteExternalCommand(
