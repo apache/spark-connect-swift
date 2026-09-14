@@ -814,6 +814,11 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(2).sort("id").first() == Row(0))
     #expect(try await spark.range(2).sort("id").head() == Row(0))
+    let error = try await #require(throws: SparkConnectError.self) {
+      try await spark.range(0).first()
+    }
+    #expect(error == .InvalidState)
+    #expect(error.message == "head of empty array")
     await spark.stop()
   }
 
@@ -821,6 +826,11 @@ struct DataFrameTests {
   func head() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).head(1).isEmpty)
+    let error = try await #require(throws: SparkConnectError.self) {
+      try await spark.range(0).head()
+    }
+    #expect(error == .InvalidState)
+    #expect(error.message == "head of empty array")
     #expect(try await spark.range(2).sort("id").head() == Row(0))
     #expect(try await spark.range(2).sort("id").head(1) == [Row(0)])
     #expect(try await spark.range(2).sort("id").head(2) == [Row(0), Row(1)])

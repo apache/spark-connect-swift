@@ -306,12 +306,18 @@ extension DataFrame {
 
   /// Returns the first row.
   /// - Returns: A ``Row``.
+  /// - Throws: ``SparkConnectError/invalidState(_:)`` if this ``DataFrame`` is empty.
   public func head() async throws -> Row {
-    return try await head(1)[0]
+    guard let row = try await head(1).first else {
+      throw SparkConnectError.invalidState(
+        SparkConnectError.Details(message: "head of empty array"))
+    }
+    return row
   }
 
   /// Returns the first row. Alias for head().
   /// - Returns: A ``Row``.
+  /// - Throws: ``SparkConnectError/invalidState(_:)`` if this ``DataFrame`` is empty.
   public func first() async throws -> Row {
     return try await head()
   }
