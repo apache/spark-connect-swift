@@ -155,9 +155,9 @@ extension DataFrame {
   }
 
   /// Returns the content of the Dataset as a Dataset of JSON strings.
-  /// - Returns: A ``DataFrame`` with a single string column whose content is JSON.
+  /// - Returns: A ``DataFrame`` with a single string column named `value` whose content is JSON.
   public func toJSON() -> DataFrame {
-    return selectExpr("to_json(struct(*))")
+    return selectExpr("to_json(struct(*)) AS value")
   }
 
   /// Projects a set of expressions and returns a new ``DataFrame``.
