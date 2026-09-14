@@ -1565,11 +1565,22 @@ struct DataFrameTests {
   func toJSON() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.range(2).toJSON()
-    #expect(try await df.columns == ["to_json(struct(id))"])
+    #expect(try await df.columns == ["value"])
+    #expect(
+      try await df.schema
+        == StructType(fields: [StructField(name: "value", dataType: .string, nullable: true)]))
     #expect(try await df.collect() == [Row("{\"id\":0}"), Row("{\"id\":1}")])
 
     let expected = [Row("{\"a\":1,\"b\":2,\"c\":3}")]
     #expect(try await spark.sql("SELECT 1 a, 2 b, 3 c").toJSON().collect() == expected)
+
+    let df2 = try await spark.sql("SELECT 'Alice' AS name, 20 AS age").toJSON()
+    #expect(try await df2.columns == ["value"])
+    #expect(try await df2.collect() == [Row("{\"name\":\"Alice\",\"age\":20}")])
+
+    let df3 = try await spark.sql("SELECT 1 AS id, named_struct('a', 1, 'b', 'x') AS s").toJSON()
+    #expect(try await df3.columns == ["value"])
+    #expect(try await df3.collect() == [Row("{\"id\":1,\"s\":{\"a\":1,\"b\":\"x\"}}")])
     await spark.stop()
   }
 
