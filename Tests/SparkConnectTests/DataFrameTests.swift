@@ -1046,7 +1046,7 @@ struct DataFrameTests {
         == [Row("a", 1, nil, nil), Row("b", 2, "c", 2)])
 
     let df = try await spark.range(3)
-    let joined = try await df.alias("l").join(df.alias("r"), joinExprs: col("l.id") == col("r.id"))
+    let joined = await df.alias("l").join(df.alias("r"), joinExprs: col("l.id") == col("r.id"))
     #expect(try await joined.orderBy(col("l.id")).collect() == [Row(0, 0), Row(1, 1), Row(2, 2)])
     await spark.stop()
   }
@@ -1075,7 +1075,7 @@ struct DataFrameTests {
     let df = try await spark.range(3)
     #expect(try await df.alias("a").select("a.id").collect() == [Row(0), Row(1), Row(2)])
 
-    let joined = try await df.alias("l").join(df.alias("r"), joinExprs: "l.id = r.id")
+    let joined = await df.alias("l").join(df.alias("r"), joinExprs: "l.id = r.id")
     #expect(try await joined.orderBy("l.id").collect() == [Row(0, 0), Row(1, 1), Row(2, 2)])
     await spark.stop()
   }
