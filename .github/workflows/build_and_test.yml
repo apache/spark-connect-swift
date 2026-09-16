@@ -29,7 +29,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Check license header
         uses: apache/skywalking-eyes@61275cc80d0798a405cb070f7d3a8aaf7cf2c2c1
         env:
@@ -41,7 +41,7 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
@@ -51,7 +51,7 @@ jobs:
     runs-on: xcode-27
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Build
       run: swift build -c release
 
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Build
       run: |
         docker run swiftlang/swift:nightly-6.4.x-amazonlinux2023 uname -a
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Build
       run: |
         docker run swift:6.3.3 uname -a
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Build
       run: |
         docker run swift:6.3.3 uname -a
@@ -98,7 +98,7 @@ jobs:
           - 15003:15002
         options: --entrypoint /opt/spark/sbin/start-connect-server.sh
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Build
       run: |
         docker run swift:6.3.3 uname -a
@@ -117,7 +117,7 @@ jobs:
           - 15003:15002
         options: --entrypoint /opt/spark/sbin/start-connect-server.sh
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Build
       run: |
         docker run swift:6.3.3 uname -a
@@ -126,7 +126,7 @@ jobs:
   integration-test-ubuntu-spark42:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Start Spark Connect Server
       run: |
         docker run -d --name spark -p 15003:15002 -e SPARK_NO_DAEMONIZE=1 \
@@ -145,7 +145,7 @@ jobs:
     env:
       SPARK_LOCAL_IP: localhost
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
@@ -167,7 +167,7 @@ jobs:
     env:
       SPARK_LOCAL_IP: localhost
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
@@ -189,7 +189,7 @@ jobs:
     env:
       SPARK_LOCAL_IP: localhost
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
@@ -212,7 +212,7 @@ jobs:
     env:
       SPARK_LOCAL_IP: localhost
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
@@ -235,7 +235,7 @@ jobs:
       SPARK_LOCAL_IP: localhost
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
@@ -258,7 +258,7 @@ jobs:
       SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Install Java
@@ -292,7 +292,7 @@ jobs:
       SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Select Xcode 26.6
       run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Install Java
