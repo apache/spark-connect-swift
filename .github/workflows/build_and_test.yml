@@ -183,6 +183,26 @@ jobs:
         cd -
         swift test --no-parallel -c release
 
+  integration-test-mac-spark42-swift64:
+    runs-on: xcode-27
+    timeout-minutes: 20
+    env:
+      SPARK_LOCAL_IP: localhost
+    steps:
+    - uses: actions/checkout@v6
+    - name: Build
+      run: swift test --filter NOTHING -c release
+    - uses: ./.github/actions/setup-spark
+      with:
+        version: 4.2.0
+        sha512: 3a6559e8546ff387db8fe7a04b8fe4008853b467b972c2e343df8e14a81450534777719fc5d4998dd96519a86fdf9de140cee753c61e2e94db044d5f9555ddc4
+    - name: Test
+      run: |
+        cd /tmp/spark/sbin
+        ./start-connect-server.sh -c spark.sql.timeType.enabled=true
+        cd -
+        swift test --no-parallel -c release
+
   integration-test-mac-spark43:
     runs-on: macos-26
     timeout-minutes: 20
