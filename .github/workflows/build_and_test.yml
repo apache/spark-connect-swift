@@ -91,7 +91,7 @@ jobs:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
       spark:
-        image: apache/spark:4.0.4-scala
+        image: apache/spark:4.0.4-java21-scala
         env:
           SPARK_NO_DAEMONIZE: 1
         ports:
@@ -265,7 +265,7 @@ jobs:
       uses: actions/setup-java@v6
       with:
         distribution: zulu
-        java-version: 17
+        java-version: 21
     - name: Build
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
