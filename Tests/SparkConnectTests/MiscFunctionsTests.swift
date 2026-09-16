@@ -241,7 +241,7 @@ struct MiscFunctionsTests {
   @Test
   func fileMetadataFunctions() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    let df = try await spark.read.orc("../examples/src/main/resources/users.orc")
+    let df = await spark.read.orc("../examples/src/main/resources/users.orc")
     let rows = try await df.select(
       input_file_name(), input_file_block_start(), input_file_block_length()
     ).collect()

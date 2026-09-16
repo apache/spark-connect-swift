@@ -333,7 +333,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
       switch message.headerType {
       case .recordbatch:
         let rbMessage = message.header(type: org_apache_arrow_flatbuf_RecordBatch.self)!
-        let recordBatchResult = try loadRecordBatch(
+        let recordBatchResult = loadRecordBatch(
           rbMessage,
           schema: schemaMessage!,
           arrowSchema: result.schema!,
@@ -417,7 +417,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
       switch message.headerType {
       case .recordbatch:
         let rbMessage = message.header(type: org_apache_arrow_flatbuf_RecordBatch.self)!
-        let recordBatchResult = try loadRecordBatch(
+        let recordBatchResult = loadRecordBatch(
           rbMessage,
           schema: footer.schema!,
           arrowSchema: result.schema!,
@@ -482,7 +482,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
         return .failure(.invalid("Record batch received before schema"))
       }
       let rbMessage = message.header(type: org_apache_arrow_flatbuf_RecordBatch.self)!
-      let recordBatchResult = try loadRecordBatch(
+      let recordBatchResult = loadRecordBatch(
         rbMessage, schema: messageSchema, arrowSchema: arrowSchema,
         data: dataBody, messageEndOffset: 0
       )
