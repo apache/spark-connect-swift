@@ -16,7 +16,7 @@ Build an application Docker image.
 $ docker build -t apache/spark-connect-swift:pi .
 $ docker images apache/spark-connect-swift:pi
 IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTRA
-apache/spark-connect-swift:pi   b4d99bb06afe        116MB         32.8MB
+apache/spark-connect-swift:pi   8f553c8177a1        112MB           32MB
 ```
 
 Run `pi` docker image.
