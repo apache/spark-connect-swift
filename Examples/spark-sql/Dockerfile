@@ -14,19 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM swift:6.3.3 AS builder
+FROM swift:6.4.0 AS builder
 
 WORKDIR /app
 
-ADD https://download.swift.org/swift-6.3.3-release/static-sdk/swift-6.3.3-RELEASE/swift-6.3.3-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz /tmp/swift-static-sdk.tar.gz
+ADD https://download.swift.org/swift-6.4.0-release/static-sdk/swift-6.4.0-RELEASE/swift-6.4.0-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz /tmp/swift-static-sdk.tar.gz
 RUN swift sdk install /tmp/swift-static-sdk.tar.gz && \
     rm /tmp/swift-static-sdk.tar.gz
 
 COPY . .
 
-RUN arch=$(uname -m) && \
-    swift build -c release --swift-sdk ${arch}-swift-linux-musl && \
-    strip .build/*-swift-linux-musl/release/SparkConnectSwiftSQLRepl
+RUN swift build -c release --swift-sdk $(uname -m)-swift-linux-musl && \
+    strip .build/release/SparkConnectSwiftSQLRepl
 
 FROM gcr.io/distroless/static-debian12:nonroot
 
@@ -34,6 +33,6 @@ LABEL org.opencontainers.image.authors="Apache Spark project <dev@spark.apache.o
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.ref.name="Apache Spark Connect for Swift"
 
-COPY --from=builder --chown=65532:65532 /app/.build/*-swift-linux-musl/release/SparkConnectSwiftSQLRepl /opt/spark-app/
+COPY --from=builder --chown=65532:65532 /app/.build/release/SparkConnectSwiftSQLRepl /opt/spark-app/
 
 ENTRYPOINT ["/opt/spark-app/SparkConnectSwiftSQLRepl"]
