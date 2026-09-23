@@ -27,7 +27,7 @@ COPY . .
 RUN swift build -c release --swift-sdk $(uname -m)-swift-linux-musl && \
     strip .build/release/SparkConnectSwiftPi
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static-debian13:nonroot
 
 LABEL org.opencontainers.image.authors="Apache Spark project <dev@spark.apache.org>"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
