@@ -40,7 +40,7 @@ runs:
     # release, which share a version but not their bits, never share an entry.
     - name: Cache Spark ${{ inputs.version }} distribution
       id: cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/spark-dist/spark-${{ inputs.version }}-bin-hadoop3.tgz
         key: spark-${{ inputs.version }}-bin-hadoop3-${{ inputs.sha512 }}

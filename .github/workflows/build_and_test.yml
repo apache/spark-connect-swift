@@ -31,7 +31,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
       - name: Check license header
-        uses: apache/skywalking-eyes@61275cc80d0798a405cb070f7d3a8aaf7cf2c2c1
+        uses: apache/skywalking-eyes@a196742f472feaffafea537ce5a2a4c3c53a8de4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -179,7 +179,7 @@ jobs:
     env:
       SPARK_LOCAL_IP: localhost
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Build
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
