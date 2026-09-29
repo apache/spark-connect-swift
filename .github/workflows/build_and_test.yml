@@ -55,8 +55,8 @@ jobs:
     - name: Build
       run: swift build -c release
 
-  build-ubuntu-latest:
-    runs-on: ubuntu-latest
+  build-ubuntu:
+    runs-on: ubuntu-26.04
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v7
@@ -66,7 +66,7 @@ jobs:
         docker run -v $PWD:/spark -w /spark swift:6.4.0 swift build -c release
 
   build-ubuntu-arm:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v7
@@ -76,7 +76,7 @@ jobs:
         docker run -v $PWD:/spark -w /spark swift:6.4.0 swift build -c release
 
   integration-test-ubuntu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
@@ -95,7 +95,7 @@ jobs:
         docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.4.0 swift test --no-parallel -c release
 
   integration-test-ubuntu-spark41:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
@@ -114,7 +114,7 @@ jobs:
         docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.4.0 swift test --no-parallel -c release
 
   integration-test-ubuntu-spark42:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
     - uses: actions/checkout@v7
     - name: Start Spark Connect Server
