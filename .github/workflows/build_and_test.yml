@@ -164,8 +164,9 @@ jobs:
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
       with:
-        version: 4.2.0
-        sha512: 3a6559e8546ff387db8fe7a04b8fe4008853b467b972c2e343df8e14a81450534777719fc5d4998dd96519a86fdf9de140cee753c61e2e94db044d5f9555ddc4
+        version: 4.2.1
+        url: https://dist.apache.org/repos/dist/dev/spark/v4.2.1-rc1-bin/spark-4.2.1-bin-hadoop3.tgz
+        sha512: 4f2e5368987ab6d5bba33859c67c32f910829c1ce536c2d81e9e3d0c37dcb9d0ae659dbc5872c9e568d03094c9ed3f551c585a08b0e44e0cefde9b29cfc15371
     - name: Test
       run: |
         cd /tmp/spark/sbin
