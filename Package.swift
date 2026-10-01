@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3.2
+// swift-tools-version: 6.4.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 //
 // Licensed to the Apache Software Foundation (ASF) under one

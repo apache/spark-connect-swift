@@ -37,17 +37,7 @@ jobs:
         with:
           config: .github/.licenserc.yaml
 
-  build-macos-26-swift63:
-    runs-on: macos-26
-    timeout-minutes: 20
-    steps:
-    - uses: actions/checkout@v7
-    - name: Select Xcode 26.6
-      run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
-    - name: Build
-      run: swift build -c release
-
-  build-macos-26-swift64:
+  build-macos:
     runs-on: xcode-27
     timeout-minutes: 20
     steps:
@@ -130,14 +120,12 @@ jobs:
         docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.4.0 swift test --no-parallel -c release
 
   integration-test-mac-spark41:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v7
-    - name: Select Xcode 26.6
-      run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
@@ -153,14 +141,12 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac-spark42:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v7
-    - name: Select Xcode 26.6
-      run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
@@ -175,35 +161,13 @@ jobs:
         cd -
         swift test --no-parallel -c release
 
-  integration-test-mac-spark42-swift64:
+  integration-test-mac-spark43:
     runs-on: xcode-27
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v7
-    - name: Build
-      run: swift test --filter NOTHING -c release
-    - uses: ./.github/actions/setup-spark
-      with:
-        version: 4.2.0
-        sha512: 3a6559e8546ff387db8fe7a04b8fe4008853b467b972c2e343df8e14a81450534777719fc5d4998dd96519a86fdf9de140cee753c61e2e94db044d5f9555ddc4
-    - name: Test
-      run: |
-        cd /tmp/spark/sbin
-        ./start-connect-server.sh -c spark.sql.timeType.enabled=true
-        cd -
-        swift test --no-parallel -c release
-
-  integration-test-mac-spark43:
-    runs-on: macos-26
-    timeout-minutes: 20
-    env:
-      SPARK_LOCAL_IP: localhost
-    steps:
-    - uses: actions/checkout@v7
-    - name: Select Xcode 26.6
-      run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
@@ -219,14 +183,12 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
     steps:
     - uses: actions/checkout@v7
-    - name: Select Xcode 26.6
-      run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
@@ -241,15 +203,13 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-token:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
       SPARK_CONNECT_AUTHENTICATE_TOKEN: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
     - uses: actions/checkout@v7
-    - name: Select Xcode 26.6
-      run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Build
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
@@ -264,15 +224,13 @@ jobs:
         swift test --no-parallel -c release
 
   integration-test-mac-spark4-iceberg:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
     - uses: actions/checkout@v7
-    - name: Select Xcode 26.6
-      run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Install Java
       uses: actions/setup-java@v6
       with:
@@ -298,15 +256,13 @@ jobs:
         swift test --filter IcebergTest -c release
 
   integration-test-mac-spark41-iceberg:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 20
     env:
       SPARK_LOCAL_IP: localhost
       SPARK_ICEBERG_TEST_ENABLED: "true"
     steps:
     - uses: actions/checkout@v7
-    - name: Select Xcode 26.6
-      run: sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
     - name: Install Java
       uses: actions/setup-java@v6
       with:

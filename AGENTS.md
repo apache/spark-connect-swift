@@ -18,9 +18,9 @@ catalog, ML) over gRPC, exchanging results in Apache Arrow format.
 
 ## Tech stack & requirements
 
-- **Swift 6.3.2+** with Swift Package Manager (`swift-tools-version: 6.3.2`).
+- **Swift 6.4.0+** with Swift Package Manager (`swift-tools-version: 6.4.0`).
 - **Platforms**: macOS 15+, iOS 18+, watchOS 11+, tvOS 18+, and Linux
-  (built and tested on Ubuntu x86_64 & arm64 with the Swift 6.3.2 toolchain).
+  (built and tested on Ubuntu x86_64 & arm64 with the Swift 6.4.0 toolchain).
 - **Server**: Apache Spark 4.x Connect server (tested against 4.0.4 / 4.1.3 / 4.2.0).
 - **Dependencies** (all pinned with `exact` in [Package.swift](Package.swift)):
   `grpc-swift-2`, `grpc-swift-protobuf`, `grpc-swift-nio-transport`,
