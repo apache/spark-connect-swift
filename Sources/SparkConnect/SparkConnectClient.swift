@@ -1311,13 +1311,25 @@ public actor SparkConnectClient {
       case let value as Int32:
         literal.integer = value
       case let value as Int64:  // Hint parameter raises exceptions for Int64
-        literal.integer = Int32(value)
+        if let value = Int32(exactly: value) {
+          literal.integer = value
+        } else {
+          literal.long = value
+        }
       case let value as Int:
-        literal.integer = Int32(value)
+        if let value = Int32(exactly: value) {
+          literal.integer = value
+        } else {
+          literal.long = Int64(value)
+        }
       case let value as String:
         literal.string = value
       default:
-        literal.string = $0 as! String
+        if let value = try? ExpressionLiteral($0) {
+          literal = value
+        } else {
+          literal.string = "\($0)"
+        }
       }
       var expr = Spark_Connect_Expression()
       expr.literal = literal

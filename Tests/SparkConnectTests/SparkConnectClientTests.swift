@@ -257,4 +257,27 @@ struct SparkConnectClientTests {
     }
     await client.stop()
   }
+
+  @Test
+  func getHintWithIntegers() async throws {
+    let parameters = SparkConnectClient.getHint(
+      Relation(), "rebalance",
+      [Int64(10), 10, Int64(3_000_000_000), -3_000_000_000]
+    ).root.hint.parameters.map { $0.literal.literalType }
+    #expect(parameters[0] == .integer(10))
+    #expect(parameters[1] == .integer(10))
+    #expect(parameters[2] == .long(3_000_000_000))
+    #expect(parameters[3] == .long(-3_000_000_000))
+  }
+
+  @Test
+  func getHintWithOtherTypes() async throws {
+    let parameters = SparkConnectClient.getHint(
+      Relation(), "x", [1.5, Float(2.5), UInt(1), [1, 2]]
+    ).root.hint.parameters.map { $0.literal.literalType }
+    #expect(parameters[0] == .double(1.5))
+    #expect(parameters[1] == .float(2.5))
+    #expect(parameters[2] == .string("1"))
+    #expect(parameters[3] == .string("[1, 2]"))
+  }
 }
