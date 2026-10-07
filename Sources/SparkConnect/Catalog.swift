@@ -229,7 +229,7 @@ public actor Catalog: Sendable {
     return try await df.collect().map {
       try Database(
         name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String,
-        locationUri: $0[3] as! String)
+        locationUri: ($0[3] as? String) ?? "")
     }
   }
 
@@ -247,7 +247,7 @@ public actor Catalog: Sendable {
     return try await df.collect().map {
       try Database(
         name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String,
-        locationUri: $0[3] as! String)
+        locationUri: ($0[3] as? String) ?? "")
     }.firstOrThrow()
   }
 
@@ -538,7 +538,7 @@ public actor Catalog: Sendable {
         catalog: $0[1] as? String,
         namespace: $0[2] as? [String],
         description: $0[3] as? String,
-        className: $0[4] as! String,
+        className: ($0[4] as? String) ?? "",
         isTemporary: $0[5] as! Bool)
     }.firstOrThrow()
   }
@@ -563,7 +563,7 @@ public actor Catalog: Sendable {
         catalog: $0[1] as? String,
         namespace: $0[2] as? [String],
         description: $0[3] as? String,
-        className: $0[4] as! String,
+        className: ($0[4] as? String) ?? "",
         isTemporary: $0[5] as! Bool)
     }.firstOrThrow()
   }
