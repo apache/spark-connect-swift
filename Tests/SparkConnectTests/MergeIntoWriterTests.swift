@@ -22,8 +22,9 @@ import FoundationEssentials
 #else
 import Foundation
 #endif
-import SparkConnect
 import Testing
+
+@testable import SparkConnect
 
 /// A test suite for `MergeIntoWriter`
 /// Since this requires Apache Spark 4 with Iceberg support (SPARK-48794), this suite only tests syntaxes.
@@ -102,5 +103,25 @@ struct MergeIntoWriterTests {
       }
     })
     await spark.stop()
+  }
+
+  @Test
+  func updateAssignments() async throws {
+    let spark = try SparkSession("sc://localhost")
+    let mergeInto = try await spark.range(1).mergeInto("t", "true")
+    _ = await mergeInto.whenMatched().update(map: ["t.v": "s.v"])
+    _ = await mergeInto.whenNotMatchedBySource("t.v > 0").update(map: ["t.v": "0"])
+    let command = await mergeInto.mergeIntoTableCommand
+    #expect(command.matchActions.count == 1)
+    #expect(command.notMatchedBySourceActions.count == 1)
+    for (action, value) in [
+      (command.matchActions[0].mergeAction, "s.v"),
+      (command.notMatchedBySourceActions[0].mergeAction, "0"),
+    ] {
+      #expect(action.actionType == .update)
+      #expect(action.assignments.count == 1)
+      #expect(action.assignments.first?.key.expressionString.expression == "t.v")
+      #expect(action.assignments.first?.value.expressionString.expression == value)
+    }
   }
 }

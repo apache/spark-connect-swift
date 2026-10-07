@@ -216,7 +216,8 @@ public actor MergeIntoWriter {
   public func update(_ condition: String?, _ map: [String: String], _ notMatchedBySource: Bool)
     -> MergeIntoWriter
   {
-    appendUpdateDeleteAction(buildMergeAction(ActionType.update, condition), notMatchedBySource)
+    appendUpdateDeleteAction(
+      buildMergeAction(ActionType.update, condition, map), notMatchedBySource)
   }
 
   public func delete(_ condition: String?, _ notMatchedBySource: Bool) -> MergeIntoWriter {
