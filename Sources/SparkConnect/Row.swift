@@ -353,6 +353,7 @@ public struct Row: Sendable, Equatable {
   /// - Returns: A `TimestampNanos` value of the field.
   /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range, or
   /// `SparkConnectError.InvalidType` if the value is `nil` or not convertible to `TimestampNanos`.
+  /// A `Date` value is rounded to the nearest microsecond.
   public func getAsTimestampNanos(_ i: Int) throws -> TimestampNanos {
     if i < 0 || i >= self.length {
       throw SparkConnectError.InvalidArgument
@@ -364,7 +365,11 @@ public struct Row: Sendable, Equatable {
       return ts
     }
     if let date = raw as? Date {
-      return TimestampNanos(epochNanos: Int64((date.timeIntervalSince1970 * 1_000_000_000).rounded()))
+      // `Date` is not precise enough for nanoseconds, so round to the nearest microsecond.
+      guard let epochMicros = Int64(exactly: (date.timeIntervalSince1970 * 1_000_000).rounded()) else {
+        throw SparkConnectError.InvalidType
+      }
+      return TimestampNanos(epochMicros: epochMicros)!
     }
     throw SparkConnectError.InvalidType
   }
@@ -420,7 +425,7 @@ public struct Row: Sendable, Equatable {
       } else if let a = x as? Bool, let b = y as? Bool {
         return a == b
       } else if let a = x as? any FixedWidthInteger, let b = y as? any FixedWidthInteger {
-        return Int64(a) == Int64(b)
+        return Int128(a) == Int128(b)
       } else if let a = x as? Float, let b = y as? Float {
         return a == b
       } else if let a = x as? Double, let b = y as? Double {
@@ -440,7 +445,7 @@ public struct Row: Sendable, Equatable {
       } else if let a = x as? [Bool], let b = y as? [Bool] {
         return a == b
       } else if let a = x as? [any FixedWidthInteger], let b = y as? [any FixedWidthInteger] {
-        return a.map { Int64($0) } == b.map { Int64($0) }
+        return a.map { Int128($0) } == b.map { Int128($0) }
       } else if let a = x as? [Float], let b = y as? [Float] {
         return a == b
       } else if let a = x as? [Double], let b = y as? [Double] {

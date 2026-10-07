@@ -217,6 +217,21 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectTimestampAsTimestampNanos() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let expected = [
+      ("TIMESTAMP_NTZ'0001-01-01 00:00:00'", Int64(-62_135_596_800_000_000)),
+      ("TIMESTAMP_NTZ'2026-01-01 00:00:00.999999'", Int64(1_767_225_600_999_999)),
+      ("TIMESTAMP_NTZ'9999-12-31 00:00:00'", Int64(253_402_214_400_000_000)),
+    ]
+    for pair in expected {
+      let row = try await spark.sql("SELECT \(pair.0)").collect()[0]
+      #expect(try row.getAsTimestampNanos(0) == TimestampNanos(epochMicros: pair.1))
+    }
+    await spark.stop()
+  }
+
+  @Test
   func collectTimestampNanos() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.3") {

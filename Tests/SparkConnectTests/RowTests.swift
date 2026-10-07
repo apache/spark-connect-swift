@@ -446,6 +446,30 @@ struct RowTests {
   }
 
   @Test
+  func getAsTimestampNanosOutOfInt64NanosRange() throws {
+    // 9999-12-31 00:00:00 UTC and 0001-01-01 00:00:00 UTC
+    let maxDate = Date(timeIntervalSince1970: 253_402_214_400)
+    let minDate = Date(timeIntervalSince1970: -62_135_596_800)
+    let row = Row(maxDate, minDate, Date(timeIntervalSince1970: .infinity))
+    #expect(try row.getAsTimestampNanos(0) == TimestampNanos(epochMicros: 253_402_214_400_000_000))
+    #expect(try row.getAsTimestampNanos(1) == TimestampNanos(epochMicros: -62_135_596_800_000_000))
+    #expect(throws: SparkConnectError.InvalidType) {
+      try row.getAsTimestampNanos(2)
+    }
+  }
+
+  @Test
+  func getAsTimestampNanosRoundsDateToMicroseconds() throws {
+    let row = Row(
+      Date(timeIntervalSince1970: 1_700_000_000.000_001),
+      Date(timeIntervalSince1970: 1_700_000_000.999_999),
+      Date(timeIntervalSince1970: -1.000_001))
+    #expect(try row.getAsTimestampNanos(0) == TimestampNanos(epochMicros: 1_700_000_000_000_001))
+    #expect(try row.getAsTimestampNanos(1) == TimestampNanos(epochMicros: 1_700_000_000_999_999))
+    #expect(try row.getAsTimestampNanos(2) == TimestampNanos(epochMicros: -1_000_001))
+  }
+
+  @Test
   func getAsDecimal() throws {
     let dec = Decimal(12.34)
     let row = Row(
@@ -573,6 +597,23 @@ struct RowTests {
     #expect([Row(1)] == [Row(1)])
     #expect([Row(1), Row(2)] == [Row(1), Row(2)])
     #expect([Row(1), Row(2)] != [Row(1), Row(3)])
+  }
+
+  @Test
+  func compareUInt64() {
+    #expect(Row(UInt64.max) == Row(UInt64.max))
+    #expect(Row(UInt64.max) != Row(UInt64.max - 1))
+    #expect(Row(UInt64.max) != Row(-1))
+    #expect(Row(UInt64(1)) == Row(1))
+    #expect(Row([UInt64.max]) == Row([UInt64.max]))
+    #expect(Row([UInt64.max]) != Row([-1]))
+  }
+
+  @Test
+  func compareData() {
+    #expect(Row(Data([1, 2])) == Row(Data([1, 2])))
+    #expect(Row(Data([1, 2])) != Row(Data([1, 3])))
+    #expect(Row(Data()) != Row(nil))
   }
 
   @Test
