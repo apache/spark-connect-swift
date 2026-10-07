@@ -23,16 +23,23 @@ import Foundation
 #endif
 
 public struct StreamingQueryException: Sendable {
-  let exceptionMessage: String
-  let errorClass: String
-  let stackTrace: String
+  /// The exception message as a string.
+  public let exceptionMessage: String
+  /// The error class of the exception.
+  public let errorClass: String
+  /// The stack trace of the exception.
+  public let stackTrace: String
 }
 
 public struct StreamingQueryStatus: Sendable {
-  let statusMessage: String
-  let isDataAvailable: Bool
-  let isTriggerActive: Bool
-  let isActive: Bool
+  /// A human-readable description of what the query is currently doing.
+  public let statusMessage: String
+  /// Whether there is new data available to be processed.
+  public let isDataAvailable: Bool
+  /// Whether the trigger is actively firing.
+  public let isTriggerActive: Bool
+  /// Whether the query is actively running.
+  public let isActive: Bool
 }
 
 /// A handle to a query that is executing continuously in the background as new data arrives.

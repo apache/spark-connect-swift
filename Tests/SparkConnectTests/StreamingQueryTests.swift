@@ -94,6 +94,43 @@ struct StreamingQueryTests {
   }
 
   @Test
+  func status() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+
+    // Prepare directories
+    let input = "/tmp/input-" + UUID().uuidString
+    let checkpoint = "/tmp/checkpoint-" + UUID().uuidString
+    let output = "/tmp/output-" + UUID().uuidString
+    try await spark.range(2025).write.orc(input)
+
+    // Start a streaming query
+    let query =
+      try await spark
+      .readStream
+      .schema("id LONG")
+      .orc(input)
+      .writeStream
+      .option("checkpointLocation", checkpoint)
+      .outputMode("append")
+      .format("orc")
+      .trigger(Trigger.ProcessingTime(1000))
+      .start(output)
+
+    let status = try await query.status()
+    #expect(status.isActive)
+    #expect(status.statusMessage.isEmpty == false)
+
+    try await query.stop()
+    let stoppedStatus = try await query.status()
+    #expect(stoppedStatus.isActive == false)
+    #expect(stoppedStatus.isDataAvailable == false)
+    #expect(stoppedStatus.isTriggerActive == false)
+    #expect(stoppedStatus.statusMessage == "Stopped")
+
+    await spark.stop()
+  }
+
+  @Test
   func progress() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
 
