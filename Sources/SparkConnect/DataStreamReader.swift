@@ -144,7 +144,9 @@ public actor DataStreamReader: Sendable {
     self.paths = paths
 
     var dataSource = DataSource()
-    dataSource.format = self.source
+    if !self.source.isEmpty {
+      dataSource.format = self.source
+    }
     dataSource.paths = self.paths
     dataSource.options = self.extraOptions.toStringDictionary()
     if let userSpecifiedSchemaDDL = self.userSpecifiedSchemaDDL {

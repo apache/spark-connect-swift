@@ -86,6 +86,18 @@ struct DataStreamTests {
   }
 
   @Test
+  func loadWithoutFormat() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let input = "/tmp/input-" + UUID().uuidString
+    try await spark.range(1).write.parquet(input)
+
+    let df = try await spark.readStream.schema("id LONG").load(input)
+    #expect(try await df.isStreaming())
+    #expect(try await df.columns == ["id"])
+    await spark.stop()
+  }
+
+  @Test
   func startConcurrently() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = await spark.readStream.format("rate").load()

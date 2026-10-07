@@ -124,6 +124,14 @@ struct DataFrameReaderTests {
   }
 
   @Test
+  func loadWithoutFormat() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let path = "../examples/src/main/resources/users.parquet"
+    #expect(try await spark.read.load(path).count() == 2)
+    await spark.stop()
+  }
+
+  @Test
   func table() async throws {
     let tableName = "TABLE_" + UUID().uuidString.replacingOccurrences(of: "-", with: "")
     let spark = try await SparkSession.builder.getOrCreate()
