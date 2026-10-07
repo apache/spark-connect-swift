@@ -151,6 +151,7 @@ struct CreateDataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     let df = try await spark.createDataFrame([[Data([1, 2, 3])], [nil]], "a BINARY")
     #expect(try await df.count() == 2)
+    #expect(try await df.collect() == [Row(Data([1, 2, 3])), Row(nil)])
     await spark.stop()
   }
 

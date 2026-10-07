@@ -435,6 +435,8 @@ public struct Row: Sendable, Equatable {
         return a == b
       } else if let a = x as? String, let b = y as? String {
         return a == b
+      } else if let a = x as? Data, let b = y as? Data {
+        return a == b
       } else if let a = x as? [Bool], let b = y as? [Bool] {
         return a == b
       } else if let a = x as? [any FixedWidthInteger], let b = y as? [any FixedWidthInteger] {

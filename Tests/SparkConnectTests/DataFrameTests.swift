@@ -381,6 +381,15 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectBinary() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql("SELECT X'FF00FE' AS b, CAST(NULL AS BINARY) AS n").collect()
+    #expect(rows == [Row(Data([0xFF, 0x00, 0xFE]), nil)])
+    #expect(try rows[0].get(0) as? Data == Data([0xFF, 0x00, 0xFE]))
+    await spark.stop()
+  }
+
+  @Test
   func selectNone() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let emptySchema = try await spark.range(1).select().schema

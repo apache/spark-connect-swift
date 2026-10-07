@@ -172,11 +172,11 @@ extension DataFrame {
                 values.append(TimestampNanos(epochNanos: timestamp))
               }
             case ArrowType.ArrowBinary:
-              guard let binaryArray = array as? AsString else {
+              guard let binaryArray = array as? BinaryArray else {
                 throw SparkConnectError.invalidArrowData(
                   SparkConnectError.Details(message: "Invalid Arrow `binary` column."))
               }
-              values.append(binaryArray.asString(i).utf8)
+              values.append(binaryArray[i])
             case .complexInfo(.strct):
               guard let structArray = array as? AsString else {
                 throw SparkConnectError.invalidArrowData(
