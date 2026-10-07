@@ -110,6 +110,30 @@ struct CatalogTests {
   }
 
   @Test
+  func listAndGetDatabaseWithoutLocation() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let catalog = "derby"
+    try await spark.conf.set(
+      "spark.sql.catalog.\(catalog)",
+      "org.apache.spark.sql.execution.datasources.v2.jdbc.JDBCTableCatalog")
+    try await spark.conf.set(
+      "spark.sql.catalog.\(catalog).url", "jdbc:derby:memory:\(UUID().uuidString);create=true")
+    try await spark.conf.set(
+      "spark.sql.catalog.\(catalog).driver", "org.apache.derby.jdbc.EmbeddedDriver")
+    try await spark.catalog.setCurrentCatalog(catalog)
+
+    let dbs = try await spark.catalog.listDatabases(pattern: "APP")
+    #expect(dbs.count == 1)
+    #expect(dbs[0].name == "APP")
+    #expect(dbs[0].catalog == catalog)
+    #expect(dbs[0].locationUri == "")
+
+    let db = try await spark.catalog.getDatabase("APP")
+    #expect(db == dbs[0])
+    await spark.stop()
+  }
+
+  @Test
   func createDatabase() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     if await isSparkVersionAtLeast(spark.version, "4.2") {
@@ -377,6 +401,16 @@ struct CatalogTests {
     try await #require(throws: (any Error).self) {
       try await spark.catalog.getFunction("default", "non_exist_function")
     }
+    await spark.stop()
+  }
+
+  @Test
+  func getFunctionWithoutClassName() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let function = try await spark.catalog.getFunction("case")
+    #expect(function.name == "case")
+    #expect(function.isTemporary)
+    #expect(function.className == "")
     await spark.stop()
   }
 
