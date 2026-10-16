@@ -29,7 +29,8 @@ public func call_function(_ funcName: String, _ cols: Column...) -> Column {
   return callFunction(funcName, cols)
 }
 
-/// Calls a user-defined function registered by SQL `CREATE FUNCTION`.
+/// Calls a user-defined function registered by SQL `CREATE FUNCTION` or
+/// ``UDFRegistration/registerJava(_:_:_:)``.
 /// This is an alias of ``call_function(_:_:)``.
 /// - Parameters:
 ///   - udfName: A user-defined function name that follows the SQL identifier syntax

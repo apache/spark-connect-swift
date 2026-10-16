@@ -79,6 +79,10 @@ SparkConnect is a modern Swift library that provides a native interface to Apach
 - ``Function``
 - ``TablePartition``
 
+### User-Defined Functions
+
+- ``UDFRegistration``
+
 ### Streaming
 
 - ``DataStreamReader``

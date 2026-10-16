@@ -964,6 +964,22 @@ public actor SparkConnectClient {
     return plan
   }
 
+  /// Register a Java user-defined function as a SQL function.
+  func registerJava(_ name: String, _ className: String, _ returnType: DataType?) async throws {
+    var javaUDF = Spark_Connect_JavaUDF()
+    javaUDF.className = className
+    if let returnType {
+      javaUDF.outputType = returnType.toProtoDataType
+    }
+    javaUDF.aggregate = false
+    var function = Spark_Connect_CommonInlineUserDefinedFunction()
+    function.functionName = name
+    function.javaUdf = javaUDF
+    var command = Command()
+    command.registerFunction = function
+    try await execute(self.sessionID!, command)
+  }
+
   /// Add a tag to be assigned to all the operations started by this thread in this session.
   /// - Parameter tag: The tag to be added. Cannot contain ',' (comma) character or be an empty string.
   public func addTag(tag: String) throws {

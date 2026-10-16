@@ -126,6 +126,11 @@ public actor SparkSession {
     return Catalog(spark: self)
   }
 
+  /// Interface through which the user may register user-defined functions.
+  public var udf: UDFRegistration {
+    return UDFRegistration(spark: self)
+  }
+
   /// Stop the current client.
   public func stop() async {
     await client.stop()
