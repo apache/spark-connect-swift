@@ -59,7 +59,7 @@ extension DataFrame {
             return nil
           }
           defer { chunks.removeAll() }
-          return chunks.count == 1 ? chunks[0] : chunks.reduce(into: Data()) { $0.append($1) }
+          return chunks.count == 1 ? chunks[0] : Data(chunks.joined())
         })
       {
         let IPC_CONTINUATION_TOKEN = Int32(-1)
@@ -113,6 +113,10 @@ extension DataFrame {
           batches.append(contentsOf: arrowResult.batches)
         }
       }
+    }
+    // A batch whose chunks are not all received must not be dropped silently.
+    guard chunks.withLock({ $0.isEmpty }) else {
+      throw SparkConnectError.InvalidArrowData
     }
     return batches.withLock { $0 }
   }

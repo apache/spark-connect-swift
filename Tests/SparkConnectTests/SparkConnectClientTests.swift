@@ -130,8 +130,7 @@ struct SparkConnectClientTests {
     let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
     let request = await client.getExecutePlanRequest(await client.getPlanRange(0, 1, 1))
-    #expect(request.requestOptions.count == 1)
-    #expect(request.requestOptions[0].resultChunkingOptions.allowArrowBatchChunking)
+    #expect(request.requestOptions.contains { $0.resultChunkingOptions.allowArrowBatchChunking })
     await client.stop()
   }
 

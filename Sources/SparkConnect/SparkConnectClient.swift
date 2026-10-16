@@ -28,7 +28,7 @@ import Synchronization
 
 /// Conceptually the remote spark session that communicates with the server
 public actor SparkConnectClient {
-  /// The default `grpc_max_message_size`, 128 MiB, which is the same with Scala and Python clients.
+  /// The default `grpc_max_message_size`, 128 MiB, which is the same as Scala and Python clients.
   static let DEFAULT_GRPC_MAX_MESSAGE_SIZE = 128 * 1024 * 1024
 
   var clientType: String = "swift"
@@ -113,6 +113,8 @@ public actor SparkConnectClient {
     }
     self.maxMessageSize = maxMessageSize
     // An empty service name is the default configuration for all services and methods.
+    // Note that grpc-swift-nio-transport limits inbound response messages by
+    // `maxRequestMessageBytes`, so both limits are required.
     self.serviceConfig = ServiceConfig(methodConfig: [
       MethodConfig(
         names: [MethodConfig.Name(service: "")],
