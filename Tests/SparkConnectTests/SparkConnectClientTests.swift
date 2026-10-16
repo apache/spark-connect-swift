@@ -73,8 +73,10 @@ struct SparkConnectClientTests {
   @Test
   func parameterWithoutGrpcMaxMessageSize() async throws {
     let client = try SparkConnectClient(remote: "sc://host1:123")
-    #expect(await client.maxMessageSize == nil)
-    #expect(await client.serviceConfig.methodConfig.isEmpty)
+    #expect(await client.maxMessageSize == 134_217_728)
+    let methodConfig = try #require(await client.serviceConfig.methodConfig.first)
+    #expect(methodConfig.maxRequestMessageBytes == 134_217_728)
+    #expect(methodConfig.maxResponseMessageBytes == 134_217_728)
     await client.stop()
   }
 
@@ -127,6 +129,15 @@ struct SparkConnectClientTests {
   func connect() async throws {
     let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await client.connect(UUID().uuidString)
+    await client.stop()
+  }
+
+  @Test
+  func resultChunking() async throws {
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
+    try await client.connect(UUID().uuidString)
+    let request = await client.getExecutePlanRequest(await client.getPlanRange(0, 1, 1))
+    #expect(request.requestOptions.contains { $0.resultChunkingOptions.allowArrowBatchChunking })
     await client.stop()
   }
 

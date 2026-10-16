@@ -28,6 +28,9 @@ import Synchronization
 
 /// Conceptually the remote spark session that communicates with the server
 public actor SparkConnectClient {
+  /// The default `grpc_max_message_size`, 128 MiB, which is the same as Scala and Python clients.
+  static let DEFAULT_GRPC_MAX_MESSAGE_SIZE = 128 * 1024 * 1024
+
   var clientType: String = "swift"
   let url: URL
   let host: String
@@ -35,7 +38,7 @@ public actor SparkConnectClient {
   let token: String?
   var useTLS: Bool = false
   let transportSecurity: HTTP2ClientTransport.Posix.TransportSecurity
-  let maxMessageSize: Int?
+  let maxMessageSize: Int
   let serviceConfig: ServiceConfig
   var intercepters: [ClientInterceptor] = []
   let userContext: UserContext
@@ -62,7 +65,7 @@ public actor SparkConnectClient {
     self.host = url.host() ?? "localhost"
     self.port = self.url.port ?? 15002
     var token: String? = nil
-    var maxMessageSize: Int? = nil
+    var maxMessageSize = Self.DEFAULT_GRPC_MAX_MESSAGE_SIZE
     let processInfo = ProcessInfo.processInfo
     #if os(macOS) || os(Linux)
       var userName = processInfo.environment["SPARK_USER"] ?? processInfo.userName
@@ -113,17 +116,15 @@ public actor SparkConnectClient {
       self.transportSecurity = .plaintext
     }
     self.maxMessageSize = maxMessageSize
-    if let maxMessageSize {
-      // An empty service name is the default configuration for all services and methods.
-      self.serviceConfig = ServiceConfig(methodConfig: [
-        MethodConfig(
-          names: [MethodConfig.Name(service: "")],
-          maxRequestMessageBytes: maxMessageSize,
-          maxResponseMessageBytes: maxMessageSize)
-      ])
-    } else {
-      self.serviceConfig = ServiceConfig()
-    }
+    // An empty service name is the default configuration for all services and methods.
+    // Note that grpc-swift-nio-transport limits inbound response messages by
+    // `maxRequestMessageBytes`, so both limits are required.
+    self.serviceConfig = ServiceConfig(methodConfig: [
+      MethodConfig(
+        names: [MethodConfig.Name(service: "")],
+        maxRequestMessageBytes: maxMessageSize,
+        maxResponseMessageBytes: maxMessageSize)
+    ])
     self.userContext = userName.toUserContext
   }
 
@@ -490,6 +491,12 @@ public actor SparkConnectClient {
     request.operationID = UUID().uuidString
     request.tags = Array(tags)
     request.plan = plan
+    // Allow the server to split large Arrow batches into chunks which `DataFrame` assembles.
+    var chunkingOptions = ResultChunkingOptions()
+    chunkingOptions.allowArrowBatchChunking = true
+    var option = ExecutePlanRequest.RequestOption()
+    option.resultChunkingOptions = chunkingOptions
+    request.requestOptions.append(option)
     return request
   }
 

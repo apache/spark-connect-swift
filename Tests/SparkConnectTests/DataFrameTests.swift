@@ -22,7 +22,7 @@ import FoundationEssentials
 #else
 import Foundation
 #endif
-import SparkConnect
+@testable import SparkConnect
 import Testing
 
 /// A test suite for `DataFrame`
@@ -700,6 +700,21 @@ struct DataFrameTests {
     await #expect(throws: SparkConnectError.InvalidArgument) { try await df.randomSplit([]) }
     await #expect(throws: SparkConnectError.InvalidArgument) {
       try await df.randomSplit([1.0, -1.0])
+    }
+    await spark.stop()
+  }
+
+  @Test
+  func resultChunking() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
+      let df = try await spark.range(10000).selectExpr("id", "repeat('a', 100) AS s")
+      let expected = try await df.collect()
+      // Force the server to split each Arrow batch into chunks.
+      try await spark.conf.set("spark.connect.session.resultChunking.maxChunkSize", "1024")
+      #expect(try await df.collect() == expected)
+      #expect(try await df.executeAndCount() == 10000)
+      try await spark.conf.unset("spark.connect.session.resultChunking.maxChunkSize")
     }
     await spark.stop()
   }

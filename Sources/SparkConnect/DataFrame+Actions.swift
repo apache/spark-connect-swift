@@ -38,6 +38,8 @@ extension DataFrame {
   /// Batches are local to each call since concurrent actions can interleave on this actor.
   private func execute() async throws -> [RecordBatch] {
     let batches = Mutex([RecordBatch]())
+    // The chunks of the Arrow batch being received. The server splits a large batch into chunks.
+    let chunks = Mutex([Data]())
 
     try await spark.client.executePlanWithReattach(spark.client.getExecutePlanRequest(plan)) {
       m in
@@ -45,8 +47,25 @@ extension DataFrame {
         // The original schema should arrive before ArrowBatches
         try await self.setSchema(DataType(m.schema))
       }
-      let ipcStreamBytes = m.arrowBatch.data
-      if !ipcStreamBytes.isEmpty && m.arrowBatch.rowCount > 0 {
+      if !m.arrowBatch.data.isEmpty && m.arrowBatch.rowCount > 0,
+        let ipcStreamBytes = try chunks.withLock({ chunks -> Data? in
+          guard m.arrowBatch.chunkIndex == chunks.count else {
+            throw SparkConnectError.InvalidArrowData
+          }
+          chunks.append(m.arrowBatch.data)
+          // `numChunksInBatch` is missing when the batch is not chunked.
+          guard m.arrowBatch.numChunksInBatch == 0 || chunks.count == m.arrowBatch.numChunksInBatch
+          else {
+            return nil
+          }
+          defer { chunks.removeAll() }
+          return chunks.count == 1
+            ? chunks[0]
+            : chunks.reduce(into: Data(capacity: chunks.reduce(0) { $0 + $1.count })) {
+              $0.append($1)
+            }
+        })
+      {
         let IPC_CONTINUATION_TOKEN = Int32(-1)
         let totalSize = Int64(ipcStreamBytes.count)
         // Schema
@@ -98,6 +117,10 @@ extension DataFrame {
           batches.append(contentsOf: arrowResult.batches)
         }
       }
+    }
+    // A batch whose chunks are not all received must not be dropped silently.
+    guard chunks.withLock({ $0.isEmpty }) else {
+      throw SparkConnectError.InvalidArrowData
     }
     return batches.withLock { $0 }
   }
@@ -249,7 +272,10 @@ extension DataFrame {
 
     try await spark.client.executePlanWithReattach(spark.client.getExecutePlanRequest(plan)) {
       m in
-      counter.add(m.arrowBatch.rowCount, ordering: .relaxed)
+      // `rowCount` is the same for all chunks of a batch.
+      if m.arrowBatch.chunkIndex == 0 {
+        counter.add(m.arrowBatch.rowCount, ordering: .relaxed)
+      }
     }
     return counter.load(ordering: .relaxed)
   }
