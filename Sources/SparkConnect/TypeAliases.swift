@@ -62,6 +62,7 @@ typealias Relation = Spark_Connect_Relation
 typealias ReleaseExecuteRequest = Spark_Connect_ReleaseExecuteRequest
 typealias Repartition = Spark_Connect_Repartition
 typealias RepartitionByExpression = Spark_Connect_RepartitionByExpression
+typealias ResultChunkingOptions = Spark_Connect_ResultChunkingOptions
 typealias Sample = Spark_Connect_Sample
 typealias SaveMode = Spark_Connect_WriteOperation.SaveMode
 typealias SetOperation = Spark_Connect_SetOperation
