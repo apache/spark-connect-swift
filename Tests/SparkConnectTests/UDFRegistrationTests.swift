@@ -32,12 +32,20 @@ struct UDFRegistrationTests {
   @Test
   func registerJavaWithUnknownClass() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
-    await #expect(throws: Error.self) {
+    let error = await #expect(throws: Error.self) {
       try await spark.udf.registerJava("java_udf", "org.apache.spark.NoSuchUDF", .string)
     }
-    await #expect(throws: Error.self) {
-      try await spark.udf.registerJava("java_udf", "org.apache.spark.NoSuchUDF")
+    #expect("\(String(describing: error))".contains("NoSuchUDF"))
+    await spark.stop()
+  }
+
+  @Test
+  func registerJavaWithoutUDFInterface() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let error = await #expect(throws: Error.self) {
+      try await spark.udf.registerJava("java_udf", "java.lang.String", .string)
     }
+    #expect("\(String(describing: error))".contains("NO_UDF_INTERFACE"))
     await spark.stop()
   }
 }

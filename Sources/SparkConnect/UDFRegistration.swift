@@ -26,8 +26,9 @@ public actor UDFRegistration: Sendable {
 
   /// Register a Java user-defined function as a SQL function.
   ///
-  /// The class must implement one of the `UDF1` ... `UDF22` interfaces and be available in the
-  /// server's classpath (e.g., via ``SparkSession/addArtifact(_:)-(URL)``).
+  /// The class must directly implement one of the `UDF0` ... `UDF22` interfaces (an interface
+  /// inherited from a superclass is not detected), have a public no-arg constructor, and be
+  /// available in the server's classpath (e.g., via ``SparkSession/addArtifact(_:)-(URL)``).
   ///
   /// ```swift
   /// try await spark.udf.registerJava("sconcat", "com.example.StringConcat", .string)

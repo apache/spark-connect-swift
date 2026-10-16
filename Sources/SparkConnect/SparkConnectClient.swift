@@ -954,10 +954,6 @@ public actor SparkConnectClient {
   }
 
   /// Register a Java user-defined function as a SQL function.
-  /// - Parameters:
-  ///   - name: The function name.
-  ///   - className: The fully qualified class name of the Java UDF.
-  ///   - returnType: The return type of the UDF. If `nil`, the server infers it via reflection.
   func registerJava(_ name: String, _ className: String, _ returnType: DataType?) async throws {
     var javaUDF = Spark_Connect_JavaUDF()
     javaUDF.className = className
