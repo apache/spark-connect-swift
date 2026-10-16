@@ -63,6 +63,10 @@ let csvDf = spark.read.csv("path/to/file.csv")
 
 - ``catalog``
 
+### User-Defined Functions
+
+- ``udf``
+
 ### Managing Operations
 
 - ``addTag(_:)``
