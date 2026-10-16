@@ -30,7 +30,9 @@ export SPARK_CONNECT_AUTHENTICATE_TOKEN=...
 
 The environment variable is used only when the connection string has no
 `token=` parameter. Since a bearer token sent over a plaintext connection can
-be intercepted, always combine token authentication with `use_ssl=true`.
+be intercepted, like the Python client, TLS is enabled automatically whenever a
+token is set, even without `use_ssl=true`. The only exception is `localhost`,
+which stays plaintext unless `use_ssl=true` is given.
 
 ## Certificate Validation
 

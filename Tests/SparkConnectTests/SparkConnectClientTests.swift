@@ -108,6 +108,13 @@ struct SparkConnectClientTests {
   }
 
   @Test
+  func tokenEnforcesTLS() async throws {
+    #expect(await (try SparkConnectClient(remote: "sc://host1:123/;token=abc")).useTLS)
+    #expect(await !(try SparkConnectClient(remote: "sc://localhost:123/;token=abc")).useTLS)
+    #expect(await (try SparkConnectClient(remote: "sc://localhost:123/;token=abc;use_ssl=true")).useTLS)
+  }
+
+  @Test
   func connectWithInvalidUUID() async throws {
     let client = try SparkConnectClient(remote: TEST_REMOTE)
     try await #require(throws: SparkConnectError.InvalidSessionID) {

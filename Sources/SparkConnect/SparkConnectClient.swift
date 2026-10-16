@@ -102,6 +102,10 @@ public actor SparkConnectClient {
     self.token = token ?? ProcessInfo.processInfo.environment["SPARK_CONNECT_AUTHENTICATE_TOKEN"]
     if let token = self.token {
       self.intercepters.append(BearerTokenInterceptor(token: token))
+      // Like the Python client, never send a token over plaintext except to `localhost`.
+      if self.host != "localhost" {
+        self.useTLS = true
+      }
     }
     if self.useTLS {
       self.transportSecurity = .tls
