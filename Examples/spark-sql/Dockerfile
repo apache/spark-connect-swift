@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM swift:6.4.0 AS builder
+FROM swift:6.4.1 AS builder
 
 WORKDIR /app
 
-ADD https://download.swift.org/swift-6.4.0-release/static-sdk/swift-6.4.0-RELEASE/swift-6.4.0-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz /tmp/swift-static-sdk.tar.gz
+ADD https://download.swift.org/swift-6.4.1-release/static-sdk/swift-6.4.1-RELEASE/swift-6.4.1-RELEASE_static-linux-0.1.0.artifactbundle.tar.gz /tmp/swift-static-sdk.tar.gz
 RUN swift sdk install /tmp/swift-static-sdk.tar.gz && \
     rm /tmp/swift-static-sdk.tar.gz
 
