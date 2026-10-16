@@ -120,6 +120,9 @@ struct StreamingQueryTests {
     #expect(status.isActive)
     #expect(status.statusMessage.isEmpty == false)
 
+    // Wait for the query to be initialized. Otherwise, the status message remains
+    // "Initializing sources" when the query is stopped during initialization.
+    try await query.processAllAvailable()
     try await query.stop()
     let stoppedStatus = try await query.status()
     #expect(stoppedStatus.isActive == false)
