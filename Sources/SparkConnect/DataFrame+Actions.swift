@@ -59,7 +59,11 @@ extension DataFrame {
             return nil
           }
           defer { chunks.removeAll() }
-          return chunks.count == 1 ? chunks[0] : Data(chunks.joined())
+          return chunks.count == 1
+            ? chunks[0]
+            : chunks.reduce(into: Data(capacity: chunks.reduce(0) { $0 + $1.count })) {
+              $0.append($1)
+            }
         })
       {
         let IPC_CONTINUATION_TOKEN = Int32(-1)

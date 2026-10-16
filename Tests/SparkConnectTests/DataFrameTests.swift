@@ -22,7 +22,7 @@ import FoundationEssentials
 #else
 import Foundation
 #endif
-import SparkConnect
+@testable import SparkConnect
 import Testing
 
 /// A test suite for `DataFrame`
@@ -713,8 +713,7 @@ struct DataFrameTests {
       // Force the server to split each Arrow batch into chunks.
       try await spark.conf.set("spark.connect.session.resultChunking.maxChunkSize", "1024")
       #expect(try await df.collect() == expected)
-      #expect(try await df.count() == 10000)
-      #expect(!(try await df.isEmpty()))
+      #expect(try await df.executeAndCount() == 10000)
       try await spark.conf.unset("spark.connect.session.resultChunking.maxChunkSize")
     }
     await spark.stop()
