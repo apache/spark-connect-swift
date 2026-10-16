@@ -110,6 +110,18 @@ struct SparkSessionTests {
   }
 
   @Test
+  func invalidSessionIDInConnectionString() throws {
+    for invalid in ["abc_def", "not-a-uuid", "\(UUID().uuidString)_suffix"] {
+      #expect(throws: SparkConnectError.InvalidSessionID) {
+        try SparkSession("sc://localhost/;session_id=\(invalid)")
+      }
+    }
+    let uuid = UUID().uuidString
+    let session = try SparkSession("sc://localhost/;session_id=\(uuid);use_ssl=false")
+    #expect(session.sessionID == uuid.lowercased())
+  }
+
+  @Test
   func closedSessionID() async throws {
     await SparkSession.builder.clear()
     let spark1 = try await SparkSession.builder.getOrCreate()

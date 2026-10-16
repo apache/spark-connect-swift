@@ -42,7 +42,7 @@ public actor SparkSession {
   /// Runtime configuration interface for Spark.
   public let conf: RuntimeConf
 
-  let regexSessionID = /;session_id=([a-zA-Z0-9-]+)/
+  let regexSessionID = /;session_id=([^;]*)/
 
   /// Create a session that uses the specified connection string and userID.
   /// - Parameters:
@@ -55,8 +55,12 @@ public actor SparkSession {
     // Since `Session ID` belongs to `SparkSession`, we handle this here.
     if let sessionID {
       self.sessionID = sessionID
-    } else if connection.contains(regexSessionID) {
-      self.sessionID = connection.firstMatch(of: regexSessionID)!.1.lowercased()
+    } else if let match = connection.firstMatch(of: regexSessionID) {
+      // Reject the whole value instead of silently truncating it, e.g., `abc_def` to `abc`.
+      guard let uuid = UUID(uuidString: String(match.1)) else {
+        throw SparkConnectError.InvalidSessionID
+      }
+      self.sessionID = uuid.uuidString.lowercased()
     } else {
       self.sessionID = UUID().uuidString.lowercased()
     }
