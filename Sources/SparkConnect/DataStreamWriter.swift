@@ -190,12 +190,7 @@ public actor DataStreamWriter: Sendable {
     // support `StreamingQueryListener` yet. Reference clients (PySpark/Scala) parse it and
     // post it to their listener bus, which is a no-op when no listener is registered.
 
-    let query = try await StreamingQuery(
-      UUID(uuidString: result.queryID.id)!,
-      UUID(uuidString: result.queryID.runID)!,
-      result.name,
-      self.df.sparkSession
-    )
+    let query = try await StreamingQuery(result.queryID, result.name, self.df.sparkSession)
 
     return query
   }
