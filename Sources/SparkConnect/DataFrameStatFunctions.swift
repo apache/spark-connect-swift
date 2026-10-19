@@ -96,8 +96,10 @@ public actor DataFrameStatFunctions: Sendable {
     let result = DataFrame(
       spark: await df.spark,
       plan: SparkConnectClient.getStatApproxQuantile(plan.root, cols, probabilities, relativeError))
-    let quantilesPerColumn = try await result.collect().firstOrThrow().get(0) as! [any Sendable]
-    return quantilesPerColumn.map { ($0 as! [any Sendable]).map { $0 as! Double } }
+    guard let quantiles = try await result.collect().firstOrThrow().get(0) as? [[Double]] else {
+      throw SparkConnectError.InvalidType
+    }
+    return quantiles
   }
 
   /// Returns a stratified sample without replacement based on the fraction given on each stratum.
@@ -145,11 +147,12 @@ public actor DataFrameStatFunctions: Sendable {
   // MARK: - Helpers
 
   /// Builds a single-value ``DataFrame`` from this ``DataFrame``'s plan using the given plan
-  /// builder, executes it, and returns the resulting `Double`.
+  /// builder, executes it, and returns the resulting `Double`. Throws
+  /// ``SparkConnectError/invalidType(_:)`` if the result is `NULL` or not a floating-point number.
   private func collectDouble(_ f: (Relation) -> Plan) async throws -> Double {
     let plan = await df.getPlan() as! Plan
     let result = DataFrame(spark: await df.spark, plan: f(plan.root))
-    return try await result.collect().firstOrThrow().get(0) as! Double
+    return try await result.collect().firstOrThrow().getAsDouble(0)
   }
 
   /// Builds a new ``DataFrame`` from this ``DataFrame``'s plan using the given plan builder.
