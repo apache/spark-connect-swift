@@ -294,8 +294,20 @@ public actor SparkConnectClient {
       request.userContext = userContext
       request.sessionID = self.sessionID!
       let response = try await service.config(request)
-      return response.pairs[0].value
+      return try Self.getConfValue(key, from: response)
     }
+  }
+
+  /// Extract the value of the given key from a `Get` response.
+  /// - Throws: ``SparkConnectError/sqlConfNotFound(_:)`` if the response has no pair.
+  static func getConfValue(
+    _ key: String, from response: Spark_Connect_ConfigResponse
+  ) throws -> String {
+    guard let pair = response.pairs.first else {
+      throw SparkConnectError.sqlConfNotFound(
+        .init(message: "The server returned no value for the configuration key '\(key)'."))
+    }
+    return pair.value
   }
 
   /// Create a ``ConfigRequest`` instance for `GetWithDefault` operation.
@@ -325,8 +337,8 @@ public actor SparkConnectClient {
       request.sessionID = self.sessionID!
       let response = try await service.config(request)
       let result =
-        if response.pairs[0].hasValue {
-          response.pairs[0].value
+        if let pair = response.pairs.first, pair.hasValue {
+          pair.value
         } else {
           value
         }
@@ -358,8 +370,8 @@ public actor SparkConnectClient {
       request.sessionID = self.sessionID!
       let response = try await service.config(request)
       let result: String? =
-        if response.pairs[0].hasValue {
-          response.pairs[0].value
+        if let pair = response.pairs.first, pair.hasValue {
+          pair.value
         } else {
           nil
         }
@@ -420,7 +432,7 @@ public actor SparkConnectClient {
       request.userContext = userContext
       request.sessionID = self.sessionID!
       let response = try await service.config(request)
-      return response.pairs[0].value == "true"
+      return response.pairs.first?.value == "true"
     }
   }
 

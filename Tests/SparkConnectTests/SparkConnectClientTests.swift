@@ -298,4 +298,17 @@ struct SparkConnectClientTests {
     #expect(parameters[2] == .string("1"))
     #expect(parameters[3] == .string("[1, 2]"))
   }
+
+  @Test
+  func getConfValue() throws {
+    var response = Spark_Connect_ConfigResponse()
+    #expect(throws: SparkConnectError.SqlConfNotFound) {
+      try SparkConnectClient.getConfValue("k", from: response)
+    }
+    var pair = Spark_Connect_KeyValue()
+    pair.key = "k"
+    pair.value = "v"
+    response.pairs = [pair]
+    #expect(try SparkConnectClient.getConfValue("k", from: response) == "v")
+  }
 }
