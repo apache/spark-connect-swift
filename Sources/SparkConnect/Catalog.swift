@@ -106,7 +106,7 @@ public actor Catalog: Sendable {
       catalog.catType = .currentCatalog(Spark_Connect_CurrentCatalog())
       return catalog
     })
-    return try await df.collect().firstOrThrow()[0] as! String
+    return try await df.collect().firstOrThrow().getAsString(0)
   }
 
   /// Sets the current default catalog in this session.
@@ -136,7 +136,7 @@ public actor Catalog: Sendable {
       return catalog
     })
     return try await df.collect().map {
-      try CatalogMetadata(name: $0[0] as! String, description: $0[1] as? String)
+      try CatalogMetadata(name: $0.getAsString(0), description: $0[1] as? String)
     }
   }
 
@@ -148,7 +148,7 @@ public actor Catalog: Sendable {
       catalog.catType = .currentDatabase(Spark_Connect_CurrentDatabase())
       return catalog
     })
-    return try await df.collect().firstOrThrow()[0] as! String
+    return try await df.collect().firstOrThrow().getAsString(0)
   }
 
   /// Sets the current default database in this session.
@@ -228,7 +228,7 @@ public actor Catalog: Sendable {
     })
     return try await df.collect().map {
       try Database(
-        name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String,
+        name: $0.getAsString(0), catalog: $0[1] as? String, description: $0[2] as? String,
         locationUri: ($0[3] as? String) ?? "")
     }
   }
@@ -246,7 +246,7 @@ public actor Catalog: Sendable {
     })
     return try await df.collect().map {
       try Database(
-        name: $0[0] as! String, catalog: $0[1] as? String, description: $0[2] as? String,
+        name: $0.getAsString(0), catalog: $0[1] as? String, description: $0[2] as? String,
         locationUri: ($0[3] as? String) ?? "")
     }.firstOrThrow()
   }
@@ -262,7 +262,7 @@ public actor Catalog: Sendable {
       catalog.catType = .databaseExists(databaseExists)
       return catalog
     })
-    return try await df.collect().firstOrThrow()[0] as! Bool
+    return try await df.collect().firstOrThrow().getAsBool(0)
   }
 
   /// Returns a list of tables in the given database (or the current database).
@@ -284,12 +284,12 @@ public actor Catalog: Sendable {
     })
     return try await df.collect().map {
       try SparkTable(
-        name: $0[0] as! String,
+        name: $0.getAsString(0),
         catalog: $0[1] as? String,
         namespace: $0[2] as? [String],
         description: $0[3] as? String,
-        tableType: $0[4] as! String,
-        isTemporary: $0[5] as! Bool)
+        tableType: ($0[4] as? String) ?? "",
+        isTemporary: $0.getAsBool(5))
     }
   }
 
@@ -315,12 +315,12 @@ public actor Catalog: Sendable {
     })
     return try await df.collect().map {
       try Function(
-        name: $0[0] as! String,
+        name: $0.getAsString(0),
         catalog: $0[1] as? String,
         namespace: $0[2] as? [String],
         description: $0[3] as? String,
         className: ($0[4] as? String) ?? "",
-        isTemporary: $0[5] as! Bool)
+        isTemporary: $0.getAsBool(5))
     }
   }
 
@@ -345,12 +345,12 @@ public actor Catalog: Sendable {
     })
     return try await df.collect().map {
       try SparkTable(
-        name: $0[0] as! String,
+        name: $0.getAsString(0),
         catalog: $0[1] as? String,
         namespace: $0[2] as? [String],
         description: $0[3] as? String,
-        tableType: $0[4] as! String,
-        isTemporary: $0[5] as! Bool)
+        tableType: ($0[4] as? String) ?? "",
+        isTemporary: $0.getAsBool(5))
     }
   }
 
@@ -405,12 +405,12 @@ public actor Catalog: Sendable {
     })
     return try await df.collect().map {
       try SparkTable(
-        name: $0[0] as! String,
+        name: $0.getAsString(0),
         catalog: $0[1] as? String,
         namespace: $0[2] as? [String],
         description: $0[3] as? String,
-        tableType: $0[4] as! String,
-        isTemporary: $0[5] as! Bool)
+        tableType: ($0[4] as? String) ?? "",
+        isTemporary: $0.getAsBool(5))
     }.firstOrThrow()
   }
 
@@ -427,7 +427,7 @@ public actor Catalog: Sendable {
     })
     var properties: [String: String] = [:]
     for row in try await df.collect() {
-      properties[try row.get(0) as! String] = try row.get(1) as? String
+      properties[try row.getAsString(0)] = try row.get(1) as? String
     }
     return properties
   }
@@ -448,7 +448,7 @@ public actor Catalog: Sendable {
       catalog.catType = .getCreateTableString(getCreateTableString)
       return catalog
     })
-    return try await df.collect().firstOrThrow()[0] as! String
+    return try await df.collect().firstOrThrow().getAsString(0)
   }
 
   /// Check if the table or view with the specified name exists. This can either be a temporary
@@ -515,7 +515,7 @@ public actor Catalog: Sendable {
       return catalog
     })
     return try await df.collect().map {
-      try TablePartition(partition: $0[0] as! String)
+      try TablePartition(partition: $0.getAsString(0))
     }
   }
 
@@ -534,12 +534,12 @@ public actor Catalog: Sendable {
     })
     return try await df.collect().map {
       try Function(
-        name: $0[0] as! String,
+        name: $0.getAsString(0),
         catalog: $0[1] as? String,
         namespace: $0[2] as? [String],
         description: $0[3] as? String,
         className: ($0[4] as? String) ?? "",
-        isTemporary: $0[5] as! Bool)
+        isTemporary: $0.getAsBool(5))
     }.firstOrThrow()
   }
 
@@ -559,12 +559,12 @@ public actor Catalog: Sendable {
     })
     return try await df.collect().map {
       try Function(
-        name: $0[0] as! String,
+        name: $0.getAsString(0),
         catalog: $0[1] as? String,
         namespace: $0[2] as? [String],
         description: $0[3] as? String,
         className: ($0[4] as? String) ?? "",
-        isTemporary: $0[5] as! Bool)
+        isTemporary: $0.getAsBool(5))
     }.firstOrThrow()
   }
 
