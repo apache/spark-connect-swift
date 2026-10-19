@@ -67,10 +67,10 @@ struct DataFrameStatFunctionsTests {
     #expect(abs(try await df.stat.cov("id", "value") - 5.0) < 1e-12)
     #expect(abs(try await df.stat.corr("id", "value") - 0.5120915564991891) < 1e-12)
     // An empty `DataFrame` or a single row must not crash: `cov` is 0 and `corr` is NaN.
-    let empty = df.where("id < 0")
+    let empty = await df.where("id < 0")
     #expect(try await empty.stat.cov("id", "value") == 0.0)
     #expect(try await empty.stat.corr("id", "value").isNaN)
-    let single = df.where("id = 1")
+    let single = await df.where("id = 1")
     #expect(try await single.stat.cov("id", "value") == 0.0)
     #expect(try await single.stat.corr("id", "value").isNaN)
     await spark.stop()
@@ -87,7 +87,7 @@ struct DataFrameStatFunctionsTests {
     let quantiles = try await df.stat.approxQuantile(["c1", "c2"], [0.0, 0.5, 1.0], 0.0)
     #expect(quantiles == [[1.0, 3.0, 5.0], [10.0, 30.0, 50.0]])
     // An empty `DataFrame` yields an empty list of quantiles per column instead of crashing.
-    let empty = df.where("c1 < 0")
+    let empty = await df.where("c1 < 0")
     #expect(try await empty.stat.approxQuantile("c1", [0.5], 0.0) == [])
     #expect(try await empty.stat.approxQuantile(["c1", "c2"], [0.5], 0.0) == [[], []])
     await spark.stop()
