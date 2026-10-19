@@ -70,6 +70,19 @@ public actor StreamingQuery: Sendable {
     self.sparkSession = sparkSession
   }
 
+  /// Creates a query from the ids sent by the server.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the server sent a non-UUID id or run id.
+  init(
+    _ queryID: StreamingQueryInstanceId, _ name: String, _ sparkSession: SparkSession
+  ) throws {
+    guard let id = UUID(uuidString: queryID.id), let runId = UUID(uuidString: queryID.runID) else {
+      throw SparkConnectError.invalidArgument(
+        SparkConnectError.Details(
+          message: "Invalid streaming query id: '\(queryID.id)', run id: '\(queryID.runID)'"))
+    }
+    self.init(id, runId, name, sparkSession)
+  }
+
   @discardableResult
   private func executeCommand(
     _ command: StreamingQueryCommand.OneOf_Command

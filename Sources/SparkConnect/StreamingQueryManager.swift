@@ -36,13 +36,8 @@ public actor StreamingQueryManager {
       let command = StreamingQueryManagerCommand.OneOf_Command.active(true)
       let response = try await self.sparkSession.client.executeStreamingQueryManagerCommand(command)
       let result = try response.firstOrThrow().streamingQueryManagerCommandResult
-      return result.active.activeQueries.map {
-        StreamingQuery(
-          UUID(uuidString: $0.id.id)!,
-          UUID(uuidString: $0.id.runID)!,
-          $0.name,
-          self.sparkSession
-        )
+      return try result.active.activeQueries.map {
+        try StreamingQuery($0.id, $0.name, self.sparkSession)
       }
     }
   }
@@ -64,12 +59,7 @@ public actor StreamingQueryManager {
     guard query.hasID else {
       throw SparkConnectError.InvalidArgument
     }
-    return StreamingQuery(
-      UUID(uuidString: query.id.id)!,
-      UUID(uuidString: query.id.runID)!,
-      query.name,
-      self.sparkSession
-    )
+    return try StreamingQuery(query.id, query.name, self.sparkSession)
   }
 
   /// Wait until any of the queries on the associated SQLContext has terminated since the creation

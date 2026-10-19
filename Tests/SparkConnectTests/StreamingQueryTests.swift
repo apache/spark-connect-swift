@@ -31,6 +31,32 @@ import Testing
 struct StreamingQueryTests {
 
   @Test
+  func createFromQueryID() async throws {
+    let spark = try SparkSession("sc://localhost:15002")
+    let id = UUID()
+    let runId = UUID()
+    var queryID = StreamingQueryInstanceId()
+    queryID.id = id.uuidString
+    queryID.runID = runId.uuidString
+    let query = try StreamingQuery(queryID, "name", spark)
+    #expect(await query.id == id)
+    #expect(await query.runId == runId)
+    #expect(await query.name == "name")
+
+    // Non-UUID ids sent by the server must throw instead of trapping.
+    var invalidID = queryID
+    invalidID.id = "not-a-uuid"
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try StreamingQuery(invalidID, "name", spark)
+    }
+    var invalidRunID = queryID
+    invalidRunID.runID = ""
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try StreamingQuery(invalidRunID, "name", spark)
+    }
+  }
+
+  @Test
   func create() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let id = UUID()
