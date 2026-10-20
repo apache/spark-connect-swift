@@ -166,6 +166,22 @@ struct CreateDataFrameTests {
   }
 
   @Test
+  func emptySchema() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    // Like PySpark, the number of rows is kept even if there are no columns.
+    let dfs = [
+      try await spark.createDataFrame([[], []], ""),
+      try await spark.createDataFrame([[], []], "struct<>"),
+      try await spark.createDataFrame([[], []], StructType()),
+    ]
+    for df in dfs {
+      #expect(try await df.columns.isEmpty)
+      #expect(try await df.count() == 2)
+    }
+    await spark.stop()
+  }
+
+  @Test
   func integerWidening() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let rows = try await spark.createDataFrame([[Int8(1), 2, Int32(3)]], "a INT, b BIGINT, c BIGINT")
@@ -362,6 +378,19 @@ struct CreateDataFrameTests {
     #expect(try await df.count() == 0)
     let collected: [Person] = try await df.collect(as: Person.self)
     #expect(collected == [])
+    await spark.stop()
+  }
+
+  struct EmptyRecord: Encodable, Sendable {}
+
+  @Test
+  func createDataFrameWithEncodableWithoutFields() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let data = [EmptyRecord(), EmptyRecord()]
+    let df = try await spark.createDataFrame(data)
+    #expect(try await df.columns.isEmpty)
+    #expect(try await df.count() == 2)
+    #expect(try await spark.createDataFrame(data, "struct<>").count() == 2)
     await spark.stop()
   }
 

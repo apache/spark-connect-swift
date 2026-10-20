@@ -213,7 +213,7 @@ public actor SparkSession {
       throw SparkConnectError.InvalidArrowData
     }
     let schema = try StructType(batch.schema).toDDL
-    return try await createDataFrame(batch: batch, schema: schema)
+    return try await createDataFrame(batch: batch, rowCount: data.count, schema: schema)
   }
 
   /// Creates a ``DataFrame`` from the given array of `Encodable` instances with the specified schema string.
@@ -229,7 +229,7 @@ public actor SparkSession {
     guard let batch = try ArrowEncoder.encode(data) else {
       throw SparkConnectError.InvalidArrowData
     }
-    return try await createDataFrame(batch: batch, schema: schema)
+    return try await createDataFrame(batch: batch, rowCount: data.count, schema: schema)
   }
 
   /// Creates a ``DataFrame`` from the given array of `Encodable` instances with the specified ``StructType`` schema.
@@ -244,7 +244,13 @@ public actor SparkSession {
     return try await createDataFrame(data, schema.toDDL)
   }
 
-  private func createDataFrame(batch: RecordBatch, schema: String) async throws -> DataFrame {
+  private func createDataFrame(batch: RecordBatch, rowCount: Int, schema: String) async throws
+    -> DataFrame
+  {
+    // Like PySpark, keep the number of rows even if there are no columns.
+    let batch =
+      batch.columnCount == 0
+      ? RecordBatch(batch.schema, columns: [], length: UInt(rowCount)) : batch
     switch ArrowWriter().writeStreaming(
       ArrowWriter.Info(.recordbatch, schema: batch.schema, batches: [batch]))
     {

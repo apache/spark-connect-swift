@@ -53,8 +53,10 @@ enum ConvertToArrow {
     }
     switch batchBuilder.finish() {
     case .success(let batch):
+      // Like PySpark, keep the number of rows even if there are no columns.
+      let batches = [RecordBatch(batch.schema, columns: batch.columns, length: UInt(data.count))]
       switch ArrowWriter().writeStreaming(
-        ArrowWriter.Info(.recordbatch, schema: batch.schema, batches: [batch]))
+        ArrowWriter.Info(.recordbatch, schema: batch.schema, batches: batches))
       {
       case .success(let ipcStream):
         return ipcStream
