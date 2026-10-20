@@ -500,7 +500,9 @@ public actor SparkConnectClient {
     request.clientType = clientType
     request.userContext = userContext
     request.sessionID = self.sessionID!
-    request.operationID = UUID().uuidString
+    // The server normalizes the operation ID of `ExecutePlan` to a lowercase UUID string, but
+    // looks up the operation ID of `ReattachExecute` and `ReleaseExecute` as it is.
+    request.operationID = UUID().uuidString.lowercased()
     request.tags = Array(tags)
     request.plan = plan
     // Allow the server to split large Arrow batches into chunks which `DataFrame` assembles.
