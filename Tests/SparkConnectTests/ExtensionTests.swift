@@ -38,4 +38,46 @@ struct ExtensionTests {
     #expect(
       error.message == "The server returned an empty response for firstOrThrowOnEmptyArray().")
   }
+
+  @Test
+  func firstOrThrowCommandResultAfterExecutionProgress() throws {
+    // The server sends an empty `ExecutionProgress` periodically while a command is running.
+    var progress = ExecutePlanResponse()
+    progress.executionProgress = ExecutePlanResponse.ExecutionProgress()
+    var result = ExecutePlanResponse()
+    result.streamingQueryCommandResult.awaitTermination.terminated = true
+    var complete = ExecutePlanResponse()
+    complete.resultComplete = ExecutePlanResponse.ResultComplete()
+    let responses = [progress, progress, result, complete]
+    #expect(try responses.firstOrThrow(\.streamingQueryCommandResult).awaitTermination.terminated)
+  }
+
+  @Test
+  func firstOrThrowEmptyCommandResult() throws {
+    // An empty result is found by its case while the responses of no or other cases are skipped.
+    var metrics = ExecutePlanResponse()
+    metrics.metrics = ExecutePlanResponse.Metrics()
+    var other = ExecutePlanResponse()
+    other.sqlCommandResult = ExecutePlanResponse.SqlCommandResult()
+    var result = ExecutePlanResponse()
+    result.checkpointCommandResult = Spark_Connect_CheckpointCommandResult()
+    let responses = [metrics, other, result]
+    #expect(try responses.firstOrThrow(\.checkpointCommandResult) == result.checkpointCommandResult)
+  }
+
+  @Test
+  func firstOrThrowWithoutCommandResult() throws {
+    var progress = ExecutePlanResponse()
+    progress.executionProgress = ExecutePlanResponse.ExecutionProgress()
+    var complete = ExecutePlanResponse()
+    complete.resultComplete = ExecutePlanResponse.ResultComplete()
+    let error = try #require(throws: SparkConnectError.self) {
+      _ = try [progress, complete].firstOrThrow(\.checkpointCommandResult)
+    }
+    #expect(error == .InvalidState)
+    #expect(
+      error.message
+        == "The server returned no Spark_Connect_CheckpointCommandResult for "
+        + "firstOrThrowWithoutCommandResult().")
+  }
 }

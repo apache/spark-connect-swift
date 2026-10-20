@@ -35,7 +35,7 @@ public actor StreamingQueryManager {
     get async throws {
       let command = StreamingQueryManagerCommand.OneOf_Command.active(true)
       let response = try await self.sparkSession.client.executeStreamingQueryManagerCommand(command)
-      let result = try response.firstOrThrow().streamingQueryManagerCommandResult
+      let result = try response.firstOrThrow(\.streamingQueryManagerCommandResult)
       return try result.active.activeQueries.map {
         try StreamingQuery($0.id, $0.name, self.sparkSession)
       }
@@ -55,7 +55,7 @@ public actor StreamingQueryManager {
   public func get(_ id: String) async throws -> StreamingQuery {
     let command = StreamingQueryManagerCommand.OneOf_Command.getQuery(id)
     let response = try await self.sparkSession.client.executeStreamingQueryManagerCommand(command)
-    let query = try response.firstOrThrow().streamingQueryManagerCommandResult.query
+    let query = try response.firstOrThrow(\.streamingQueryManagerCommandResult).query
     guard query.hasID else {
       throw SparkConnectError.InvalidArgument
     }
@@ -78,7 +78,7 @@ public actor StreamingQueryManager {
     let command = StreamingQueryManagerCommand.OneOf_Command.awaitAnyTermination(
       awaitAnyTerminationCommand)
     let response = try await self.sparkSession.client.executeStreamingQueryManagerCommand(command)
-    let result = try response.firstOrThrow().streamingQueryManagerCommandResult
+    let result = try response.firstOrThrow(\.streamingQueryManagerCommandResult)
     return result.awaitAnyTermination.terminated
   }
 

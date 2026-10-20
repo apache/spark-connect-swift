@@ -273,6 +273,33 @@ extension Array {
   }
 }
 
+extension [ExecutePlanResponse] {
+  /// Get the `result` of the first response whose `responseType` is the case of `result`, or throw
+  /// ``SparkConnectError/invalidState(_:)`` if there is none.
+  ///
+  /// The Spark Connect server can send other responses like `ExecutionProgress` before the result
+  /// of a long-running command, so the result is not always the first response.
+  /// - Parameters:
+  ///   - result: The key path of a `responseType` case like `\.streamingQueryCommandResult`.
+  ///   - function: The caller's name which is used in the error message.
+  /// - Returns: The result of the first response of the `result` case.
+  func firstOrThrow<Value>(
+    _ result: WritableKeyPath<ExecutePlanResponse, Value>, _ function: String = #function
+  ) throws -> Value {
+    for response in self {
+      // Setting `result` of an empty response selects the `responseType` case of `result`.
+      var expected = ExecutePlanResponse()
+      expected[keyPath: result] = response[keyPath: result]
+      if expected.responseType == response.responseType {
+        return response[keyPath: result]
+      }
+    }
+    throw SparkConnectError.invalidState(
+      SparkConnectError.Details(
+        message: "The server returned no \(Value.self) for \(function)."))
+  }
+}
+
 extension Data {
   /// Get an `Int32` value from unsafe 4 bytes.
   var int32: Int32 { withUnsafeBytes({ $0.load(as: Int32.self) }) }
