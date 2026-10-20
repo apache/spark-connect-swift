@@ -794,6 +794,13 @@ public actor SparkSession {
       return config("spark.sql.catalogImplementation", "hive")
     }
 
+    /// The configurations to set on the server-side session. Like PySpark, `spark.remote` and
+    /// `spark.master` are excluded because they take no effect after the session creation.
+    /// In addition, `spark.remote` may contain a secret like `token`.
+    var sessionConf: [String: String] {
+      sparkConf.filter { $0.key != "spark.remote" && $0.key != "spark.master" }
+    }
+
     /// Create a new ``SparkSession``. If `spark.remote` is not given, `sc://localhost:15002` is used.
     /// - Returns: A newly created ``SparkSession``.
     func create() async throws -> SparkSession {
@@ -801,7 +808,7 @@ public actor SparkSession {
       let session = try SparkSession(sparkConf["spark.remote"] ?? remote)
       let response = try await session.client.connect(session.sessionID)
       await session.setVersion(response.sparkVersion.version)
-      let isSuccess = try await session.client.setConf(map: sparkConf)
+      let isSuccess = try await session.client.setConf(map: sessionConf)
       guard isSuccess else {
         throw SparkConnectError.InvalidArgument
       }

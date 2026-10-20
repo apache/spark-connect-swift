@@ -47,6 +47,31 @@ struct BuilderTests {
   }
 
   @Test
+  func sessionConf() async throws {
+    // Don't try to connect
+    let builder = await SparkSession.builder
+      .remote("sc://spark:1234/;token=abc")
+      .config("spark.master", "local")
+      .config("spark.sql.shuffle.partitions", "1")
+    #expect(await builder.sparkConf["spark.remote"] == "sc://spark:1234/;token=abc")
+    #expect(await builder.sessionConf == ["spark.sql.shuffle.partitions": "1"])
+    await builder.clear()
+  }
+
+  @Test
+  func remoteAndMasterAreNotSentToServer() async throws {
+    await SparkSession.builder.clear()
+    let spark = try await SparkSession.builder
+      .remote(self.TEST_REMOTE)
+      .config("spark.master", "invalid")
+      .getOrCreate()
+    #expect(try await spark.conf.getOption("spark.remote") == nil)
+    #expect(try await spark.conf.get("spark.master") != "invalid")
+    await spark.stop()
+    await SparkSession.builder.clear()
+  }
+
+  @Test
   func appName() async throws {
     let builder = await SparkSession.builder.appName("TestApp")
     #expect(await builder.sparkConf["spark.app.name"] == "TestApp")
