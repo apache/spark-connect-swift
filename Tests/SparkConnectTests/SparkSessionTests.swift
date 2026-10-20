@@ -497,4 +497,15 @@ struct SparkSessionTests {
     }
     await spark.stop()
   }
+
+  @Test
+  func parseLocalRelationCacheThreshold() throws {
+    #expect(try SparkSession.parseLocalRelationCacheThreshold("1048576") == 1_048_576)
+    #expect(try SparkSession.parseLocalRelationCacheThreshold("0") == 0)
+    for value in ["", "64m", "1g", "abc", "1.5"] {
+      #expect(throws: SparkConnectError.InvalidArgument) {
+        try SparkSession.parseLocalRelationCacheThreshold(value)
+      }
+    }
+  }
 }

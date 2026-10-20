@@ -255,9 +255,18 @@ public actor SparkSession {
     }
   }
 
+  static func parseLocalRelationCacheThreshold(_ value: String) throws -> Int {
+    guard let threshold = Int(value) else {
+      throw SparkConnectError.invalidArgument(
+        SparkConnectError.Details(
+          message: "Invalid value for spark.sql.session.localRelationCacheThreshold: '\(value)'"))
+    }
+    return threshold
+  }
+
   private func createDataFrame(ipcStream: Data, schema: String) async throws -> DataFrame {
-    let threshold = Int(
-      try await client.getConf("spark.sql.session.localRelationCacheThreshold"))!
+    let threshold = try Self.parseLocalRelationCacheThreshold(
+      try await client.getConf("spark.sql.session.localRelationCacheThreshold"))
     if ipcStream.count >= threshold {
       let hash = try await client.cacheLocalRelation(ipcStream, schema)
       return await DataFrame(spark: self, plan: client.getCachedLocalRelation(hash))
