@@ -17,6 +17,11 @@
 // under the License.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 import Testing
 
 @testable import SparkConnect
@@ -68,5 +73,25 @@ struct ReattachableExecuteTests {
     #expect(request.operationID == "operation-id")
     #expect(request.clientType == "swift")
     #expect(request.release == .releaseAll(ReleaseExecuteRequest.ReleaseAll()))
+  }
+
+  /// Create an ``ExecutePlanRequest`` with `client` without connecting to the server.
+  static func executePlanRequest(_ client: isolated SparkConnectClient) async
+    -> ExecutePlanRequest
+  {
+    client.sessionID = UUID().uuidString.lowercased()
+    return await client.getExecutePlanRequest(Plan())
+  }
+
+  @Test
+  func lowercaseOperationID() async throws {
+    let client = try SparkConnectClient(remote: "sc://localhost")
+    let request = SparkConnectClient.getReattachableExecutePlanRequest(
+      await Self.executePlanRequest(client))
+    let operationID = request.operationID
+    // The same as `UUID.fromString(operationId).toString` of `ExecutePlan` in the server side.
+    #expect(UUID(uuidString: operationID)?.uuidString.lowercased() == operationID)
+    #expect(SparkConnectClient.getReattachExecuteRequest(request, nil).operationID == operationID)
+    #expect(SparkConnectClient.getReleaseAllRequest(request).operationID == operationID)
   }
 }
