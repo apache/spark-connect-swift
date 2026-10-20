@@ -54,6 +54,14 @@ struct RowTests {
   }
 
   @Test
+  func nestedRow() async throws {
+    let nested = Row(valueArray: [1, Data([0xff])], schema: RowSchema(["a", "b"]))
+    #expect(Row("x", nested, nil).toString() == "[x,[1,\(Data([0xff]))],null]")
+    #expect(Row(nested) == Row(Row(1, Data([0xff]))))
+    #expect(Row(nested) != Row(Row(2, Data([0xff]))))
+  }
+
+  @Test
   func get() throws {
     let row = Row(1, 1.1, "a", true, Decimal(1.2))
     #expect(try row.get(0) as! Int == 1)
