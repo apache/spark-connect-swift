@@ -970,7 +970,7 @@ public actor SparkConnectClient {
     var command = Command()
     command.commandType = .executeExternalCommand(executeExternalCommand)
     let response = try await execute(self.sessionID!, command)
-    let relation = try response.firstOrThrow().sqlCommandResult.relation
+    let relation = try response.firstOrThrow(\.sqlCommandResult).relation
     var plan = Plan()
     plan.opType = .root(relation)
     return plan
@@ -1395,7 +1395,7 @@ public actor SparkConnectClient {
     var command = Spark_Connect_Command()
     command.checkpointCommand = checkpointCommand
     let response = try await execute(self.sessionID!, command)
-    let cachedRemoteRelation = try response.firstOrThrow().checkpointCommandResult.relation
+    let cachedRemoteRelation = try response.firstOrThrow(\.checkpointCommandResult).relation
     return Self.createPlan { $0.cachedRemoteRelation = cachedRemoteRelation }
   }
 
@@ -1486,7 +1486,7 @@ public actor SparkConnectClient {
       command.commandType = .pipelineCommand(pipelineCommand)
 
       let response = try await execute(self.sessionID!, command)
-      let result = try response.firstOrThrow().pipelineCommandResult.createDataflowGraphResult
+      let result = try response.firstOrThrow(\.pipelineCommandResult).createDataflowGraphResult
 
       return result.dataflowGraphID
     }
