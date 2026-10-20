@@ -76,11 +76,13 @@ public actor DataFrameNaFunctions: Sendable {
 
   /// Returns a new ``DataFrame`` that replaces null values, using the column name to replacement
   /// value mapping. The replacement values must be of type `Bool`, `Int64`, `Double`, or `String`.
+  /// Other types are sent as is, so that the Spark Connect server reports the error.
   /// - Parameter valueMap: A dictionary of column name and replacement value.
   /// - Returns: A ``DataFrame``.
   public func fill(_ valueMap: [String: Sendable]) async -> DataFrame {
-    let cols = Array(valueMap.keys)
-    let values = cols.map { fillLiteral(valueMap[$0]!) }
+    let entries = Array(valueMap)
+    let cols = entries.map { $0.key }
+    let values = entries.map { fillLiteral($0.value) }
     return await transform { SparkConnectClient.getNAFill($0, cols, values) }
   }
 
@@ -149,6 +151,10 @@ public actor DataFrameNaFunctions: Sendable {
       literal.boolean = value
     case let value as Int:
       literal.long = Int64(value)
+    case let value as Int8:
+      literal.long = Int64(value)
+    case let value as Int16:
+      literal.long = Int64(value)
     case let value as Int32:
       literal.long = Int64(value)
     case let value as Int64:
@@ -160,7 +166,11 @@ public actor DataFrameNaFunctions: Sendable {
     case let value as String:
       literal.string = value
     default:
-      literal.string = value as! String
+      if let converted = try? ExpressionLiteral(value) {
+        literal = converted
+      } else {
+        literal.string = "\(value)"
+      }
     }
     return literal
   }
@@ -174,6 +184,10 @@ public actor DataFrameNaFunctions: Sendable {
       literal.boolean = value
     case let value as Int:
       literal.double = Double(value)
+    case let value as Int8:
+      literal.double = Double(value)
+    case let value as Int16:
+      literal.double = Double(value)
     case let value as Int32:
       literal.double = Double(value)
     case let value as Int64:
@@ -185,7 +199,11 @@ public actor DataFrameNaFunctions: Sendable {
     case let value as String:
       literal.string = value
     default:
-      literal.string = value as! String
+      if let converted = try? ExpressionLiteral(value) {
+        literal = converted
+      } else {
+        literal.string = "\(value)"
+      }
     }
     return literal
   }
