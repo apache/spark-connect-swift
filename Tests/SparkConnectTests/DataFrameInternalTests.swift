@@ -17,6 +17,11 @@
 // under the License.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 import Testing
 
 @testable import SparkConnect
@@ -177,5 +182,58 @@ struct DataFrameInternalTests {
     #expect(await df.dropDuplicates("id").plan.root.deduplicate.withinWatermark == false)
     #expect(await df.dropDuplicatesWithinWatermark().plan.root.deduplicate.withinWatermark)
     #expect(await df.dropDuplicatesWithinWatermark("id").plan.root.deduplicate.withinWatermark)
+  }
+
+  @Test
+  func naFillUnsupportedTypesPlan() async throws {
+    // This test doesn't require a running server because it only inspects the plan.
+    let spark = try SparkSession("sc://localhost")
+    var plan = Plan()
+    plan.root.range.end = 10
+    let df = DataFrame(spark: spark, plan: plan)
+    let values = await df.na.fill(["a": Int8(1), "b": Int16(2), "c": Decimal(1.5), "d": [1, 2]])
+      .plan.root.fillNa
+    let literals = Dictionary(uniqueKeysWithValues: zip(values.cols, values.values))
+    #expect(literals["a"]?.literalType == .long(1))
+    #expect(literals["b"]?.literalType == .long(2))
+    #expect(literals["c"]?.decimal.value == "1.5")
+    #expect(literals["d"]?.literalType == .string("[1, 2]"))
+  }
+
+  @Test
+  func naReplaceUnsupportedTypesPlan() async throws {
+    // This test doesn't require a running server because it only inspects the plan.
+    let spark = try SparkSession("sc://localhost")
+    var plan = Plan()
+    plan.root.range.end = 10
+    let df = DataFrame(spark: spark, plan: plan)
+    let int8 = await df.na.replace("a", [Int8(1): Int8(2)]).plan.root.replace.replacements
+    #expect(int8[0].oldValue.literalType == .double(1.0))
+    #expect(int8[0].newValue.literalType == .double(2.0))
+    let int16 = await df.na.replace("a", [Int16(1): Int16(2)]).plan.root.replace.replacements
+    #expect(int16[0].oldValue.literalType == .double(1.0))
+    let decimal = await df.na.replace("a", [Decimal(1.5): Decimal(2.5)]).plan.root.replace
+      .replacements
+    #expect(decimal[0].oldValue.decimal.value == "1.5")
+    let other = await df.na.replace("a", [[1]: [2]]).plan.root.replace.replacements
+    #expect(other[0].oldValue.literalType == .string("[1]"))
+  }
+
+  @Test
+  func statSampleByUnsupportedTypesPlan() async throws {
+    // This test doesn't require a running server because it only inspects the plan.
+    let spark = try SparkSession("sc://localhost")
+    var plan = Plan()
+    plan.root.range.end = 10
+    let df = DataFrame(spark: spark, plan: plan)
+    let int8 = await df.stat.sampleBy("key", [Int8(1): 0.5], 0).plan.root.sampleBy.fractions
+    #expect(int8[0].stratum.literalType == .byte(1))
+    let int16 = await df.stat.sampleBy("key", [Int16(2): 0.5], 0).plan.root.sampleBy.fractions
+    #expect(int16[0].stratum.literalType == .short(2))
+    let date = await df.stat.sampleBy("key", [Date(timeIntervalSince1970: 1): 0.5], 0).plan.root
+      .sampleBy.fractions
+    #expect(date[0].stratum.literalType == .timestamp(1_000_000))
+    let other = await df.stat.sampleBy("key", [[1]: 0.5], 0).plan.root.sampleBy.fractions
+    #expect(other[0].stratum.literalType == .string("[1]"))
   }
 }

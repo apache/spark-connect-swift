@@ -180,7 +180,11 @@ public actor DataFrameStatFunctions: Sendable {
     case let value as String:
       literal.string = value
     default:
-      literal.string = value as! String
+      if let converted = try? ExpressionLiteral(value) {
+        literal = converted
+      } else {
+        literal.string = "\(value)"
+      }
     }
     return literal
   }
