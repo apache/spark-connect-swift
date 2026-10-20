@@ -409,7 +409,7 @@ public class BinaryArray: ArrowArray<Data> {
     if options.printAsHex {
       return data.hexEncodedString()
     } else {
-      return String(data: data, encoding: .utf8)!
+      return String(data: data, encoding: .utf8) ?? data.hexEncodedString()
     }
   }
 }

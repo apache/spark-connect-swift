@@ -136,88 +136,95 @@ extension DataFrame {
       for i in 0..<batch.length {
         var values: [Sendable?] = []
         for column in batch.columns {
-          if column.data.isNull(i) {
-            values.append(nil)
-          } else {
-            let array = column.array
-            switch column.data.type.info {
-            case .primitiveInfo(.boolean):
-              values.append(array.asAny(i) as? Bool)
-            case .primitiveInfo(.int8):
-              values.append(array.asAny(i) as? Int8)
-            case .primitiveInfo(.int16):
-              values.append(array.asAny(i) as? Int16)
-            case .primitiveInfo(.int32):
-              values.append(array.asAny(i) as? Int32)
-            case .primitiveInfo(.int64):
-              values.append(array.asAny(i) as? Int64)
-            case .primitiveInfo(.float):
-              values.append(array.asAny(i) as? Float)
-            case .primitiveInfo(.double):
-              values.append(array.asAny(i) as? Double)
-            case .primitiveInfo(.decimal128):
-              values.append(array.asAny(i) as? Decimal)
-            case .primitiveInfo(.date32):
-              values.append(array.asAny(i) as? Date)
-            case .timeInfo(.time64):
-              // Spark serializes `TIME` columns as Arrow `time64` values since midnight.
-              guard let time64Type = column.data.type as? ArrowTypeTime64,
-                let time = array.asAny(i) as? Int64
-              else {
-                throw SparkConnectError.invalidArrowData(
-                  SparkConnectError.Details(message: "Invalid Arrow `time64` column."))
-              }
-              let nanoOfDay =
-                switch time64Type.unit {
-                case .microseconds:
-                  time * 1_000
-                case .nanoseconds:
-                  time
-                }
-              values.append(LocalTime(nanoOfDay: nanoOfDay))
-            case .timeInfo(.timestamp):
-              guard let timestampType = column.data.type as? ArrowTypeTimestamp,
-                let timestamp = array.asAny(i) as? Int64
-              else {
-                throw SparkConnectError.invalidArrowData(
-                  SparkConnectError.Details(message: "Invalid Arrow `timestamp` column."))
-              }
-              switch timestampType.unit {
-              case .seconds:
-                values.append(Date(timeIntervalSince1970: TimeInterval(timestamp)))
-              case .milliseconds:
-                values.append(Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000))
-              case .microseconds:
-                values.append(Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000_000))
-              case .nanoseconds:
-                // Spark serializes `TIMESTAMP_NTZ(p)` and `TIMESTAMP_LTZ(p)` columns as Arrow
-                // nanosecond timestamps, which `Date` cannot hold without losing digits.
-                values.append(TimestampNanos(epochNanos: timestamp))
-              }
-            case ArrowType.ArrowBinary:
-              guard let binaryArray = array as? BinaryArray else {
-                throw SparkConnectError.invalidArrowData(
-                  SparkConnectError.Details(message: "Invalid Arrow `binary` column."))
-              }
-              values.append(binaryArray[i])
-            case .complexInfo(.strct):
-              guard let structArray = array as? AsString else {
-                throw SparkConnectError.invalidArrowData(
-                  SparkConnectError.Details(message: "Invalid Arrow `struct` column."))
-              }
-              values.append(structArray.asString(i))
-            case .complexInfo(.list):
-              values.append(array.asAny(i) as? [any Sendable])
-            default:
-              values.append(array.asAny(i) as? String)
-            }
-          }
+          values.append(try collectValue(column, i))
         }
         result.append(Row(valueArray: values, schema: rowSchema))
       }
     }
 
     return result
+  }
+
+  private func collectValue(_ column: ArrowArrayHolder, _ i: UInt) throws -> Sendable? {
+    if column.data.isNull(i) {
+      return nil
+    }
+    let array = column.array
+    switch column.data.type.info {
+    case .primitiveInfo(.boolean):
+      return array.asAny(i) as? Bool
+    case .primitiveInfo(.int8):
+      return array.asAny(i) as? Int8
+    case .primitiveInfo(.int16):
+      return array.asAny(i) as? Int16
+    case .primitiveInfo(.int32):
+      return array.asAny(i) as? Int32
+    case .primitiveInfo(.int64):
+      return array.asAny(i) as? Int64
+    case .primitiveInfo(.float):
+      return array.asAny(i) as? Float
+    case .primitiveInfo(.double):
+      return array.asAny(i) as? Double
+    case .primitiveInfo(.decimal128):
+      return array.asAny(i) as? Decimal
+    case .primitiveInfo(.date32):
+      return array.asAny(i) as? Date
+    case .timeInfo(.time64):
+      // Spark serializes `TIME` columns as Arrow `time64` values since midnight.
+      guard let time64Type = column.data.type as? ArrowTypeTime64,
+        let time = array.asAny(i) as? Int64
+      else {
+        throw SparkConnectError.invalidArrowData(
+          SparkConnectError.Details(message: "Invalid Arrow `time64` column."))
+      }
+      let nanoOfDay =
+        switch time64Type.unit {
+        case .microseconds:
+          time * 1_000
+        case .nanoseconds:
+          time
+        }
+      return LocalTime(nanoOfDay: nanoOfDay)
+    case .timeInfo(.timestamp):
+      guard let timestampType = column.data.type as? ArrowTypeTimestamp,
+        let timestamp = array.asAny(i) as? Int64
+      else {
+        throw SparkConnectError.invalidArrowData(
+          SparkConnectError.Details(message: "Invalid Arrow `timestamp` column."))
+      }
+      switch timestampType.unit {
+      case .seconds:
+        return Date(timeIntervalSince1970: TimeInterval(timestamp))
+      case .milliseconds:
+        return Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000)
+      case .microseconds:
+        return Date(timeIntervalSince1970: TimeInterval(timestamp) / 1_000_000)
+      case .nanoseconds:
+        // Spark serializes `TIMESTAMP_NTZ(p)` and `TIMESTAMP_LTZ(p)` columns as Arrow
+        // nanosecond timestamps, which `Date` cannot hold without losing digits.
+        return TimestampNanos(epochNanos: timestamp)
+      }
+    case ArrowType.ArrowBinary:
+      guard let binaryArray = array as? BinaryArray else {
+        throw SparkConnectError.invalidArrowData(
+          SparkConnectError.Details(message: "Invalid Arrow `binary` column."))
+      }
+      return binaryArray[i]
+    case .complexInfo(.strct):
+      guard let structArray = array as? NestedArray, let fields = structArray.fields,
+        let structType = column.data.type as? ArrowTypeStruct
+      else {
+        throw SparkConnectError.invalidArrowData(
+          SparkConnectError.Details(message: "Invalid Arrow `struct` column."))
+      }
+      let fieldValues = try fields.map { try collectValue($0, i) }
+      return Row(
+        valueArray: fieldValues, schema: RowSchema(structType.fields.map { $0.name }))
+    case .complexInfo(.list):
+      return array.asAny(i) as? [any Sendable]
+    default:
+      return array.asAny(i) as? String
+    }
   }
 
   /// Execute the plan and return the result decoded into an array of `T`.

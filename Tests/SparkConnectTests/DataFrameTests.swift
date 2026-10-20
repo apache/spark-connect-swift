@@ -396,6 +396,34 @@ struct DataFrameTests {
   }
 
   @Test
+  func collectStruct() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql(
+      "SELECT named_struct('a', 1, 'b', X'FF00FE', 'c', named_struct('d', 'x')) AS s, "
+        + "named_struct('a', CAST(NULL AS INT)) AS n"
+    ).collect()
+    #expect(rows.count == 1)
+    let s = try #require(rows[0]["s"] as? Row)
+    #expect(try s.getAsInt("a") == 1)
+    #expect(try s.get("b") as? Data == Data([0xff, 0x00, 0xfe]))
+    #expect(try (s.get("c") as? Row)?.getAsString("d") == "x")
+    #expect(try (rows[0]["n"] as? Row)?.isNullAt("a") == true)
+    #expect(try await spark.sql("SELECT struct(1, 2)").collect() == [Row(Row(1, 2))])
+    await spark.stop()
+  }
+
+  @Test
+  func collectVariant() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let rows = try await spark.sql("SELECT parse_json('{\"a\": 1}') AS v").collect()
+    #expect(rows.count == 1)
+    let v = try #require(rows[0]["v"] as? Row)
+    #expect(try v.get("value") as? Data != nil)
+    #expect(try v.get("metadata") as? Data != nil)
+    await spark.stop()
+  }
+
+  @Test
   func collectBinary() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     let rows = try await spark.sql("SELECT X'FF00FE' AS b, CAST(NULL AS BINARY) AS n").collect()
