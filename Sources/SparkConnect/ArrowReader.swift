@@ -280,6 +280,10 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
     data: Data,
     messageEndOffset: Int64
   ) -> Result<RecordBatch, ArrowError> {
+    // A record batch without columns still has rows, e.g., `df.select()`.
+    guard let length = UInt(exactly: recordBatch.length) else {
+      return .failure(.invalid("Invalid record batch length: \(recordBatch.length)"))
+    }
     var columns: [ArrowArrayHolder] = []
     let batchData = RecordBatchData(recordBatch, schema: schema)
     let loadInfo = DataLoadInfo(
@@ -300,7 +304,7 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
       }
     }
 
-    return .success(RecordBatch(arrowSchema, columns: columns))
+    return .success(RecordBatch(arrowSchema, columns: columns, length: length))
   }
 
   /*

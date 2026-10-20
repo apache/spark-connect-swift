@@ -144,10 +144,14 @@ public class RecordBatch {
   public var columnCount: UInt { return UInt(self.columns.count) }
   public let columns: [ArrowArrayHolder]
   public let length: UInt
-  public init(_ schema: ArrowSchema, columns: [ArrowArrayHolder]) {
+  public convenience init(_ schema: ArrowSchema, columns: [ArrowArrayHolder]) {
+    self.init(schema, columns: columns, length: columns.first?.length ?? 0)
+  }
+
+  public init(_ schema: ArrowSchema, columns: [ArrowArrayHolder], length: UInt) {
     self.schema = schema
     self.columns = columns
-    self.length = columns[0].length
+    self.length = length
   }
 
   public class Builder {
