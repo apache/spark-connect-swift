@@ -432,6 +432,23 @@ struct DataFrameTests {
     await spark.stop()
   }
 
+  struct EmptyRecord: Decodable, Sendable {}
+
+  @Test
+  func collectWithoutColumns() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.range(3).select()
+    #expect(try await df.collect() == [Row(), Row(), Row()])
+    #expect(try await df.head(2) == [Row(), Row()])
+    #expect(try await df.head() == Row())
+    #expect(try await df.first() == Row())
+    #expect(try await df.take(2) == [Row(), Row()])
+    #expect(try await df.tail(2) == [Row(), Row()])
+    #expect(try await df.collect(as: EmptyRecord.self).count == 3)
+    #expect(try await spark.range(0).select().collect().isEmpty)
+    await spark.stop()
+  }
+
   @Test
   func selectNone() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
