@@ -31,6 +31,16 @@ public actor SparkConnectClient {
   /// The default `grpc_max_message_size`, 128 MiB, which is the same as Scala and Python clients.
   static let DEFAULT_GRPC_MAX_MESSAGE_SIZE = 128 * 1024 * 1024
 
+  /// The default `grpc_keepalive_time_ms`, 5 minutes, which is the minimum interval between
+  /// keepalive pings that Spark Connect servers before 4.3 allow. On more frequent pings, they
+  /// close the connection with `too_many_pings`. Scala and Python clients use 60 seconds which
+  /// Spark 4.3 servers allow.
+  static let DEFAULT_GRPC_KEEPALIVE_TIME_MS = 5 * 60 * 1000
+
+  /// The default `grpc_keepalive_timeout_ms`, 20 seconds, which is the same as Scala and Python
+  /// clients.
+  static let DEFAULT_GRPC_KEEPALIVE_TIMEOUT_MS = 20 * 1000
+
   var clientType: String = "swift"
   let url: URL
   let host: String
@@ -40,6 +50,8 @@ public actor SparkConnectClient {
   let transportSecurity: HTTP2ClientTransport.Posix.TransportSecurity
   let maxMessageSize: Int
   let serviceConfig: ServiceConfig
+  /// The keepalive configuration of gRPC connections, or nil if `grpc_keepalive_enabled=false`.
+  let keepalive: HTTP2ClientTransport.Config.Keepalive?
   var intercepters: [ClientInterceptor] = []
   let userContext: UserContext
   var sessionID: String? = nil
@@ -56,7 +68,8 @@ public actor SparkConnectClient {
   /// - Parameters:
   ///   - remote: A string to connect `Spark Connect` server.
   /// - Throws: `SparkConnectError.InvalidArgument` if `remote` is not a valid `sc://` connection
-  /// string, a parameter has no value, or `grpc_max_message_size` is not a positive integer.
+  /// string, a parameter has no value, or `grpc_max_message_size`, `grpc_keepalive_time_ms` or
+  /// `grpc_keepalive_timeout_ms` is not a positive integer.
   init(remote: String) throws {
     guard let url = URL(string: remote), url.scheme == "sc" else {
       throw SparkConnectError.InvalidArgument
@@ -66,6 +79,10 @@ public actor SparkConnectClient {
     self.port = self.url.port ?? 15002
     var token: String? = nil
     var maxMessageSize = Self.DEFAULT_GRPC_MAX_MESSAGE_SIZE
+    var keepaliveEnabled = true
+    var keepaliveTimeMs = Self.DEFAULT_GRPC_KEEPALIVE_TIME_MS
+    var keepaliveTimeoutMs = Self.DEFAULT_GRPC_KEEPALIVE_TIMEOUT_MS
+    var keepaliveWithoutCalls = true
     let processInfo = ProcessInfo.processInfo
     #if os(macOS) || os(Linux)
       var userName = processInfo.environment["SPARK_USER"] ?? processInfo.userName
@@ -83,6 +100,20 @@ public actor SparkConnectClient {
           throw SparkConnectError.InvalidArgument
         }
         maxMessageSize = size
+      case URIParams.PARAM_GRPC_KEEPALIVE_ENABLED:
+        keepaliveEnabled = String(kv[1]).lowercased() == "true"
+      case URIParams.PARAM_GRPC_KEEPALIVE_TIME_MS:
+        guard let time = Int(String(kv[1])), time > 0 else {
+          throw SparkConnectError.InvalidArgument
+        }
+        keepaliveTimeMs = time
+      case URIParams.PARAM_GRPC_KEEPALIVE_TIMEOUT_MS:
+        guard let timeout = Int(String(kv[1])), timeout > 0 else {
+          throw SparkConnectError.InvalidArgument
+        }
+        keepaliveTimeoutMs = timeout
+      case URIParams.PARAM_GRPC_KEEPALIVE_WITHOUT_CALLS:
+        keepaliveWithoutCalls = String(kv[1]).lowercased() == "true"
       case URIParams.PARAM_SESSION_ID:
         // SparkSession handles this.
         break
@@ -125,6 +156,17 @@ public actor SparkConnectClient {
         maxRequestMessageBytes: maxMessageSize,
         maxResponseMessageBytes: maxMessageSize)
     ])
+    // Keepalive pings detect a silently dead connection, e.g. dropped by a NAT gateway or a load
+    // balancer without TCP RST/FIN, so that a blocked RPC fails with `UNAVAILABLE` and is retried
+    // instead of waiting forever.
+    if keepaliveEnabled {
+      self.keepalive = HTTP2ClientTransport.Config.Keepalive(
+        time: .milliseconds(keepaliveTimeMs),
+        timeout: .milliseconds(keepaliveTimeoutMs),
+        allowWithoutCalls: keepaliveWithoutCalls)
+    } else {
+      self.keepalive = nil
+    }
     self.userContext = userName.toUserContext
   }
 
@@ -186,6 +228,7 @@ public actor SparkConnectClient {
       transport: try HTTP2ClientTransport.Posix(
         target: .dns(host: self.host, port: self.port),
         transportSecurity: self.transportSecurity,
+        config: .defaults { $0.connection.keepalive = self.keepalive },
         serviceConfig: self.serviceConfig
       ),
       interceptors: self.intercepters
@@ -1623,6 +1666,10 @@ public actor SparkConnectClient {
 
   private enum URIParams {
     static let PARAM_GRPC_MAX_MESSAGE_SIZE = "grpc_max_message_size"
+    static let PARAM_GRPC_KEEPALIVE_ENABLED = "grpc_keepalive_enabled"
+    static let PARAM_GRPC_KEEPALIVE_TIME_MS = "grpc_keepalive_time_ms"
+    static let PARAM_GRPC_KEEPALIVE_TIMEOUT_MS = "grpc_keepalive_timeout_ms"
+    static let PARAM_GRPC_KEEPALIVE_WITHOUT_CALLS = "grpc_keepalive_without_calls"
     static let PARAM_SESSION_ID = "session_id"
     static let PARAM_TOKEN = "token"
     static let PARAM_USER_AGENT = "user_agent"
