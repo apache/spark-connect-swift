@@ -90,6 +90,48 @@ struct SparkConnectClientTests {
   }
 
   @Test
+  func parameterWithoutGrpcKeepalive() async throws {
+    let client = try SparkConnectClient(remote: "sc://host1:123")
+    let keepalive = try #require(await client.keepalive)
+    #expect(keepalive.time == .seconds(300))
+    #expect(keepalive.timeout == .seconds(20))
+    #expect(keepalive.allowWithoutCalls)
+    await client.stop()
+  }
+
+  @Test
+  func parameterWithGrpcKeepalive() async throws {
+    let client = try SparkConnectClient(
+      remote: "sc://host1:123/;grpc_keepalive_enabled=true;grpc_keepalive_time_ms=60000;"
+        + "grpc_keepalive_timeout_ms=5000;grpc_keepalive_without_calls=false")
+    let keepalive = try #require(await client.keepalive)
+    #expect(keepalive.time == .seconds(60))
+    #expect(keepalive.timeout == .seconds(5))
+    #expect(!keepalive.allowWithoutCalls)
+    await client.stop()
+  }
+
+  @Test
+  func parameterWithGrpcKeepaliveDisabled() async throws {
+    for value in ["false", "FALSE"] {
+      let client = try SparkConnectClient(remote: "sc://host1:123/;grpc_keepalive_enabled=\(value)")
+      #expect(await client.keepalive == nil)
+      await client.stop()
+    }
+  }
+
+  @Test
+  func parameterWithInvalidGrpcKeepalive() async throws {
+    for key in ["grpc_keepalive_time_ms", "grpc_keepalive_timeout_ms"] {
+      for value in ["abc", "0", "-1", "1.5"] {
+        #expect(throws: SparkConnectError.InvalidArgument) {
+          try SparkConnectClient(remote: "sc://host1:123/;\(key)=\(value)")
+        }
+      }
+    }
+  }
+
+  @Test
   func invalidRemote() async throws {
     #expect(throws: SparkConnectError.InvalidArgument) {
       try SparkConnectClient(remote: "http://host1:123")
