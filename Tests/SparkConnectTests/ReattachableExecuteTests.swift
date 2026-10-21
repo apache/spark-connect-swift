@@ -75,6 +75,20 @@ struct ReattachableExecuteTests {
     #expect(request.release == .releaseAll(ReleaseExecuteRequest.ReleaseAll()))
   }
 
+  @Test
+  func clientObservedServerSideSessionID() {
+    var request = Self.executePlanRequest()
+    let reattachWithoutID = SparkConnectClient.getReattachExecuteRequest(request, nil)
+    #expect(!reattachWithoutID.hasClientObservedServerSideSessionID)
+    #expect(!SparkConnectClient.getReleaseAllRequest(request).hasClientObservedServerSideSessionID)
+
+    request.clientObservedServerSideSessionID = "server-side-session-id"
+    let reattach = SparkConnectClient.getReattachExecuteRequest(request, nil)
+    #expect(reattach.clientObservedServerSideSessionID == "server-side-session-id")
+    let release = SparkConnectClient.getReleaseAllRequest(request)
+    #expect(release.clientObservedServerSideSessionID == "server-side-session-id")
+  }
+
   /// Create an ``ExecutePlanRequest`` with `client` without connecting to the server.
   static func executePlanRequest(_ client: isolated SparkConnectClient) async
     -> ExecutePlanRequest

@@ -132,6 +132,96 @@ struct SparkConnectClientTests {
     await client.stop()
   }
 
+  /// Set the session IDs of `client` without connecting to the server.
+  static func setSessionIDs(
+    _ client: isolated SparkConnectClient, _ sessionID: String?, _ serverSideSessionID: String?
+  ) {
+    client.sessionID = sessionID
+    client.serverSideSessionID = serverSideSessionID
+  }
+
+  @Test
+  func clientObservedServerSideSessionID() async throws {
+    let client = try SparkConnectClient(remote: "sc://localhost")
+    let sessionID = UUID().uuidString.lowercased()
+    let plan = await client.getPlanRange(0, 1, 1)
+
+    await Self.setSessionIDs(client, sessionID, nil)
+    #expect(await !client.getExecutePlanRequest(plan).hasClientObservedServerSideSessionID)
+    let analyzePlanRequest = await client.getAnalyzePlanRequest(sessionID, plan)
+    #expect(!analyzePlanRequest.hasClientObservedServerSideSessionID)
+
+    let serverSideSessionID = UUID().uuidString.lowercased()
+    await Self.setSessionIDs(client, sessionID, serverSideSessionID)
+    let executePlanRequestWithID = await client.getExecutePlanRequest(plan)
+    #expect(executePlanRequestWithID.clientObservedServerSideSessionID == serverSideSessionID)
+    let analyzePlanRequestWithID = await client.getAnalyzePlanRequest(sessionID, plan)
+    #expect(analyzePlanRequestWithID.clientObservedServerSideSessionID == serverSideSessionID)
+  }
+
+  @Test
+  func serverSideSessionID() async throws {
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
+    #expect(await client.serverSideSessionID == nil)
+    let response = try await client.connect(UUID().uuidString)
+    #expect(!response.serverSideSessionID.isEmpty)
+    #expect(await client.serverSideSessionID == response.serverSideSessionID)
+    await client.stop()
+  }
+
+  @Test
+  func serverSideSessionChanged() async throws {
+    let client = try SparkConnectClient(remote: TEST_REMOTE)
+    let response = try await client.connect(UUID().uuidString)
+    let version = response.sparkVersion.version
+    let sessionID = try #require(await client.sessionID)
+    let serverSideSessionID = try #require(await client.serverSideSessionID)
+    let key = "spark.test.serverSideSessionChanged"
+    let path = "server-side-session-changed.jar"
+    #expect(FileManager().createFile(atPath: path, contents: "abc".data(using: .utf8)))
+    defer { try? FileManager().removeItem(atPath: path) }
+
+    // Simulate that the server-side session changed, e.g., after the server restarted.
+    await Self.setSessionIDs(client, sessionID, UUID().uuidString.lowercased())
+    var calls: [() async throws -> Void] = [
+      { _ = try await client.ddlParse("a int") },
+      {
+        try await client.executePlanWithReattach(
+          client.getExecutePlanRequest(client.getPlanRange(0, 1, 1))
+        ) { _ in }
+      },
+      { _ = try await client.setConf(map: [key: "true"]) },
+      { _ = try await client.unsetConf(keys: [key]) },
+      { _ = try await client.getConf(key) },
+      { _ = try await client.getConfWithDefault(key, "false") },
+      { _ = try await client.getConfOption(key) },
+      { _ = try await client.getConfAll() },
+      { _ = try await client.isModifiable(key) },
+      { _ = try await client.interruptAll() },
+      { _ = try await client.interruptTag("tag") },
+      { _ = try await client.interruptOperation(UUID().uuidString.lowercased()) },
+      { _ = try await client.artifactExists("cache/nonexistent") },
+      { try await client.addArtifact(URL(fileURLWithPath: path)) },
+    ]
+    if isSparkVersionAtLeast(version, "4.1") {
+      calls.append { _ = try await client.cloneSession() }
+    }
+    if isSparkVersionAtLeast(version, "4.2") {
+      calls.append { _ = try await client.getOperationStatuses() }
+    }
+    for call in calls {
+      let error = try await #require(throws: Error.self) {
+        try await call()
+      }
+      #expect("\(error)".contains("INVALID_HANDLE.SESSION_CHANGED"))
+    }
+
+    // The server rejected the requests without running them in the session.
+    await Self.setSessionIDs(client, sessionID, serverSideSessionID)
+    #expect(try await client.getConfOption(key) == nil)
+    await client.stop()
+  }
+
   @Test
   func resultChunking() async throws {
     let client = try SparkConnectClient(remote: TEST_REMOTE)

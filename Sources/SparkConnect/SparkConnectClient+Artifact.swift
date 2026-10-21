@@ -56,6 +56,9 @@ extension SparkConnectClient {
       addArtifactsRequest.sessionID = self.sessionID!
       addArtifactsRequest.userContext = self.userContext
       addArtifactsRequest.clientType = self.clientType
+      if let serverSideSessionID {
+        addArtifactsRequest.clientObservedServerSideSessionID = serverSideSessionID
+      }
       addArtifactsRequest.batch = batch
       let request = addArtifactsRequest
       _ = try await service.addArtifacts(
@@ -75,6 +78,9 @@ extension SparkConnectClient {
       request.sessionID = self.sessionID!
       request.userContext = self.userContext
       request.clientType = self.clientType
+      if let serverSideSessionID {
+        request.clientObservedServerSideSessionID = serverSideSessionID
+      }
       request.names = [name]
       let response = try await service.artifactStatus(request)
       return response.statuses[name]?.exists ?? false
@@ -112,6 +118,9 @@ extension SparkConnectClient {
         request.sessionID = self.sessionID!
         request.userContext = self.userContext
         request.clientType = self.clientType
+        if let serverSideSessionID {
+          request.clientObservedServerSideSessionID = serverSideSessionID
+        }
         request.batch = batch
         requests.append(request)
       } else {
@@ -126,6 +135,9 @@ extension SparkConnectClient {
           request.sessionID = self.sessionID!
           request.userContext = self.userContext
           request.clientType = self.clientType
+          if let serverSideSessionID {
+            request.clientObservedServerSideSessionID = serverSideSessionID
+          }
           if i == 0 {
             var beginChunk = Spark_Connect_AddArtifactsRequest.BeginChunkedArtifact()
             beginChunk.name = name
