@@ -42,6 +42,11 @@ public actor SparkConnectClient {
   let serviceConfig: ServiceConfig
   var intercepters: [ClientInterceptor] = []
   let userContext: UserContext
+  /// The server-side session ID observed by ``connect(_:)``. It is sent back as
+  /// `client_observed_server_side_session_id` in requests in order to make the server reject them
+  /// with `INVALID_HANDLE.SESSION_CHANGED` when the server-side session changed, e.g., after the
+  /// server restarted, instead of silently running them in a new session.
+  var serverSideSessionID: String? = nil
   var sessionID: String? = nil
   var tags = Set<String>()
 
@@ -169,6 +174,9 @@ public actor SparkConnectClient {
           return OneOf_Analyze.sparkVersion(AnalyzePlanRequest.SparkVersion())
         })
       let response = try await service.analyzePlan(request)
+      if !response.serverSideSessionID.isEmpty {
+        self.serverSideSessionID = response.serverSideSessionID
+      }
       return response
     }
   }
@@ -238,6 +246,9 @@ public actor SparkConnectClient {
       request.clientType = clientType
       request.userContext = userContext
       request.sessionID = self.sessionID!
+      if let serverSideSessionID {
+        request.clientObservedServerSideSessionID = serverSideSessionID
+      }
       _ = try await service.config(request)
       return true
     }
@@ -266,6 +277,9 @@ public actor SparkConnectClient {
       request.clientType = clientType
       request.userContext = userContext
       request.sessionID = self.sessionID!
+      if let serverSideSessionID {
+        request.clientObservedServerSideSessionID = serverSideSessionID
+      }
       let _ = try await service.config(request)
       return true
     }
@@ -293,6 +307,9 @@ public actor SparkConnectClient {
       request.clientType = clientType
       request.userContext = userContext
       request.sessionID = self.sessionID!
+      if let serverSideSessionID {
+        request.clientObservedServerSideSessionID = serverSideSessionID
+      }
       let response = try await service.config(request)
       return try Self.getConfValue(key, from: response)
     }
@@ -335,6 +352,9 @@ public actor SparkConnectClient {
       request.clientType = clientType
       request.userContext = userContext
       request.sessionID = self.sessionID!
+      if let serverSideSessionID {
+        request.clientObservedServerSideSessionID = serverSideSessionID
+      }
       let response = try await service.config(request)
       let result =
         if let pair = response.pairs.first, pair.hasValue {
@@ -368,6 +388,9 @@ public actor SparkConnectClient {
       request.clientType = clientType
       request.userContext = userContext
       request.sessionID = self.sessionID!
+      if let serverSideSessionID {
+        request.clientObservedServerSideSessionID = serverSideSessionID
+      }
       let response = try await service.config(request)
       let result: String? =
         if let pair = response.pairs.first, pair.hasValue {
@@ -398,6 +421,9 @@ public actor SparkConnectClient {
       request.clientType = clientType
       request.userContext = userContext
       request.sessionID = self.sessionID!
+      if let serverSideSessionID {
+        request.clientObservedServerSideSessionID = serverSideSessionID
+      }
       let response = try await service.config(request)
       var map = [String: String]()
       for pair in response.pairs {
@@ -431,6 +457,9 @@ public actor SparkConnectClient {
       request.clientType = clientType
       request.userContext = userContext
       request.sessionID = self.sessionID!
+      if let serverSideSessionID {
+        request.clientObservedServerSideSessionID = serverSideSessionID
+      }
       let response = try await service.config(request)
       return response.pairs.first?.value == "true"
     }
@@ -500,6 +529,9 @@ public actor SparkConnectClient {
     request.clientType = clientType
     request.userContext = userContext
     request.sessionID = self.sessionID!
+    if let serverSideSessionID {
+      request.clientObservedServerSideSessionID = serverSideSessionID
+    }
     // The server normalizes the operation ID of `ExecutePlan` to a lowercase UUID string, but
     // looks up the operation ID of `ReattachExecute` and `ReleaseExecute` as it is.
     request.operationID = UUID().uuidString.lowercased()
@@ -535,6 +567,9 @@ public actor SparkConnectClient {
     request.clientType = clientType
     request.userContext = userContext
     request.sessionID = self.sessionID!
+    if let serverSideSessionID {
+      request.clientObservedServerSideSessionID = serverSideSessionID
+    }
     request.analyze = f()
     return request
   }
@@ -1026,6 +1061,9 @@ public actor SparkConnectClient {
     request.sessionID = self.sessionID!
     request.userContext = self.userContext
     request.clientType = self.clientType
+    if let serverSideSessionID {
+      request.clientObservedServerSideSessionID = serverSideSessionID
+    }
     request.interruptType = .all
 
     return try await withGPRC { client in
@@ -1040,6 +1078,9 @@ public actor SparkConnectClient {
     request.sessionID = self.sessionID!
     request.userContext = self.userContext
     request.clientType = self.clientType
+    if let serverSideSessionID {
+      request.clientObservedServerSideSessionID = serverSideSessionID
+    }
     request.interruptType = .tag
     request.operationTag = tag
 
@@ -1055,6 +1096,9 @@ public actor SparkConnectClient {
     request.sessionID = self.sessionID!
     request.userContext = self.userContext
     request.clientType = self.clientType
+    if let serverSideSessionID {
+      request.clientObservedServerSideSessionID = serverSideSessionID
+    }
     request.interruptType = .operationID
     request.operationID = operationId
 
@@ -1072,6 +1116,9 @@ public actor SparkConnectClient {
     request.sessionID = self.sessionID!
     request.userContext = self.userContext
     request.clientType = self.clientType
+    if let serverSideSessionID {
+      request.clientObservedServerSideSessionID = serverSideSessionID
+    }
     if !operationIds.isEmpty {
       var operationStatusRequest = Spark_Connect_GetStatusRequest.OperationStatusRequest()
       operationStatusRequest.operationIds = operationIds
@@ -1094,6 +1141,9 @@ public actor SparkConnectClient {
     request.sessionID = self.sessionID!
     request.userContext = self.userContext
     request.clientType = self.clientType
+    if let serverSideSessionID {
+      request.clientObservedServerSideSessionID = serverSideSessionID
+    }
     if let newSessionID {
       request.newSessionID = newSessionID
     }

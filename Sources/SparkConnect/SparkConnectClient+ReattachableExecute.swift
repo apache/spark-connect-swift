@@ -80,6 +80,9 @@ extension SparkConnectClient {
     reattach.userContext = request.userContext
     reattach.operationID = request.operationID
     reattach.clientType = request.clientType
+    if request.hasClientObservedServerSideSessionID {
+      reattach.clientObservedServerSideSessionID = request.clientObservedServerSideSessionID
+    }
     if let lastResponseID {
       reattach.lastResponseID = lastResponseID
     }
@@ -93,6 +96,9 @@ extension SparkConnectClient {
     release.userContext = request.userContext
     release.operationID = request.operationID
     release.clientType = request.clientType
+    if request.hasClientObservedServerSideSessionID {
+      release.clientObservedServerSideSessionID = request.clientObservedServerSideSessionID
+    }
     release.releaseAll = ReleaseExecuteRequest.ReleaseAll()
     return release
   }

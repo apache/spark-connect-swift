@@ -108,9 +108,6 @@ public actor SparkSession {
     sessionID
   }
 
-  /// A server-side generated session ID. This is supposed to be overwritten during establishing connections.
-  var serverSideSessionID: String = ""
-
   /// A variable for ``SparkContext``. This is designed to throw exceptions by Apache Spark.
   public var sparkContext: SparkContext {
     get throws {
