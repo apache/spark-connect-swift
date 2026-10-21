@@ -22,6 +22,7 @@
 # currently randomly picks any associated workflow.
 # So, the name was changed to make sense in that context too.
 # See also https://github.community/t/specify-check-suite-when-creating-a-checkrun/118380/10
+# notify_test_workflow.yml is triggered by this name via `workflow_run.workflows`.
 name: On pull request update
 on:
   pull_request:

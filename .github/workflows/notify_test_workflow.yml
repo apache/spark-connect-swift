@@ -95,10 +95,10 @@ jobs:
               }
             }
 
-            // If we saw runs but none matched the PR head SHA, a newer commit was pushed
-            // and a fresh notify run will handle it; nothing useful to report for this SHA.
+            // If we saw runs but none matched the PR head SHA, the forked repository has not
+            // built this commit (yet). Fail here so that the `Report failure` step reports it.
             if (any_runs && !matched_run) {
-              throw new Error('There was a new unsynced commit pushed. Please retrigger the workflow.');
+              throw new Error('There is no workflow run for ' + head_sha + ' in the forked repository.');
             }
 
             if (!matched_run) {
@@ -215,6 +215,8 @@ jobs:
               output: {
                 title: 'Workflow run detection failed',
                 summary: 'Unable to detect the workflow run for testing the changes in your PR. '
+                  + 'Please make sure that GitHub Actions is enabled in your forked repository, '
+                  + 'sync your branch with the latest `main` branch, and push it again. '
                   + '[See the failed run](https://github.com/' + context.repo.owner + '/'
                   + context.repo.repo + '/actions/runs/' + context.runId + ')'
               }
