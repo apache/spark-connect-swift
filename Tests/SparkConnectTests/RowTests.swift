@@ -69,8 +69,16 @@ struct RowTests {
     #expect(try row.get(2) as! String == "a")
     #expect(try row.get(3) as! Bool == true)
     #expect(try row.get(4) as! Decimal == Decimal(1.2))
+    #expect(try row[0] as! Int == 1)
+    #expect(try row[2] as! String == "a")
     #expect(throws: SparkConnectError.InvalidArgument) {
       try Row.empty.get(-1)
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row[-1]
+    }
+    #expect(throws: SparkConnectError.InvalidArgument) {
+      try row[5]
     }
   }
 

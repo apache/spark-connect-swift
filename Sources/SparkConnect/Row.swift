@@ -60,12 +60,21 @@ public struct Row: Sendable, Equatable {
 
   public var length: Int { return values.count }
 
-  subscript(index: Int) -> Sendable {
+  /// Returns the value at the given index.
+  /// - Parameter index: A 0-based column index.
+  /// - Returns: A value of the field.
+  /// - Throws: `SparkConnectError.InvalidArgument` if the index is out of range.
+  public subscript(index: Int) -> Sendable {
     get throws {
       return try get(index)
     }
   }
 
+  /// Returns the value of the field with the given name.
+  /// - Parameter name: A field name.
+  /// - Returns: A value of the field.
+  /// - Throws: `SparkConnectError.UnsupportedOperation` if the row has no schema, or
+  /// `SparkConnectError.ColumnNotFound` if the field does not exist.
   public subscript(name: String) -> Sendable {
     get throws {
       return try get(name)
