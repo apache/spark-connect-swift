@@ -765,6 +765,25 @@ struct DataFrameTests {
   }
 
   @Test
+  func arrowCompression() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    if await isSparkVersionAtLeast(spark.version, "4.1") {
+      let df = try await spark.range(10)
+      let expected = try await df.collect()
+      for codec in ["zstd", "lz4"] {
+        try await spark.conf.set("spark.sql.execution.arrow.compression.codec", codec)
+        let error = await #expect(throws: SparkConnectError.self) { try await df.collect() }
+        #expect(error == SparkConnectError.UnsupportedOperation)
+        #expect(error?.message.contains(codec) == true)
+        #expect(error?.message.contains("spark.sql.execution.arrow.compression.codec") == true)
+      }
+      try await spark.conf.unset("spark.sql.execution.arrow.compression.codec")
+      #expect(try await df.collect() == expected)
+    }
+    await spark.stop()
+  }
+
+  @Test
   func isEmpty() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(0).isEmpty())

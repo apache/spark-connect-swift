@@ -22,6 +22,7 @@ import FoundationEssentials
 #else
 import Foundation
 #endif
+import FlatBuffers
 import GRPCProtobuf
 import Synchronization
 
@@ -99,6 +100,20 @@ extension DataFrame {
         pos += dataHeaderSize
         let dataBodySize = totalSize - pos - 8
         let dataBody = Data(ipcStreamBytes[pos..<(pos + dataBodySize)])
+
+        // Spark 4.1+ compresses buffers if `spark.sql.execution.arrow.compression.codec` is set.
+        let message = org_apache_arrow_flatbuf_Message.getRootAsMessage(
+          bb: ByteBuffer(data: dataHeader))
+        if message.headerType == .recordbatch,
+          let recordBatch = message.header(type: org_apache_arrow_flatbuf_RecordBatch.self),
+          let compression = recordBatch.compression
+        {
+          throw SparkConnectError.unsupportedOperation(
+            SparkConnectError.Details(
+              message:
+                "Unsupported Arrow compression codec: \(compression.codec). "
+                + "Set `spark.sql.execution.arrow.compression.codec` to `none`."))
+        }
 
         // Read ArrowBatches
         try batches.withLock { batches in
