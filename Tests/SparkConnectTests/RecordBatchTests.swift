@@ -22,6 +22,7 @@ import FoundationEssentials
 #else
 import Foundation
 #endif
+import FlatBuffers
 import Testing
 
 @testable import SparkConnect
@@ -53,5 +54,29 @@ struct RecordBatchTests {
     #expect(result.batches.count == 1)
     #expect(result.batches[0].columnCount == 0)
     #expect(result.batches[0].length == 3)
+  }
+
+  @Test
+  func readCompressed() throws {
+    // Spark 4.1+ compresses the buffers if `spark.sql.execution.arrow.compression.codec` is set.
+    let schemaMessage = try ArrowWriter().toMessage(ArrowSchema.Builder().finish()).get()
+    for codec in [org_apache_arrow_flatbuf_CompressionType.lz4Frame, .zstd] {
+      var fbb = FlatBufferBuilder()
+      let compression = org_apache_arrow_flatbuf_BodyCompression.createBodyCompression(
+        &fbb, codec: codec)
+      let recordBatch = org_apache_arrow_flatbuf_RecordBatch.createRecordBatch(
+        &fbb, length: 3, compressionOffset: compression)
+      let message = org_apache_arrow_flatbuf_Message.createMessage(
+        &fbb, version: .max, headerType: .recordbatch, headerOffset: recordBatch)
+      fbb.finish(offset: message)
+
+      let reader = ArrowReader()
+      let result = ArrowReader.makeArrowReaderResult()
+      try reader.fromMessage(schemaMessage, dataBody: Data(), result: result).get()
+      #expect(throws: ArrowError.self) {
+        try reader.fromMessage(fbb.data, dataBody: Data(), result: result).get()
+      }
+      #expect(result.batches.isEmpty)
+    }
   }
 }

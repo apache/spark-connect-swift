@@ -284,6 +284,10 @@ public class ArrowReader {  // swiftlint:disable:this type_body_length
     guard let length = UInt(exactly: recordBatch.length) else {
       return .failure(.invalid("Invalid record batch length: \(recordBatch.length)"))
     }
+    // Compressed buffers cannot be read as they are, and decompression is not supported.
+    if let compression = recordBatch.compression {
+      return .failure(.invalid("Unsupported record batch compression codec: \(compression.codec)"))
+    }
     var columns: [ArrowArrayHolder] = []
     let batchData = RecordBatchData(recordBatch, schema: schema)
     let loadInfo = DataLoadInfo(
