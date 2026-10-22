@@ -236,4 +236,17 @@ struct DataFrameInternalTests {
     let other = await df.stat.sampleBy("key", [[1]: 0.5], 0).plan.root.sampleBy.fractions
     #expect(other[0].stratum.literalType == .string("[1]"))
   }
+
+  @Test
+  func withColumnRenamedPlan() async throws {
+    // This test doesn't require a running server because it only inspects the plan.
+    let spark = try SparkSession("sc://localhost")
+    var plan = Plan()
+    plan.root.range.end = 10
+    let df = DataFrame(spark: spark, plan: plan)
+    let renames = await df.withColumnRenamed(["a", "b", "a"], ["b", "c", "d"]).plan.root
+      .withColumnsRenamed.renames
+    #expect(renames.map { $0.colName } == ["a", "b", "a"])
+    #expect(renames.map { $0.newColName } == ["b", "c", "d"])
+  }
 }

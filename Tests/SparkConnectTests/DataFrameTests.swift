@@ -636,6 +636,16 @@ struct DataFrameTests {
   }
 
   @Test
+  func withColumnRenamedWithDuplicateNames() async throws {
+    let spark = try await SparkSession.builder.getOrCreate()
+    let df = try await spark.sql("SELECT 1 a, 2 b, 3 c, 4 d")
+    // Renames are applied in the given order. The second `a` is ignored because `a` is renamed.
+    #expect(try await df.withColumnRenamed(["a", "a"], ["x", "y"]).columns == ["x", "b", "c", "d"])
+    #expect(try await df.withColumnRenamed(["a", "x"], ["x", "y"]).columns == ["y", "b", "c", "d"])
+    await spark.stop()
+  }
+
+  @Test
   func withColumn() async throws {
     let spark = try await SparkSession.builder.getOrCreate()
     // Add a new column.

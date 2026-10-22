@@ -748,6 +748,20 @@ public actor SparkConnectClient {
     return createPlan { $0.withColumnsRenamed = withColumnsRenamed }
   }
 
+  static func getWithColumnRenamed(
+    _ child: Relation, _ colNames: [String], _ newColNames: [String]
+  ) -> Plan {
+    var withColumnsRenamed = WithColumnsRenamed()
+    withColumnsRenamed.input = child
+    withColumnsRenamed.renames = zip(colNames, newColNames).map { (colName, newColName) in
+      var rename = WithColumnsRenamed.Rename()
+      rename.colName = colName
+      rename.newColName = newColName
+      return rename
+    }
+    return createPlan { $0.withColumnsRenamed = withColumnsRenamed }
+  }
+
   static func getWithColumns(_ child: Relation, _ colsMap: [String: String]) -> Plan {
     var withColumns = WithColumns()
     withColumns.input = child
