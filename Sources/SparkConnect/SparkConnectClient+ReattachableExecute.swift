@@ -110,7 +110,7 @@ extension SparkConnectClient {
   /// broken by a retriable RPC error, or ends without a `ResultComplete` message, the stream is
   /// resumed with `ReattachExecute` after the last received response. The retriable errors are
   /// governed by ``RetryPolicy/defaultPolicy`` whose backoff is reset whenever an attempt
-  /// receives a new response. The server side buffer is released with a `release_all`
+  /// receives a new response. The server side buffer is released with a best-effort `release_all`
   /// `ReleaseExecute` at the end.
   /// - Parameters:
   ///   - request: An ``ExecutePlanRequest`` to execute.
@@ -148,9 +148,6 @@ extension SparkConnectClient {
           } else {
             try await service.executePlan(initialRequest, onResponse: consume)
           }
-          if state.resultComplete {
-            _ = try await service.releaseExecute(Self.getReleaseAllRequest(initialRequest))
-          }
         }
         // When the stream ended gracefully without `ResultComplete`, the server has more
         // responses and the loop continues with `ReattachExecute`.
@@ -184,10 +181,11 @@ extension SparkConnectClient {
         try await Task.sleep(for: wait)
       }
     }
+    await releaseAll(initialRequest)
   }
 
-  /// Inform the server to release the operation of `request` after giving up, ignoring failures
-  /// because the server releases abandoned executions by itself.
+  /// Inform the server to release the operation of `request` after receiving all responses or
+  /// giving up, ignoring failures because the server releases abandoned executions by itself.
   private func releaseAll(_ request: ExecutePlanRequest) async {
     try? await withGPRC(retryable: false) { client in
       let service = SparkConnectService.Client(wrapping: client)

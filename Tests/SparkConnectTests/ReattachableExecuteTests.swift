@@ -26,9 +26,11 @@ import Testing
 
 @testable import SparkConnect
 
-/// A test suite for the reattachable execution request builders
+/// A test suite for the reattachable execution
 @Suite(.serialized)
 struct ReattachableExecuteTests {
+  let TEST_REMOTE = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost"
+
   static func executePlanRequest() -> ExecutePlanRequest {
     var request = ExecutePlanRequest()
     request.clientType = "swift"
@@ -107,5 +109,37 @@ struct ReattachableExecuteTests {
     #expect(UUID(uuidString: operationID)?.uuidString.lowercased() == operationID)
     #expect(SparkConnectClient.getReattachExecuteRequest(request, nil).operationID == operationID)
     #expect(SparkConnectClient.getReleaseAllRequest(request).operationID == operationID)
+  }
+
+  /// Release the session of `client` on the server without stopping `client`. With
+  /// `allowReconnect`, the server forgets the session like after a restart, and the next
+  /// `ReleaseExecute` fails with `SESSION_NOT_FOUND` instead of `SESSION_CLOSED`.
+  static func releaseSession(_ client: isolated SparkConnectClient, allowReconnect: Bool)
+    async throws
+  {
+    var request = Spark_Connect_ReleaseSessionRequest()
+    request.sessionID = client.sessionID!
+    request.userContext = client.userContext
+    request.clientType = client.clientType
+    request.allowReconnect = allowReconnect
+    try await client.withGPRC { grpc in
+      _ = try await SparkConnectService.Client(wrapping: grpc).releaseSession(request)
+    }
+  }
+
+  @Test
+  func releaseAllFailureAfterResultComplete() async throws {
+    for allowReconnect in [true, false] {
+      let client = try SparkConnectClient(remote: TEST_REMOTE)
+      try await client.connect(UUID().uuidString)
+      let request = await client.getExecutePlanRequest(await client.getPlanRange(0, 1, 1))
+      // Make the final `release_all` fail after receiving all responses.
+      try await client.executePlanWithReattach(request) { response in
+        if case .resultComplete = response.responseType {
+          try await Self.releaseSession(client, allowReconnect: allowReconnect)
+        }
+      }
+      await client.stop()
+    }
   }
 }
