@@ -34,7 +34,7 @@ catalog, ML) over gRPC, exchanging results in Apache Arrow format.
     `RuntimeConf.swift`, `DataStream*.swift`, `StreamingQuery*.swift`,
     `MergeIntoWriter.swift`, `SparkConnectClient.swift`, etc.
   - **Generated — do not hand-edit**: `*.pb.swift` (protobuf), `base.grpc.swift`
-    (gRPC), `Flight.pb.swift`, and FlatBuffers `*_generated.swift`
+    (gRPC), and FlatBuffers `*_generated.swift`
     (`File_generated`, `Message_generated`, `Schema_generated`, `Tensor_generated`,
     `SparseTensor_generated`). These derive from upstream Spark Connect protos
     and Arrow schemas.
