@@ -287,9 +287,9 @@ extension DataFrame {
   ///   - newColNames: A list of new column names.
   /// - Returns: A ``DataFrame`` with the renamed columns.
   public func withColumnRenamed(_ colNames: [String], _ newColNames: [String]) -> DataFrame {
-    let dic = Dictionary(uniqueKeysWithValues: zip(colNames, newColNames))
     return DataFrame(
-      spark: self.spark, plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, dic))
+      spark: self.spark,
+      plan: SparkConnectClient.getWithColumnRenamed(self.plan.root, colNames, newColNames))
   }
 
   /// Returns a new Dataset with columns renamed. This is a no-op if schema doesn't contain existingName.
