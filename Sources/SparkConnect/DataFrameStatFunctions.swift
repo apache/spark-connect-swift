@@ -77,7 +77,7 @@ public actor DataFrameStatFunctions: Sendable {
   public func approxQuantile(
     _ col: String, _ probabilities: [Double], _ relativeError: Double
   ) async throws -> [Double] {
-    return try await approxQuantile([col], probabilities, relativeError)[0]
+    return try await approxQuantile([col], probabilities, relativeError).firstOrThrow()
   }
 
   /// Calculates the approximate quantiles of numerical columns of a ``DataFrame``.
