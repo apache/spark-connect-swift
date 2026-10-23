@@ -123,15 +123,24 @@ extension DataFrame {
     return Column(expr)
   }
 
-  /// Selects a subset of existing columns using column names.
-  /// - Parameter cols: Column names
-  /// - Returns: A ``DataFrame`` with subset of columns.
+  /// Returns a new ``DataFrame`` with the columns renamed by position.
+  ///
+  /// The number of column names must be the same as the number of columns. Otherwise, an error is
+  /// thrown when the returned ``DataFrame`` is analyzed or executed. To select or reorder columns
+  /// by name, use ``select(_:)``.
+  ///
+  /// ```swift
+  /// let df = try await spark.sql("SELECT 1 a, 2 b")
+  /// try await df.toDF("x", "y").columns  // ["x", "y"]
+  /// ```
+  /// - Parameter cols: New column names. If empty, the columns are not renamed.
+  /// - Returns: A ``DataFrame`` with the new column names.
   public func toDF(_ cols: String...) -> DataFrame {
     let df =
       if cols.isEmpty {
         DataFrame(spark: self.spark, plan: self.plan)
       } else {
-        DataFrame(spark: self.spark, plan: SparkConnectClient.getProject(self.plan.root, cols))
+        DataFrame(spark: self.spark, plan: SparkConnectClient.getToDF(self.plan.root, cols))
       }
     return df
   }
