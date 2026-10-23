@@ -77,4 +77,13 @@ struct BuilderTests {
     #expect(await builder.sparkConf["spark.app.name"] == "TestApp")
     try await builder.getOrCreate().stop()
   }
+
+  @Test
+  func create() async throws {
+    let spark1 = try await SparkSession.builder.create()
+    let spark2 = try await SparkSession.builder.create()
+    #expect(spark1 != spark2)
+    await spark1.stop()
+    await spark2.stop()
+  }
 }

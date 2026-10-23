@@ -798,9 +798,19 @@ public actor SparkSession {
       sparkConf.filter { $0.key != "spark.remote" && $0.key != "spark.master" }
     }
 
-    /// Create a new ``SparkSession``. If `spark.remote` is not given, `sc://localhost:15002` is used.
+    /// Creates a new ``SparkSession``.
+    ///
+    /// Like Scala and Python clients, this always returns a newly created session. If
+    /// `spark.remote` is not given, the `SPARK_REMOTE` environment variable or
+    /// `sc://localhost:15002` is used.
+    ///
+    /// ```swift
+    /// let spark = try await SparkSession.builder.create()
+    /// ```
+    ///
     /// - Returns: A newly created ``SparkSession``.
-    func create() async throws -> SparkSession {
+    /// - Throws: ``SparkConnectError`` if connection fails or configuration is invalid
+    public func create() async throws -> SparkSession {
       let remote = ProcessInfo.processInfo.environment["SPARK_REMOTE"] ?? "sc://localhost:15002"
       let session = try SparkSession(sparkConf["spark.remote"] ?? remote)
       let response = try await session.client.connect(session.sessionID)
@@ -812,11 +822,12 @@ public actor SparkSession {
       return session
     }
 
-    /// Creates or retrieves an existing ``SparkSession``.
+    /// Creates a new ``SparkSession``.
     ///
-    /// This is the primary method for obtaining a ``SparkSession`` instance. If a session with
-    /// the same configuration already exists, it will be returned. Otherwise, a new session
-    /// is created with the specified configuration.
+    /// This is the primary method for obtaining a ``SparkSession`` instance. Unlike Scala and
+    /// Python clients, this does not return an existing session. Like ``create()``, every call
+    /// creates a new session with the specified configuration, so reuse the returned session and
+    /// call ``SparkSession/stop()`` when it is no longer needed.
     ///
     /// The method will:
     /// 1. Check for the `SPARK_REMOTE` environment variable if no remote URL is set
