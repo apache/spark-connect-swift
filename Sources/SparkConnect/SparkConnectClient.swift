@@ -723,6 +723,13 @@ public actor SparkConnectClient {
     return createPlan { $0.toSchema = toSchema }
   }
 
+  static func getToDF(_ child: Relation, _ columnNames: [String]) -> Plan {
+    var toDF = Spark_Connect_ToDF()
+    toDF.input = child
+    toDF.columnNames = columnNames
+    return createPlan { $0.toDf = toDF }
+  }
+
   static func getProjectExprs(_ child: Relation, _ exprs: [String]) -> Plan {
     var project = Project()
     project.input = child

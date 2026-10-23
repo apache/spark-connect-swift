@@ -472,6 +472,15 @@ struct DataFrameTests {
     let spark = try await SparkSession.builder.getOrCreate()
     #expect(try await spark.range(1).toDF().columns == ["id"])
     #expect(try await spark.range(1).toDF("id").columns == ["id"])
+    #expect(try await spark.range(1).toDF("x").columns == ["x"])
+
+    // Renames the columns by position instead of selecting them by name.
+    let df = try await spark.sql("SELECT 1 a, 2 b")
+    #expect(try await df.toDF("b", "a").columns == ["b", "a"])
+    #expect(try await df.toDF("b", "a").collect() == [Row(1, 2)])
+    try await #require(throws: Error.self) {
+      try await df.toDF("a").columns
+    }
     await spark.stop()
   }
 
