@@ -131,8 +131,7 @@ jobs:
     - uses: ./.github/actions/setup-spark
       with:
         version: 4.1.4
-        url: https://dist.apache.org/repos/dist/dev/spark/v4.1.4-rc1-bin/spark-4.1.4-bin-hadoop3.tgz
-        sha512: 4a97fcddb71621607033431988af2bbb37b1c5d20c7baca6927029a1ac5713ffc6d49c05976123fe2ae57bc18acb1aab357d1633461bc30046ae7a105032e624
+        sha512: 1461b6c425d290913e7be97bfec738abc843c663d177dc57e32b82874d20144ed67dcca692a57efc4e5b40d2f001ee0e9e0d2d7b088ae58f5378ecac92739076
     - name: Test
       run: |
         cd /tmp/spark/sbin
@@ -152,8 +151,7 @@ jobs:
     - uses: ./.github/actions/setup-spark
       with:
         version: 4.2.1
-        url: https://dist.apache.org/repos/dist/dev/spark/v4.2.1-rc1-bin/spark-4.2.1-bin-hadoop3.tgz
-        sha512: 4f2e5368987ab6d5bba33859c67c32f910829c1ce536c2d81e9e3d0c37dcb9d0ae659dbc5872c9e568d03094c9ed3f551c585a08b0e44e0cefde9b29cfc15371
+        sha512: 2f76b113ebb2f3677766e38b6dc78f27756c5ae5a7c103f1a76dac523dba8e5f82077b7f480360391c0cceee79ad712d7843f23389fbfeb18bc018fb85e27866
     - name: Test
       run: |
         cd /tmp/spark/sbin
@@ -194,8 +192,7 @@ jobs:
     - uses: ./.github/actions/setup-spark
       with:
         version: 4.0.5
-        url: https://dist.apache.org/repos/dist/dev/spark/v4.0.5-rc1-bin/spark-4.0.5-bin-hadoop3.tgz
-        sha512: 6a276aa40e5ff150295428a7d762669b2b106ac1a9de3290bd4b3ff73fc9669849f35089553b5ddd55a0e0dbc1dd19f9a6bc4ef31970e1e3133837c694132107
+        sha512: c36f0e8445513d3d746d20aa051787f417477a2550b002bb4e4c3797e6152a6a04cce7121344cd11511e18642c852ca5893e872564a207ee9d8d3befe6309b20
     - name: Test
       run: |
         cd /tmp/spark/sbin
