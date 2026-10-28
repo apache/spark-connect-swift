@@ -212,8 +212,8 @@ jobs:
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
       with:
-        version: 4.1.3
-        sha512: 391d04f40da0f6e961513d1ad72a6e3d51aef99f751c835e058a329b01369d83d17c2a9c68fad6be9496eea6687107d0d3d6893f7a53f53ddbfe669022220523
+        version: 4.1.4
+        sha512: 1461b6c425d290913e7be97bfec738abc843c663d177dc57e32b82874d20144ed67dcca692a57efc4e5b40d2f001ee0e9e0d2d7b088ae58f5378ecac92739076
     - name: Test
       run: |
         cd /tmp/spark/sbin
@@ -238,12 +238,12 @@ jobs:
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
       with:
-        version: 4.0.4
-        sha512: 1b91bf197df884368293cb91e7eda866751570b0c98f38fda712030dd8256962460d68d9f2c9075bc83061428b18108faa89510d3a20e1436a41fc73cadc24dd
+        version: 4.0.5
+        sha512: c36f0e8445513d3d746d20aa051787f417477a2550b002bb4e4c3797e6152a6a04cce7121344cd11511e18642c852ca5893e872564a207ee9d8d3befe6309b20
     - name: Test
       run: |
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.4,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.12.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.0.5,org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.12.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         # Iceberg jars are resolved at startup, so wait until the server is ready.
         for i in $(seq 1 12); do
           grep -q "Spark Connect server started at" /tmp/spark/logs/*.out 2>/dev/null && break
@@ -270,12 +270,12 @@ jobs:
       run: swift test --filter NOTHING -c release
     - uses: ./.github/actions/setup-spark
       with:
-        version: 4.1.3
-        sha512: 391d04f40da0f6e961513d1ad72a6e3d51aef99f751c835e058a329b01369d83d17c2a9c68fad6be9496eea6687107d0d3d6893f7a53f53ddbfe669022220523
+        version: 4.1.4
+        sha512: 1461b6c425d290913e7be97bfec738abc843c663d177dc57e32b82874d20144ed67dcca692a57efc4e5b40d2f001ee0e9e0d2d7b088ae58f5378ecac92739076
     - name: Test
       run: |
         cd /tmp/spark/sbin
-        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.1.3,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.12.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
+        ./start-connect-server.sh --packages org.apache.spark:spark-connect_2.13:4.1.4,org.apache.iceberg:iceberg-spark-runtime-4.1_2.13:1.12.0 -c spark.sql.catalog.local=org.apache.iceberg.spark.SparkCatalog -c spark.sql.catalog.local.type=hadoop -c spark.sql.catalog.local.warehouse=/tmp/spark/warehouse -c spark.sql.defaultCatalog=local
         # Iceberg jars are resolved at startup, so wait until the server is ready.
         for i in $(seq 1 12); do
           grep -q "Spark Connect server started at" /tmp/spark/logs/*.out 2>/dev/null && break
