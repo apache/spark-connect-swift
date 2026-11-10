@@ -21,7 +21,7 @@ catalog, ML) over gRPC, exchanging results in Apache Arrow format.
 - **Swift 6.4.0+** with Swift Package Manager (`swift-tools-version: 6.4.0`).
 - **Platforms**: macOS 15+, iOS 18+, watchOS 11+, tvOS 18+, and Linux
   (built and tested on Ubuntu x86_64 & arm64 with the Swift 6.4.0 toolchain).
-- **Server**: Apache Spark 4.x Connect server (tested against 4.0.5 / 4.1.4 / 4.2.1).
+- **Server**: Apache Spark 4.x Connect server (tested against 4.0.5 / 4.1.4 / 4.2.1 / 4.3.0).
 - **Dependencies** (all pinned with `exact` in [Package.swift](Package.swift)):
   `grpc-swift-2`, `grpc-swift-protobuf`, `grpc-swift-nio-transport`,
   `flatbuffers`, `swift-system`. Keep version bumps as `exact` pins, never
@@ -78,7 +78,7 @@ Start a local Spark Connect server first (default endpoint `sc://localhost:15002
 
 ```bash
 docker run -it --rm -p 15002:15002 -e SPARK_NO_DAEMONIZE=1 \
-  apache/spark:4.2.0 bash -c /opt/spark/sbin/start-connect-server.sh
+  apache/spark:4.3.0 bash -c /opt/spark/sbin/start-connect-server.sh
 ```
 
 Environment variables that gate behavior:

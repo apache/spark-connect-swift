@@ -119,6 +119,22 @@ jobs:
         docker run swift:6.4.1 uname -a
         docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.4.1 swift test --no-parallel -c release
 
+  integration-test-ubuntu-spark43:
+    runs-on: ubuntu-26.04
+    steps:
+    - uses: actions/checkout@v7
+    - name: Start Spark Connect Server
+      run: |
+        docker run -d --name spark -p 15003:15002 -e SPARK_NO_DAEMONIZE=1 \
+          --entrypoint /opt/spark/sbin/start-connect-server.sh \
+          apache/spark:4.3.0-scala-java25 \
+          -c spark.sql.geospatial.enabled=true \
+          -c spark.sql.timeType.enabled=true
+    - name: Test
+      run: |
+        docker run swift:6.4.1 uname -a
+        docker run --add-host=host.docker.internal:host-gateway -v $PWD:/spark -w /spark -e SPARK_REMOTE='sc://host.docker.internal:15003' swift:6.4.1 swift test --no-parallel -c release
+
   integration-test-mac-spark41:
     runs-on: xcode-27
     timeout-minutes: 20
@@ -171,8 +187,7 @@ jobs:
     - uses: ./.github/actions/setup-spark
       with:
         version: 4.3.0
-        url: https://dist.apache.org/repos/dist/dev/spark/v4.3.0-rc1-bin/spark-4.3.0-bin-hadoop3.tgz
-        sha512: 18563bb57fa5e5367286a49845d44aa7e808e6c0f4dd151cb32cf71fffd17164734b4a2f54f81b94d69a58b4bdbac807cf05a33241ba9106c7600f491c1b157c
+        sha512: 51a2473d09c74b6b755d3c4158275922fe4fed9c3801d9e48ade6083dc03b45693274020fe0fcf2be2a607a6a828f7159f78609ef913049e98c1882d2d0aab5f
     - name: Test
       run: |
         cd /tmp/spark/sbin
