@@ -71,7 +71,7 @@ jobs:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
       spark:
-        image: apache/spark:4.0.4-java21-scala
+        image: apache/spark:4.0.5-java21-scala
         env:
           SPARK_NO_DAEMONIZE: 1
         ports:
@@ -90,7 +90,7 @@ jobs:
       SPARK_REMOTE: "sc://localhost:15003"
     services:
       spark:
-        image: apache/spark:4.1.3-scala
+        image: apache/spark:4.1.4-scala
         env:
           SPARK_NO_DAEMONIZE: 1
         ports:
@@ -111,7 +111,7 @@ jobs:
       run: |
         docker run -d --name spark -p 15003:15002 -e SPARK_NO_DAEMONIZE=1 \
           --entrypoint /opt/spark/sbin/start-connect-server.sh \
-          apache/spark:4.2.0-scala-java25 \
+          apache/spark:4.2.1-scala-java25 \
           -c spark.sql.geospatial.enabled=true \
           -c spark.sql.timeType.enabled=true
     - name: Test
